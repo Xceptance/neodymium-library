@@ -1,13 +1,14 @@
 package com.xceptance.multibrowser.mapper;
 
+import java.util.Properties;
+
 import com.xceptance.multibrowser.dto.ProxyConfigurationDto;
 import com.xceptance.multibrowser.interfaces.IMapper;
 import com.xceptance.multibrowser.runner.helper.XltPropertyKey;
-import com.xceptance.xlt.api.util.XltProperties;
 
-public class PropertiesToProxyConfigurationMapper implements IMapper<XltProperties, ProxyConfigurationDto>
+public class PropertiesToProxyConfigurationMapper implements IMapper<Properties, ProxyConfigurationDto>
 {
-    public ProxyConfigurationDto toDto(XltProperties o)
+    public ProxyConfigurationDto toDto(Properties o)
     {
         String strProxyEnabled = o.getProperty(XltPropertyKey.PROXY, null);
 
@@ -27,7 +28,7 @@ public class PropertiesToProxyConfigurationMapper implements IMapper<XltProperti
         return null;
     }
 
-    public XltProperties fromDto(ProxyConfigurationDto o)
+    public Properties fromDto(ProxyConfigurationDto o)
     {
         throw new RuntimeException("Not implemented yet.");
     }
