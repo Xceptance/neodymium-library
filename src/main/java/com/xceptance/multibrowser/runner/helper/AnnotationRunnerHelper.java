@@ -34,6 +34,9 @@ import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.xceptance.multibrowser.annotation.TestTargets;
+import com.xceptance.multibrowser.configuration.DriverServerPath;
+import com.xceptance.multibrowser.configuration.MultibrowserConfiguration;
+import com.xceptance.multibrowser.configuration.WebDriverProperties;
 import com.xceptance.multibrowser.dto.BrowserConfigurationDto;
 import com.xceptance.multibrowser.dto.ProxyConfigurationDto;
 import com.xceptance.multibrowser.mapper.PropertiesToBrowserConfigurationMapper;
@@ -65,18 +68,14 @@ public final class AnnotationRunnerHelper
     }
 
     /**
-     * The prefix of all factory-related configuration settings.
-     */
-    private static final String PROP_PREFIX_WEB_DRIVER = "xlt.webDriver";
-
-    /**
      * Returns an {@link URL} to a Selenium grid (e.g. SauceLabs) that contains basic authentication for access
      * 
      * @return {@link URL} to Selenium grid augmented with credentials
      * @throws MalformedURLException
      */
-    public static HttpCommandExecutor createGridExecutor(final ProxyConfigurationDto proxyConfig, final URL gridUrl, final String gridUsername,
-                                                         final String gridPassword) throws MalformedURLException
+    public static HttpCommandExecutor createGridExecutor(final ProxyConfigurationDto proxyConfig, final URL gridUrl,
+                                                         final String gridUsername, final String gridPassword)
+        throws MalformedURLException
     {
         // create a configuration for accessing target site via proxy (if a proxy is defined)
         // the proxy and the destination site will have different or no credentials for accessing them
@@ -85,8 +84,8 @@ public final class AnnotationRunnerHelper
 
         // create credentials for proxy access
         if (proxyConfig != null //
-        && !StringUtils.isEmpty(proxyConfig.getUsername()) //
-        && !StringUtils.isEmpty(proxyConfig.getPassword()))
+            && !StringUtils.isEmpty(proxyConfig.getUsername()) //
+            && !StringUtils.isEmpty(proxyConfig.getPassword()))
         {
             final AuthScope proxyAuth = new AuthScope(proxyConfig.getHost(), Integer.valueOf(proxyConfig.getPort()));
             final Credentials proxyCredentials = new UsernamePasswordCredentials(proxyConfig.getUsername(), proxyConfig.getPassword());
@@ -119,19 +118,19 @@ public final class AnnotationRunnerHelper
     /**
      * Sets the browser window size
      * <p>
-     * Reads the default size from xlt properties and applies them to the browser window as long as its no
-     * device-emulation test. In case of device-emulation the emulated device specifies the size of the browser window.
+     * Reads the default size from xlt properties and applies them to the browser window as long as its no device-emulation
+     * test. In case of device-emulation the emulated device specifies the size of the browser window.
      *
      * @param config
      * @param driver
      */
     public static void setBrowserWindowSize(final BrowserConfigurationDto config, final WebDriver driver)
     {
-        final XltProperties props = XltProperties.getInstance();
+        WebDriverProperties webDriverProperties = MultibrowserConfiguration.getIntance().getWebDriverProperties();
 
         // get the configured window size and set it if defined
-        final int windowWidth = props.getProperty(getEffectiveKey(PROP_PREFIX_WEB_DRIVER + ".window.width"), -1);
-        final int windowHeight = props.getProperty(getEffectiveKey(PROP_PREFIX_WEB_DRIVER + ".window.height"), -1);
+        final int windowWidth = webDriverProperties.getWindowWidth();
+        final int windowHeight = webDriverProperties.getWindowHeight();
 
         final int configuredBrowserWidth = config.getBrowserWidth();
         final int configuredBrowserHeight = config.getBrowserHeight();
@@ -186,7 +185,7 @@ public final class AnnotationRunnerHelper
             return new FirefoxBinary();
         }
     }
-    
+
     /**
      * Instantiate the {@link WebDriver} according to the configuration read from {@link TestTargets} annotations.
      *
@@ -195,7 +194,8 @@ public final class AnnotationRunnerHelper
      * @return
      * @throws MalformedURLException
      */
-    public static WebDriver createWebdriver(final BrowserConfigurationDto config, final ProxyConfigurationDto proxyConfig) throws MalformedURLException
+    public static WebDriver createWebdriver(final BrowserConfigurationDto config, final ProxyConfigurationDto proxyConfig)
+        throws MalformedURLException
     {
         final DesiredCapabilities capabilities = config.getCapabilities();
 
@@ -220,22 +220,24 @@ public final class AnnotationRunnerHelper
                 capabilities.setCapability(CapabilityType.PROXY, webdriverProxy);
             }
 
+            DriverServerPath driverServerPath = MultibrowserConfiguration.getIntance().getDriverServerPath();
+
             final String browserName = config.getCapabilities().getBrowserName();
             if (chromeBrowsers.contains(browserName))
             {
                 // do we have a custom path?
-                final String pathToBrowser = XltProperties.getInstance().getProperty(XltPropertyKey.CHROME_PATH);
+                final String pathToBrowser = driverServerPath.getChromeBrowserPath();
                 if (StringUtils.isNotBlank(pathToBrowser))
                 {
                     final ChromeOptions options = new ChromeOptions();
                     options.setBinary(pathToBrowser);
                     capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-                }     
+                }
                 return new ChromeDriver(capabilities);
             }
             else if (firefoxBrowsers.contains(browserName))
             {
-                final String pathToBrowser = XltProperties.getInstance().getProperty(XltPropertyKey.FIREFOX_PATH);
+                final String pathToBrowser = driverServerPath.getFirefoxBrowserPath();
                 final FirefoxBinary binary = createFirefoxBinary(pathToBrowser);
                 return new FirefoxDriver(binary, null, capabilities);
             }
@@ -249,7 +251,7 @@ public final class AnnotationRunnerHelper
             final XltProperties xltProperties = XltProperties.getInstance();
 
             final Map<String, String> propertiesForEnvironment = xltProperties.getPropertiesForKey(XltPropertyKey.BROWSERPROFILE_TEST_ENVIRONMENT +
-                                                                                             testEnvironment);
+                                                                                                   testEnvironment);
 
             final String gridUsername = propertiesForEnvironment.get("username");
             final String gridPassword = propertiesForEnvironment.get("password");

@@ -10,9 +10,11 @@ import org.aeonbits.owner.Config.Sources;
 public interface WebDriverProperties extends Config
 {
     @Key("xlt.webDriver.window.width")
+    @DefaultValue("-1")
     public Integer getWindowWidth();
 
     @Key("xlt.webDriver.window.height")
+    @DefaultValue("-1")
     public Integer getWindowHeight();
 
     @Key("xlt.webDriver.firefox.legacyMode")
