@@ -29,6 +29,8 @@ public class MultibrowserConfiguration
 
     private WebDriverProperties webDriverProperties;
 
+    private ProxyConfiguration proxyConfiguration;
+
     private Map<String, TestEnvironment> testEnvironments;
 
     private Map<String, BrowserConfigurationDto> browserProfiles;
@@ -56,6 +58,7 @@ public class MultibrowserConfiguration
 
         driverServerPath = ConfigFactory.create(DriverServerPath.class);
         webDriverProperties = ConfigFactory.create(WebDriverProperties.class);
+        proxyConfiguration = ConfigFactory.create(ProxyConfiguration.class);
     }
 
     private void parseTestEnvironments()
@@ -143,5 +146,10 @@ public class MultibrowserConfiguration
     public Map<String, BrowserConfigurationDto> getBrowserProfiles()
     {
         return browserProfiles;
+    }
+
+    public ProxyConfiguration getProxyConfiguration()
+    {
+        return proxyConfiguration;
     }
 }
