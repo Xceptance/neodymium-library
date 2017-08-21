@@ -42,7 +42,6 @@ import com.xceptance.multibrowser.dto.ProxyConfigurationDto;
 import com.xceptance.multibrowser.mapper.PropertiesToBrowserConfigurationMapper;
 import com.xceptance.multibrowser.proxy.ProxyHttpClient;
 import com.xceptance.xlt.api.util.XltProperties;
-import com.xceptance.xlt.engine.SessionImpl;
 
 public final class AnnotationRunnerHelper
 {
@@ -303,54 +302,5 @@ public final class AnnotationRunnerHelper
         }
 
         return browserConfigurations;
-    }
-
-    /**
-     * Returns the effective key to be used for property lookup via one of the getProperty(...) methods.
-     * <p>
-     * When looking up a key, "password" for example, the following effective keys are tried, in this order:
-     * <ol>
-     * <li>the test user name plus simple key, e.g. "TAuthor.password"</li>
-     * <li>the test class name plus simple key, e.g. "com.xceptance.xlt.samples.tests.TAuthor.password"</li>
-     * <li>the simple key, e.g. "password"</li>
-     * </ol>
-     * 
-     * @param bareKey
-     *            the bare property key, i.e. without any prefixes
-     * @return the first key that produces a result
-     */
-    private static String getEffectiveKey(final String bareKey)
-    {
-        final SessionImpl session = SessionImpl.getCurrent();
-        if (session == null)
-        {
-            return bareKey;
-        }
-
-        final String effectiveKey;
-        final XltProperties properties = XltProperties.getInstance();
-
-        // 1. use the current user name as prefix
-        final String userNameQualifiedKey = session.getUserName() + "." + bareKey;
-        if (properties.containsKey(userNameQualifiedKey))
-        {
-            effectiveKey = userNameQualifiedKey;
-        }
-        else
-        {
-            // 2. use the current class name as prefix
-            final String classNameQualifiedKey = session.getTestCaseClassName() + "." + bareKey;
-            if (properties.containsKey(classNameQualifiedKey))
-            {
-                effectiveKey = classNameQualifiedKey;
-            }
-            else
-            {
-                // 3. use the bare key
-                effectiveKey = bareKey;
-            }
-        }
-
-        return effectiveKey;
     }
 }
