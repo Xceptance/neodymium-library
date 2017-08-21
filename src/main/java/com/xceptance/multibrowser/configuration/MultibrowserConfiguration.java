@@ -2,6 +2,7 @@ package com.xceptance.multibrowser.configuration;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,11 +12,18 @@ import java.util.Properties;
 import org.aeonbits.owner.ConfigFactory;
 import org.apache.commons.lang3.StringUtils;
 
+import com.xceptance.multibrowser.dto.BrowserConfigurationDto;
+import com.xceptance.multibrowser.mapper.PropertiesToBrowserConfigurationMapper;
+
 public class MultibrowserConfiguration
 {
     private static final String TEST_ENVIRONMENT_FILE = "./config/credentials.properties";
 
-    private static final String TEST_ENVIRONMENT_PREFIX = "browserprofile.testEnvironment.";
+    private static final String BROWSER_PROFILE_FILE = "./config/browser.properties";
+
+    private static final String BROWSER_PROFILE_PREFIX = "browserprofile.";
+
+    private static final String TEST_ENVIRONMENT_PREFIX = BROWSER_PROFILE_PREFIX + "testenvironment.";
 
     private DriverServerPath driverServerPath;
 
@@ -23,44 +31,88 @@ public class MultibrowserConfiguration
 
     private Map<String, TestEnvironment> testEnvironments;
 
+    private Map<String, BrowserConfigurationDto> browserProfiles;
+
+    private Properties testEnvironmentProperties;
+
+    private Properties browserProfileProperties;
+
     private MultibrowserConfiguration()
     {
-        driverServerPath = ConfigFactory.create(DriverServerPath.class);
-        webDriverProperties = ConfigFactory.create(WebDriverProperties.class);
-        parseTestEnvironments();
-    }
-
-    private void parseTestEnvironments()
-    {
-        Properties properties = new Properties();
+        testEnvironmentProperties = new Properties();
+        browserProfileProperties = new Properties();
         try
         {
-            properties.load(new FileInputStream(new File(TEST_ENVIRONMENT_FILE)));
+            testEnvironmentProperties.load(new FileInputStream(new File(TEST_ENVIRONMENT_FILE)));
+            browserProfileProperties.load(new FileInputStream(new File(BROWSER_PROFILE_FILE)));
         }
         catch (Exception e)
         {
             throw new RuntimeException(e);
         }
 
+        parseTestEnvironments();
+        parseBrowserProfiles();
+
+        driverServerPath = ConfigFactory.create(DriverServerPath.class);
+        webDriverProperties = ConfigFactory.create(WebDriverProperties.class);
+    }
+
+    private void parseTestEnvironments()
+    {
         testEnvironments = new LinkedHashMap<String, TestEnvironment>();
-        List<String> testEnvironmentKeys = new LinkedList<String>();
-        for (Object keyObject : properties.keySet())
+        List<String> testEnvironmentKeys = getSubkeysForPrefix(testEnvironmentProperties, TEST_ENVIRONMENT_PREFIX);
+
+        for (String testEnvironmentKey : testEnvironmentKeys)
         {
-            String key = (String) keyObject;
-            if (key.toLowerCase().startsWith(TEST_ENVIRONMENT_PREFIX))
+            testEnvironments.put(testEnvironmentKey,
+                                 new TestEnvironment(testEnvironmentProperties, TEST_ENVIRONMENT_PREFIX + testEnvironmentKey));
+        }
+    }
+
+    private void parseBrowserProfiles()
+    {
+        browserProfiles = new LinkedHashMap<String, BrowserConfigurationDto>();
+        List<String> browserProfileKeys = getSubkeysForPrefix(browserProfileProperties, BROWSER_PROFILE_PREFIX);
+
+        PropertiesToBrowserConfigurationMapper mapper = new PropertiesToBrowserConfigurationMapper();
+
+        for (String browserProfile : browserProfileKeys)
+        {
+            List<String> subkeysForPrefix = getSubkeysForPrefix(browserProfileProperties, BROWSER_PROFILE_PREFIX + browserProfile + ".");
+            Map<String, String> browserProfileConfiguration = new HashMap<>();
+
+            for (String subkey : subkeysForPrefix)
             {
+                String value = (String) browserProfileConfiguration.get(BROWSER_PROFILE_PREFIX + browserProfile + "." + subkey);
+                browserProfileConfiguration.put(subkey, value);
+            }
+            browserProfiles.put(browserProfile, mapper.toDto(browserProfileConfiguration));
+        }
+    }
+
+    private List<String> getSubkeysForPrefix(Properties properties, String prefix)
+    {
+        List<String> keys = new LinkedList<String>();
+
+        for (String key : properties.keySet().toArray(new String[] {}))
+        {
+            if (key.toLowerCase().startsWith(prefix.toLowerCase())) // TODO: lower case compare is wrong!
+            {
+                key = key.substring(prefix.length());
                 String[] split = key.split("\\.");
-                if (split != null && split.length > 2 && StringUtils.isNotBlank(split[2]) && !testEnvironmentKeys.contains(split[2]))
+                if (split != null && split.length > 0)
                 {
-                    testEnvironmentKeys.add(split[2]);
+                    String newKey = split[0];
+                    if (StringUtils.isNotBlank(newKey) && !keys.contains(newKey))
+                    {
+                        keys.add(newKey);
+                    }
                 }
             }
         }
 
-        for (String testEnvironmentKey : testEnvironmentKeys)
-        {
-            testEnvironments.put(testEnvironmentKey, new TestEnvironment(properties, TEST_ENVIRONMENT_PREFIX + testEnvironmentKey));
-        }
+        return keys;
     }
 
     private static class MultibrowserConfigurationHolder
