@@ -6,9 +6,12 @@ public class MultibrowserConfiguration
 {
     private DriverServerPath driverServerPath;
 
+    private WebDriverProperties webDriverProperties;
+
     private MultibrowserConfiguration()
     {
         driverServerPath = ConfigFactory.create(DriverServerPath.class);
+        webDriverProperties = ConfigFactory.create(WebDriverProperties.class);
     }
 
     private static class MultibrowserConfigurationHolder
@@ -24,5 +27,10 @@ public class MultibrowserConfiguration
     public DriverServerPath getDriverServerPath()
     {
         return driverServerPath;
+    }
+
+    public WebDriverProperties getWebDriverProperties()
+    {
+        return webDriverProperties;
     }
 }
