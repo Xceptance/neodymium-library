@@ -139,4 +139,9 @@ public class MultibrowserConfiguration
     {
         return testEnvironments.get(environment);
     }
+
+    public Map<String, BrowserConfigurationDto> getBrowserProfiles()
+    {
+        return browserProfiles;
+    }
 }
