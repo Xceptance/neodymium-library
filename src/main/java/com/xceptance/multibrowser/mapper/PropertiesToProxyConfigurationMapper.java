@@ -7,7 +7,6 @@ import com.xceptance.xlt.api.util.XltProperties;
 
 public class PropertiesToProxyConfigurationMapper implements IMapper<XltProperties, ProxyConfigurationDto>
 {
-    @Override
     public ProxyConfigurationDto toDto(XltProperties o)
     {
         String strProxyEnabled = o.getProperty(XltPropertyKey.PROXY, null);
@@ -28,7 +27,6 @@ public class PropertiesToProxyConfigurationMapper implements IMapper<XltProperti
         return null;
     }
 
-    @Override
     public XltProperties fromDto(ProxyConfigurationDto o)
     {
         throw new RuntimeException("Not implemented yet.");

@@ -41,7 +41,6 @@ public class PropertiesToBrowserConfigurationMapper implements IMapper<Map<Strin
 
     private static final String AUTOMATION_NAME = "automationName";
 
-    @Override
     public BrowserConfigurationDto toDto(Map<String, String> o)
     {
         BrowserConfigurationDto r = new BrowserConfigurationDto();
@@ -178,7 +177,6 @@ public class PropertiesToBrowserConfigurationMapper implements IMapper<Map<Strin
         return r;
     }
 
-    @Override
     public Map<String, String> fromDto(BrowserConfigurationDto o)
     {
         throw new RuntimeException("Not implemented yet.");
