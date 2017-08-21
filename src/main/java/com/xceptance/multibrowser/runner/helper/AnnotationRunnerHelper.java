@@ -36,6 +36,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import com.xceptance.multibrowser.annotation.TestTargets;
 import com.xceptance.multibrowser.configuration.DriverServerPath;
 import com.xceptance.multibrowser.configuration.MultibrowserConfiguration;
+import com.xceptance.multibrowser.configuration.TestEnvironment;
 import com.xceptance.multibrowser.configuration.WebDriverProperties;
 import com.xceptance.multibrowser.dto.BrowserConfigurationDto;
 import com.xceptance.multibrowser.dto.ProxyConfigurationDto;
@@ -247,14 +248,11 @@ public final class AnnotationRunnerHelper
         }
         else
         {
-            final XltProperties xltProperties = XltProperties.getInstance();
+            TestEnvironment testEnvironmentProperties = MultibrowserConfiguration.getIntance().getTestEnvironment(testEnvironment);
 
-            final Map<String, String> propertiesForEnvironment = xltProperties.getPropertiesForKey(XltPropertyKey.BROWSERPROFILE_TEST_ENVIRONMENT +
-                                                                                                   testEnvironment);
-
-            final String gridUsername = propertiesForEnvironment.get("username");
-            final String gridPassword = propertiesForEnvironment.get("password");
-            final String gridUrlString = propertiesForEnvironment.get("url");
+            final String gridUsername = testEnvironmentProperties.getUsername();
+            final String gridPassword = testEnvironmentProperties.getPassword();
+            final String gridUrlString = testEnvironmentProperties.getUrl();
             final URL gridUrl = new URL(gridUrlString);
 
             // establish connection to target website
