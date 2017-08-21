@@ -40,9 +40,7 @@ import com.xceptance.multibrowser.configuration.TestEnvironment;
 import com.xceptance.multibrowser.configuration.WebDriverProperties;
 import com.xceptance.multibrowser.dto.BrowserConfigurationDto;
 import com.xceptance.multibrowser.dto.ProxyConfigurationDto;
-import com.xceptance.multibrowser.mapper.PropertiesToBrowserConfigurationMapper;
 import com.xceptance.multibrowser.proxy.ProxyHttpClient;
-import com.xceptance.xlt.api.util.XltProperties;
 
 public final class AnnotationRunnerHelper
 {
@@ -260,45 +258,5 @@ public final class AnnotationRunnerHelper
         }
 
         return null;
-    }
-
-    public static Map<String, BrowserConfigurationDto> parseBrowserProperties(final XltProperties properties)
-    {
-        // Structur browserprofile.<nametag>.*
-
-        // property prefix for browser configurations
-        final String propertyKeyBrowsers = "browserprofile";
-
-        // get all properties with prefix browserprofile. they are then truncated to <nametag>.*
-        // holds all found browser configurations
-        Map<String, String> browserProperties = properties.getPropertiesForKey(propertyKeyBrowsers);
-
-        // a temporary list to hold all found browser tags
-        final List<String> browserTags = new ArrayList<String>();
-
-        // create a list of tags referencing browser configurations
-        for (final String key : browserProperties.keySet())
-        {
-            final String[] parts = key.split("\\.");
-            final String browserTag = parts[0];
-            if (!StringUtils.isEmpty(browserTag) && !browserTags.contains(browserTag))
-                browserTags.add(browserTag);
-        }
-
-        // map to hold all browser configurations. lookup via browser tag
-        final Map<String, BrowserConfigurationDto> browserConfigurations = new HashMap<String, BrowserConfigurationDto>();
-
-        // parse all browser properties and add them to the map
-        final PropertiesToBrowserConfigurationMapper mapper = new PropertiesToBrowserConfigurationMapper();
-        for (final String browserTag : browserTags)
-        {
-            browserProperties = properties.getPropertiesForKey(propertyKeyBrowsers + "." + browserTag);
-            browserProperties.put("browserTag", browserTag);
-
-            if (browserConfigurations.get(browserTag) == null)
-                browserConfigurations.put(browserTag, mapper.toDto(browserProperties));
-        }
-
-        return browserConfigurations;
     }
 }
