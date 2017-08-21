@@ -9,6 +9,10 @@ import org.aeonbits.owner.Config.Sources;
     })
 public interface ProxyConfiguration extends Config
 {
+    @Key("com.xceptance.xlt.proxy")
+    @DefaultValue("false")
+    public boolean useProxy();
+
     @Key("com.xceptance.xlt.proxy.host")
     public String getHost();
 
