@@ -14,6 +14,7 @@ public class ProxyHttpClient implements org.openqa.selenium.remote.http.HttpClie
         this.httpClient = httpClient;
     }
 
+    @Override
     public org.openqa.selenium.remote.http.HttpClient createClient(URL url)
     {
         return new ApacheHttpClient(httpClient, url);

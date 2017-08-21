@@ -8,6 +8,7 @@ import com.xceptance.multibrowser.runner.helper.XltPropertyKey;
 
 public class PropertiesToProxyConfigurationMapper implements IMapper<Properties, ProxyConfigurationDto>
 {
+    @Override
     public ProxyConfigurationDto toDto(Properties o)
     {
         String strProxyEnabled = o.getProperty(XltPropertyKey.PROXY, null);
@@ -28,6 +29,7 @@ public class PropertiesToProxyConfigurationMapper implements IMapper<Properties,
         return null;
     }
 
+    @Override
     public Properties fromDto(ProxyConfigurationDto o)
     {
         throw new RuntimeException("Not implemented yet.");
