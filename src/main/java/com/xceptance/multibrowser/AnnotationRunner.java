@@ -213,7 +213,7 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
         List<FrameworkMethod> methods = new LinkedList<>();
         try
         {
-            methods.add(new FrameworkMethod(AnnotationRunner.class.getMethod("teardown")));
+            methods.add(new FrameworkMethod(this.getClass().getMethod("teardown")));
         }
         catch (NoSuchMethodException | SecurityException e)
         {
