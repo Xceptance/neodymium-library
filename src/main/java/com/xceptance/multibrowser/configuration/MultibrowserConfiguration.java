@@ -87,7 +87,7 @@ public class MultibrowserConfiguration
 
             for (String subkey : subkeysForPrefix)
             {
-                String value = (String) browserProfileConfiguration.get(BROWSER_PROFILE_PREFIX + browserProfile + "." + subkey);
+                String value = (String) browserProfileProperties.get(BROWSER_PROFILE_PREFIX + browserProfile + "." + subkey);
                 browserProfileConfiguration.put(subkey, value);
             }
             browserProfiles.put(browserProfile, mapper.toDto(browserProfileConfiguration));
