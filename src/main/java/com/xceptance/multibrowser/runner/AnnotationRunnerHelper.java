@@ -33,7 +33,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import com.xceptance.multibrowser.annotation.TestTargets;
 import com.xceptance.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.multibrowser.configuration.DriverServerPath;
 import com.xceptance.multibrowser.configuration.MultibrowserConfiguration;

@@ -19,7 +19,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 import com.codeborne.selenide.WebDriverRunner;
-import com.xceptance.multibrowser.annotation.TestTargets;
 import com.xceptance.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.multibrowser.configuration.DriverServerPath;
 import com.xceptance.multibrowser.configuration.MultibrowserConfiguration;
