@@ -1,4 +1,4 @@
-package com.xceptance.multibrowser.runner;
+package com.xceptance.multibrowser;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

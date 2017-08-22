@@ -1,4 +1,4 @@
-package com.xceptance.multibrowser.runner;
+package com.xceptance.multibrowser;
 
 import java.io.File;
 import java.net.MalformedURLException;
