@@ -36,10 +36,10 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import com.xceptance.multibrowser.annotation.TestTargets;
 import com.xceptance.multibrowser.configuration.DriverServerPath;
 import com.xceptance.multibrowser.configuration.MultibrowserConfiguration;
+import com.xceptance.multibrowser.configuration.ProxyConfiguration;
 import com.xceptance.multibrowser.configuration.TestEnvironment;
 import com.xceptance.multibrowser.configuration.WebDriverProperties;
 import com.xceptance.multibrowser.dto.BrowserConfigurationDto;
-import com.xceptance.multibrowser.dto.ProxyConfigurationDto;
 import com.xceptance.multibrowser.proxy.ProxyHttpClient;
 
 public final class AnnotationRunnerHelper
@@ -71,8 +71,8 @@ public final class AnnotationRunnerHelper
      * @return {@link URL} to Selenium grid augmented with credentials
      * @throws MalformedURLException
      */
-    public static HttpCommandExecutor createGridExecutor(final ProxyConfigurationDto proxyConfig, final URL gridUrl,
-                                                         final String gridUsername, final String gridPassword)
+    public static HttpCommandExecutor createGridExecutor(final ProxyConfiguration proxyConfig, final URL gridUrl, final String gridUsername,
+                                                         final String gridPassword)
         throws MalformedURLException
     {
         // create a configuration for accessing target site via proxy (if a proxy is defined)
@@ -192,16 +192,15 @@ public final class AnnotationRunnerHelper
      * @return
      * @throws MalformedURLException
      */
-    public static WebDriver createWebdriver(final BrowserConfigurationDto config, final ProxyConfigurationDto proxyConfig)
-        throws MalformedURLException
+    public static WebDriver createWebdriver(final BrowserConfigurationDto config) throws MalformedURLException
     {
         final DesiredCapabilities capabilities = config.getCapabilities();
 
         final String testEnvironment = config.getTestEnvironment();
-
+        ProxyConfiguration proxyConfig = MultibrowserConfiguration.getIntance().getProxyConfiguration();
         if (StringUtils.isEmpty(testEnvironment) || "local".equalsIgnoreCase(testEnvironment))
         {
-            if (proxyConfig != null)
+            if (proxyConfig.useProxy())
             {
                 final String proxyHost = proxyConfig.getHost() + ":" + proxyConfig.getPort();
 
