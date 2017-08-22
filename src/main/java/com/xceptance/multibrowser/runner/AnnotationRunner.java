@@ -69,9 +69,9 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
         {
             // set browser window size
             AnnotationRunnerHelper.setBrowserWindowSize(config, driver);
-            // ((AbstractScriptTestCase) test).setWebDriver(driver);//TODO:
-            // ((AbstractScriptTestCase) test).setTestDataSet(frameworkMethod.getDataSet()); //TODO:
             WebDriverRunner.setWebDriver(driver);
+            // ((AbstractScriptTestCase) test).setTestDataSet(frameworkMethod.getDataSet()); //TODO:
+            
         }
         else
         {
@@ -217,8 +217,7 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
         }
         catch (NoSuchMethodException | SecurityException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
 
         statement = new RunAfters(statement, methods, this);
