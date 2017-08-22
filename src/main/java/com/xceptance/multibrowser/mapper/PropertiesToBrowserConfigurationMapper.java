@@ -8,9 +8,8 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.xceptance.multibrowser.dto.BrowserConfigurationDto;
-import com.xceptance.multibrowser.interfaces.IMapper;
 
-public class PropertiesToBrowserConfigurationMapper implements IMapper<Map<String, String>, BrowserConfigurationDto>
+public class PropertiesToBrowserConfigurationMapper
 {
     private static final String BROWSER = "browser";
 
@@ -41,7 +40,6 @@ public class PropertiesToBrowserConfigurationMapper implements IMapper<Map<Strin
 
     private static final String AUTOMATION_NAME = "automationName";
 
-    @Override
     public BrowserConfigurationDto toDto(Map<String, String> o)
     {
         BrowserConfigurationDto r = new BrowserConfigurationDto();
@@ -176,11 +174,5 @@ public class PropertiesToBrowserConfigurationMapper implements IMapper<Map<Strin
         r.setName(o.get("name"));
 
         return r;
-    }
-
-    @Override
-    public Map<String, String> fromDto(BrowserConfigurationDto o)
-    {
-        throw new RuntimeException("Not implemented yet.");
     }
 }
