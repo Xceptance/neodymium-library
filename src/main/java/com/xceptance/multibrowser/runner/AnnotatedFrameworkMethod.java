@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 
 import org.junit.runners.model.FrameworkMethod;
 
-import com.xceptance.multibrowser.dto.BrowserConfigurationDto;
+import com.xceptance.multibrowser.configuration.BrowserConfigurationDto;
 
 /**
  * A specialization of {@link FrameworkMethod}, which replaces the default method name with the provided name and the

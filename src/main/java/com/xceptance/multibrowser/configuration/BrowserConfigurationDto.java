@@ -1,4 +1,4 @@
-package com.xceptance.multibrowser.dto;
+package com.xceptance.multibrowser.configuration;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
 

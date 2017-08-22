@@ -1,4 +1,4 @@
-package com.xceptance.multibrowser.proxy;
+package com.xceptance.multibrowser.runner;
 
 import java.net.URL;
 

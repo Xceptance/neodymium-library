@@ -20,11 +20,10 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 import com.codeborne.selenide.WebDriverRunner;
 import com.xceptance.multibrowser.annotation.TestTargets;
+import com.xceptance.multibrowser.configuration.BrowserConfigurationDto;
 import com.xceptance.multibrowser.configuration.DriverServerPath;
 import com.xceptance.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.multibrowser.configuration.WebDriverProperties;
-import com.xceptance.multibrowser.dto.BrowserConfigurationDto;
-import com.xceptance.multibrowser.runner.helper.AnnotationRunnerHelper;
 
 /**
  * JUnit runner used to run testcases that are annotated with {@link TestTargets}. This class reads the annotation based

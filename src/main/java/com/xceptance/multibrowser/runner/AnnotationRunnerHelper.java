@@ -1,4 +1,4 @@
-package com.xceptance.multibrowser.runner.helper;
+package com.xceptance.multibrowser.runner;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -34,13 +34,12 @@ import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.xceptance.multibrowser.annotation.TestTargets;
+import com.xceptance.multibrowser.configuration.BrowserConfigurationDto;
 import com.xceptance.multibrowser.configuration.DriverServerPath;
 import com.xceptance.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.multibrowser.configuration.ProxyConfiguration;
 import com.xceptance.multibrowser.configuration.TestEnvironment;
 import com.xceptance.multibrowser.configuration.WebDriverProperties;
-import com.xceptance.multibrowser.dto.BrowserConfigurationDto;
-import com.xceptance.multibrowser.proxy.ProxyHttpClient;
 
 public final class AnnotationRunnerHelper
 {

@@ -1,4 +1,4 @@
-package com.xceptance.multibrowser.mapper;
+package com.xceptance.multibrowser.configuration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,8 +6,6 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
-
-import com.xceptance.multibrowser.dto.BrowserConfigurationDto;
 
 public class PropertiesToBrowserConfigurationMapper
 {

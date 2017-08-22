@@ -12,9 +12,6 @@ import java.util.Properties;
 import org.aeonbits.owner.ConfigFactory;
 import org.apache.commons.lang3.StringUtils;
 
-import com.xceptance.multibrowser.dto.BrowserConfigurationDto;
-import com.xceptance.multibrowser.mapper.PropertiesToBrowserConfigurationMapper;
-
 public class MultibrowserConfiguration
 {
     private static final String TEST_ENVIRONMENT_FILE = "./config/credentials.properties";
