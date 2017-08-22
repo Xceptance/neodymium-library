@@ -69,7 +69,7 @@ public final class AnnotationRunnerHelper
      * @return {@link URL} to Selenium grid augmented with credentials
      * @throws MalformedURLException
      */
-    public static HttpCommandExecutor createGridExecutor(final ProxyConfiguration proxyConfig, final URL gridUrl, final String gridUsername,
+    protected static HttpCommandExecutor createGridExecutor(final ProxyConfiguration proxyConfig, final URL gridUrl, final String gridUsername,
                                                          final String gridPassword)
         throws MalformedURLException
     {
@@ -120,7 +120,7 @@ public final class AnnotationRunnerHelper
      * @param config
      * @param driver
      */
-    public static void setBrowserWindowSize(final BrowserConfiguration config, final WebDriver driver)
+    protected static void setBrowserWindowSize(final BrowserConfiguration config, final WebDriver driver)
     {
         WebDriverProperties webDriverProperties = MultibrowserConfiguration.getIntance().getWebDriverProperties();
 
@@ -190,7 +190,7 @@ public final class AnnotationRunnerHelper
      * @return
      * @throws MalformedURLException
      */
-    public static WebDriver createWebdriver(final BrowserConfiguration config) throws MalformedURLException
+    protected static WebDriver createWebdriver(final BrowserConfiguration config) throws MalformedURLException
     {
         final DesiredCapabilities capabilities = config.getCapabilities();
 
