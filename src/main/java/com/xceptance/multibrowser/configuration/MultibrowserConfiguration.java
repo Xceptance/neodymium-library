@@ -88,7 +88,7 @@ public class MultibrowserConfiguration {
 						.get(BROWSER_PROFILE_PREFIX + browserProfile + "." + subkey);
 				browserProfileConfiguration.put(subkey, value);
 			}
-			browserProfiles.put(browserProfile, mapper.toDto(browserProfileConfiguration));
+			browserProfiles.put(browserProfile, mapper.map(browserProfileConfiguration));
 		}
 	}
 

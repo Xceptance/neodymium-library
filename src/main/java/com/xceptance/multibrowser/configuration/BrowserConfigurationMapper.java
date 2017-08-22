@@ -38,7 +38,7 @@ public class BrowserConfigurationMapper
 
     private static final String AUTOMATION_NAME = "automationName";
 
-    public BrowserConfiguration toDto(Map<String, String> o)
+    public BrowserConfiguration map(Map<String, String> o)
     {
         BrowserConfiguration r = new BrowserConfiguration();
         DesiredCapabilities capabilities;
