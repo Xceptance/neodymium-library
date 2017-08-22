@@ -19,7 +19,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 import com.codeborne.selenide.WebDriverRunner;
-import com.xceptance.multibrowser.AbstractAnnotatedScriptTestCase;
 import com.xceptance.multibrowser.annotation.TestTargets;
 import com.xceptance.multibrowser.configuration.DriverServerPath;
 import com.xceptance.multibrowser.configuration.MultibrowserConfiguration;
@@ -28,9 +27,8 @@ import com.xceptance.multibrowser.dto.BrowserConfigurationDto;
 import com.xceptance.multibrowser.runner.helper.AnnotationRunnerHelper;
 
 /**
- * JUnit runner used to run testcases that inherit from {@link AbstractAnnotatedScriptTestCase}. This class reads the
- * annotation based configuration of {@link TestTarget} and executes the testcase multiple-times with different
- * configurations.
+ * JUnit runner used to run testcases that are annotated with {@link TestTargets}. This class reads the annotation based
+ * configuration of {@link TestTarget} and executes the testcase multiple-times with different configurations.
  * 
  * @author m.kaufmann
  * @see {@link AbstractAnnotatedScriptTestCase}, {@link TestTarget}
