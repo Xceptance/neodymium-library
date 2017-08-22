@@ -26,7 +26,7 @@ public class BrowserConfiguration
         return browserTag;
     }
 
-    public void setConfigTag(String configTag)
+    protected void setConfigTag(String configTag)
     {
         this.browserTag = configTag;
     }
@@ -36,7 +36,7 @@ public class BrowserConfiguration
         return name;
     }
 
-    public void setName(String name)
+    protected void setName(String name)
     {
         this.name = name;
     }
@@ -46,7 +46,7 @@ public class BrowserConfiguration
         return capabilities;
     }
 
-    public void setCapabilities(DesiredCapabilities capabilities)
+    protected void setCapabilities(DesiredCapabilities capabilities)
     {
         this.capabilities = capabilities;
     }
@@ -56,7 +56,7 @@ public class BrowserConfiguration
         return testEnvironment;
     }
 
-    public void setTestEnvironment(String testEnvironment)
+    protected void setTestEnvironment(String testEnvironment)
     {
         this.testEnvironment = testEnvironment;
     }
@@ -66,7 +66,7 @@ public class BrowserConfiguration
         return browserWidth;
     }
 
-    public void setBrowserWidth(int browserWidth)
+    protected void setBrowserWidth(int browserWidth)
     {
         this.browserWidth = browserWidth;
     }
@@ -76,7 +76,7 @@ public class BrowserConfiguration
         return browserHeight;
     }
 
-    public void setBrowserHeight(int browserHeight)
+    protected void setBrowserHeight(int browserHeight)
     {
         this.browserHeight = browserHeight;
     }
