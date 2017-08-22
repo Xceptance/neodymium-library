@@ -20,7 +20,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 import com.codeborne.selenide.WebDriverRunner;
 import com.xceptance.multibrowser.annotation.TestTargets;
-import com.xceptance.multibrowser.configuration.BrowserConfigurationDto;
+import com.xceptance.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.multibrowser.configuration.DriverServerPath;
 import com.xceptance.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.multibrowser.configuration.WebDriverProperties;
@@ -55,7 +55,7 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
         final AnnotatedFrameworkMethod frameworkMethod = (AnnotatedFrameworkMethod) method;
 
         // get the browser configuration for this testcase
-        final BrowserConfigurationDto config = frameworkMethod.getBrowserConfiguration();
+        final BrowserConfiguration config = frameworkMethod.getBrowserConfiguration();
 
         driver = null;
         try
@@ -90,7 +90,7 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
         DriverServerPath driverServerPath = multibrowserConfiguration.getDriverServerPath();
         WebDriverProperties webDriverProperties = multibrowserConfiguration.getWebDriverProperties();
 
-        final Map<String, BrowserConfigurationDto> parsedBrowserProperties = multibrowserConfiguration.getBrowserProfiles();
+        final Map<String, BrowserConfiguration> parsedBrowserProperties = multibrowserConfiguration.getBrowserProfiles();
 
         final String ieDriverPath = driverServerPath.getIeDriverPath();
         final String chromeDriverPath = driverServerPath.getChromeDriverPath();
@@ -147,7 +147,7 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
                         continue;
                     }
 
-                    final BrowserConfigurationDto foundBrowserConfiguration = parsedBrowserProperties.get(target);
+                    final BrowserConfiguration foundBrowserConfiguration = parsedBrowserProperties.get(target);
                     if (foundBrowserConfiguration == null)
                     {
                         throw new IllegalArgumentException("Can not find browser configuration with tag: " + target);

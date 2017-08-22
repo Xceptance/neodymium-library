@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-public class PropertiesToBrowserConfigurationMapper
+public class BrowserConfigurationMapper
 {
     private static final String BROWSER = "browser";
 
@@ -38,9 +38,9 @@ public class PropertiesToBrowserConfigurationMapper
 
     private static final String AUTOMATION_NAME = "automationName";
 
-    public BrowserConfigurationDto toDto(Map<String, String> o)
+    public BrowserConfiguration toDto(Map<String, String> o)
     {
-        BrowserConfigurationDto r = new BrowserConfigurationDto();
+        BrowserConfiguration r = new BrowserConfiguration();
         DesiredCapabilities capabilities;
 
         String emulatedBrowser = o.get(BROWSER);

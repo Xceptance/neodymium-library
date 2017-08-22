@@ -7,7 +7,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  * 
  * @author m.kaufmann
  */
-public class BrowserConfigurationDto
+public class BrowserConfiguration
 {
     private String browserTag;
 

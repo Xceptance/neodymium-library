@@ -34,7 +34,7 @@ import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.xceptance.multibrowser.annotation.TestTargets;
-import com.xceptance.multibrowser.configuration.BrowserConfigurationDto;
+import com.xceptance.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.multibrowser.configuration.DriverServerPath;
 import com.xceptance.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.multibrowser.configuration.ProxyConfiguration;
@@ -121,7 +121,7 @@ public final class AnnotationRunnerHelper
      * @param config
      * @param driver
      */
-    public static void setBrowserWindowSize(final BrowserConfigurationDto config, final WebDriver driver)
+    public static void setBrowserWindowSize(final BrowserConfiguration config, final WebDriver driver)
     {
         WebDriverProperties webDriverProperties = MultibrowserConfiguration.getIntance().getWebDriverProperties();
 
@@ -191,7 +191,7 @@ public final class AnnotationRunnerHelper
      * @return
      * @throws MalformedURLException
      */
-    public static WebDriver createWebdriver(final BrowserConfigurationDto config) throws MalformedURLException
+    public static WebDriver createWebdriver(final BrowserConfiguration config) throws MalformedURLException
     {
         final DesiredCapabilities capabilities = config.getCapabilities();
 

@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 
 import org.junit.runners.model.FrameworkMethod;
 
-import com.xceptance.multibrowser.configuration.BrowserConfigurationDto;
+import com.xceptance.multibrowser.configuration.BrowserConfiguration;
 
 /**
  * A specialization of {@link FrameworkMethod}, which replaces the default method name with the provided name and the
@@ -15,7 +15,7 @@ public class AnnotatedFrameworkMethod extends FrameworkMethod
     /**
      * The browser configuration to use.
      */
-    private final BrowserConfigurationDto browserConfiguration;
+    private final BrowserConfiguration browserConfiguration;
 
     /**
      * The new method name.
@@ -34,7 +34,7 @@ public class AnnotatedFrameworkMethod extends FrameworkMethod
      * @param dataSet
      *            the test data set
      */
-    public AnnotatedFrameworkMethod(final Method method, final String testMethodName, final BrowserConfigurationDto browserConfiguration)
+    public AnnotatedFrameworkMethod(final Method method, final String testMethodName, final BrowserConfiguration browserConfiguration)
     {
         super(method);
 
@@ -69,7 +69,7 @@ public class AnnotatedFrameworkMethod extends FrameworkMethod
         return System.identityHashCode(this);
     }
 
-    public BrowserConfigurationDto getBrowserConfiguration()
+    public BrowserConfiguration getBrowserConfiguration()
     {
         return browserConfiguration;
     }

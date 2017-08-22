@@ -29,7 +29,7 @@ public class MultibrowserConfiguration {
 
 	private Map<String, TestEnvironment> testEnvironments;
 
-	private Map<String, BrowserConfigurationDto> browserProfiles;
+	private Map<String, BrowserConfiguration> browserProfiles;
 
 	private Properties testEnvironmentProperties;
 
@@ -73,10 +73,10 @@ public class MultibrowserConfiguration {
 	}
 
 	private void parseBrowserProfiles() {
-		browserProfiles = new LinkedHashMap<String, BrowserConfigurationDto>();
+		browserProfiles = new LinkedHashMap<String, BrowserConfiguration>();
 		List<String> browserProfileKeys = getSubkeysForPrefix(browserProfileProperties, BROWSER_PROFILE_PREFIX);
 
-		PropertiesToBrowserConfigurationMapper mapper = new PropertiesToBrowserConfigurationMapper();
+		BrowserConfigurationMapper mapper = new BrowserConfigurationMapper();
 
 		for (String browserProfile : browserProfileKeys) {
 			List<String> subkeysForPrefix = getSubkeysForPrefix(browserProfileProperties,
@@ -132,7 +132,7 @@ public class MultibrowserConfiguration {
 		return testEnvironments.get(environment);
 	}
 
-	public Map<String, BrowserConfigurationDto> getBrowserProfiles() {
+	public Map<String, BrowserConfiguration> getBrowserProfiles() {
 		return browserProfiles;
 	}
 
