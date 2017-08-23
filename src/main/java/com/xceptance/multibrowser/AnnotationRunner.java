@@ -226,6 +226,9 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
 
     public void teardown()
     {
-        driver.quit();
+        if (!MultibrowserConfiguration.getIntance().getWebDriverProperties().keepBrowserOpen())
+        {
+            driver.quit();
+        }
     }
 }

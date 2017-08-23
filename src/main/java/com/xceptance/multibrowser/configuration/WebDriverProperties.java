@@ -22,4 +22,8 @@ public interface WebDriverProperties extends Config
 
     @Key("xlt.webDriver.reuseDriver")
     public boolean reuseWebDriver();
+
+    @Key("xlt.webDriver.keepBrowserOpen")
+    @DefaultValue("false")
+    public boolean keepBrowserOpen();
 }
