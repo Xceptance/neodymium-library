@@ -71,7 +71,7 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
             AnnotationRunnerHelper.setBrowserWindowSize(config, driver);
             WebDriverRunner.setWebDriver(driver);
             // ((AbstractScriptTestCase) test).setTestDataSet(frameworkMethod.getDataSet()); //TODO:
-            
+
         }
         else
         {
@@ -217,7 +217,7 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
         }
         catch (NoSuchMethodException | SecurityException e)
         {
-           throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
 
         statement = new RunAfters(statement, methods, this);

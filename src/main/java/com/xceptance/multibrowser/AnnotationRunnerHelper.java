@@ -69,8 +69,8 @@ public final class AnnotationRunnerHelper
      * @return {@link URL} to Selenium grid augmented with credentials
      * @throws MalformedURLException
      */
-    protected static HttpCommandExecutor createGridExecutor(final ProxyConfiguration proxyConfig, final URL gridUrl, final String gridUsername,
-                                                         final String gridPassword)
+    protected static HttpCommandExecutor createGridExecutor(final ProxyConfiguration proxyConfig, final URL gridUrl,
+                                                            final String gridUsername, final String gridPassword)
         throws MalformedURLException
     {
         // create a configuration for accessing target site via proxy (if a proxy is defined)
