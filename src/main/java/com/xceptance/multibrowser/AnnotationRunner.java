@@ -232,7 +232,7 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
 
     public void teardown()
     {
-        if (!MultibrowserConfiguration.getIntance().getWebDriverProperties().keepBrowserOpen())
+        if (driver != null && !MultibrowserConfiguration.getIntance().getWebDriverProperties().keepBrowserOpen())
         {
             driver.quit();
         }
