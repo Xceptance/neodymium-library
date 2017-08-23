@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
+import org.junit.internal.runners.statements.Fail;
 import org.junit.internal.runners.statements.RunAfters;
 import org.junit.runner.Description;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -199,9 +200,15 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
     @Override
     protected Statement methodInvoker(final FrameworkMethod method, final Object test)
     {
-        // prepare the test instance before executing it
-        setUpTest(method, test);
-
+        try
+        {
+            // prepare the test instance before executing it
+            setUpTest(method, test);
+        }
+        catch (Exception e)
+        {
+            return new Fail(e);
+        }
         // the real job is done here
         return super.methodInvoker(method, test);
     }
