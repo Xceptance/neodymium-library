@@ -226,6 +226,6 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
 
     public void teardown()
     {
-        driver.close();
+        driver.quit();
     }
 }
