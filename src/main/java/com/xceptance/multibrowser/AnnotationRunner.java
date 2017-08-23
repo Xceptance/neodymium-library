@@ -3,7 +3,6 @@ package com.xceptance.multibrowser;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +35,7 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
     /**
      * The JUnit children of this runner.
      */
-    private final List<FrameworkMethod> methods = new ArrayList<FrameworkMethod>();
+    private final List<FrameworkMethod> methods = new LinkedList<FrameworkMethod>();
 
     private WebDriver driver;
 

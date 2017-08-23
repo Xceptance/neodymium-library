@@ -3,8 +3,8 @@ package com.xceptance.multibrowser;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -42,11 +42,11 @@ import com.xceptance.multibrowser.configuration.WebDriverProperties;
 
 public final class AnnotationRunnerHelper
 {
-    private static List<String> chromeBrowsers = new ArrayList<String>();
+    private static List<String> chromeBrowsers = new LinkedList<String>();
 
-    private static List<String> firefoxBrowsers = new ArrayList<String>();
+    private static List<String> firefoxBrowsers = new LinkedList<String>();
 
-    private static List<String> internetExplorerBrowsers = new ArrayList<String>();
+    private static List<String> internetExplorerBrowsers = new LinkedList<String>();
 
     static
     {
