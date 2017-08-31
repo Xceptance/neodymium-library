@@ -23,13 +23,13 @@ import com.xceptance.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.multibrowser.configuration.WebDriverProperties;
 
 /**
- * JUnit runner used to run testcases that are annotated with {@link TestTargets}. This class reads the annotation based
- * configuration of {@link TestTarget} and executes the testcase multiple-times with different configurations.
+ * JUnit runner used to run testcases that are annotated with {@link Browser}. This class reads the annotation based
+ * configuration of {@link Browser} and executes the testcase multiple-times with different configurations.
  * 
  * @author m.kaufmann
- * @see {@link AbstractAnnotatedScriptTestCase}, {@link TestTarget}
+ * @see {@link Browser}
  */
-public class AnnotationRunner extends ParentRunner<Runner>
+public class BrowserRunner extends ParentRunner<Runner>
 {
     /**
      * The JUnit children of this runner.
@@ -53,7 +53,7 @@ public class AnnotationRunner extends ParentRunner<Runner>
     protected void setUpTest(final FrameworkMethod method, final Object test)
     {
         // set the test data set at the test instance
-        final AnnotatedFrameworkMethod frameworkMethod = (AnnotatedFrameworkMethod) method;
+        final BrowserFrameworkMethod frameworkMethod = (BrowserFrameworkMethod) method;
 
         // get the browser configuration for this testcase
         final BrowserConfiguration config = frameworkMethod.getBrowserConfiguration();
@@ -61,7 +61,7 @@ public class AnnotationRunner extends ParentRunner<Runner>
         driver = null;
         try
         {
-            driver = AnnotationRunnerHelper.createWebdriver(config);
+            driver = BrowserRunnerHelper.createWebdriver(config);
         }
         catch (final MalformedURLException e)
         {
@@ -70,7 +70,7 @@ public class AnnotationRunner extends ParentRunner<Runner>
         if (driver != null)
         {
             // set browser window size
-            AnnotationRunnerHelper.setBrowserWindowSize(config, driver);
+            BrowserRunnerHelper.setBrowserWindowSize(config, driver);
             WebDriverRunner.setWebDriver(driver);
             // ((AbstractScriptTestCase) test).setTestDataSet(frameworkMethod.getDataSet()); //TODO:
 
@@ -95,7 +95,7 @@ public class AnnotationRunner extends ParentRunner<Runner>
         driver = null;
         try
         {
-            driver = AnnotationRunnerHelper.createWebdriver(browserConfig);
+            driver = BrowserRunnerHelper.createWebdriver(browserConfig);
         }
         catch (final MalformedURLException e)
         {
@@ -104,7 +104,7 @@ public class AnnotationRunner extends ParentRunner<Runner>
         if (driver != null)
         {
             // set browser window size
-            AnnotationRunnerHelper.setBrowserWindowSize(browserConfig, driver);
+            BrowserRunnerHelper.setBrowserWindowSize(browserConfig, driver);
             WebDriverRunner.setWebDriver(driver);
             // ((AbstractScriptTestCase) test).setTestDataSet(frameworkMethod.getDataSet()); //TODO:
 
@@ -125,14 +125,14 @@ public class AnnotationRunner extends ParentRunner<Runner>
         notifier.fireTestFinished(getDescription());
     }
 
-    private AnnotationRunner(Class<?> testCaseClass, BrowserConfiguration browserConfig) throws InitializationError
+    private BrowserRunner(Class<?> testCaseClass, BrowserConfiguration browserConfig) throws InitializationError
     {
         super(testCaseClass);
         this.testCaseClass = testCaseClass;
         this.browserConfig = browserConfig;
     }
 
-    public AnnotationRunner(final Class<?> testCaseClass) throws Throwable
+    public BrowserRunner(final Class<?> testCaseClass) throws Throwable
     {
         super(testCaseClass);
 
@@ -183,12 +183,12 @@ public class AnnotationRunner extends ParentRunner<Runner>
         final Annotation[] annotations = testCaseClass.getAnnotations();
         for (final Annotation annotation : annotations)
         {
-            // only check TestTargets annotation with a list of nested TestTarget annotations
-            if (annotation instanceof TestTargets)
+            // only check Browser annotation with a list browser configuration tags
+            if (annotation instanceof Browser)
             {
                 foundTargetsAnnotation = true;
 
-                final String[] targets = ((TestTargets) annotation).value();
+                final String[] targets = ((Browser) annotation).value();
 
                 for (final String target : targets)
                 {
@@ -210,7 +210,7 @@ public class AnnotationRunner extends ParentRunner<Runner>
                     // final Method testMethod = frameworkMethod.getMethod();
 
                     // create the JUnit children
-                    methods.add(new AnnotationRunner(testCaseClass, foundBrowserConfiguration));
+                    methods.add(new BrowserRunner(testCaseClass, foundBrowserConfiguration));
                     // }
                 }
             }
@@ -218,7 +218,7 @@ public class AnnotationRunner extends ParentRunner<Runner>
 
         if (!foundTargetsAnnotation)
             throw new IllegalArgumentException("The class (" + testCaseClass.getSimpleName() +
-                                               ") does not have a required TestTargets annotation.");
+                                               ") does not have a required Browser annotation.");
     }
 
     /**
@@ -236,7 +236,7 @@ public class AnnotationRunner extends ParentRunner<Runner>
     @Override
     public Description getDescription()
     {
-        Description decription = Description.createTestDescription(testCaseClass.getName(), browserConfig.getName(), null);
+        // Description decription = Description.createTestDescription(testCaseClass.getName(), browserConfig.getName(), null);
 
         return Description.createTestDescription(browserConfig.getName(), "");
     }

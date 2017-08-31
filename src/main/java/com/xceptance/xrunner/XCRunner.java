@@ -14,8 +14,8 @@ import org.junit.runners.ParentRunner;
 import org.junit.runners.model.RunnerBuilder;
 import org.junit.runners.model.TestClass;
 
-import com.xceptance.multibrowser.AnnotationRunner;
-import com.xceptance.multibrowser.TestTargets;
+import com.xceptance.multibrowser.Browser;
+import com.xceptance.multibrowser.BrowserRunner;
 
 public class XCRunner extends Runner
 {
@@ -30,10 +30,10 @@ public class XCRunner extends Runner
         this.testClass = new TestClass(testClass);
         List<Runner> runners = new LinkedList<>();
         // lookup multi-browser configuration
-        TestTargets testTargets = testClass.getAnnotation(TestTargets.class);
-        if (testTargets != null)
+        Browser browser = testClass.getAnnotation(Browser.class);
+        if (browser != null)
         {
-            runners.add(new AnnotationRunner(testClass));
+            runners.add(new BrowserRunner(testClass));
         }
 
         // scan for JUnit parameters

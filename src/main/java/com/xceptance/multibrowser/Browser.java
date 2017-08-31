@@ -8,14 +8,14 @@ import java.lang.annotation.Target;
 /**
  * This annotation is used in context of XLT script test cases.
  * <p>
- * Annotate a class with {@link TestTargets} and add as annotation value a list of test targets. These targets refer to
+ * Annotate a class with {@link Browser} and add as annotation value a list of test targets. These targets refer to
  * browserprofiles (browsertag) that are configured in browser.properties located in config folder.
  * 
  * @author m.kaufmann
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface TestTargets
+public @interface Browser
 {
     String[] value();
 }
