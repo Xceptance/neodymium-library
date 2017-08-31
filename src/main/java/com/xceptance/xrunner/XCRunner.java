@@ -24,12 +24,11 @@ public class XCRunner extends Runner
 
     private TestClass testClass;
 
-    // private Class<?> testClass;
-
     public XCRunner(Class<?> testClass, RunnerBuilder rb) throws Throwable
     {
         this.testClass = new TestClass(testClass);
         List<Runner> runners = new LinkedList<>();
+
         // lookup multi-browser configuration
         Browser browser = testClass.getAnnotation(Browser.class);
         if (browser != null)
@@ -48,7 +47,7 @@ public class XCRunner extends Runner
         }
 
         doMagic(runners);
-        Runner lastVectorRunner = vectors.get(vectors.size() - 1).get(0);
+        Runner lastVectorRunner = (vectors.size() > 0) ? vectors.get(vectors.size() - 1).get(0) : null;
         if (!(lastVectorRunner instanceof BlockJUnit4ClassRunner))
         {
             // the last vector does not contain a runner that would run @Test annotated methods
