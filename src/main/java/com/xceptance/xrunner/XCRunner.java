@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.junit.runners.ParentRunner;
@@ -47,6 +48,20 @@ public class XCRunner extends Runner
         }
 
         doMagic(runners);
+        Runner lastVectorRunner = vectors.get(vectors.size() - 1).get(0);
+        if (!(lastVectorRunner instanceof BlockJUnit4ClassRunner))
+        {
+            // the last vector does not contain a runner that would run @Test annotated methods
+            // we have to build a new vector that contains those runners
+            // List<Runner> methodVector = new LinkedList<>();
+            // List<FrameworkMethod> annotatedMethods = this.testClass.getAnnotatedMethods(Test.class);
+            // for (FrameworkMethod method : annotatedMethods) {
+            // )
+            // }
+            List<Runner> methodVector = new LinkedList<>();
+            methodVector.add(new BlockJUnit4ClassRunner(testClass));
+            vectors.add(methodVector);
+        }
     }
 
     private void doMagic(List<Runner> runners)
