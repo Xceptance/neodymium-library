@@ -236,8 +236,6 @@ public class BrowserRunner extends ParentRunner<Runner>
     @Override
     public Description getDescription()
     {
-        // Description decription = Description.createTestDescription(testCaseClass.getName(), browserConfig.getName(), null);
-
         return Description.createTestDescription(browserConfig.getName(), "");
     }
 
