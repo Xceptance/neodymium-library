@@ -12,6 +12,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.junit.runners.ParentRunner;
+import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.RunnerBuilder;
 import org.junit.runners.model.TestClass;
 
@@ -24,53 +25,56 @@ public class XCRunner extends Runner
 
     private TestClass testClass;
 
-    public XCRunner(Class<?> testClass, RunnerBuilder rb) throws Throwable
+    public XCRunner(Class<?> testKlass, RunnerBuilder rb) throws Throwable
     {
-        this.testClass = new TestClass(testClass);
+        testClass = new TestClass(testKlass);
         List<Runner> runners = new LinkedList<>();
 
-        // lookup multi-browser configuration
+        // find test vectors
+        // scan for Browser and Parameters annotation
+        // later on we could add handler for any annotation that should influence test run
+
+        // lookup Browser annotation
         Browser browser = testClass.getAnnotation(Browser.class);
         if (browser != null)
         {
-            runners.add(new BrowserRunner(testClass));
+            runners.add(new BrowserRunner(testKlass));
         }
 
-        // scan for JUnit parameters
-        for (Method method : testClass.getMethods())
+        // scan for JUnit Parameters
+
+        List<FrameworkMethod> parameterMethods = testClass.getAnnotatedMethods(Parameters.class);
+        if (parameterMethods.size() > 0)
         {
-            Parameters parameters = method.getAnnotation(Parameters.class);
-            if (parameters != null)
-            {
-                runners.add(new Parameterized(testClass));
-            }
+            runners.add(new Parameterized(testKlass));
         }
 
+        // collect children of ParentRunner sub classes
         doMagic(runners);
+
+        // check for existence of method runners
         Runner lastVectorRunner = (vectors.size() > 0) ? vectors.get(vectors.size() - 1).get(0) : null;
         if (!(lastVectorRunner instanceof BlockJUnit4ClassRunner))
         {
             // the last vector does not contain a runner that would run @Test annotated methods
             // we have to build a new vector that contains those runners
-            // List<Runner> methodVector = new LinkedList<>();
-            // List<FrameworkMethod> annotatedMethods = this.testClass.getAnnotatedMethods(Test.class);
-            // for (FrameworkMethod method : annotatedMethods) {
-            // )
-            // }
             List<Runner> methodVector = new LinkedList<>();
-            methodVector.add(new BlockJUnit4ClassRunner(testClass));
+            methodVector.add(new BlockJUnit4ClassRunner(testKlass));
             vectors.add(methodVector);
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void doMagic(List<Runner> runners)
         throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {
+        // due to the mostly used protected modifier of getChildren method we have to do some magic here
+
         for (Runner runner : runners)
         {
             if (runner instanceof ParentRunner<?>)
             {
-                Method m = runner.getClass().getDeclaredMethod("getChildren", null);
+                Method m = runner.getClass().getDeclaredMethod("getChildren");
                 if (m.getName().equals("getChildren"))
                 {
                     if (!m.isAccessible())
@@ -113,7 +117,6 @@ public class XCRunner extends Runner
     @Override
     public void run(RunNotifier notifier)
     {
-        System.out.println("run: " + notifier);
         recursive_run(notifier, vectors, 0);
     }
 
