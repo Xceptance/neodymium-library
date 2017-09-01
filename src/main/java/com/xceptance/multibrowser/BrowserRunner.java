@@ -225,7 +225,7 @@ public class BrowserRunner extends ParentRunner<Runner>
      * {@inheritDoc}
      */
     @Override
-    protected List<Runner> getChildren()
+    public List<Runner> getChildren()
     {
         return methods;
     }
