@@ -296,4 +296,13 @@ public class BrowserRunner extends ParentRunner<Runner>
         // TODO Auto-generated method stub
         System.out.println("run annotation child");
     }
+
+    /**
+     * Returns a name used to describe this Runner
+     */
+    @Override
+    public String getName()
+    {
+        return browserConfig.getName();
+    }
 }
