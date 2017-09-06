@@ -34,7 +34,7 @@ public class BrowserRunner extends ParentRunner<Runner>
     /**
      * The JUnit children of this runner.
      */
-    private final List<Runner> methods = new LinkedList<Runner>();
+    private final List<Runner> browser = new LinkedList<Runner>();
 
     private WebDriver driver;
 
@@ -210,7 +210,7 @@ public class BrowserRunner extends ParentRunner<Runner>
                     // final Method testMethod = frameworkMethod.getMethod();
 
                     // create the JUnit children
-                    methods.add(new BrowserRunner(testCaseClass, foundBrowserConfiguration));
+                    browser.add(new BrowserRunner(testCaseClass, foundBrowserConfiguration));
                     // }
                 }
             }
@@ -227,7 +227,7 @@ public class BrowserRunner extends ParentRunner<Runner>
     @Override
     public List<Runner> getChildren()
     {
-        return methods;
+        return browser;
     }
 
     /**
