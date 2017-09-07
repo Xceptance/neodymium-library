@@ -282,7 +282,7 @@ public class XCRunner extends Runner
             {
                 if (runner instanceof BrowserRunner)
                 {
-                    // remember browser runner to close the webriver after test
+                    // remember browser runner to close the web driver after test
                     browserRunner = (BrowserRunner) runner;
                 }
                 else if (runner instanceof BlockJUnit4ClassRunner)
