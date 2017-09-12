@@ -110,6 +110,10 @@ public class XCRunner extends Runner
                 {
                     BlockJUnit4ClassRunner blockRunner = (BlockJUnit4ClassRunner) runner;
                     displayNames.add(blockRunner.getDescription().getDisplayName());
+                    // for (Description childDescription : blockRunner.getDescription().getChildren())
+                    // {
+                    // displayNames.add(childDescription.getDisplayName());
+                    // }
                 }
                 else
                 {
