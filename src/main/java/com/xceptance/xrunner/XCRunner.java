@@ -1,10 +1,13 @@
 package com.xceptance.xrunner;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
@@ -44,6 +47,8 @@ public class XCRunner extends Runner
             runners.add(new BrowserRunner(testKlass));
         }
 
+        // setFinalStatic(Parameterized.class.getDeclaredField("DEFAULT_FACTORY"), new EvilFactory());
+
         // scan for JUnit Parameters
         List<FrameworkMethod> parameterMethods = testClass.getAnnotatedMethods(Parameters.class);
         if (parameterMethods.size() > 0)
@@ -56,18 +61,34 @@ public class XCRunner extends Runner
 
         // check for existence of method runners
         Runner lastVectorRunner = (vectors.size() > 0) ? vectors.get(vectors.size() - 1).get(0) : null;
-        if (!(lastVectorRunner instanceof BlockJUnit4ClassRunner))
+        if (lastVectorRunner instanceof XCParameterRunner)
         {
+            XCParameterRunner pr = (XCParameterRunner) lastVectorRunner;
             // the last vector does not contain a runner that would run @Test annotated methods
             // we have to build a new vector that contains those runners
             // runners.add(new BlockJUnit4ClassRunner(testKlass));
+
             List<Runner> methodVector = new LinkedList<>();
-            methodVector.add(new BlockJUnit4ClassRunner(testKlass));
+            for (FrameworkMethod method : testClass.getAnnotatedMethods(Test.class))
+            {
+                methodVector.add(new XCMethodRunner(testKlass, method));
+            }
             vectors.add(methodVector);
         }
 
         testRunner = buildTestRunnerLists(vectors);
         testDescription = createTestDescription(testRunner, testClass);
+    }
+
+    private void setFinalStatic(Field field, Object newValue) throws Exception
+    {
+        field.setAccessible(true);
+
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
+        field.set(null, newValue);
     }
 
     private Description createTestDescription(List<List<Runner>> testRunner, TestClass testClass)
@@ -81,13 +102,14 @@ public class XCRunner extends Runner
             {
                 Description runnerDescription = runner.getDescription();
 
-                if (runner instanceof BlockJUnit4ClassRunner)
+                if (runner instanceof XCParameterRunner)
+                {
+                    displayNames.add(((XCParameterRunner) runner).getName());
+                }
+                else if (runner instanceof BlockJUnit4ClassRunner)
                 {
                     BlockJUnit4ClassRunner blockRunner = (BlockJUnit4ClassRunner) runner;
-                    for (Description childDescription : blockRunner.getDescription().getChildren())
-                    {
-                        displayNames.add(childDescription.getDisplayName());
-                    }
+                    displayNames.add(blockRunner.getDescription().getDisplayName());
                 }
                 else
                 {
@@ -107,21 +129,11 @@ public class XCRunner extends Runner
     {
 
         List<List<Runner>> runner = new LinkedList<>();
+        runner.add(new LinkedList<>());
 
-        List<Runner> initialVector = vectors.get(0);
-
-        // create the initial list of test runners
-        List<Runner> newList;
-        for (Runner r : initialVector)
-        {
-            newList = new LinkedList<>();
-            newList.add(r);
-            runner.add(newList);
-        }
-
-        // iterate over vectors between initial vector and last vector. Last vector should only consist of
-        // BlockJUnit4ClassRunner
-        for (int i = 1; i < vectors.size(); i++)
+        // iterate over all vectors to build the cross product . Last vector should only consist of
+        // method runners
+        for (int i = 0; i < vectors.size(); i++)
         {
             List<List<Runner>> newTestRunners = new LinkedList<>();
             for (Runner r : vectors.get(i))
@@ -174,6 +186,79 @@ public class XCRunner extends Runner
         }
     }
 
+    @Override
+    public void run(RunNotifier notifier)
+    {
+        for (int i = 0; i < testRunner.size(); i++)
+        {
+            List<Runner> runners = testRunner.get(i);
+            Description description = testDescription.getChildren().get(i);
+
+            Object classInstance;
+            try
+            {
+                classInstance = testClass.getOnlyConstructor().newInstance();
+            }
+            catch (Exception e)
+            {
+                throw new RuntimeException(e);
+            }
+
+            BrowserRunner browserRunner = null;
+            notifier.fireTestStarted(description);
+            for (Runner runner : runners)
+            {
+                if (runner instanceof BrowserRunner)
+                {
+                    // remember browser runner to close the web driver after test
+                    browserRunner = (BrowserRunner) runner;
+                }
+
+                if (runner instanceof ITestClassInjector)
+                {
+                    ((ITestClassInjector) runner).setTestClass(classInstance);
+                }
+
+                runner.run(notifier);
+            }
+            if (browserRunner != null)
+            {
+                browserRunner.teardown();
+            }
+            notifier.fireTestFinished(description);
+        }
+    }
+
+    @Override
+    public Description getDescription()
+    {
+        return testDescription;
+    }
+
+    // private Description recursive_describe_new(Description description, List<List<Runner>> vectors, int index, Runner
+    // parent)
+    // {
+    // // check for recursion end
+    // if (index == vectors.size())
+    // return description;
+    //
+    // if (index < vectors.size() - 1)
+    // {
+    // List<Runner> vector = vectors.get(index);
+    //
+    // for (Runner v : vector)
+    // {
+    // recursive_describe_new(description, vectors, index + 1, v);
+    // }
+    // }
+    // else
+    // {
+    // description.addChild(parent.getDescription());
+    // }
+    //
+    // return description;
+    // }
+
     // private void setDescriptionDisplayName(Description description, String newDisplayName)
     // throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     // {
@@ -187,130 +272,60 @@ public class XCRunner extends Runner
     // field.set(description, newDisplayName);
     // }
 
-    @Override
-    public Description getDescription()
-    {
-        // return recursive_describe(Description.createSuiteDescription(testClass.getJavaClass()), vectors, 0, "");
+    // private Description recursive_describe(Description description, List<List<Runner>> vectors, int index, String
+    // testName)
+    // {
+    // // check for recursion end
+    // if (index == vectors.size())
+    // return description;
+    //
+    // List<Runner> vector = vectors.get(index);
+    //
+    // for (Runner v : vector)
+    // {
+    // Description childDescription = v.getDescription();
+    //
+    // // if (StringUtils.isNotEmpty(testName))
+    // // {
+    // // try
+    // // {
+    // // setDescriptionDisplayName(childDescription, testName + " :: " + childDescription.getDisplayName());
+    // // }
+    // // catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e)
+    // // {
+    // // // TODO Auto-generated catch block
+    // // e.printStackTrace();
+    // // }
+    // // }
+    //
+    // recursive_describe(childDescription, vectors, index + 1, testName + " :: " + childDescription.getDisplayName());
+    // if (v instanceof BlockJUnit4ClassRunner)
+    // {
+    // for (Description child : childDescription.getChildren())
+    // {
+    // description.addChild(child);
+    // }
+    // childDescription = description;
+    // }
+    // else
+    // {
+    // description.addChild(childDescription);
+    // }
+    // }
+    //
+    // return description;
+    // }
 
-        // Description description = Description.createSuiteDescription(testClass.getJavaClass());
-        // Description description = Description.createTestDescription(testClass.getJavaClass(), "muuuhh");
-        // return recursive_describe_new(description, vectors, 0, null);
-        return testDescription;
-    }
-
-    private Description recursive_describe_new(Description description, List<List<Runner>> vectors, int index, Runner parent)
-    {
-        // check for recursion end
-        if (index == vectors.size())
-            return description;
-
-        if (index < vectors.size() - 1)
-        {
-            List<Runner> vector = vectors.get(index);
-
-            for (Runner v : vector)
-            {
-                recursive_describe_new(description, vectors, index + 1, v);
-            }
-        }
-        else
-        {
-            description.addChild(parent.getDescription());
-        }
-
-        return description;
-    }
-
-    private Description recursive_describe(Description description, List<List<Runner>> vectors, int index, String testName)
-    {
-        // check for recursion end
-        if (index == vectors.size())
-            return description;
-
-        List<Runner> vector = vectors.get(index);
-
-        for (Runner v : vector)
-        {
-            Description childDescription = v.getDescription();
-
-            // if (StringUtils.isNotEmpty(testName))
-            // {
-            // try
-            // {
-            // setDescriptionDisplayName(childDescription, testName + " :: " + childDescription.getDisplayName());
-            // }
-            // catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e)
-            // {
-            // // TODO Auto-generated catch block
-            // e.printStackTrace();
-            // }
-            // }
-
-            recursive_describe(childDescription, vectors, index + 1, testName + " :: " + childDescription.getDisplayName());
-            if (v instanceof BlockJUnit4ClassRunner)
-            {
-                for (Description child : childDescription.getChildren())
-                {
-                    description.addChild(child);
-                }
-                childDescription = description;
-            }
-            else
-            {
-                description.addChild(childDescription);
-            }
-        }
-
-        return description;
-    }
-
-    @Override
-    public void run(RunNotifier notifier)
-    {
-        // recursive_run(notifier, vectors, 0);
-        // Description description = getDescription();
-
-        // for (List<Runner> runners : testRunner)
-        for (int i = 0; i < testRunner.size(); i++)
-        {
-            List<Runner> runners = testRunner.get(i);
-            Description description = testDescription.getChildren().get(i);
-
-            BrowserRunner browserRunner = null;
-            notifier.fireTestStarted(description);
-            for (Runner runner : runners)
-            {
-                if (runner instanceof BrowserRunner)
-                {
-                    // remember browser runner to close the web driver after test
-                    browserRunner = (BrowserRunner) runner;
-                }
-                else if (runner instanceof BlockJUnit4ClassRunner)
-                {
-                    BlockJUnit4ClassRunner blockRunner = (BlockJUnit4ClassRunner) runner;
-                    blockRunner.getTestClass();
-                }
-                runner.run(notifier);
-            }
-            if (browserRunner != null)
-            {
-                browserRunner.teardown();
-            }
-            notifier.fireTestFinished(description);
-        }
-
-    }
-
-    private void recursive_run(RunNotifier notifier, List<List<Runner>> vectors, int index)
-    {
-        if (index == vectors.size())
-            return;
-        List<Runner> vector = vectors.get(index);
-
-        for (Runner runner : vector)
-        {
-            runner.run(notifier);
-            recursive_run(notifier, vectors, index + 1);
-        }
-    }
+    // private void recursive_run(RunNotifier notifier, List<List<Runner>> vectors, int index)
+    // {
+    // if (index == vectors.size())
+    // return;
+    // List<Runner> vector = vectors.get(index);
+    //
+    // for (Runner runner : vector)
+    // {
+    // runner.run(notifier);
+    // recursive_run(notifier, vectors, index + 1);
+    // }
+    // }
 }
