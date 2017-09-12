@@ -63,7 +63,6 @@ public class XCRunner extends Runner
         Runner lastVectorRunner = (vectors.size() > 0) ? vectors.get(vectors.size() - 1).get(0) : null;
         if (lastVectorRunner instanceof XCParameterRunner)
         {
-            XCParameterRunner pr = (XCParameterRunner) lastVectorRunner;
             // the last vector does not contain a runner that would run @Test annotated methods
             // we have to build a new vector that contains those runners
             // runners.add(new BlockJUnit4ClassRunner(testKlass));
@@ -137,7 +136,7 @@ public class XCRunner extends Runner
 
         // iterate over all vectors to build the cross product . Last vector should only consist of
         // method runners
-        for (int i = 0; i < vectors.size(); i++)
+        for (int i = vectors.size() - 1; i >= 0; i--)
         {
             List<List<Runner>> newTestRunners = new LinkedList<>();
             for (Runner r : vectors.get(i))
@@ -145,7 +144,7 @@ public class XCRunner extends Runner
                 List<List<Runner>> testRunnerCopy = deepCopy(runner);
                 for (List<Runner> list : testRunnerCopy)
                 {
-                    list.add(r);
+                    list.add(0, r);
                 }
                 newTestRunners.addAll(testRunnerCopy);
             }

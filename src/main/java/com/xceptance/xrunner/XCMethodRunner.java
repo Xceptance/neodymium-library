@@ -40,10 +40,9 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner implements ITestClass
     @Override
     public void run(RunNotifier notifier)
     {
-        // super.run(notifier);
         try
         {
-            Statement statement = classBlock(notifier);
+            Statement statement = classBlock(new RunNotifier()); // use dummy notifier
             statement.evaluate();
         }
         catch (AssumptionViolatedException e)
