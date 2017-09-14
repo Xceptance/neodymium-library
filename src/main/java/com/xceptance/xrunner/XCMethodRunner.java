@@ -21,18 +21,17 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner implements ITestClass
 
     private Object testInstance;
 
-    private boolean runBeforeClass = false;
-
-    private boolean runAfterClass = false;
+    private MethodExecutionContext methodExecutionContext;
 
     private XCMethodRunner(Class<?> klass) throws InitializationError
     {
         super(klass);
     }
 
-    public XCMethodRunner(Class<?> klass, FrameworkMethod method) throws InitializationError
+    public XCMethodRunner(Class<?> klass, FrameworkMethod method, MethodExecutionContext methodExecutionContext) throws InitializationError
     {
         super(klass);
+        this.methodExecutionContext = methodExecutionContext;
         methodToRun = new LinkedList<>();
         methodToRun.add(method);
     }
@@ -63,19 +62,16 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner implements ITestClass
             }
             if (!allTestMethodsIgnored)
             {
-                if (isRunBeforeClass())
+                if (methodExecutionContext.isRunBeforeClass())
                 {
                     statement = withBeforeClasses(statement);
-                    setRunBeforeClass(false); // this is ugly but necessary
                 }
 
-                if (isRunAfterClass())
+                if (methodExecutionContext.isRunAfterClass())
                 {
                     statement = withAfterClasses(statement);
-                    setRunAfterClass(false); // this is ugly but necessary
                 }
             }
-            // Statement statement = classBlock(new RunNotifier()); // use dummy notifier
             statement.evaluate();
         }
         catch (AssumptionViolatedException e)
@@ -109,25 +105,4 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner implements ITestClass
         Description description = Description.createSuiteDescription(method.getName(), getRunnerAnnotations());
         return description;
     }
-
-    public boolean isRunBeforeClass()
-    {
-        return runBeforeClass;
-    }
-
-    public void setRunBeforeClass(boolean runBeforeClass)
-    {
-        this.runBeforeClass = runBeforeClass;
-    }
-
-    public boolean isRunAfterClass()
-    {
-        return runAfterClass;
-    }
-
-    public void setRunAfterClass(boolean runAfterClass)
-    {
-        this.runAfterClass = runAfterClass;
-    }
-
 }

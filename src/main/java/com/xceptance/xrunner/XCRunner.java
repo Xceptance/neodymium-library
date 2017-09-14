@@ -30,6 +30,8 @@ public class XCRunner extends Runner
 
     private Description testDescription;
 
+    private MethodExecutionContext methodExecutionContext;
+
     public XCRunner(Class<?> testKlass, RunnerBuilder rb) throws Throwable
     {
         List<List<Runner>> vectors = new LinkedList<>();
@@ -66,10 +68,11 @@ public class XCRunner extends Runner
         // we have to build a new vector that contains those runners
         // runners.add(new BlockJUnit4ClassRunner(testKlass));
 
+        methodExecutionContext = new MethodExecutionContext();
         List<Runner> methodVector = new LinkedList<>();
         for (FrameworkMethod method : testClass.getAnnotatedMethods(Test.class))
         {
-            methodVector.add(new XCMethodRunner(testKlass, method));
+            methodVector.add(new XCMethodRunner(testKlass, method, methodExecutionContext));
         }
         vectors.add(methodVector);
         // }
@@ -226,15 +229,8 @@ public class XCRunner extends Runner
                     ((ITestClassInjector) runner).setTestClass(classInstance);
                 }
 
-                if (runner instanceof XCMethodRunner)
-                {
-                    XCMethodRunner methodRunner = (XCMethodRunner) runner;
-                    if (firstIteration)
-                        methodRunner.setRunBeforeClass(true);
-
-                    if (lastIteration)
-                        methodRunner.setRunAfterClass(true);
-                }
+                methodExecutionContext.setRunBeforeClass(firstIteration);
+                methodExecutionContext.setRunAfterClass(lastIteration);
 
                 runner.run(notifier);
             }
