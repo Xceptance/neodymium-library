@@ -7,6 +7,7 @@ import java.lang.reflect.Modifier;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
@@ -212,34 +213,56 @@ public class XCRunner extends Runner
             List<Runner> runners = testRunner.get(i);
             Description description = testDescription.getChildren().get(i);
 
-            BrowserRunner browserRunner = null;
-            notifier.fireTestStarted(description);
-            for (int r = 0; r < runners.size(); r++)
+            if (checkIgnored(runners))
             {
-                Runner runner = runners.get(r);
-
-                if (runner instanceof BrowserRunner)
-                {
-                    // remember browser runner to close the web driver after test
-                    browserRunner = (BrowserRunner) runner;
-                }
-
-                if (runner instanceof ITestClassInjector)
-                {
-                    ((ITestClassInjector) runner).setTestClass(classInstance);
-                }
-
-                methodExecutionContext.setRunBeforeClass(firstIteration);
-                methodExecutionContext.setRunAfterClass(lastIteration);
-
-                runner.run(notifier);
+                notifier.fireTestIgnored(description);
             }
-            if (browserRunner != null)
+            else
             {
-                browserRunner.teardown();
+
+                BrowserRunner browserRunner = null;
+                notifier.fireTestStarted(description);
+                for (int r = 0; r < runners.size(); r++)
+                {
+                    Runner runner = runners.get(r);
+
+                    if (runner instanceof BrowserRunner)
+                    {
+                        // remember browser runner to close the web driver after test
+                        browserRunner = (BrowserRunner) runner;
+                    }
+
+                    if (runner instanceof ITestClassInjector)
+                    {
+                        ((ITestClassInjector) runner).setTestClass(classInstance);
+                    }
+
+                    methodExecutionContext.setRunBeforeClass(firstIteration);
+                    methodExecutionContext.setRunAfterClass(lastIteration);
+
+                    runner.run(notifier);
+                }
+                if (browserRunner != null)
+                {
+                    browserRunner.teardown();
+                }
+                notifier.fireTestFinished(description);
             }
-            notifier.fireTestFinished(description);
         }
+    }
+
+    private boolean checkIgnored(List<Runner> runners)
+    {
+        for (Runner runner : runners)
+        {
+            if (runner instanceof XCMethodRunner)
+            {
+                XCMethodRunner methodRunner = (XCMethodRunner) runner;
+                return (methodRunner.getChildren().get(0).getAnnotation(Ignore.class) != null);
+            }
+        }
+
+        return false;
     }
 
     @Override

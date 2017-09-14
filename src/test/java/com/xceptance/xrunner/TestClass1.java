@@ -7,15 +7,18 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-//@Browser(
-//    {
-//        "Chrome_1024x768", "FF_1024x768"
-//    })
+import com.xceptance.multibrowser.Browser;
+
+@Browser(
+    {
+        "Chrome_1024x768", "FF_1024x768"
+    })
 @RunWith(XCRunner.class)
 // @RunWith(Parameterized.class)
 // @UseParametersRunnerFactory(XCParameterRunnerFactory.class)
@@ -91,6 +94,7 @@ public class TestClass1
     }
 
     @Test
+    @Ignore
     public void testMethod0()
     {
         System.out.println("testMethod0: Parameter[" + parameter0 + ", " + parameter1 + "]");
