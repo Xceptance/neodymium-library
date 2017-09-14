@@ -3,20 +3,22 @@ package com.xceptance.xrunner;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
-import org.junit.runners.Parameterized.UseParametersRunnerFactory;
 
-import com.xceptance.multibrowser.Browser;
-
-@Browser(
-    {
-        "Chrome_1024x768", "FF_1024x768"
-    })
+//@Browser(
+//    {
+//        "Chrome_1024x768", "FF_1024x768"
+//    })
 @RunWith(XCRunner.class)
-@UseParametersRunnerFactory(XCParameterRunnerFactory.class)
+// @RunWith(Parameterized.class)
+// @UseParametersRunnerFactory(XCParameterRunnerFactory.class)
 public class TestClass1
 {
     @Parameter
@@ -24,6 +26,13 @@ public class TestClass1
 
     @Parameter(1)
     public Object parameter1;
+
+    public Object initMemberVariable = initMemberVariable();
+
+    static
+    {
+        System.out.println("static initialization");
+    }
 
     @Parameters(name = "{0}")
     public static List<Object[]> getData()
@@ -38,12 +47,18 @@ public class TestClass1
             {
                 'b', 1
             });
-        data.add(new Object[]
-            {
-                'c', 2
-            });
+        // data.add(new Object[]
+        // {
+        // 'c', 2
+        // });
 
         return data;
+    }
+
+    private Object initMemberVariable()
+    {
+        System.out.println("initMemberVariable");
+        return null;
     }
 
     public TestClass1()
@@ -51,15 +66,39 @@ public class TestClass1
         System.out.println("construct");
     }
 
-    @Test
-    public void test0()
+    @BeforeClass
+    public static void beforeClass()
     {
-        System.out.println("test0: " + parameter0 + ", " + parameter1);
+        System.out.println("beforeClass");
+    }
+
+    @AfterClass
+    public static void afterClass()
+    {
+        System.out.println("afterClass\n");
+    }
+
+    @Before
+    public void beforeMethod()
+    {
+        System.out.println("beforeMethod");
+    }
+
+    @After
+    public void afterMethod()
+    {
+        System.out.println("afterMethod");
     }
 
     @Test
-    public void test1()
+    public void testMethod0()
     {
-        System.out.println("test1: " + parameter0 + ", " + parameter1);
+        System.out.println("testMethod0: Parameter[" + parameter0 + ", " + parameter1 + "]");
+    }
+
+    @Test
+    public void testMethod1()
+    {
+        System.out.println("testMethod1: Parameter[" + parameter0 + ", " + parameter1 + "]");
     }
 }
