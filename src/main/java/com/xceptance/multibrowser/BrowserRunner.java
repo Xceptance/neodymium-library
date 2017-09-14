@@ -120,9 +120,9 @@ public class BrowserRunner extends ParentRunner<Runner>
     public void run(RunNotifier notifier)
     {
         // super.run(notifier);
-        notifier.fireTestRunStarted(getDescription());
+        // notifier.fireTestRunStarted(getDescription());
         setUpTest();
-        notifier.fireTestFinished(getDescription());
+        // notifier.fireTestFinished(getDescription());
     }
 
     private BrowserRunner(Class<?> testCaseClass, BrowserConfiguration browserConfig) throws InitializationError

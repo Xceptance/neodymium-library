@@ -48,6 +48,7 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner implements ITestClass
     {
         try
         {
+            notifier = new RunNotifier();
             Statement statement = childrenInvoker(notifier);
 
             List<FrameworkMethod> annotatedMethods = getTestClass().getAnnotatedMethods(Test.class);
