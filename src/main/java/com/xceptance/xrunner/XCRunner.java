@@ -47,12 +47,11 @@ public class XCRunner extends Runner
             runners.add(new BrowserRunner(testKlass));
         }
 
-        // setFinalStatic(Parameterized.class.getDeclaredField("DEFAULT_FACTORY"), new EvilFactory());
-
         // scan for JUnit Parameters
         List<FrameworkMethod> parameterMethods = testClass.getAnnotatedMethods(Parameters.class);
         if (parameterMethods.size() > 0)
         {
+            setFinalStatic(Parameterized.class.getDeclaredField("DEFAULT_FACTORY"), new XCParameterRunnerFactory());
             runners.add(new Parameterized(testKlass));
         }
 
@@ -60,20 +59,20 @@ public class XCRunner extends Runner
         doMagic(runners, vectors);
 
         // check for existence of method runners
-        Runner lastVectorRunner = (vectors.size() > 0) ? vectors.get(vectors.size() - 1).get(0) : null;
-        if (lastVectorRunner instanceof XCParameterRunner)
-        {
-            // the last vector does not contain a runner that would run @Test annotated methods
-            // we have to build a new vector that contains those runners
-            // runners.add(new BlockJUnit4ClassRunner(testKlass));
+        // Runner lastVectorRunner = (vectors.size() > 0) ? vectors.get(vectors.size() - 1).get(0) : null;
+        // if (!(lastVectorRunner instanceof XCMethodRunner) || lastVectorRunner == null)
+        // {
+        // the last vector does not contain a runner that would run @Test annotated methods
+        // we have to build a new vector that contains those runners
+        // runners.add(new BlockJUnit4ClassRunner(testKlass));
 
-            List<Runner> methodVector = new LinkedList<>();
-            for (FrameworkMethod method : testClass.getAnnotatedMethods(Test.class))
-            {
-                methodVector.add(new XCMethodRunner(testKlass, method));
-            }
-            vectors.add(methodVector);
+        List<Runner> methodVector = new LinkedList<>();
+        for (FrameworkMethod method : testClass.getAnnotatedMethods(Test.class))
+        {
+            methodVector.add(new XCMethodRunner(testKlass, method));
         }
+        vectors.add(methodVector);
+        // }
 
         testRunner = buildTestRunnerLists(vectors);
         testDescription = createTestDescription(testRunner, testClass);
@@ -194,8 +193,8 @@ public class XCRunner extends Runner
     {
         for (int i = 0; i < testRunner.size(); i++)
         {
-            List<Runner> runners = testRunner.get(i);
-            Description description = testDescription.getChildren().get(i);
+            boolean firstIteration = (i == 0) ? true : false;
+            boolean lastIteration = (i == testRunner.size() - 1) ? true : false;
 
             Object classInstance;
             try
@@ -207,10 +206,15 @@ public class XCRunner extends Runner
                 throw new RuntimeException(e);
             }
 
+            List<Runner> runners = testRunner.get(i);
+            Description description = testDescription.getChildren().get(i);
+
             BrowserRunner browserRunner = null;
             notifier.fireTestStarted(description);
-            for (Runner runner : runners)
+            for (int r = 0; r < runners.size(); r++)
             {
+                Runner runner = runners.get(r);
+
                 if (runner instanceof BrowserRunner)
                 {
                     // remember browser runner to close the web driver after test
@@ -220,6 +224,16 @@ public class XCRunner extends Runner
                 if (runner instanceof ITestClassInjector)
                 {
                     ((ITestClassInjector) runner).setTestClass(classInstance);
+                }
+
+                if (runner instanceof XCMethodRunner)
+                {
+                    XCMethodRunner methodRunner = (XCMethodRunner) runner;
+                    if (firstIteration)
+                        methodRunner.setRunBeforeClass(true);
+
+                    if (lastIteration)
+                        methodRunner.setRunAfterClass(true);
                 }
 
                 runner.run(notifier);

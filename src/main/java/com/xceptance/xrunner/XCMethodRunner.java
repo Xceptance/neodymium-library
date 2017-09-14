@@ -3,6 +3,8 @@ package com.xceptance.xrunner;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
@@ -18,6 +20,10 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner implements ITestClass
     List<FrameworkMethod> methodToRun;
 
     private Object testInstance;
+
+    private boolean runBeforeClass = false;
+
+    private boolean runAfterClass = false;
 
     private XCMethodRunner(Class<?> klass) throws InitializationError
     {
@@ -42,7 +48,27 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner implements ITestClass
     {
         try
         {
-            Statement statement = classBlock(new RunNotifier()); // use dummy notifier
+            Statement statement = childrenInvoker(notifier);
+
+            List<FrameworkMethod> annotatedMethods = getTestClass().getAnnotatedMethods(Test.class);
+            boolean allTestMethodsIgnored = true;
+            for (FrameworkMethod method : annotatedMethods)
+            {
+                if (method.getAnnotation(Ignore.class) == null)
+                {
+                    allTestMethodsIgnored = false;
+                    break;
+                }
+            }
+            if (!allTestMethodsIgnored)
+            {
+                if (isRunBeforeClass())
+                    statement = withBeforeClasses(statement);
+
+                if (isRunAfterClass())
+                    statement = withAfterClasses(statement);
+            }
+            // Statement statement = classBlock(new RunNotifier()); // use dummy notifier
             statement.evaluate();
         }
         catch (AssumptionViolatedException e)
@@ -75,6 +101,26 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner implements ITestClass
         FrameworkMethod method = methodToRun.get(0);
         Description description = Description.createSuiteDescription(method.getName(), getRunnerAnnotations());
         return description;
+    }
+
+    public boolean isRunBeforeClass()
+    {
+        return runBeforeClass;
+    }
+
+    public void setRunBeforeClass(boolean runBeforeClass)
+    {
+        this.runBeforeClass = runBeforeClass;
+    }
+
+    public boolean isRunAfterClass()
+    {
+        return runAfterClass;
+    }
+
+    public void setRunAfterClass(boolean runAfterClass)
+    {
+        this.runAfterClass = runAfterClass;
     }
 
 }
