@@ -63,10 +63,16 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner implements ITestClass
             if (!allTestMethodsIgnored)
             {
                 if (isRunBeforeClass())
+                {
                     statement = withBeforeClasses(statement);
+                    setRunBeforeClass(false); // this is ugly but necessary
+                }
 
                 if (isRunAfterClass())
+                {
                     statement = withAfterClasses(statement);
+                    setRunAfterClass(false); // this is ugly but necessary
+                }
             }
             // Statement statement = classBlock(new RunNotifier()); // use dummy notifier
             statement.evaluate();
