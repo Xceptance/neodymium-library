@@ -3,8 +3,6 @@ package com.xceptance.xrunner;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
@@ -50,27 +48,14 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner implements ITestClass
             notifier = new RunNotifier();
             Statement statement = childrenInvoker(notifier);
 
-            List<FrameworkMethod> annotatedMethods = getTestClass().getAnnotatedMethods(Test.class);
-            boolean allTestMethodsIgnored = true;
-            for (FrameworkMethod method : annotatedMethods)
+            if (methodExecutionContext.isRunBeforeClass())
             {
-                if (method.getAnnotation(Ignore.class) == null)
-                {
-                    allTestMethodsIgnored = false;
-                    break;
-                }
+                statement = withBeforeClasses(statement);
             }
-            if (!allTestMethodsIgnored)
-            {
-                if (methodExecutionContext.isRunBeforeClass())
-                {
-                    statement = withBeforeClasses(statement);
-                }
 
-                if (methodExecutionContext.isRunAfterClass())
-                {
-                    statement = withAfterClasses(statement);
-                }
+            if (methodExecutionContext.isRunAfterClass())
+            {
+                statement = withAfterClasses(statement);
             }
             statement.evaluate();
         }

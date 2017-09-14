@@ -200,16 +200,6 @@ public class XCRunner extends Runner
             boolean firstIteration = (i == 0) ? true : false;
             boolean lastIteration = (i == testRunner.size() - 1) ? true : false;
 
-            Object classInstance;
-            try
-            {
-                classInstance = testClass.getOnlyConstructor().newInstance();
-            }
-            catch (Exception e)
-            {
-                throw new RuntimeException(e);
-            }
-
             List<Runner> runners = testRunner.get(i);
             Description description = testDescription.getChildren().get(i);
 
@@ -219,6 +209,15 @@ public class XCRunner extends Runner
             }
             else
             {
+                Object classInstance;
+                try
+                {
+                    classInstance = testClass.getOnlyConstructor().newInstance();
+                }
+                catch (Exception e)
+                {
+                    throw new RuntimeException(e);
+                }
 
                 BrowserRunner browserRunner = null;
                 notifier.fireTestStarted(description);
