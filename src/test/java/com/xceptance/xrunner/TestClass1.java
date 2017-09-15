@@ -5,20 +5,18 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.xceptance.multibrowser.Browser;
-
-@Browser(
-    {
-        "Chrome_1024x768", "FF_1024x768"
-    })
+//@Browser(
+//    {
+//        "Chrome_1024x768", "FF_1024x768"
+//    })
 @RunWith(XCRunner.class)
 // @RunWith(Parameterized.class)
 // @UseParametersRunnerFactory(XCParameterRunnerFactory.class)
@@ -94,15 +92,21 @@ public class TestClass1
     }
 
     @Test
-    @Ignore
     public void testMethod0()
     {
         System.out.println("testMethod0: Parameter[" + parameter0 + ", " + parameter1 + "]");
+
+        int a = 1;
+        int b = 0;
+        int c = a / b;
+
+        System.out.println(c);
     }
 
     @Test
     public void testMethod1()
     {
         System.out.println("testMethod1: Parameter[" + parameter0 + ", " + parameter1 + "]");
+        Assert.assertTrue(false);
     }
 }
