@@ -51,11 +51,13 @@ public class XCRunner extends Runner
             runners.add(new BrowserRunner(testKlass));
         }
 
+        methodExecutionContext = new MethodExecutionContext();
+
         // scan for JUnit Parameters
         List<FrameworkMethod> parameterMethods = testClass.getAnnotatedMethods(Parameters.class);
         if (parameterMethods.size() > 0)
         {
-            setFinalStatic(Parameterized.class.getDeclaredField("DEFAULT_FACTORY"), new XCParameterRunnerFactory());
+            setFinalStatic(Parameterized.class.getDeclaredField("DEFAULT_FACTORY"), new XCParameterRunnerFactory(methodExecutionContext));
             runners.add(new Parameterized(testKlass));
         }
 
@@ -63,7 +65,6 @@ public class XCRunner extends Runner
         doMagic(runners, vectors);
 
         // create method runners that actually execute the methods annotated with @Test
-        methodExecutionContext = new MethodExecutionContext();
         List<Runner> methodVector = new LinkedList<>();
         for (FrameworkMethod method : testClass.getAnnotatedMethods(Test.class))
         {
@@ -224,14 +225,11 @@ public class XCRunner extends Runner
                         browserRunner = (BrowserRunner) runner;
                     }
 
-                    if (runner instanceof ITestClassInjector)
-                    {
-                        ((ITestClassInjector) runner).setTestClass(classInstance);
-                    }
 
                     methodExecutionContext.setRunBeforeClass(firstIteration);
                     methodExecutionContext.setRunAfterClass(lastIteration);
                     methodExecutionContext.setRunnerDescription(description);
+                    methodExecutionContext.setTestClassInstance(classInstance);
 
                     runner.run(notifier);
                 }

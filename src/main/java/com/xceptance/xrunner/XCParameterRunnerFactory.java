@@ -8,10 +8,17 @@ import org.junit.runners.parameterized.TestWithParameters;
 public class XCParameterRunnerFactory implements ParametersRunnerFactory
 {
 
+    private MethodExecutionContext methodExecutionContext;
+
+    public XCParameterRunnerFactory(MethodExecutionContext methodExecutionContext)
+    {
+        this.methodExecutionContext = methodExecutionContext;
+    }
+
     @Override
     public Runner createRunnerForTestWithParameters(TestWithParameters test) throws InitializationError
     {
-        return new XCParameterRunner(test);
+        return new XCParameterRunner(test, methodExecutionContext);
     }
 
 }

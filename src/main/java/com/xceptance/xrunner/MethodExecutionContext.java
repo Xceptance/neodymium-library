@@ -10,6 +10,8 @@ public class MethodExecutionContext
 
     private Description runnerDescription;
 
+    private Object testClassInstance;
+
     public boolean isRunBeforeClass()
     {
         return runBeforeClass;
@@ -38,5 +40,15 @@ public class MethodExecutionContext
     public void setRunnerDescription(Description runnerDescription)
     {
         this.runnerDescription = runnerDescription;
+    }
+
+    public Object getTestClassInstance()
+    {
+        return testClassInstance;
+    }
+
+    public void setTestClassInstance(Object testClassInstance)
+    {
+        this.testClassInstance = testClassInstance;
     }
 }

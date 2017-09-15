@@ -13,7 +13,7 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.parameterized.BlockJUnit4ClassRunnerWithParameters;
 import org.junit.runners.parameterized.TestWithParameters;
 
-public class XCParameterRunner extends BlockJUnit4ClassRunnerWithParameters implements ITestClassInjector
+public class XCParameterRunner extends BlockJUnit4ClassRunnerWithParameters
 {
     private TestWithParameters test;
 
@@ -23,10 +23,13 @@ public class XCParameterRunner extends BlockJUnit4ClassRunnerWithParameters impl
 
     private String testName;
 
-    public XCParameterRunner(TestWithParameters test) throws InitializationError
+    private MethodExecutionContext methodExecutionContext;
+
+    public XCParameterRunner(TestWithParameters test, MethodExecutionContext methodExecutionContext) throws InitializationError
     {
         super(test);
         this.test = test;
+        this.methodExecutionContext = methodExecutionContext;
         parameters = test.getParameters().toArray(new Object[0]);
         StringBuilder sb = new StringBuilder(128);
         sb.append("[");
@@ -56,6 +59,8 @@ public class XCParameterRunner extends BlockJUnit4ClassRunnerWithParameters impl
     @Override
     public void run(RunNotifier notifier)
     {
+        testInstance = methodExecutionContext.getTestClassInstance();
+
         super.run(notifier);
         try
         {
@@ -78,12 +83,6 @@ public class XCParameterRunner extends BlockJUnit4ClassRunnerWithParameters impl
     {
         List<FrameworkMethod> dummy = new LinkedList<>();
         return dummy;
-    }
-
-    @Override
-    public void setTestClass(Object instance)
-    {
-        testInstance = instance;
     }
 
     // TODO: copied from Parameterized

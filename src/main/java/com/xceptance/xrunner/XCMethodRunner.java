@@ -14,7 +14,7 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.MultipleFailureException;
 import org.junit.runners.model.Statement;
 
-public class XCMethodRunner extends BlockJUnit4ClassRunner implements ITestClassInjector
+public class XCMethodRunner extends BlockJUnit4ClassRunner
 {
 
     List<FrameworkMethod> methodToRun;
@@ -45,6 +45,8 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner implements ITestClass
     @Override
     public void run(RunNotifier notifier)
     {
+        testInstance = methodExecutionContext.getTestClassInstance();
+
         XCRunListener xcr = new XCRunListener();
         try
         {
@@ -99,12 +101,6 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner implements ITestClass
     protected Object createTest() throws Exception
     {
         return testInstance;
-    }
-
-    @Override
-    public void setTestClass(Object instance)
-    {
-        testInstance = instance;
     }
 
     @Override
