@@ -12,6 +12,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
+import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.Parameterized;
@@ -225,13 +226,21 @@ public class XCRunner extends Runner
                         browserRunner = (BrowserRunner) runner;
                     }
 
-
                     methodExecutionContext.setRunBeforeClass(firstIteration);
                     methodExecutionContext.setRunAfterClass(lastIteration);
                     methodExecutionContext.setRunnerDescription(description);
                     methodExecutionContext.setTestClassInstance(classInstance);
 
-                    runner.run(notifier);
+                    try
+                    {
+                        runner.run(notifier);
+                    }
+                    catch (Throwable e)
+                    {
+                        // mark test as failed and try the next one
+                        notifier.fireTestFailure(new Failure(description, e));
+                        break;
+                    }
                 }
                 if (browserRunner != null)
                 {
