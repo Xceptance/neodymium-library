@@ -238,6 +238,7 @@ public class XCRunner extends Runner
 
                     methodExecutionContext.setRunBeforeClass(firstIteration);
                     methodExecutionContext.setRunAfterClass(lastIteration);
+                    methodExecutionContext.setRunnerDescription(description);
 
                     runner.run(notifier);
                 }

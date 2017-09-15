@@ -5,11 +5,13 @@ import java.util.List;
 
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.runner.Description;
+import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runner.notification.StoppedByUserException;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
+import org.junit.runners.model.MultipleFailureException;
 import org.junit.runners.model.Statement;
 
 public class XCMethodRunner extends BlockJUnit4ClassRunner implements ITestClassInjector
@@ -43,10 +45,13 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner implements ITestClass
     @Override
     public void run(RunNotifier notifier)
     {
+        XCRunListener xcr = new XCRunListener();
         try
         {
-            notifier = new RunNotifier();
-            Statement statement = childrenInvoker(notifier);
+            RunNotifier subnotifier = new RunNotifier();
+            subnotifier.addListener(xcr);
+
+            Statement statement = childrenInvoker(subnotifier);
 
             if (methodExecutionContext.isRunBeforeClass())
             {
@@ -58,9 +63,14 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner implements ITestClass
                 statement = withAfterClasses(statement);
             }
             statement.evaluate();
+            if (xcr.hasFailure())
+            {
+                notifier.fireTestFailure(new Failure(methodExecutionContext.getRunnerDescription(), xcr.getFailure().getException()));
+            }
         }
         catch (AssumptionViolatedException e)
         {
+            notifier.fireTestAssumptionFailed(new Failure(methodExecutionContext.getRunnerDescription(), xcr.getFailure().getException()));
         }
         catch (StoppedByUserException e)
         {
@@ -68,6 +78,20 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner implements ITestClass
         }
         catch (Throwable e)
         {
+            List<Throwable> exceptionList = new LinkedList<>();
+            if (e instanceof MultipleFailureException)
+            {
+                ((MultipleFailureException) e).getFailures();
+            }
+            else
+            {
+                exceptionList.add(e);
+            }
+
+            for (Throwable t : exceptionList)
+            {
+                notifier.fireTestFailure(new Failure(methodExecutionContext.getRunnerDescription(), t));
+            }
         }
     }
 

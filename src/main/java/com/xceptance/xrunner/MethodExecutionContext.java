@@ -1,10 +1,14 @@
 package com.xceptance.xrunner;
 
+import org.junit.runner.Description;
+
 public class MethodExecutionContext
 {
     private boolean runBeforeClass;
 
     private boolean runAfterClass;
+
+    private Description runnerDescription;
 
     public boolean isRunBeforeClass()
     {
@@ -24,5 +28,15 @@ public class MethodExecutionContext
     public void setRunAfterClass(boolean runAfterClass)
     {
         this.runAfterClass = runAfterClass;
+    }
+
+    public Description getRunnerDescription()
+    {
+        return runnerDescription;
+    }
+
+    public void setRunnerDescription(Description runnerDescription)
+    {
+        this.runnerDescription = runnerDescription;
     }
 }
