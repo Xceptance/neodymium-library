@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -61,14 +62,7 @@ public class XCRunner extends Runner
         // collect children of ParentRunner sub classes
         doMagic(runners, vectors);
 
-        // check for existence of method runners
-        // Runner lastVectorRunner = (vectors.size() > 0) ? vectors.get(vectors.size() - 1).get(0) : null;
-        // if (!(lastVectorRunner instanceof XCMethodRunner) || lastVectorRunner == null)
-        // {
-        // the last vector does not contain a runner that would run @Test annotated methods
-        // we have to build a new vector that contains those runners
-        // runners.add(new BlockJUnit4ClassRunner(testKlass));
-
+        // create method runners that actually execute the methods annotated with @Test
         methodExecutionContext = new MethodExecutionContext();
         List<Runner> methodVector = new LinkedList<>();
         for (FrameworkMethod method : testClass.getAnnotatedMethods(Test.class))
@@ -76,7 +70,6 @@ public class XCRunner extends Runner
             methodVector.add(new XCMethodRunner(testKlass, method, methodExecutionContext));
         }
         vectors.add(methodVector);
-        // }
 
         testRunner = buildTestRunnerLists(vectors);
         testDescription = createTestDescription(testRunner, testClass);
@@ -103,25 +96,21 @@ public class XCRunner extends Runner
             for (Runner runner : runners)
             {
                 Description runnerDescription = runner.getDescription();
-
+                String displayName = "";
                 if (runner instanceof XCParameterRunner)
                 {
-                    displayNames.add(((XCParameterRunner) runner).getName());
+                    displayName = ((XCParameterRunner) runner).getName();
                 }
                 else if (runner instanceof BlockJUnit4ClassRunner)
                 {
-                    BlockJUnit4ClassRunner blockRunner = (BlockJUnit4ClassRunner) runner;
-                    displayNames.add(blockRunner.getDescription().getDisplayName());
-                    // for (Description childDescription : blockRunner.getDescription().getChildren())
-                    // {
-                    // displayNames.add(childDescription.getDisplayName());
-                    // }
+                    displayName = runner.getDescription().getDisplayName();
                 }
                 else
                 {
-                    displayNames.add(runnerDescription.getDisplayName());
+                    displayName = runnerDescription.getDisplayName();
                 }
 
+                displayNames.add(displayName);
             }
 
             Description childDescription = Description.createTestDescription(testClass.getJavaClass(), String.join(" :: ", displayNames));
@@ -270,98 +259,4 @@ public class XCRunner extends Runner
     {
         return testDescription;
     }
-
-    // private Description recursive_describe_new(Description description, List<List<Runner>> vectors, int index, Runner
-    // parent)
-    // {
-    // // check for recursion end
-    // if (index == vectors.size())
-    // return description;
-    //
-    // if (index < vectors.size() - 1)
-    // {
-    // List<Runner> vector = vectors.get(index);
-    //
-    // for (Runner v : vector)
-    // {
-    // recursive_describe_new(description, vectors, index + 1, v);
-    // }
-    // }
-    // else
-    // {
-    // description.addChild(parent.getDescription());
-    // }
-    //
-    // return description;
-    // }
-
-    // private void setDescriptionDisplayName(Description description, String newDisplayName)
-    // throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
-    // {
-    // Field field = description.getClass().getDeclaredField("fDisplayName");
-    //
-    // if (!field.isAccessible())
-    // {
-    // field.setAccessible(true);
-    // }
-    //
-    // field.set(description, newDisplayName);
-    // }
-
-    // private Description recursive_describe(Description description, List<List<Runner>> vectors, int index, String
-    // testName)
-    // {
-    // // check for recursion end
-    // if (index == vectors.size())
-    // return description;
-    //
-    // List<Runner> vector = vectors.get(index);
-    //
-    // for (Runner v : vector)
-    // {
-    // Description childDescription = v.getDescription();
-    //
-    // // if (StringUtils.isNotEmpty(testName))
-    // // {
-    // // try
-    // // {
-    // // setDescriptionDisplayName(childDescription, testName + " :: " + childDescription.getDisplayName());
-    // // }
-    // // catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e)
-    // // {
-    // // // TODO Auto-generated catch block
-    // // e.printStackTrace();
-    // // }
-    // // }
-    //
-    // recursive_describe(childDescription, vectors, index + 1, testName + " :: " + childDescription.getDisplayName());
-    // if (v instanceof BlockJUnit4ClassRunner)
-    // {
-    // for (Description child : childDescription.getChildren())
-    // {
-    // description.addChild(child);
-    // }
-    // childDescription = description;
-    // }
-    // else
-    // {
-    // description.addChild(childDescription);
-    // }
-    // }
-    //
-    // return description;
-    // }
-
-    // private void recursive_run(RunNotifier notifier, List<List<Runner>> vectors, int index)
-    // {
-    // if (index == vectors.size())
-    // return;
-    // List<Runner> vector = vectors.get(index);
-    //
-    // for (Runner runner : vector)
-    // {
-    // runner.run(notifier);
-    // recursive_run(notifier, vectors, index + 1);
-    // }
-    // }
 }
