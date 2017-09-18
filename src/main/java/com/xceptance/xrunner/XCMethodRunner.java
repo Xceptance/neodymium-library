@@ -83,7 +83,7 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner
             List<Throwable> exceptionList = new LinkedList<>();
             if (e instanceof MultipleFailureException)
             {
-                ((MultipleFailureException) e).getFailures();
+                exceptionList = ((MultipleFailureException) e).getFailures();
             }
             else
             {
