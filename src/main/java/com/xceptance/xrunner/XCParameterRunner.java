@@ -21,8 +21,6 @@ public class XCParameterRunner extends BlockJUnit4ClassRunnerWithParameters
 
     private Object testInstance;
 
-    private String testName;
-
     private MethodExecutionContext methodExecutionContext;
 
     public XCParameterRunner(TestWithParameters test, MethodExecutionContext methodExecutionContext) throws InitializationError
@@ -31,17 +29,6 @@ public class XCParameterRunner extends BlockJUnit4ClassRunnerWithParameters
         this.test = test;
         this.methodExecutionContext = methodExecutionContext;
         parameters = test.getParameters().toArray(new Object[0]);
-        StringBuilder sb = new StringBuilder(128);
-        sb.append("[");
-        List<String> stringParameters = new LinkedList<>();
-        for (Object o : parameters)
-        {
-            stringParameters.add(o.toString());
-        }
-        sb.append(String.join(", ", stringParameters));
-        sb.append("]");
-
-        testName = sb.toString();
     }
 
     @Override
@@ -53,7 +40,7 @@ public class XCParameterRunner extends BlockJUnit4ClassRunnerWithParameters
     @Override
     public Description getDescription()
     {
-        return Description.createTestDescription(test.getTestClass().getClass(), testName);
+        return Description.createTestDescription(test.getTestClass().getClass(), test.getName());
     }
 
     @Override
@@ -75,7 +62,7 @@ public class XCParameterRunner extends BlockJUnit4ClassRunnerWithParameters
     @Override
     protected String getName()
     {
-        return testName;
+        return test.getName();
     }
 
     @Override
