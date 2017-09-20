@@ -106,8 +106,13 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner
     @Override
     public Description getDescription()
     {
-        FrameworkMethod method = methodToRun.get(0);
+        FrameworkMethod method = getMethod();
         Description description = Description.createSuiteDescription(method.getName(), getRunnerAnnotations());
         return description;
+    }
+
+    public FrameworkMethod getMethod()
+    {
+        return methodToRun.get(0);
     }
 }
