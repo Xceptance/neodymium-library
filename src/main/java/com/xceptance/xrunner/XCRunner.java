@@ -5,8 +5,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -24,6 +26,10 @@ import org.junit.runners.model.TestClass;
 
 import com.xceptance.multibrowser.Browser;
 import com.xceptance.multibrowser.BrowserRunner;
+import com.xceptance.xrunner.groups.DefaultGroup;
+import com.xceptance.xrunner.groups.GroupHelper;
+import com.xceptance.xrunner.groups.TestGroup;
+import com.xceptance.xrunner.groups.TestGroups;
 
 public class XCRunner extends Runner
 {
@@ -74,7 +80,99 @@ public class XCRunner extends Runner
         vectors.add(methodVector);
 
         testRunner = buildTestRunnerLists(vectors);
-        testDescription = createTestDescription(testRunner, testClass);
+
+        // group tests
+        List<Class<?>> groupsToExecute = new LinkedList<>();
+        groupsToExecute.add(DefaultGroup.class); // TODO:
+        // testRunner = regroupTests(testRunner, groupsToExecute, true);
+
+        testDescription = createTestDescription();
+    }
+
+    private List<List<Runner>> regroupTests(List<List<Runner>> testRunner, List<Class<?>> groupsToExecute, boolean matchAny)
+    {
+        Map<FrameworkMethod, TestGroups> testMethodsWithTestGroups = getTestMethodsWithTestGroups();
+
+        List<List<Runner>> groupedRunner = new LinkedList<>();
+
+        for (List<Runner> runners : testRunner)
+        {
+            FrameworkMethod method = null;
+            // the last runner in the list should always be an XCMethodRunner
+            // get this method
+            Runner runner = runners.get(runners.size() - 1);
+            if (runner instanceof XCMethodRunner)
+            {
+                method = ((XCMethodRunner) runner).getMethod();
+            }
+            else
+            {
+                throw new RuntimeException("This shouldn't happen");
+            }
+
+            // for (TestGroup testGroup : testMethodsWithTestGroups.values())
+            // {
+            // testMethodsWithTestGroups.get(method).value();
+            // }
+
+            // boolean allMatch = true;
+            // for (Class<?> group : groupsToExecute)
+            // {
+            // if (!methodGroups.contains(group))
+            // {
+            // allMatch = false;
+            // }
+            // }
+        }
+
+        return groupedRunner;
+    }
+
+    private Map<FrameworkMethod, TestGroups> getTestMethodsWithTestGroups()
+    {
+        Map<FrameworkMethod, TestGroups> testMethods = new HashMap<>();
+
+        List<FrameworkMethod> annotatedMethods = testClass.getAnnotatedMethods();
+        for (FrameworkMethod annotatedMethod : annotatedMethods)
+        {
+            // method grouping belongs only to test methods so check that first
+            Test testAnnotation = annotatedMethod.getAnnotation(Test.class);
+            if (testAnnotation != null)
+            {
+                TestGroups methodTestGroups;
+
+                // if there is only one TestGroup annotation on a method we have to look for TestGroup
+                TestGroup testGroupAnnotation = annotatedMethod.getAnnotation(TestGroup.class);
+                if (testGroupAnnotation != null)
+                {
+                    methodTestGroups = GroupHelper.wrapGroup(testGroupAnnotation);
+                }
+                else
+                {
+                    // if there are more than one it we need to lookup for TestGroups which aggregate them into one
+                    TestGroups testGroupsAnnotation = annotatedMethod.getAnnotation(TestGroups.class);
+                    if (testGroupsAnnotation != null)
+                    {
+                        methodTestGroups = testGroupsAnnotation;
+                    }
+                    else
+                    {
+                        // if there is none TestGroup annotation we create a default one
+                        methodTestGroups = GroupHelper.createDefaultGroups();
+                    }
+                }
+
+                List<Class<?>> methodTestGroupClasses = new LinkedList<>();
+                for (TestGroup tg : methodTestGroups.value())
+                {
+                    methodTestGroupClasses.add(tg.getClass());
+                }
+
+                testMethods.put(annotatedMethod, methodTestGroups);
+            }
+        }
+
+        return testMethods;
     }
 
     private void setFinalStatic(Field field, Object newValue) throws Exception
@@ -88,7 +186,7 @@ public class XCRunner extends Runner
         field.set(null, newValue);
     }
 
-    private Description createTestDescription(List<List<Runner>> testRunner, TestClass testClass)
+    private Description createTestDescription()
     {
         Description description = Description.createSuiteDescription(testClass.getJavaClass());
 

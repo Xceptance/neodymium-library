@@ -13,13 +13,14 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-//@Browser(
-//    {
-//        "Chrome_1024x768", "FF_1024x768"
-//    })
+import com.xceptance.multibrowser.Browser;
+import com.xceptance.xrunner.groups.TestGroup;
+
+@Browser(
+    {
+        "Chrome_1024x768", "FF_1024x768"
+    })
 @RunWith(XCRunner.class)
-// @RunWith(Parameterized.class)
-// @UseParametersRunnerFactory(XCParameterRunnerFactory.class)
 public class TestClass1
 {
     @Parameter
@@ -35,23 +36,18 @@ public class TestClass1
         System.out.println("static initialization");
     }
 
-    @Parameters(name = "{0}")
+    @Parameters(name = "{index} - {0}, {1}")
     public static List<Object[]> getData()
     {
         List<Object[]> data = new LinkedList<>();
 
-        data.add(new Object[]
-            {
-                'a', 0
-            });
-        data.add(new Object[]
-            {
-                'b', 1
-            });
-        // data.add(new Object[]
-        // {
-        // 'c', 2
-        // });
+        for (int i = 97; i < 100; i++)
+        {
+            data.add(new Object[]
+                {
+                    Character.valueOf((char) i), i - 97
+                });
+        }
 
         return data;
     }
@@ -92,21 +88,30 @@ public class TestClass1
     }
 
     @Test
+    @TestGroup(ordinal = 1)
     public void testMethod0()
     {
         System.out.println("testMethod0: Parameter[" + parameter0 + ", " + parameter1 + "]");
 
         int a = 1;
         int b = 0;
-        int c = a / b;
+        // int c = a / b;
 
-        System.out.println(c);
+        // System.out.println(c);
     }
 
     @Test
+    @TestGroup(ordinal = 2)
     public void testMethod1()
     {
         System.out.println("testMethod1: Parameter[" + parameter0 + ", " + parameter1 + "]");
         Assert.assertTrue(false);
+    }
+
+    @Test
+    public void testMethod2()
+    {
+        System.out.println("testMethod1: Parameter[" + parameter0 + ", " + parameter1 + "]");
+        // Assert.assertTrue(false);
     }
 }

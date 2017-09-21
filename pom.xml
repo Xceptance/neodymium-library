@@ -27,12 +27,15 @@
 				<configuration>
 					<parallel>classesAndMethods</parallel>
 					<threadCount>8</threadCount>
+					<!-- <properties> -->
+					<!-- <runSuite>**/*Suite.java</runSuite> -->
+					<!-- </properties> -->
 					<!-- <groups>com.xceptance.xrunner.TestGroup1</groups> -->
 					<includes>
-						<include>*.java</include>
+						<include>**/*Suite*.java</include>
 					</includes>
 				</configuration>
-			</plugin>	
+			</plugin>
 		</plugins>
 	</build>
 
