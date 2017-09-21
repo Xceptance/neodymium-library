@@ -1,20 +1,18 @@
 package com.xceptance.multibrowser;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
-import org.junit.internal.runners.statements.Fail;
-import org.junit.internal.runners.statements.RunAfters;
 import org.junit.runner.Description;
-import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runner.Runner;
+import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.ParentRunner;
 import org.junit.runners.model.FrameworkMethod;
-import org.junit.runners.model.Statement;
+import org.junit.runners.model.InitializationError;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
@@ -25,20 +23,24 @@ import com.xceptance.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.multibrowser.configuration.WebDriverProperties;
 
 /**
- * JUnit runner used to run testcases that are annotated with {@link TestTargets}. This class reads the annotation based
- * configuration of {@link TestTarget} and executes the testcase multiple-times with different configurations.
+ * JUnit runner used to run testcases that are annotated with {@link Browser}. This class reads the annotation based
+ * configuration of {@link Browser} and executes the testcase multiple-times with different configurations.
  * 
  * @author m.kaufmann
- * @see {@link AbstractAnnotatedScriptTestCase}, {@link TestTarget}
+ * @see {@link Browser}
  */
-public class AnnotationRunner extends BlockJUnit4ClassRunner
+public class BrowserRunner extends ParentRunner<Runner>
 {
     /**
      * The JUnit children of this runner.
      */
-    private final List<FrameworkMethod> methods = new LinkedList<FrameworkMethod>();
+    private final List<Runner> browser = new LinkedList<Runner>();
 
     private WebDriver driver;
+
+    private BrowserConfiguration browserConfig;
+
+    private Class<?> testCaseClass;
 
     /**
      * Sets the test instance up.
@@ -51,7 +53,7 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
     protected void setUpTest(final FrameworkMethod method, final Object test)
     {
         // set the test data set at the test instance
-        final AnnotatedFrameworkMethod frameworkMethod = (AnnotatedFrameworkMethod) method;
+        final BrowserFrameworkMethod frameworkMethod = (BrowserFrameworkMethod) method;
 
         // get the browser configuration for this testcase
         final BrowserConfiguration config = frameworkMethod.getBrowserConfiguration();
@@ -59,7 +61,7 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
         driver = null;
         try
         {
-            driver = AnnotationRunnerHelper.createWebdriver(config);
+            driver = BrowserRunnerHelper.createWebdriver(config);
         }
         catch (final MalformedURLException e)
         {
@@ -68,7 +70,7 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
         if (driver != null)
         {
             // set browser window size
-            AnnotationRunnerHelper.setBrowserWindowSize(config, driver);
+            BrowserRunnerHelper.setBrowserWindowSize(config, driver);
             WebDriverRunner.setWebDriver(driver);
             // ((AbstractScriptTestCase) test).setTestDataSet(frameworkMethod.getDataSet()); //TODO:
 
@@ -80,7 +82,57 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
         }
     }
 
-    public AnnotationRunner(final Class<?> testCaseClass) throws Throwable
+    /**
+     * Sets the test instance up.
+     *
+     * @param method
+     *            the method
+     * @param test
+     *            the test instance
+     */
+    protected void setUpTest()
+    {
+        driver = null;
+        try
+        {
+            driver = BrowserRunnerHelper.createWebdriver(browserConfig);
+        }
+        catch (final MalformedURLException e)
+        {
+            throw new RuntimeException("An error occured during URL creation. See nested exception.", e);
+        }
+        if (driver != null)
+        {
+            // set browser window size
+            BrowserRunnerHelper.setBrowserWindowSize(browserConfig, driver);
+            WebDriverRunner.setWebDriver(driver);
+            // ((AbstractScriptTestCase) test).setTestDataSet(frameworkMethod.getDataSet()); //TODO:
+
+        }
+        else
+        {
+            throw new RuntimeException("Could not create driver for browsertag: " + browserConfig.getConfigTag() +
+                                       ". Please check your browserconfigurations.");
+        }
+    }
+
+    @Override
+    public void run(RunNotifier notifier)
+    {
+        // super.run(notifier);
+        // notifier.fireTestRunStarted(getDescription());
+        setUpTest();
+        // notifier.fireTestFinished(getDescription());
+    }
+
+    private BrowserRunner(Class<?> testCaseClass, BrowserConfiguration browserConfig) throws InitializationError
+    {
+        super(testCaseClass);
+        this.testCaseClass = testCaseClass;
+        this.browserConfig = browserConfig;
+    }
+
+    public BrowserRunner(final Class<?> testCaseClass) throws Throwable
     {
         super(testCaseClass);
 
@@ -131,12 +183,12 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
         final Annotation[] annotations = testCaseClass.getAnnotations();
         for (final Annotation annotation : annotations)
         {
-            // only check TestTargets annotation with a list of nested TestTarget annotations
-            if (annotation instanceof TestTargets)
+            // only check Browser annotation with a list browser configuration tags
+            if (annotation instanceof Browser)
             {
                 foundTargetsAnnotation = true;
 
-                final String[] targets = ((TestTargets) annotation).value();
+                final String[] targets = ((Browser) annotation).value();
 
                 for (final String target : targets)
                 {
@@ -152,30 +204,30 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
                         throw new IllegalArgumentException("Can not find browser configuration with tag: " + target);
                     }
 
-                    for (final FrameworkMethod frameworkMethod : getTestClass().getAnnotatedMethods(Test.class))
-                    {
-                        // get the test method to run
-                        final Method testMethod = frameworkMethod.getMethod();
+                    // for (final FrameworkMethod frameworkMethod : getTestClass().getAnnotatedMethods(Test.class))
+                    // {
+                    // get the test method to run
+                    // final Method testMethod = frameworkMethod.getMethod();
 
-                        // create the JUnit children
-                        methods.add(new AnnotatedFrameworkMethod(testMethod, testMethod.getName(), foundBrowserConfiguration));
-                    }
+                    // create the JUnit children
+                    browser.add(new BrowserRunner(testCaseClass, foundBrowserConfiguration));
+                    // }
                 }
             }
         }
 
         if (!foundTargetsAnnotation)
             throw new IllegalArgumentException("The class (" + testCaseClass.getSimpleName() +
-                                               ") does not have a required TestTargets annotation.");
+                                               ") does not have a required Browser annotation.");
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected List<FrameworkMethod> getChildren()
+    public List<Runner> getChildren()
     {
-        return methods;
+        return browser;
     }
 
     /**
@@ -184,51 +236,44 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
     @Override
     public Description getDescription()
     {
-        final Description description = Description.createSuiteDescription(getTestClass().getJavaClass());
-
-        for (final FrameworkMethod frameworkMethod : getChildren())
-        {
-            description.addChild(Description.createTestDescription(getTestClass().getJavaClass(), frameworkMethod.getName()));
-        }
-
-        return description;
+        return Description.createTestDescription(browserConfig.getName(), "");
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected Statement methodInvoker(final FrameworkMethod method, final Object test)
-    {
-        try
-        {
-            // prepare the test instance before executing it
-            setUpTest(method, test);
-        }
-        catch (Exception e)
-        {
-            return new Fail(e);
-        }
-        // the real job is done here
-        return super.methodInvoker(method, test);
-    }
+    // /**
+    // * {@inheritDoc}
+    // */
+    // @Override
+    // protected Statement methodInvoker(final FrameworkMethod method, final Object test)
+    // {
+    // try
+    // {
+    // // prepare the test instance before executing it
+    // setUpTest(method, test);
+    // }
+    // catch (Exception e)
+    // {
+    // return new Fail(e);
+    // }
+    // // the real job is done here
+    // return super.methodInvoker(method, test);
+    // }
 
-    @Override
-    protected Statement withAfters(FrameworkMethod method, Object target, Statement statement)
-    {
-        List<FrameworkMethod> methods = new LinkedList<>();
-        try
-        {
-            methods.add(new FrameworkMethod(this.getClass().getMethod("teardown")));
-        }
-        catch (NoSuchMethodException | SecurityException e)
-        {
-            throw new RuntimeException(e);
-        }
-
-        statement = new RunAfters(statement, methods, this);
-        return super.withAfters(method, target, statement);
-    }
+    // @Override
+    // protected Statement withAfters(FrameworkMethod method, Object target, Statement statement)
+    // {
+    // List<FrameworkMethod> methods = new LinkedList<>();
+    // try
+    // {
+    // methods.add(new FrameworkMethod(this.getClass().getMethod("teardown")));
+    // }
+    // catch (NoSuchMethodException | SecurityException e)
+    // {
+    // throw new RuntimeException(e);
+    // }
+    //
+    // statement = new RunAfters(statement, methods, this);
+    // return super.withAfters(method, target, statement);
+    // }
 
     public void teardown()
     {
@@ -236,5 +281,28 @@ public class AnnotationRunner extends BlockJUnit4ClassRunner
         {
             driver.quit();
         }
+    }
+
+    @Override
+    protected Description describeChild(Runner child)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected void runChild(Runner child, RunNotifier notifier)
+    {
+        // TODO Auto-generated method stub
+        System.out.println("run annotation child");
+    }
+
+    /**
+     * Returns a name used to describe this Runner
+     */
+    @Override
+    public String getName()
+    {
+        return browserConfig.getName();
     }
 }

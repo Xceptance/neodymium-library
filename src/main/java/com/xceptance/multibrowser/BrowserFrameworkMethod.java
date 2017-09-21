@@ -10,7 +10,7 @@ import com.xceptance.multibrowser.configuration.BrowserConfiguration;
  * A specialization of {@link FrameworkMethod}, which replaces the default method name with the provided name and the
  * test data set used.
  */
-public class AnnotatedFrameworkMethod extends FrameworkMethod
+public class BrowserFrameworkMethod extends FrameworkMethod
 {
     /**
      * The browser configuration to use.
@@ -34,7 +34,7 @@ public class AnnotatedFrameworkMethod extends FrameworkMethod
      * @param dataSet
      *            the test data set
      */
-    public AnnotatedFrameworkMethod(final Method method, final String testMethodName, final BrowserConfiguration browserConfiguration)
+    public BrowserFrameworkMethod(final Method method, final String testMethodName, final BrowserConfiguration browserConfiguration)
     {
         super(method);
 

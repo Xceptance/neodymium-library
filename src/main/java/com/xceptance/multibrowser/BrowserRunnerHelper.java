@@ -40,7 +40,7 @@ import com.xceptance.multibrowser.configuration.ProxyConfiguration;
 import com.xceptance.multibrowser.configuration.TestEnvironment;
 import com.xceptance.multibrowser.configuration.WebDriverProperties;
 
-public final class AnnotationRunnerHelper
+public final class BrowserRunnerHelper
 {
     private static List<String> chromeBrowsers = new LinkedList<String>();
 
@@ -183,7 +183,7 @@ public final class AnnotationRunnerHelper
     }
 
     /**
-     * Instantiate the {@link WebDriver} according to the configuration read from {@link TestTargets} annotations.
+     * Instantiate the {@link WebDriver} according to the configuration read from {@link Browser} annotations.
      *
      * @param config
      * @param proxyConfig
