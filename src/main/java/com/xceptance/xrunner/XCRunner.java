@@ -84,7 +84,7 @@ public class XCRunner extends Runner
         // group tests
         List<Class<?>> groupsToExecute = new LinkedList<>();
         groupsToExecute.add(DefaultGroup.class); // TODO:
-        // testRunner = regroupTests(testRunner, groupsToExecute, true);
+        testRunner = regroupTests(testRunner, groupsToExecute, true);
 
         testDescription = createTestDescription();
     }
@@ -110,19 +110,10 @@ public class XCRunner extends Runner
                 throw new RuntimeException("This shouldn't happen");
             }
 
-            // for (TestGroup testGroup : testMethodsWithTestGroups.values())
-            // {
-            // testMethodsWithTestGroups.get(method).value();
-            // }
-
-            // boolean allMatch = true;
-            // for (Class<?> group : groupsToExecute)
-            // {
-            // if (!methodGroups.contains(group))
-            // {
-            // allMatch = false;
-            // }
-            // }
+            if (GroupHelper.testGroupMatch(testMethodsWithTestGroups.get(method), groupsToExecute, matchAny))
+            {
+                groupedRunner.add(runners);
+            }
         }
 
         return groupedRunner;
@@ -145,7 +136,7 @@ public class XCRunner extends Runner
                 TestGroup testGroupAnnotation = annotatedMethod.getAnnotation(TestGroup.class);
                 if (testGroupAnnotation != null)
                 {
-                    methodTestGroups = GroupHelper.wrapGroup(testGroupAnnotation);
+                    methodTestGroups = GroupHelper.addDefaultGroupToTestGroups(GroupHelper.wrapGroup(testGroupAnnotation));
                 }
                 else
                 {
@@ -153,7 +144,7 @@ public class XCRunner extends Runner
                     TestGroups testGroupsAnnotation = annotatedMethod.getAnnotation(TestGroups.class);
                     if (testGroupsAnnotation != null)
                     {
-                        methodTestGroups = testGroupsAnnotation;
+                        methodTestGroups = GroupHelper.addDefaultGroupToTestGroups(testGroupsAnnotation);
                     }
                     else
                     {
