@@ -112,28 +112,28 @@ public class GroupHelper
     {
         // if not matchAny then it's matchAll
 
-        boolean found;
+        boolean match;
         if (matchAny)
         {
-            found = false;
+            match = false;
         }
         else
         {
-            found = true;
+            match = true;
         }
         for (TestGroup annotatedGroup : annotatedGroups.value())
         {
             boolean executionGroupsContainsAnnotatedGroup = groupsToExecute.contains(annotatedGroup.group());
             if (matchAny)
             {
-                found |= executionGroupsContainsAnnotatedGroup;
+                match |= executionGroupsContainsAnnotatedGroup;
             }
             else
             {
-                found &= executionGroupsContainsAnnotatedGroup;
+                match &= executionGroupsContainsAnnotatedGroup;
             }
         }
 
-        return found;
+        return match;
     }
 }
