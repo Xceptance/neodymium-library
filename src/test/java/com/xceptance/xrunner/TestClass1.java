@@ -1,7 +1,9 @@
 package com.xceptance.xrunner;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -9,18 +11,19 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.xceptance.multibrowser.Browser;
-import com.xceptance.xrunner.groups.TestGroup;
 
 @Browser(
     {
         "Chrome_1024x768", "FF_1024x768"
     })
 @RunWith(XCRunner.class)
+@Category(RuntimeException.class)
 public class TestClass1
 {
     @Parameter
@@ -41,7 +44,7 @@ public class TestClass1
     {
         List<Object[]> data = new LinkedList<>();
 
-        for (int i = 97; i < 100; i++)
+        for (int i = 97; i < 98; i++)
         {
             data.add(new Object[]
                 {
@@ -88,10 +91,17 @@ public class TestClass1
     }
 
     @Test
-    @TestGroup(ordinal = 1)
+    @Category(Integer.class)
     public void testMethod0()
     {
         System.out.println("testMethod0: Parameter[" + parameter0 + ", " + parameter1 + "]");
+
+        Iterator<Entry<Object, Object>> sysprops = System.getProperties().entrySet().iterator();
+        while (sysprops.hasNext())
+        {
+            Entry<Object, Object> entry = sysprops.next();
+            System.out.println(entry.getKey() + " === " + entry.getValue());
+        }
 
         int a = 1;
         int b = 0;
@@ -101,7 +111,6 @@ public class TestClass1
     }
 
     @Test
-    @TestGroup(ordinal = 2)
     public void testMethod1()
     {
         System.out.println("testMethod1: Parameter[" + parameter0 + ", " + parameter1 + "]");

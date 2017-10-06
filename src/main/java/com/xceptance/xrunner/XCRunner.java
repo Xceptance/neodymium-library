@@ -4,16 +4,24 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
+import org.junit.runner.manipulation.Filter;
+import org.junit.runner.manipulation.Filterable;
+import org.junit.runner.manipulation.NoTestsRemainException;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -27,11 +35,8 @@ import org.junit.runners.model.TestClass;
 import com.xceptance.multibrowser.Browser;
 import com.xceptance.multibrowser.BrowserRunner;
 import com.xceptance.xrunner.groups.DefaultGroup;
-import com.xceptance.xrunner.groups.GroupHelper;
-import com.xceptance.xrunner.groups.TestGroup;
-import com.xceptance.xrunner.groups.TestGroups;
 
-public class XCRunner extends Runner
+public class XCRunner extends Runner implements Filterable
 {
     List<List<Runner>> testRunner = new LinkedList<>();
 
@@ -46,6 +51,7 @@ public class XCRunner extends Runner
         List<List<Runner>> vectors = new LinkedList<>();
         testClass = new TestClass(testKlass);
         List<Runner> runners = new LinkedList<>();
+        methodExecutionContext = new MethodExecutionContext();
 
         // find test vectors
         // scan for Browser and Parameters annotation
@@ -57,8 +63,6 @@ public class XCRunner extends Runner
         {
             runners.add(new BrowserRunner(testKlass));
         }
-
-        methodExecutionContext = new MethodExecutionContext();
 
         // scan for JUnit Parameters
         List<FrameworkMethod> parameterMethods = testClass.getAnnotatedMethods(Parameters.class);
@@ -91,7 +95,7 @@ public class XCRunner extends Runner
 
     private List<List<Runner>> regroupTests(List<List<Runner>> testRunner, List<Class<?>> groupsToExecute, boolean matchAny)
     {
-        Map<FrameworkMethod, TestGroups> testMethodsWithTestGroups = getTestMethodsWithTestGroups();
+        Map<FrameworkMethod, Set<Class<?>>> testMethodsWithTestGroups = getTestMethodsWithCategories();
 
         List<List<Runner>> groupedRunner = new LinkedList<>();
 
@@ -110,7 +114,7 @@ public class XCRunner extends Runner
                 throw new RuntimeException("This shouldn't happen");
             }
 
-            if (GroupHelper.testGroupMatch(testMethodsWithTestGroups.get(method), groupsToExecute, matchAny))
+            if (testCategoryMatch(testMethodsWithTestGroups.get(method), groupsToExecute, matchAny))
             {
                 groupedRunner.add(runners);
             }
@@ -119,48 +123,62 @@ public class XCRunner extends Runner
         return groupedRunner;
     }
 
-    private Map<FrameworkMethod, TestGroups> getTestMethodsWithTestGroups()
+    private boolean testCategoryMatch(Set<Class<?>> annotatedGroups, List<Class<?>> groupsToExecute, boolean matchAny)
     {
-        Map<FrameworkMethod, TestGroups> testMethods = new HashMap<>();
-
-        List<FrameworkMethod> annotatedMethods = testClass.getAnnotatedMethods();
-        for (FrameworkMethod annotatedMethod : annotatedMethods)
+        // if not matchAny then it's matchAll
+        boolean match;
+        if (matchAny)
         {
-            // method grouping belongs only to test methods so check that first
-            Test testAnnotation = annotatedMethod.getAnnotation(Test.class);
-            if (testAnnotation != null)
+            match = false;
+        }
+        else
+        {
+            match = true;
+        }
+        for (Class<?> annotatedGroup : annotatedGroups)
+        {
+            boolean executionGroupsContainsAnnotatedGroup = groupsToExecute.contains(annotatedGroup);
+            if (matchAny)
             {
-                TestGroups methodTestGroups;
-
-                // if there is only one TestGroup annotation on a method we have to look for TestGroup
-                TestGroup testGroupAnnotation = annotatedMethod.getAnnotation(TestGroup.class);
-                if (testGroupAnnotation != null)
-                {
-                    methodTestGroups = GroupHelper.addDefaultGroupToTestGroups(GroupHelper.wrapGroup(testGroupAnnotation));
-                }
-                else
-                {
-                    // if there are more than one it we need to lookup for TestGroups which aggregate them into one
-                    TestGroups testGroupsAnnotation = annotatedMethod.getAnnotation(TestGroups.class);
-                    if (testGroupsAnnotation != null)
-                    {
-                        methodTestGroups = GroupHelper.addDefaultGroupToTestGroups(testGroupsAnnotation);
-                    }
-                    else
-                    {
-                        // if there is none TestGroup annotation we create a default one
-                        methodTestGroups = GroupHelper.createDefaultGroups();
-                    }
-                }
-
-                List<Class<?>> methodTestGroupClasses = new LinkedList<>();
-                for (TestGroup tg : methodTestGroups.value())
-                {
-                    methodTestGroupClasses.add(tg.getClass());
-                }
-
-                testMethods.put(annotatedMethod, methodTestGroups);
+                match |= executionGroupsContainsAnnotatedGroup;
             }
+            else
+            {
+                match &= executionGroupsContainsAnnotatedGroup;
+            }
+        }
+
+        return match;
+    }
+
+    private Map<FrameworkMethod, Set<Class<?>>> getTestMethodsWithCategories()
+    {
+        Map<FrameworkMethod, Set<Class<?>>> testMethods = new HashMap<>();
+
+        Category classCategory = testClass.getAnnotation(Category.class);
+        List<Class<?>> classCategories = new ArrayList<>();
+        if (classCategory != null)
+        {
+            classCategories = Arrays.asList(classCategory.value());
+        }
+
+        // method grouping belongs only to test methods so check that first
+        for (FrameworkMethod annotatedMethod : testClass.getAnnotatedMethods(Test.class))
+        {
+            Category categoryAnnotation = annotatedMethod.getAnnotation(Category.class);
+
+            Set<Class<?>> categories = new HashSet<>();
+            if (categoryAnnotation != null)
+            {
+                categories.addAll(Arrays.asList(categoryAnnotation.value()));
+            }
+
+            // add categories from class to every method
+            categories.addAll(classCategories);
+            // ensure that DefaultGroup is set for all methods that makes it easier afterwards
+            categories.add(DefaultGroup.class);
+
+            testMethods.put(annotatedMethod, categories);
         }
 
         return testMethods;
@@ -273,6 +291,10 @@ public class XCRunner extends Runner
                     vectors.add((List<Runner>) m.invoke(runner));
                 }
             }
+            else if (runner instanceof XCRunner)
+            {
+                XCRunner xcr = (XCRunner) runner;
+            }
         }
     }
 
@@ -285,7 +307,7 @@ public class XCRunner extends Runner
             boolean lastIteration = (i == testRunner.size() - 1) ? true : false;
 
             List<Runner> runners = testRunner.get(i);
-            Description description = testDescription.getChildren().get(i);
+            Description description = testDescription.getChildren().get(Math.min(i, Math.max(0, testDescription.getChildren().size() - 1)));
 
             if (checkIgnored(runners))
             {
@@ -358,5 +380,12 @@ public class XCRunner extends Runner
     public Description getDescription()
     {
         return testDescription;
+    }
+
+    @Override
+    public void filter(Filter filter) throws NoTestsRemainException
+    {
+        // TODO Auto-generated method stub
+        System.out.println(filter);
     }
 }
