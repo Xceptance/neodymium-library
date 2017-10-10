@@ -36,7 +36,7 @@ public class BrowserRunner extends ParentRunner<Runner>
      */
     private final List<Runner> browser = new LinkedList<Runner>();
 
-    private WebDriver driver;
+    private WebDriver webdriver;
 
     private BrowserConfiguration browserConfig;
 
@@ -58,20 +58,20 @@ public class BrowserRunner extends ParentRunner<Runner>
         // get the browser configuration for this testcase
         final BrowserConfiguration config = frameworkMethod.getBrowserConfiguration();
 
-        driver = null;
+        webdriver = null;
         try
         {
-            driver = BrowserRunnerHelper.createWebdriver(config);
+            webdriver = BrowserRunnerHelper.createWebdriver(config);
         }
         catch (final MalformedURLException e)
         {
             throw new RuntimeException("An error occured during URL creation. See nested exception.", e);
         }
-        if (driver != null)
+        if (webdriver != null)
         {
             // set browser window size
-            BrowserRunnerHelper.setBrowserWindowSize(config, driver);
-            WebDriverRunner.setWebDriver(driver);
+            BrowserRunnerHelper.setBrowserWindowSize(config, webdriver);
+            WebDriverRunner.setWebDriver(webdriver);
             // ((AbstractScriptTestCase) test).setTestDataSet(frameworkMethod.getDataSet()); //TODO:
 
         }
@@ -92,20 +92,27 @@ public class BrowserRunner extends ParentRunner<Runner>
      */
     protected void setUpTest()
     {
-        driver = null;
+        webdriver = null;
         try
         {
-            driver = BrowserRunnerHelper.createWebdriver(browserConfig);
+            // try to find appropriate webdriver in cache before create a new instace
+            if (MultibrowserConfiguration.getIntance().getWebDriverProperties().reuseWebDriver())
+            {
+                webdriver = BrowserDriverCache.getIntance().getWebDriverForTag(browserConfig.getConfigTag());
+            }
+
+            if (webdriver != null)
+                webdriver = BrowserRunnerHelper.createWebdriver(browserConfig);
         }
         catch (final MalformedURLException e)
         {
             throw new RuntimeException("An error occured during URL creation. See nested exception.", e);
         }
-        if (driver != null)
+        if (webdriver != null)
         {
             // set browser window size
-            BrowserRunnerHelper.setBrowserWindowSize(browserConfig, driver);
-            WebDriverRunner.setWebDriver(driver);
+            BrowserRunnerHelper.setBrowserWindowSize(browserConfig, webdriver);
+            WebDriverRunner.setWebDriver(webdriver);
             // ((AbstractScriptTestCase) test).setTestDataSet(frameworkMethod.getDataSet()); //TODO:
 
         }
@@ -277,9 +284,15 @@ public class BrowserRunner extends ParentRunner<Runner>
 
     public void teardown()
     {
-        if (driver != null && !MultibrowserConfiguration.getIntance().getWebDriverProperties().keepBrowserOpen())
+        WebDriverProperties webDriverProperties = MultibrowserConfiguration.getIntance().getWebDriverProperties();
+        if (webdriver != null && (!webDriverProperties.keepBrowserOpen() || !webDriverProperties.reuseWebDriver()))
         {
-            driver.quit();
+            webdriver.quit();
+        }
+        else
+        {
+            // if teardown didn't closed webdriver then we should put it in the cache for later use
+            BrowserDriverCache.getIntance().putWebDriverForTag(browserConfig.getConfigTag(), webdriver);
         }
     }
 
