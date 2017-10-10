@@ -28,7 +28,8 @@ public class NeodymiumMethodRunner extends BlockJUnit4ClassRunner
         super(klass);
     }
 
-    public NeodymiumMethodRunner(Class<?> klass, FrameworkMethod method, MethodExecutionContext methodExecutionContext) throws InitializationError
+    public NeodymiumMethodRunner(Class<?> klass, FrameworkMethod method, MethodExecutionContext methodExecutionContext)
+        throws InitializationError
     {
         super(klass);
         this.methodExecutionContext = methodExecutionContext;
@@ -47,11 +48,11 @@ public class NeodymiumMethodRunner extends BlockJUnit4ClassRunner
     {
         testInstance = methodExecutionContext.getTestClassInstance();
 
-        NeodymiumRunListener xcr = new NeodymiumRunListener();
+        NeodymiumRunListener runListener = new NeodymiumRunListener();
         try
         {
             RunNotifier subnotifier = new RunNotifier();
-            subnotifier.addListener(xcr);
+            subnotifier.addListener(runListener);
 
             Statement statement = childrenInvoker(subnotifier);
 
@@ -65,14 +66,16 @@ public class NeodymiumMethodRunner extends BlockJUnit4ClassRunner
                 statement = withAfterClasses(statement);
             }
             statement.evaluate();
-            if (xcr.hasFailure())
+            if (runListener.hasFailure())
             {
-                notifier.fireTestFailure(new Failure(methodExecutionContext.getRunnerDescription(), xcr.getFailure().getException()));
+                notifier.fireTestFailure(new Failure(methodExecutionContext.getRunnerDescription(),
+                                                     runListener.getFailure().getException()));
             }
         }
         catch (AssumptionViolatedException e)
         {
-            notifier.fireTestAssumptionFailed(new Failure(methodExecutionContext.getRunnerDescription(), xcr.getFailure().getException()));
+            notifier.fireTestAssumptionFailed(new Failure(methodExecutionContext.getRunnerDescription(),
+                                                          runListener.getFailure().getException()));
         }
         catch (StoppedByUserException e)
         {
