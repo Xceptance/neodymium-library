@@ -98,7 +98,7 @@ public class BrowserRunner extends ParentRunner<Runner>
             // try to find appropriate webdriver in cache before create a new instace
             if (MultibrowserConfiguration.getIntance().getWebDriverProperties().reuseWebDriver())
             {
-                webdriver = BrowserDriverCache.getIntance().getWebDriverForTag(browserConfig.getConfigTag());
+                webdriver = BrowserDriverCache.getIntance().removeGetWebDriver(browserConfig.getConfigTag());
             }
 
             if (webdriver != null)
