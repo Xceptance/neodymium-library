@@ -6,8 +6,8 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.xceptance.multibrowser.Browser;
 import com.xceptance.neodymium.NeodymiumRunner;
+import com.xceptance.neodymium.multibrowser.Browser;
 
 @Browser(
     {

@@ -32,9 +32,9 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.RunnerBuilder;
 import org.junit.runners.model.TestClass;
 
-import com.xceptance.multibrowser.Browser;
-import com.xceptance.multibrowser.BrowserRunner;
 import com.xceptance.neodymium.groups.DefaultGroup;
+import com.xceptance.neodymium.multibrowser.Browser;
+import com.xceptance.neodymium.multibrowser.BrowserRunner;
 
 public class NeodymiumRunner extends Runner implements Filterable
 {

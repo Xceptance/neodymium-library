@@ -1,4 +1,4 @@
-package com.xceptance.multibrowser;
+package com.xceptance.neodymium.multibrowser;
 
 import java.util.Collection;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package com.xceptance.multibrowser.configuration;
+package com.xceptance.neodymium.multibrowser.configuration;
 
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Config.Sources;

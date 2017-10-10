@@ -1,10 +1,10 @@
-package com.xceptance.multibrowser;
+package com.xceptance.neodymium.multibrowser;
 
 import java.lang.reflect.Method;
 
 import org.junit.runners.model.FrameworkMethod;
 
-import com.xceptance.multibrowser.configuration.BrowserConfiguration;
+import com.xceptance.neodymium.multibrowser.configuration.BrowserConfiguration;
 
 /**
  * A specialization of {@link FrameworkMethod}, which replaces the default method name with the provided name and the

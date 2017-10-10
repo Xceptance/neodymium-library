@@ -1,4 +1,4 @@
-package com.xceptance.multibrowser;
+package com.xceptance.neodymium.multibrowser;
 
 import java.net.URL;
 

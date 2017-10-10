@@ -1,4 +1,4 @@
-package com.xceptance.multibrowser;
+package com.xceptance.neodymium.multibrowser;
 
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
@@ -17,10 +17,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 import com.codeborne.selenide.WebDriverRunner;
-import com.xceptance.multibrowser.configuration.BrowserConfiguration;
-import com.xceptance.multibrowser.configuration.DriverServerPath;
-import com.xceptance.multibrowser.configuration.MultibrowserConfiguration;
-import com.xceptance.multibrowser.configuration.WebDriverProperties;
+import com.xceptance.neodymium.multibrowser.configuration.BrowserConfiguration;
+import com.xceptance.neodymium.multibrowser.configuration.DriverServerPath;
+import com.xceptance.neodymium.multibrowser.configuration.MultibrowserConfiguration;
+import com.xceptance.neodymium.multibrowser.configuration.WebDriverProperties;
 
 /**
  * JUnit runner used to run testcases that are annotated with {@link Browser}. This class reads the annotation based

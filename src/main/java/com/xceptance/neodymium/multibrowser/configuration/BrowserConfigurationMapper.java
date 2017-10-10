@@ -1,4 +1,4 @@
-package com.xceptance.multibrowser.configuration;
+package com.xceptance.neodymium.multibrowser.configuration;
 
 import java.util.HashMap;
 import java.util.Map;
