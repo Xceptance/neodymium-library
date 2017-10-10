@@ -3,11 +3,11 @@ package com.xceptance.neodymium.multibrowser.configuration;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.aeonbits.owner.ConfigFactory;
 import org.apache.commons.lang3.StringUtils;
@@ -70,7 +70,7 @@ public class MultibrowserConfiguration
     private void parseTestEnvironments()
     {
         testEnvironments = new LinkedHashMap<String, TestEnvironment>();
-        List<String> testEnvironmentKeys = getSubkeysForPrefix(testEnvironmentProperties, TEST_ENVIRONMENT_PREFIX);
+        Set<String> testEnvironmentKeys = getSubkeysForPrefix(testEnvironmentProperties, TEST_ENVIRONMENT_PREFIX);
 
         for (String testEnvironmentKey : testEnvironmentKeys)
         {
@@ -82,13 +82,13 @@ public class MultibrowserConfiguration
     private void parseBrowserProfiles()
     {
         browserProfiles = new LinkedHashMap<String, BrowserConfiguration>();
-        List<String> browserProfileKeys = getSubkeysForPrefix(browserProfileProperties, BROWSER_PROFILE_PREFIX);
+        Set<String> browserProfileKeys = getSubkeysForPrefix(browserProfileProperties, BROWSER_PROFILE_PREFIX);
 
         BrowserConfigurationMapper mapper = new BrowserConfigurationMapper();
 
         for (String browserProfile : browserProfileKeys)
         {
-            List<String> subkeysForPrefix = getSubkeysForPrefix(browserProfileProperties, BROWSER_PROFILE_PREFIX + browserProfile + ".");
+            Set<String> subkeysForPrefix = getSubkeysForPrefix(browserProfileProperties, BROWSER_PROFILE_PREFIX + browserProfile + ".");
             Map<String, String> browserProfileConfiguration = new HashMap<>();
 
             for (String subkey : subkeysForPrefix)
@@ -100,20 +100,25 @@ public class MultibrowserConfiguration
         }
     }
 
-    private List<String> getSubkeysForPrefix(Properties properties, String prefix)
+    private Set<String> getSubkeysForPrefix(Properties properties, String prefix)
     {
-        List<String> keys = new LinkedList<String>();
+        Set<String> keys = new HashSet<String>();
 
-        for (String key : properties.keySet().toArray(new String[] {}))
+        for (Object key : properties.keySet())
         {
-            if (key.toLowerCase().startsWith(prefix.toLowerCase())) // TODO: lower case compare is wrong!
+            String keyString = (String) key;
+            if (keyString.toLowerCase().startsWith(prefix.toLowerCase())) // TODO: lower case compare is wrong!
             {
-                key = key.substring(prefix.length());
-                String[] split = key.split("\\.");
+                // cut off prefix
+                keyString = keyString.substring(prefix.length());
+
+                // split on the next dots
+                String[] split = keyString.split("\\.");
                 if (split != null && split.length > 0)
                 {
+                    // the first entry in the resulting array will be the key we are searching for
                     String newKey = split[0];
-                    if (StringUtils.isNotBlank(newKey) && !keys.contains(newKey))
+                    if (StringUtils.isNotBlank(newKey))
                     {
                         keys.add(newKey);
                     }
