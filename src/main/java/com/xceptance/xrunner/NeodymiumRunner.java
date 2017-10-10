@@ -88,7 +88,7 @@ public class NeodymiumRunner extends Runner implements Filterable
 
         // group tests
         List<Class<?>> groupsToExecute = new LinkedList<>();
-        groupsToExecute.add(DefaultGroup.class); // TODO:
+        groupsToExecute.add(DefaultGroup.class); // TODO: maven and gradle can define groups that should be executed. see function 'filter'
         testRunner = regroupTests(testRunner, groupsToExecute, true);
 
         testDescription = createTestDescription();
@@ -291,10 +291,6 @@ public class NeodymiumRunner extends Runner implements Filterable
                     }
                     vectors.add((List<Runner>) m.invoke(runner));
                 }
-            }
-            else if (runner instanceof NeodymiumRunner)
-            {
-                NeodymiumRunner xcr = (NeodymiumRunner) runner;
             }
         }
     }
