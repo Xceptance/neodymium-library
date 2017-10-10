@@ -13,7 +13,7 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.parameterized.BlockJUnit4ClassRunnerWithParameters;
 import org.junit.runners.parameterized.TestWithParameters;
 
-public class XCParameterRunner extends BlockJUnit4ClassRunnerWithParameters
+public class NeodymiumParameterRunner extends BlockJUnit4ClassRunnerWithParameters
 {
     private TestWithParameters test;
 
@@ -23,7 +23,7 @@ public class XCParameterRunner extends BlockJUnit4ClassRunnerWithParameters
 
     private MethodExecutionContext methodExecutionContext;
 
-    public XCParameterRunner(TestWithParameters test, MethodExecutionContext methodExecutionContext) throws InitializationError
+    public NeodymiumParameterRunner(TestWithParameters test, MethodExecutionContext methodExecutionContext) throws InitializationError
     {
         super(test);
         this.test = test;

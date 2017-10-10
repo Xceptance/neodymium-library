@@ -5,12 +5,12 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.parameterized.ParametersRunnerFactory;
 import org.junit.runners.parameterized.TestWithParameters;
 
-public class XCParameterRunnerFactory implements ParametersRunnerFactory
+public class NeodymiumParameterRunnerFactory implements ParametersRunnerFactory
 {
 
     private MethodExecutionContext methodExecutionContext;
 
-    public XCParameterRunnerFactory(MethodExecutionContext methodExecutionContext)
+    public NeodymiumParameterRunnerFactory(MethodExecutionContext methodExecutionContext)
     {
         this.methodExecutionContext = methodExecutionContext;
     }
@@ -18,7 +18,7 @@ public class XCParameterRunnerFactory implements ParametersRunnerFactory
     @Override
     public Runner createRunnerForTestWithParameters(TestWithParameters test) throws InitializationError
     {
-        return new XCParameterRunner(test, methodExecutionContext);
+        return new NeodymiumParameterRunner(test, methodExecutionContext);
     }
 
 }

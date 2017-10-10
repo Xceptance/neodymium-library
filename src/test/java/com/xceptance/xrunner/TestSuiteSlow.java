@@ -5,7 +5,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite.SuiteClasses;
 
 //@RunWith(Categories.class)
-@RunWith(XCRunner.class)
+@RunWith(NeodymiumRunner.class)
 @SuiteClasses(
     {
         TestClass2.class

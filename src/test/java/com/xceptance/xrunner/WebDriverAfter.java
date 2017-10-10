@@ -12,7 +12,7 @@ import com.xceptance.multibrowser.Browser;
     {
         "Chrome_1024x768"
     })
-@RunWith(XCRunner.class)
+@RunWith(NeodymiumRunner.class)
 public class WebDriverAfter
 {
     @Test

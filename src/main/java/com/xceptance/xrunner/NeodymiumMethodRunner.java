@@ -14,7 +14,7 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.MultipleFailureException;
 import org.junit.runners.model.Statement;
 
-public class XCMethodRunner extends BlockJUnit4ClassRunner
+public class NeodymiumMethodRunner extends BlockJUnit4ClassRunner
 {
 
     List<FrameworkMethod> methodToRun;
@@ -23,12 +23,12 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner
 
     private MethodExecutionContext methodExecutionContext;
 
-    private XCMethodRunner(Class<?> klass) throws InitializationError
+    private NeodymiumMethodRunner(Class<?> klass) throws InitializationError
     {
         super(klass);
     }
 
-    public XCMethodRunner(Class<?> klass, FrameworkMethod method, MethodExecutionContext methodExecutionContext) throws InitializationError
+    public NeodymiumMethodRunner(Class<?> klass, FrameworkMethod method, MethodExecutionContext methodExecutionContext) throws InitializationError
     {
         super(klass);
         this.methodExecutionContext = methodExecutionContext;
@@ -47,7 +47,7 @@ public class XCMethodRunner extends BlockJUnit4ClassRunner
     {
         testInstance = methodExecutionContext.getTestClassInstance();
 
-        XCRunListener xcr = new XCRunListener();
+        NeodymiumRunListener xcr = new NeodymiumRunListener();
         try
         {
             RunNotifier subnotifier = new RunNotifier();

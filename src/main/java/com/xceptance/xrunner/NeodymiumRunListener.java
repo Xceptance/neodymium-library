@@ -3,7 +3,7 @@ package com.xceptance.xrunner;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 
-public class XCRunListener extends RunListener
+public class NeodymiumRunListener extends RunListener
 {
     private Failure failure = null;
 

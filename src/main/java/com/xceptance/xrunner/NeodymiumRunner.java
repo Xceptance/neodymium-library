@@ -36,7 +36,7 @@ import com.xceptance.multibrowser.Browser;
 import com.xceptance.multibrowser.BrowserRunner;
 import com.xceptance.xrunner.groups.DefaultGroup;
 
-public class XCRunner extends Runner implements Filterable
+public class NeodymiumRunner extends Runner implements Filterable
 {
     List<List<Runner>> testRunner = new LinkedList<>();
 
@@ -46,7 +46,7 @@ public class XCRunner extends Runner implements Filterable
 
     private MethodExecutionContext methodExecutionContext;
 
-    public XCRunner(Class<?> testKlass, RunnerBuilder rb) throws Throwable
+    public NeodymiumRunner(Class<?> testKlass, RunnerBuilder rb) throws Throwable
     {
         List<List<Runner>> vectors = new LinkedList<>();
         testClass = new TestClass(testKlass);
@@ -68,7 +68,7 @@ public class XCRunner extends Runner implements Filterable
         List<FrameworkMethod> parameterMethods = testClass.getAnnotatedMethods(Parameters.class);
         if (parameterMethods.size() > 0)
         {
-            setFinalStatic(Parameterized.class.getDeclaredField("DEFAULT_FACTORY"), new XCParameterRunnerFactory(methodExecutionContext));
+            setFinalStatic(Parameterized.class.getDeclaredField("DEFAULT_FACTORY"), new NeodymiumParameterRunnerFactory(methodExecutionContext));
             runners.add(new Parameterized(testKlass));
         }
 
@@ -79,7 +79,7 @@ public class XCRunner extends Runner implements Filterable
         List<Runner> methodVector = new LinkedList<>();
         for (FrameworkMethod method : testClass.getAnnotatedMethods(Test.class))
         {
-            methodVector.add(new XCMethodRunner(testKlass, method, methodExecutionContext));
+            methodVector.add(new NeodymiumMethodRunner(testKlass, method, methodExecutionContext));
         }
         vectors.add(methodVector);
 
@@ -105,9 +105,9 @@ public class XCRunner extends Runner implements Filterable
             // the last runner in the list should always be an XCMethodRunner
             // get this method
             Runner runner = runners.get(runners.size() - 1);
-            if (runner instanceof XCMethodRunner)
+            if (runner instanceof NeodymiumMethodRunner)
             {
-                method = ((XCMethodRunner) runner).getMethod();
+                method = ((NeodymiumMethodRunner) runner).getMethod();
             }
             else
             {
@@ -206,9 +206,9 @@ public class XCRunner extends Runner implements Filterable
             {
                 Description runnerDescription = runner.getDescription();
                 String displayName = "";
-                if (runner instanceof XCParameterRunner)
+                if (runner instanceof NeodymiumParameterRunner)
                 {
-                    displayName = ((XCParameterRunner) runner).getName();
+                    displayName = ((NeodymiumParameterRunner) runner).getName();
                 }
                 else if (runner instanceof BlockJUnit4ClassRunner)
                 {
@@ -291,9 +291,9 @@ public class XCRunner extends Runner implements Filterable
                     vectors.add((List<Runner>) m.invoke(runner));
                 }
             }
-            else if (runner instanceof XCRunner)
+            else if (runner instanceof NeodymiumRunner)
             {
-                XCRunner xcr = (XCRunner) runner;
+                NeodymiumRunner xcr = (NeodymiumRunner) runner;
             }
         }
     }
@@ -366,9 +366,9 @@ public class XCRunner extends Runner implements Filterable
     {
         for (Runner runner : runners)
         {
-            if (runner instanceof XCMethodRunner)
+            if (runner instanceof NeodymiumMethodRunner)
             {
-                XCMethodRunner methodRunner = (XCMethodRunner) runner;
+                NeodymiumMethodRunner methodRunner = (NeodymiumMethodRunner) runner;
                 return (methodRunner.getChildren().get(0).getAnnotation(Ignore.class) != null);
             }
         }
