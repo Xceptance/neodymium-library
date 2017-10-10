@@ -68,7 +68,8 @@ public class NeodymiumRunner extends Runner implements Filterable
         List<FrameworkMethod> parameterMethods = testClass.getAnnotatedMethods(Parameters.class);
         if (parameterMethods.size() > 0)
         {
-            setFinalStatic(Parameterized.class.getDeclaredField("DEFAULT_FACTORY"), new NeodymiumParameterRunnerFactory(methodExecutionContext));
+            setFinalStatic(Parameterized.class.getDeclaredField("DEFAULT_FACTORY"),
+                           new NeodymiumParameterRunnerFactory(methodExecutionContext));
             runners.add(new Parameterized(testKlass));
         }
 
@@ -385,7 +386,8 @@ public class NeodymiumRunner extends Runner implements Filterable
     @Override
     public void filter(Filter filter) throws NoTestsRemainException
     {
-        // TODO Auto-generated method stub
+        // this method will be called by surefire and gradle among others
+        // any include/exlude groups defined in maven or gradle build process result in an filter object
         System.out.println(filter);
     }
 }
