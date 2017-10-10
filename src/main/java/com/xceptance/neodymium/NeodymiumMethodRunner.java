@@ -1,4 +1,4 @@
-package com.xceptance.xrunner;
+package com.xceptance.neodymium;
 
 import java.util.LinkedList;
 import java.util.List;

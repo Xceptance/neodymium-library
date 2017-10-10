@@ -1,4 +1,4 @@
-package com.xceptance.xrunner;
+package com.xceptance.neodymium;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -34,7 +34,7 @@ import org.junit.runners.model.TestClass;
 
 import com.xceptance.multibrowser.Browser;
 import com.xceptance.multibrowser.BrowserRunner;
-import com.xceptance.xrunner.groups.DefaultGroup;
+import com.xceptance.neodymium.groups.DefaultGroup;
 
 public class NeodymiumRunner extends Runner implements Filterable
 {
