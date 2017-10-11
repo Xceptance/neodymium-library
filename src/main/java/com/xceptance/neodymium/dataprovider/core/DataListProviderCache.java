@@ -66,7 +66,7 @@ public class DataListProviderCache
 
     public <T> boolean removeDataListProvider(T dataListProviderType, String providerInstanceName)
     {
-        synchronized (dataListProviderType)
+        synchronized (dataListProviderCache)
         {
             Map<String, Object> dataListProviders = dataListProviderCache.get(dataListProviderType.getClass());
 
