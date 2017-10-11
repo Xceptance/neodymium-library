@@ -18,7 +18,7 @@ public class DataListProviderCache
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends DataListProvider<?>> void addDataListProvider(T dataListProvider, String instanceName)
+    public <T extends DataListProvider<?>> void addDataListProvider(T dataListProvider, String providerInstanceName)
     {
         synchronized (dataListProviderCache)
         {
@@ -26,12 +26,12 @@ public class DataListProviderCache
             if (entry == null)
             {
                 Map<String, Object> newDataListProviderMap = new HashMap<>();
-                newDataListProviderMap.put(instanceName, dataListProvider);
+                newDataListProviderMap.put(providerInstanceName, dataListProvider);
                 dataListProviderCache.put((Class<? extends DataListProvider<?>>) dataListProvider.getClass(), newDataListProviderMap);
             }
             else
             {
-                entry.put(instanceName, dataListProvider);
+                entry.put(providerInstanceName, dataListProvider);
             }
         }
     }
@@ -61,6 +61,16 @@ public class DataListProviderCache
         synchronized (dataListProviderCache)
         {
             return dataListProviderCache.get(dataListProviderType);
+        }
+    }
+
+    public <T> boolean removeDataListProvider(T dataListProviderType, String providerInstanceName)
+    {
+        synchronized (dataListProviderType)
+        {
+            Map<String, Object> dataListProviders = dataListProviderCache.get(dataListProviderType.getClass());
+
+            return (dataListProviders.remove(providerInstanceName) != null);
         }
     }
 
