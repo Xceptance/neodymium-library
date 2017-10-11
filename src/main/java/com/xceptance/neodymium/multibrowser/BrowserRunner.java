@@ -40,8 +40,6 @@ public class BrowserRunner extends ParentRunner<Runner>
 
     private BrowserConfiguration browserConfig;
 
-    private Class<?> testCaseClass;
-
     /**
      * Sets the test instance up.
      *
@@ -135,7 +133,6 @@ public class BrowserRunner extends ParentRunner<Runner>
     private BrowserRunner(Class<?> testCaseClass, BrowserConfiguration browserConfig) throws InitializationError
     {
         super(testCaseClass);
-        this.testCaseClass = testCaseClass;
         this.browserConfig = browserConfig;
     }
 
