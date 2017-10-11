@@ -98,7 +98,7 @@ public class BrowserRunner extends ParentRunner<Runner>
             // try to find appropriate webdriver in cache before create a new instace
             if (MultibrowserConfiguration.getIntance().getWebDriverProperties().reuseWebDriver())
             {
-                webdriver = BrowserDriverCache.getIntance().removeGetWebDriver(browserConfig.getConfigTag());
+                webdriver = WebDriverCache.getIntance().removeGetWebDriver(browserConfig.getConfigTag());
             }
 
             if (webdriver != null)
@@ -292,7 +292,7 @@ public class BrowserRunner extends ParentRunner<Runner>
         else
         {
             // if teardown didn't closed webdriver then we should put it in the cache for later use
-            BrowserDriverCache.getIntance().putWebDriverForTag(browserConfig.getConfigTag(), webdriver);
+            WebDriverCache.getIntance().putWebDriverForTag(browserConfig.getConfigTag(), webdriver);
         }
     }
 

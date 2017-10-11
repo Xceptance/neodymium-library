@@ -8,23 +8,23 @@ import java.util.Map.Entry;
 
 import org.openqa.selenium.WebDriver;
 
-public class BrowserDriverCache
+public class WebDriverCache
 {
     Map<String, WebDriver> cache;
 
-    private BrowserDriverCache()
+    private WebDriverCache()
     {
         cache = new HashMap<>();
     }
 
-    private static class BrowserDriverCacheHolder
+    private static class WebDriverCacheHolder
     {
-        private static final BrowserDriverCache INSTANCE = new BrowserDriverCache();
+        private static final WebDriverCache INSTANCE = new WebDriverCache();
     }
 
-    public static BrowserDriverCache getIntance()
+    public static WebDriverCache getIntance()
     {
-        return BrowserDriverCacheHolder.INSTANCE;
+        return WebDriverCacheHolder.INSTANCE;
     }
 
     public WebDriver getWebDriverForTag(String browserTag)
