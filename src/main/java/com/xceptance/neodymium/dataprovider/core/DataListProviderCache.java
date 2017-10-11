@@ -5,49 +5,63 @@ import java.util.Map;
 
 public class DataListProviderCache
 {
-    private Map<Class<? extends DataListProvider<?>>, Map<String, Object>> dataProviderCache = new HashMap<>();
+    private Map<Class<? extends DataListProvider<?>>, Map<String, Object>> dataListProviderCache = new HashMap<>();
 
     private DataListProviderCache()
     {
 
     }
 
-    public <T extends DataListProvider<?>> void addDataProvider(T dataProvider)
+    public <T extends DataListProvider<?>> void addDataListProvider(T dataListProvider)
     {
-        addDataProvider(dataProvider, "");
+        addDataListProvider(dataListProvider, "");
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends DataListProvider<?>> void addDataProvider(T dataProvider, String instanceName)
+    public <T extends DataListProvider<?>> void addDataListProvider(T dataListProvider, String instanceName)
     {
-        Map<String, Object> entry = dataProviderCache.get(dataProvider.getClass());
-        if (entry == null)
+        synchronized (dataListProviderCache)
         {
-            Map<String, Object> newDataProviderMap = new HashMap<>();
-            newDataProviderMap.put(instanceName, dataProvider);
-            dataProviderCache.put((Class<? extends DataListProvider<?>>) dataProvider.getClass(), newDataProviderMap);
-        }
-        else
-        {
-            entry.put(instanceName, dataProvider);
+            Map<String, Object> entry = dataListProviderCache.get(dataListProvider.getClass());
+            if (entry == null)
+            {
+                Map<String, Object> newDataListProviderMap = new HashMap<>();
+                newDataListProviderMap.put(instanceName, dataListProvider);
+                dataListProviderCache.put((Class<? extends DataListProvider<?>>) dataListProvider.getClass(), newDataListProviderMap);
+            }
+            else
+            {
+                entry.put(instanceName, dataListProvider);
+            }
         }
     }
 
-    public <T> Object getDataProvider(T dataType)
+    public <T> Object getDataListProvider(T dataListProviderType)
     {
-        return getDataProvider(dataType, "");
+        return getDataListProvider(dataListProviderType, "");
     }
 
     @SuppressWarnings("unchecked")
-    public <T> Object getDataProvider(T dataType, String providerInstance)
+    public <T> Object getDataListProvider(T dataListProviderType, String providerInstanceName)
     {
-        Map<String, Object> dataProviderMap = dataProviderCache.get(dataType);
-        if (dataProviderMap != null)
+        synchronized (dataListProviderCache)
         {
-            return (T) dataProviderMap.get(providerInstance);
+            Map<String, Object> dataListProviderMap = dataListProviderCache.get(dataListProviderType);
+            if (dataListProviderMap != null)
+            {
+                return (T) dataListProviderMap.get(providerInstanceName);
+            }
         }
 
         return null;
+    }
+
+    public <T> Map<String, Object> getAllDataListProvider(T dataListProviderType)
+    {
+        synchronized (dataListProviderCache)
+        {
+            return dataListProviderCache.get(dataListProviderType);
+        }
     }
 
     public static DataListProviderCache getInstance()
