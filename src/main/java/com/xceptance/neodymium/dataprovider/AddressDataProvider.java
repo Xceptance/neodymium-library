@@ -4,9 +4,9 @@ import java.util.LinkedList;
 
 import com.xceptance.neodymium.dataprovider.core.DataListProvider;
 
-public class AddressDataprovider extends DataListProvider<Address>
+public class AddressDataProvider extends DataListProvider<Address>
 {
-    public AddressDataprovider()
+    public AddressDataProvider()
     {
         dataList = new LinkedList<>();
     }
