@@ -74,6 +74,26 @@ public class DataListProviderCache
         }
     }
 
+    public <T> boolean removeDataListProvider(T dataListProviderType)
+    {
+        return removeDataListProvider(dataListProviderType, "");
+    }
+
+    public <T> boolean removeDataListProviderType(T dataListProviderType)
+    {
+        synchronized (dataListProviderCache)
+        {
+            Map<String, Object> dataListProvider = dataListProviderCache.get(dataListProviderType.getClass());
+            if (dataListProvider != null && dataListProvider.size() > 0)
+            {
+                dataListProvider.clear();
+
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static DataListProviderCache getInstance()
     {
         return DataListProviderCacheHolder.INSTANCE;
