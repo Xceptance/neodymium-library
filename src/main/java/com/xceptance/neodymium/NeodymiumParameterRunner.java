@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang3.ObjectUtils.Null;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.Parameterized.Parameter;
@@ -51,7 +52,7 @@ public class NeodymiumParameterRunner extends BlockJUnit4ClassRunnerWithParamete
         super.run(notifier);
         try
         {
-            createTestUsingFieldInjection();
+            injectTestParameter();
         }
         catch (Exception e)
         {
@@ -72,31 +73,83 @@ public class NeodymiumParameterRunner extends BlockJUnit4ClassRunnerWithParamete
         return dummy;
     }
 
-    // TODO: copied from Parameterized
-    private Object createTestUsingFieldInjection() throws Exception
+    private void injectTestParameter() throws Exception
     {
-        List<FrameworkField> annotatedFieldsByParameter = getTestClass().getAnnotatedFields(Parameter.class);
-        if (annotatedFieldsByParameter.size() != parameters.length)
+        List<FrameworkField> parameterFrameworkFields = getTestClass().getAnnotatedFields(Parameter.class);
+
+        if (parameterFrameworkFields.size() != parameters.length)
         {
-            throw new Exception("Wrong number of parameters and @Parameter fields." + " @Parameter fields counted: " +
-                                annotatedFieldsByParameter.size() + ", available parameters: " + parameters.length + ".");
+            throw new Exception("Number of parameters (" + parameters.length + ") and " + //
+                                "fields (" + parameterFrameworkFields.size() + ") " + //
+                                "annotated with @Parameter must match!");
         }
-        for (FrameworkField each : annotatedFieldsByParameter)
+
+        for (FrameworkField parameterFrameworkField : parameterFrameworkFields)
         {
-            Field field = each.getField();
-            Parameter annotation = field.getAnnotation(Parameter.class);
-            int index = annotation.value();
+            Field field = parameterFrameworkField.getField();
+            int parameterIndex = field.getAnnotation(Parameter.class).value();
+            setField(field, parameters[parameterIndex]);
+        }
+    }
+
+    private void setField(Field field, Object value)
+    {
+        Class<?> fieldType = field.getType();
+        Class<?> valueType;
+        if (value == null)
+        {
+            valueType = Null.class;
+        }
+        else
+        {
+            valueType = value.getClass();
+        }
+
+        // try to convert String values to appropriate target types
+        if (valueType == String.class)
+        {
             try
             {
-                field.set(testInstance, parameters[index]);
+                if (fieldType == int.class || fieldType == Integer.class)
+                {
+                    value = Integer.valueOf((String) value);
+                }
+                else if (fieldType == long.class || fieldType == Long.class)
+                {
+                    value = Long.valueOf((String) value);
+                }
+                else if (fieldType == double.class || fieldType == Double.class)
+                {
+                    value = Double.valueOf((String) value);
+                }
+                else if (fieldType == float.class || fieldType == Float.class)
+                {
+                    value = Float.valueOf((String) value);
+                }
+                else if (fieldType == boolean.class || fieldType == Boolean.class)
+                {
+                    value = Boolean.valueOf((String) value);
+                }
             }
-            catch (IllegalArgumentException iare)
+            catch (Exception e)
             {
-                throw new Exception(getTestClass().getName() + ": Trying to set " + field.getName() + " with the value " +
-                                    parameters[index] + " that is not the right type (" + parameters[index].getClass().getSimpleName() +
-                                    " instead of " + field.getType().getSimpleName() + ").", iare);
+                throw new RuntimeException("An error occured during conversion of input string \"" + (String) value + "\" to type " +
+                                           fieldType.getName() + " for field \"" + field.getName() + "\"", e);
             }
         }
-        return testInstance;
+
+        try
+        {
+            field.set(testInstance, value);
+        }
+        catch (IllegalArgumentException e)
+        {
+            throw new RuntimeException("Could not set parameter of type " + valueType + " to field \"" + field.getName() + "\" of type " +
+                                       fieldType + ". Value: " + value);
+        }
+        catch (IllegalAccessException e)
+        {
+            throw new RuntimeException("Could not set parameter due to it is not public");
+        }
     }
 }
