@@ -10,7 +10,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
-public class CsvReader
+public class CsvFileReader
 {
     public static List<String[]> readFile(String filename, Charset charset, CSVFormat format)
     {
