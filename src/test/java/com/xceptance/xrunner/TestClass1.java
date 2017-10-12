@@ -9,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.experimental.categories.Category;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
@@ -17,9 +17,10 @@ import org.junit.runners.Parameterized.Parameters;
 //    {
 //        "Chrome_1024x768", "FF_1024x768"
 //    })
-@RunWith(XCRunner.class)
-// @RunWith(Parameterized.class)
-// @UseParametersRunnerFactory(XCParameterRunnerFactory.class)
+//@RunWith(XCRunner.class)
+//@RunWith(Categories.class)
+// @Category(Integer.class)
+// @Category(Object.class)
 public class TestClass1
 {
     @Parameter
@@ -35,23 +36,18 @@ public class TestClass1
         System.out.println("static initialization");
     }
 
-    @Parameters(name = "{0}")
+    @Parameters(name = "{index} - {0}, {1}")
     public static List<Object[]> getData()
     {
         List<Object[]> data = new LinkedList<>();
 
-        data.add(new Object[]
-            {
-                'a', 0
-            });
-        data.add(new Object[]
-            {
-                'b', 1
-            });
-        // data.add(new Object[]
-        // {
-        // 'c', 2
-        // });
+        for (int i = 97; i < 98; i++)
+        {
+            data.add(new Object[]
+                {
+                    Character.valueOf((char) i), i - 97
+                });
+        }
 
         return data;
     }
@@ -92,15 +88,23 @@ public class TestClass1
     }
 
     @Test
+    @Category(Integer.class)
     public void testMethod0()
     {
         System.out.println("testMethod0: Parameter[" + parameter0 + ", " + parameter1 + "]");
 
+        // Iterator<Entry<Object, Object>> sysprops = System.getProperties().entrySet().iterator();
+        // while (sysprops.hasNext())
+        // {
+        // Entry<Object, Object> entry = sysprops.next();
+        // System.out.println(entry.getKey() + " === " + entry.getValue());
+        // }
+
         int a = 1;
         int b = 0;
-        int c = a / b;
+        // int c = a / b;
 
-        System.out.println(c);
+        // System.out.println(c);
     }
 
     @Test
@@ -108,5 +112,12 @@ public class TestClass1
     {
         System.out.println("testMethod1: Parameter[" + parameter0 + ", " + parameter1 + "]");
         Assert.assertTrue(false);
+    }
+
+    @Test
+    public void testMethod2()
+    {
+        System.out.println("testMethod1: Parameter[" + parameter0 + ", " + parameter1 + "]");
+        // Assert.assertTrue(false);
     }
 }

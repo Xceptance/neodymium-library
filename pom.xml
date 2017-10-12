@@ -27,12 +27,15 @@
 				<configuration>
 					<parallel>classesAndMethods</parallel>
 					<threadCount>8</threadCount>
+					<!-- <properties> -->
+					<!-- <runSuite>**/*Suite.java</runSuite> -->
+					<!-- </properties> -->
 					<!-- <groups>com.xceptance.xrunner.TestGroup1</groups> -->
 					<includes>
-						<include>*.java</include>
+						<include>**/*Suite*.java</include>
 					</includes>
 				</configuration>
-			</plugin>	
+			</plugin>
 		</plugins>
 	</build>
 
@@ -67,6 +70,11 @@
 			<groupId>com.codeborne</groupId>
 			<artifactId>selenide</artifactId>
 			<version>4.5.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-csv</artifactId>
+			<version>1.5</version>
 		</dependency>
 	</dependencies>
 </project>
