@@ -99,7 +99,7 @@ public class BrowserRunner extends ParentRunner<Runner>
                 webdriver = WebDriverCache.getIntance().removeGetWebDriver(browserConfig.getConfigTag());
             }
 
-            if (webdriver != null)
+            if (webdriver == null)
                 webdriver = BrowserRunnerHelper.createWebdriver(browserConfig);
         }
         catch (final MalformedURLException e)
