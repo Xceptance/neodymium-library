@@ -12,9 +12,14 @@ import org.apache.commons.csv.CSVRecord;
 
 public class CsvFileReader
 {
-    public static List<String[]> readFile(String filename, Charset charset, CSVFormat format)
+    public static List<Object[]> readFile(String filename)
     {
-        List<String[]> csvData = new LinkedList<>();
+        return readFile(filename, Charset.forName("UTF-8"), CSVFormat.DEFAULT.withCommentMarker('#'));
+    }
+
+    public static List<Object[]> readFile(String filename, Charset charset, CSVFormat format)
+    {
+        List<Object[]> csvData = new LinkedList<>();
 
         try
         {
@@ -22,7 +27,7 @@ public class CsvFileReader
             List<CSVRecord> records = csvParser.getRecords();
             for (CSVRecord record : records)
             {
-                String[] line = new String[record.size()];
+                Object[] line = new Object[record.size()];
 
                 for (int i = 0; i < record.size(); i++)
                 {
@@ -31,6 +36,7 @@ public class CsvFileReader
 
                 csvData.add(line);
             }
+            csvParser.close();
 
             return csvData;
         }
@@ -38,22 +44,5 @@ public class CsvFileReader
         {
             throw new RuntimeException(e);
         }
-    }
-
-    public static List<String[]> readFile(String filename)
-    {
-        return readFile(filename, Charset.forName("UTF-8"), CSVFormat.DEFAULT);
-    }
-
-    public static List<Object[]> convert(List<String[]> data)
-    {
-        List<Object[]> r = new LinkedList<>();
-
-        for (String[] entry : data)
-        {
-            r.add(entry);
-        }
-
-        return r;
     }
 }
