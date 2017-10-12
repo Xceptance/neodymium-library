@@ -12,10 +12,6 @@ import org.apache.commons.csv.CSVRecord;
 
 public class CsvReader
 {
-    private CsvReader()
-    {
-    }
-
     public static List<String[]> readFile(String filename, Charset charset, CSVFormat format)
     {
         List<String[]> csvData = new LinkedList<>();
