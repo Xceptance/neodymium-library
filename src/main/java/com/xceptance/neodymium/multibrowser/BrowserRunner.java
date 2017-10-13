@@ -11,7 +11,6 @@ import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.ParentRunner;
-import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -39,46 +38,6 @@ public class BrowserRunner extends ParentRunner<Runner>
     private WebDriver webdriver;
 
     private BrowserConfiguration browserConfig;
-
-    /**
-     * Sets the test instance up.
-     *
-     * @param method
-     *            the method
-     * @param test
-     *            the test instance
-     */
-    protected void setUpTest(final FrameworkMethod method, final Object test)
-    {
-        // set the test data set at the test instance
-        final BrowserFrameworkMethod frameworkMethod = (BrowserFrameworkMethod) method;
-
-        // get the browser configuration for this testcase
-        final BrowserConfiguration config = frameworkMethod.getBrowserConfiguration();
-
-        webdriver = null;
-        try
-        {
-            webdriver = BrowserRunnerHelper.createWebdriver(config);
-        }
-        catch (final MalformedURLException e)
-        {
-            throw new RuntimeException("An error occured during URL creation. See nested exception.", e);
-        }
-        if (webdriver != null)
-        {
-            // set browser window size
-            BrowserRunnerHelper.setBrowserWindowSize(config, webdriver);
-            WebDriverRunner.setWebDriver(webdriver);
-            // ((AbstractScriptTestCase) test).setTestDataSet(frameworkMethod.getDataSet()); //TODO:
-
-        }
-        else
-        {
-            throw new RuntimeException("Could not create driver for browsertag: " + config.getConfigTag() +
-                                       ". Please check your browserconfigurations.");
-        }
-    }
 
     /**
      * Sets the test instance up.
