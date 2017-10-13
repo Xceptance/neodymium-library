@@ -8,7 +8,7 @@ import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.testdata.XmlFileReader;
+import com.xceptance.neodymium.testdata.GenericFileReader;
 
 @RunWith(NeodymiumRunner.class)
 public class TestParameter
@@ -18,7 +18,8 @@ public class TestParameter
     {
         // return JsonFileReader.readFile("src/test/resources/test_data.json");
         // return CsvFileReader.readFile("src/test/resources/test_data.csv");
-        return XmlFileReader.readFile("src/test/resources/test_data.xml");
+        return GenericFileReader.readFile();
+        // return XmlFileReader.readFile("test_data.xml");
     }
 
     @Parameter(0)
