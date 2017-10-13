@@ -52,10 +52,11 @@ public class BrowserRunner extends ParentRunner<Runner>
         webdriver = null;
         try
         {
-            // try to find appropriate webdriver in cache before create a new instace
+            // try to find appropriate web driver in cache before create a new instance
             if (MultibrowserConfiguration.getIntance().getWebDriverProperties().reuseWebDriver())
             {
                 webdriver = WebDriverCache.getIntance().removeGetWebDriver(browserConfig.getConfigTag());
+                // TODO: delete cookies?!
             }
 
             if (webdriver == null)
