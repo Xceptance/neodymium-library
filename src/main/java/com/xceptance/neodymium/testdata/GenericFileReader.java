@@ -11,13 +11,12 @@ public class GenericFileReader
     public static List<Object[]> readFile()
     {
         String callerClassName = getCallerClassName();
-        File dataFile = lookupDataFiles(callerClassName);
+        File dataFile = findDataFile(callerClassName);
 
         if (dataFile != null)
         {
             Path pathToFile = dataFile.toPath();
-            Path fileName = pathToFile.getFileName();
-            String lowerCaseFilename = fileName.toString().toLowerCase();
+            String lowerCaseFilename = pathToFile.getFileName().toString().toLowerCase();
             if (lowerCaseFilename.endsWith(".csv"))
             {
                 return CsvFileReader.readFile(pathToFile.toString());
@@ -35,8 +34,21 @@ public class GenericFileReader
         throw new RuntimeException("No data file found for class: " + callerClassName);
     }
 
-    public static File lookupDataFiles(String fullQualifiedClassname)
+    private static File findDataFile(String fullQualifiedClassname)
     {
+        // <package>/<class>.csv
+        // <package>/<class>.json
+        // <package>/<class>.xml
+        // <package>/<class>_data.csv
+        // <package>/<class>_data.json
+        // <package>/<class>_data.xml
+        // <package>/package.csv
+        // <package>/package.json
+        // <package>/package.xml
+        // <package>/package_data.csv
+        // <package>/package_data.json
+        // <package>/package_data.xml
+
         String[] splits = fullQualifiedClassname.split("\\.");
         List<String> qualifier = new LinkedList<>();
 
