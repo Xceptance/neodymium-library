@@ -27,6 +27,8 @@ public class BrowserConfigurationMapper
 
     private static final String TEST_ENVIRONMENT = "testEnvironment";
 
+    private static final String PAGE_LOAD_STRATEGY = "pageLoadStrategy";
+
     // appium specific propertys
     private static final String APPIUM_VERSION = "appiumVersion";
 
@@ -165,6 +167,11 @@ public class BrowserConfigurationMapper
                 r.setBrowserHeight(Integer.parseInt(browserWidthHeight[1]));
             }
         }
+
+        // page load strategy
+        String pageLoadStrategy = o.get(PAGE_LOAD_STRATEGY);
+        if (!StringUtils.isEmpty(pageLoadStrategy))
+            capabilities.setCapability("pageLoadStrategy", pageLoadStrategy);
 
         capabilities.setCapability("name", o.get("name"));
         r.setCapabilities(capabilities);
