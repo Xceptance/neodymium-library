@@ -25,6 +25,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
@@ -232,9 +233,12 @@ public final class BrowserRunnerHelper
             }
             else if (firefoxBrowsers.contains(browserName))
             {
-                final String pathToBrowser = driverServerPath.getFirefoxBrowserPath();
-                final FirefoxBinary binary = createFirefoxBinary(pathToBrowser);
-                return new FirefoxDriver(binary, null, capabilities);
+                FirefoxOptions firefoxOptions = new FirefoxOptions();
+                firefoxOptions.setBinary(createFirefoxBinary(driverServerPath.getFirefoxBrowserPath()));
+                firefoxOptions.addCapabilities(capabilities);
+                firefoxOptions.setProfile(null);
+                
+                return new FirefoxDriver(firefoxOptions);
             }
             else if (internetExplorerBrowsers.contains(browserName))
             {
