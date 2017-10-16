@@ -216,16 +216,18 @@ public class BrowserRunner extends ParentRunner<Runner>
     public void teardown()
     {
         WebDriverProperties webDriverProperties = MultibrowserConfiguration.getIntance().getWebDriverProperties();
-        if (webdriver != null && (!webDriverProperties.keepBrowserOpen() || !webDriverProperties.reuseWebDriver()))
+        if (webDriverProperties.reuseWebDriver())
         {
-            LOGGER.debug("Teardown browser");
-            webdriver.quit();
+            LOGGER.debug("Put browser into cache");
+            WebDriverCache.getIntance().putWebDriverForTag(browserConfig.getConfigTag(), webdriver);
         }
         else
         {
-            LOGGER.debug("Put browser into cache");
-            // if teardown didn't closed webdriver then we should put it in the cache for later use
-            WebDriverCache.getIntance().putWebDriverForTag(browserConfig.getConfigTag(), webdriver);
+            if (!webDriverProperties.keepBrowserOpen())
+            {
+                LOGGER.debug("Teardown browser");
+                webdriver.quit();
+            }
         }
     }
 
