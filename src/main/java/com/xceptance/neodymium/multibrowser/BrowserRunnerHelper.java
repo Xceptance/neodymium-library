@@ -80,7 +80,7 @@ public final class BrowserRunnerHelper
         final BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
 
         // create credentials for proxy access
-        if (proxyConfig != null //
+        if (proxyConfig.useProxy() //
             && !StringUtils.isEmpty(proxyConfig.getUsername()) //
             && !StringUtils.isEmpty(proxyConfig.getPassword()))
         {
@@ -101,7 +101,7 @@ public final class BrowserRunnerHelper
         // now create a http client, set the custom proxy and inject the credentials
         final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
         clientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
-        if (proxyConfig != null)
+        if (proxyConfig.useProxy())
             clientBuilder.setProxy(new HttpHost(proxyConfig.getHost(), Integer.valueOf(proxyConfig.getPort())));
         final CloseableHttpClient httpClient = clientBuilder.build();
 
@@ -237,7 +237,7 @@ public final class BrowserRunnerHelper
                 firefoxOptions.setBinary(createFirefoxBinary(driverServerPath.getFirefoxBrowserPath()));
                 firefoxOptions.addCapabilities(capabilities);
                 firefoxOptions.setProfile(null);
-                
+
                 return new FirefoxDriver(firefoxOptions);
             }
             else if (internetExplorerBrowsers.contains(browserName))
