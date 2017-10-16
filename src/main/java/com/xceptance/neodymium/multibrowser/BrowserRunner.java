@@ -62,7 +62,10 @@ public class BrowserRunner extends ParentRunner<Runner>
             if (MultibrowserConfiguration.getIntance().getWebDriverProperties().reuseWebDriver())
             {
                 webdriver = WebDriverCache.getIntance().removeGetWebDriver(browserConfig.getConfigTag());
-                // TODO: delete cookies?!
+                if (webdriver != null)
+                {
+                    webdriver.manage().deleteAllCookies();
+                }
             }
 
             if (webdriver == null)
