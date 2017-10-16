@@ -2,6 +2,7 @@ package com.xceptance.neodymium.multibrowser;
 
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -227,6 +228,21 @@ public class BrowserRunner extends ParentRunner<Runner>
             {
                 LOGGER.debug("Teardown browser");
                 webdriver.quit();
+            }
+        }
+    }
+
+    public static void quitCachedBrowser()
+    {
+        WebDriverProperties webDriverProperties = MultibrowserConfiguration.getIntance().getWebDriverProperties();
+        if (!webDriverProperties.keepBrowserOpen())
+        {
+            WebDriverCache cache = WebDriverCache.getIntance();
+            Collection<WebDriver> allWebdriver = cache.getAllWebdriver();
+
+            for (WebDriver wd : allWebdriver)
+            {
+                wd.quit();
             }
         }
     }
