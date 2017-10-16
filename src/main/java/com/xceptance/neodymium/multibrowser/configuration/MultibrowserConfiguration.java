@@ -134,7 +134,7 @@ public class MultibrowserConfiguration
         private static final MultibrowserConfiguration INSTANCE = new MultibrowserConfiguration();
     }
 
-    public static MultibrowserConfiguration getIntance()
+    public static MultibrowserConfiguration getInstance()
     {
         return MultibrowserConfigurationHolder.INSTANCE;
     }

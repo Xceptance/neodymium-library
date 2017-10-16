@@ -123,7 +123,7 @@ public final class BrowserRunnerHelper
      */
     protected static void setBrowserWindowSize(final BrowserConfiguration config, final WebDriver driver)
     {
-        WebDriverProperties webDriverProperties = MultibrowserConfiguration.getIntance().getWebDriverProperties();
+        WebDriverProperties webDriverProperties = MultibrowserConfiguration.getInstance().getWebDriverProperties();
 
         // get the configured window size and set it if defined
         final int windowWidth = webDriverProperties.getWindowWidth();
@@ -196,7 +196,7 @@ public final class BrowserRunnerHelper
         final DesiredCapabilities capabilities = config.getCapabilities();
 
         final String testEnvironment = config.getTestEnvironment();
-        ProxyConfiguration proxyConfig = MultibrowserConfiguration.getIntance().getProxyConfiguration();
+        ProxyConfiguration proxyConfig = MultibrowserConfiguration.getInstance().getProxyConfiguration();
         if (StringUtils.isEmpty(testEnvironment) || "local".equalsIgnoreCase(testEnvironment))
         {
             if (proxyConfig.useProxy())
@@ -216,7 +216,7 @@ public final class BrowserRunnerHelper
                 capabilities.setCapability(CapabilityType.PROXY, webdriverProxy);
             }
 
-            DriverServerPath driverServerPath = MultibrowserConfiguration.getIntance().getDriverServerPath();
+            DriverServerPath driverServerPath = MultibrowserConfiguration.getInstance().getDriverServerPath();
 
             final String browserName = config.getCapabilities().getBrowserName();
             if (chromeBrowsers.contains(browserName))
@@ -247,7 +247,7 @@ public final class BrowserRunnerHelper
         }
         else
         {
-            TestEnvironment testEnvironmentProperties = MultibrowserConfiguration.getIntance().getTestEnvironment(testEnvironment);
+            TestEnvironment testEnvironmentProperties = MultibrowserConfiguration.getInstance().getTestEnvironment(testEnvironment);
 
             final String gridUsername = testEnvironmentProperties.getUsername();
             final String gridPassword = testEnvironmentProperties.getPassword();

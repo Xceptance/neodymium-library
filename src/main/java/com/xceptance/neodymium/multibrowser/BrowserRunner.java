@@ -59,7 +59,7 @@ public class BrowserRunner extends ParentRunner<Runner>
         try
         {
             // try to find appropriate web driver in cache before create a new instance
-            if (MultibrowserConfiguration.getIntance().getWebDriverProperties().reuseWebDriver())
+            if (MultibrowserConfiguration.getInstance().getWebDriverProperties().reuseWebDriver())
             {
                 webdriver = WebDriverCache.getIntance().removeGetWebDriver(browserConfig.getConfigTag());
                 if (webdriver != null)
@@ -114,7 +114,7 @@ public class BrowserRunner extends ParentRunner<Runner>
     {
         super(testCaseClass);
 
-        MultibrowserConfiguration multibrowserConfiguration = MultibrowserConfiguration.getIntance();
+        MultibrowserConfiguration multibrowserConfiguration = MultibrowserConfiguration.getInstance();
 
         DriverServerPath driverServerPath = multibrowserConfiguration.getDriverServerPath();
         WebDriverProperties webDriverProperties = multibrowserConfiguration.getWebDriverProperties();
@@ -219,7 +219,7 @@ public class BrowserRunner extends ParentRunner<Runner>
 
     public void teardown()
     {
-        WebDriverProperties webDriverProperties = MultibrowserConfiguration.getIntance().getWebDriverProperties();
+        WebDriverProperties webDriverProperties = MultibrowserConfiguration.getInstance().getWebDriverProperties();
         if (webDriverProperties.reuseWebDriver())
         {
             LOGGER.debug("Put browser into cache");
@@ -227,7 +227,7 @@ public class BrowserRunner extends ParentRunner<Runner>
         }
         else
         {
-            if (!webDriverProperties.keepBrowserOpen())
+            if (!webDriverProperties.keepBrowserOpen() && webdriver != null)
             {
                 LOGGER.debug("Teardown browser");
                 webdriver.quit();
@@ -237,7 +237,7 @@ public class BrowserRunner extends ParentRunner<Runner>
 
     public static void quitCachedBrowser()
     {
-        WebDriverProperties webDriverProperties = MultibrowserConfiguration.getIntance().getWebDriverProperties();
+        WebDriverProperties webDriverProperties = MultibrowserConfiguration.getInstance().getWebDriverProperties();
         if (!webDriverProperties.keepBrowserOpen())
         {
             WebDriverCache cache = WebDriverCache.getIntance();
