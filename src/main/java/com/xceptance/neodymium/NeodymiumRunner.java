@@ -346,6 +346,8 @@ public class NeodymiumRunner extends Runner implements Filterable
 
                 BrowserRunner browserRunner = null;
                 notifier.fireTestStarted(description);
+                Failure testFailure = null;
+
                 for (int r = 0; r < runners.size(); r++)
                 {
                     Runner runner = runners.get(r);
@@ -370,12 +372,14 @@ public class NeodymiumRunner extends Runner implements Filterable
                     {
                         LOGGER.debug("Test failed");
                         // mark test as failed and try the next one
-                        notifier.fireTestFailure(new Failure(description, e));
+                        testFailure = new Failure(description, e);
+                        notifier.fireTestFailure(testFailure);
                         break;
                     }
-
                 }
-                LOGGER.debug("Test passed");
+                if (testFailure == null)
+                    LOGGER.debug("Test passed");
+
                 if (browserRunner != null)
                 {
                     browserRunner.teardown();
