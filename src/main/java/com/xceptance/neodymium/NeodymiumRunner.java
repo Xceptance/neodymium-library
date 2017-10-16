@@ -31,6 +31,8 @@ import org.junit.runners.ParentRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.RunnerBuilder;
 import org.junit.runners.model.TestClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.xceptance.neodymium.groups.DefaultGroup;
 import com.xceptance.neodymium.multibrowser.Browser;
@@ -38,6 +40,8 @@ import com.xceptance.neodymium.multibrowser.BrowserRunner;
 
 public class NeodymiumRunner extends Runner implements Filterable
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumRunner.class);
+
     List<List<Runner>> testRunner = new LinkedList<>();
 
     private TestClass testClass;
@@ -48,6 +52,7 @@ public class NeodymiumRunner extends Runner implements Filterable
 
     public NeodymiumRunner(Class<?> testKlass, RunnerBuilder rb) throws Throwable
     {
+        LOGGER.debug(testKlass.getCanonicalName());
         List<List<Runner>> vectors = new LinkedList<>();
         testClass = new TestClass(testKlass);
         List<Runner> runners = new LinkedList<>();
@@ -61,6 +66,7 @@ public class NeodymiumRunner extends Runner implements Filterable
         Browser browser = testClass.getAnnotation(Browser.class);
         if (browser != null)
         {
+            LOGGER.debug("Found browser annotation with tags: " + Arrays.toString(browser.value()));
             runners.add(new BrowserRunner(testKlass));
         }
 
@@ -68,6 +74,7 @@ public class NeodymiumRunner extends Runner implements Filterable
         List<FrameworkMethod> parameterMethods = testClass.getAnnotatedMethods(Parameters.class);
         if (parameterMethods.size() > 0)
         {
+            LOGGER.debug("Found parameters annotation");
             setFinalStatic(Parameterized.class.getDeclaredField("DEFAULT_FACTORY"),
                            new NeodymiumParameterRunnerFactory(methodExecutionContext));
             runners.add(new Parameterized(testKlass));
@@ -78,13 +85,18 @@ public class NeodymiumRunner extends Runner implements Filterable
 
         // create method runners that actually execute the methods annotated with @Test
         List<Runner> methodVector = new LinkedList<>();
+        LOGGER.debug("Found methods to run");
         for (FrameworkMethod method : testClass.getAnnotatedMethods(Test.class))
         {
-            methodVector.add(new NeodymiumMethodRunner(testKlass, method, methodExecutionContext));
+            NeodymiumMethodRunner methodRunner = new NeodymiumMethodRunner(testKlass, method, methodExecutionContext);
+            LOGGER.debug("\t" + methodRunner.getDescription().getDisplayName());
+            methodVector.add(methodRunner);
         }
         vectors.add(methodVector);
 
         testRunner = buildTestRunnerLists(vectors);
+
+        LOGGER.debug("Build " + testRunner.size() + " test runner");
 
         // group tests
         List<Class<?>> groupsToExecute = new LinkedList<>();
@@ -289,7 +301,15 @@ public class NeodymiumRunner extends Runner implements Filterable
                     {
                         m.setAccessible(true);
                     }
-                    vectors.add((List<Runner>) m.invoke(runner));
+                    List<Runner> childs = (List<Runner>) m.invoke(runner);
+                    LOGGER.debug(runner.getClass() + " added " + childs.size() + " childs");
+
+                    for (Runner r : childs)
+                    {
+                        LOGGER.debug("\t" + r.getDescription().getDisplayName());
+                    }
+
+                    vectors.add(childs);
                 }
             }
         }
@@ -300,6 +320,7 @@ public class NeodymiumRunner extends Runner implements Filterable
     {
         for (int i = 0; i < testRunner.size(); i++)
         {
+            LOGGER.debug("Run test " + (i + 1) + "/" + testRunner.size());
             boolean firstIteration = (i == 0) ? true : false;
             boolean lastIteration = (i == testRunner.size() - 1) ? true : false;
 
@@ -308,6 +329,7 @@ public class NeodymiumRunner extends Runner implements Filterable
 
             if (checkIgnored(runners))
             {
+                LOGGER.debug("Test ignored");
                 notifier.fireTestIgnored(description);
             }
             else
@@ -339,17 +361,21 @@ public class NeodymiumRunner extends Runner implements Filterable
                     methodExecutionContext.setRunnerDescription(description);
                     methodExecutionContext.setTestClassInstance(classInstance);
 
+                    LOGGER.debug("Execute runner " + runner.getClass());
                     try
                     {
                         runner.run(notifier);
                     }
                     catch (Throwable e)
                     {
+                        LOGGER.debug("Test failed");
                         // mark test as failed and try the next one
                         notifier.fireTestFailure(new Failure(description, e));
                         break;
                     }
+
                 }
+                LOGGER.debug("Test passed");
                 if (browserRunner != null)
                 {
                     browserRunner.teardown();

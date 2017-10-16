@@ -12,9 +12,13 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.parameterized.BlockJUnit4ClassRunnerWithParameters;
 import org.junit.runners.parameterized.TestWithParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NeodymiumParameterRunner extends BlockJUnit4ClassRunnerWithParameters
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumParameterRunner.class);
+
     private TestWithParameters test;
 
     private Object[] parameters;
@@ -75,7 +79,7 @@ public class NeodymiumParameterRunner extends BlockJUnit4ClassRunnerWithParamete
     private void injectTestParameter() throws Exception
     {
         List<FrameworkField> parameterFrameworkFields = getTestClass().getAnnotatedFields(Parameter.class);
-
+        LOGGER.debug("Found " + parameterFrameworkFields.size() + " parameter fields");
         if (parameterFrameworkFields.size() != parameters.length)
         {
             throw new Exception("Number of parameters (" + parameters.length + ") and " + //
@@ -87,6 +91,8 @@ public class NeodymiumParameterRunner extends BlockJUnit4ClassRunnerWithParamete
         {
             Field field = parameterFrameworkField.getField();
             int parameterIndex = field.getAnnotation(Parameter.class).value();
+
+            LOGGER.debug("Set parameter \"" + parameterFrameworkField.getName() + "\" to \"" + parameters[parameterIndex] + "\"");
             setField(field, parameters[parameterIndex]);
         }
     }

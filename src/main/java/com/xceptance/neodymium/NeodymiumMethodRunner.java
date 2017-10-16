@@ -13,9 +13,12 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.MultipleFailureException;
 import org.junit.runners.model.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NeodymiumMethodRunner extends BlockJUnit4ClassRunner
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumMethodRunner.class);
 
     List<FrameworkMethod> methodToRun;
 
@@ -58,11 +61,13 @@ public class NeodymiumMethodRunner extends BlockJUnit4ClassRunner
 
             if (methodExecutionContext.isRunBeforeClass())
             {
+                LOGGER.debug("Run before classes");
                 statement = withBeforeClasses(statement);
             }
 
             if (methodExecutionContext.isRunAfterClass())
             {
+                LOGGER.debug("Run after classes");
                 statement = withAfterClasses(statement);
             }
             statement.evaluate();
@@ -70,6 +75,7 @@ public class NeodymiumMethodRunner extends BlockJUnit4ClassRunner
             {
                 notifier.fireTestFailure(new Failure(methodExecutionContext.getRunnerDescription(),
                                                      runListener.getFailure().getException()));
+                LOGGER.debug("Execution failed", runListener.getFailure().getException());
             }
         }
         catch (AssumptionViolatedException e)

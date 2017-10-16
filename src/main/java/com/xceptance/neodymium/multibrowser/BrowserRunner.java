@@ -14,6 +14,8 @@ import org.junit.runners.ParentRunner;
 import org.junit.runners.model.InitializationError;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.codeborne.selenide.WebDriverRunner;
 import com.xceptance.neodymium.multibrowser.configuration.BrowserConfiguration;
@@ -30,6 +32,8 @@ import com.xceptance.neodymium.multibrowser.configuration.WebDriverProperties;
  */
 public class BrowserRunner extends ParentRunner<Runner>
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BrowserRunner.class);
+
     /**
      * The JUnit children of this runner.
      */
@@ -50,6 +54,7 @@ public class BrowserRunner extends ParentRunner<Runner>
     protected void setUpTest()
     {
         webdriver = null;
+        LOGGER.debug("Create browser for name: " + browserConfig.getName());
         try
         {
             // try to find appropriate web driver in cache before create a new instance
@@ -60,7 +65,14 @@ public class BrowserRunner extends ParentRunner<Runner>
             }
 
             if (webdriver == null)
+            {
+                LOGGER.debug("Create new browser instance");
                 webdriver = BrowserRunnerHelper.createWebdriver(browserConfig);
+            }
+            else
+            {
+                LOGGER.debug("Browser instance served from cache");
+            }
         }
         catch (final MalformedURLException e)
         {
@@ -71,8 +83,6 @@ public class BrowserRunner extends ParentRunner<Runner>
             // set browser window size
             BrowserRunnerHelper.setBrowserWindowSize(browserConfig, webdriver);
             WebDriverRunner.setWebDriver(webdriver);
-            // ((AbstractScriptTestCase) test).setTestDataSet(frameworkMethod.getDataSet()); //TODO:
-
         }
         else
         {
@@ -208,10 +218,12 @@ public class BrowserRunner extends ParentRunner<Runner>
         WebDriverProperties webDriverProperties = MultibrowserConfiguration.getIntance().getWebDriverProperties();
         if (webdriver != null && (!webDriverProperties.keepBrowserOpen() || !webDriverProperties.reuseWebDriver()))
         {
+            LOGGER.debug("Teardown browser");
             webdriver.quit();
         }
         else
         {
+            LOGGER.debug("Put browser into cache");
             // if teardown didn't closed webdriver then we should put it in the cache for later use
             WebDriverCache.getIntance().putWebDriverForTag(browserConfig.getConfigTag(), webdriver);
         }
