@@ -20,7 +20,7 @@ public class MultibrowserConfiguration
 
     private static final String BROWSER_PROFILE_PREFIX = "browserprofile.";
 
-    private static final String TEST_ENVIRONMENT_PREFIX = BROWSER_PROFILE_PREFIX + "testenvironment.";
+    private static final String TEST_ENVIRONMENT_PREFIX = BROWSER_PROFILE_PREFIX + "testEnvironment.";
 
     private DriverServerPath driverServerPath;
 
