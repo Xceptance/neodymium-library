@@ -203,42 +203,6 @@ public class BrowserRunner extends ParentRunner<Runner>
         return Description.createTestDescription(browserConfig.getName(), "");
     }
 
-    // /**
-    // * {@inheritDoc}
-    // */
-    // @Override
-    // protected Statement methodInvoker(final FrameworkMethod method, final Object test)
-    // {
-    // try
-    // {
-    // // prepare the test instance before executing it
-    // setUpTest(method, test);
-    // }
-    // catch (Exception e)
-    // {
-    // return new Fail(e);
-    // }
-    // // the real job is done here
-    // return super.methodInvoker(method, test);
-    // }
-
-    // @Override
-    // protected Statement withAfters(FrameworkMethod method, Object target, Statement statement)
-    // {
-    // List<FrameworkMethod> methods = new LinkedList<>();
-    // try
-    // {
-    // methods.add(new FrameworkMethod(this.getClass().getMethod("teardown")));
-    // }
-    // catch (NoSuchMethodException | SecurityException e)
-    // {
-    // throw new RuntimeException(e);
-    // }
-    //
-    // statement = new RunAfters(statement, methods, this);
-    // return super.withAfters(method, target, statement);
-    // }
-
     public void teardown()
     {
         WebDriverProperties webDriverProperties = MultibrowserConfiguration.getIntance().getWebDriverProperties();
