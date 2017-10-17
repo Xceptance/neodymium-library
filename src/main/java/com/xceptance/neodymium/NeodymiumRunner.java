@@ -387,7 +387,6 @@ public class NeodymiumRunner extends Runner implements Filterable
                 notifier.fireTestFinished(description);
             }
         }
-        BrowserRunner.quitCachedBrowser();
     }
 
     private boolean checkIgnored(List<Runner> runners)
