@@ -21,6 +21,7 @@ public interface WebDriverProperties extends Config
     public boolean useFirefoxLegacy();
 
     @Key("xlt.webDriver.reuseDriver")
+    @DefaultValue("false")
     public boolean reuseWebDriver();
 
     @Key("xlt.webDriver.keepBrowserOpen")
