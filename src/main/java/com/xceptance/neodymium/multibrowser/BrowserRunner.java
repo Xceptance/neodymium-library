@@ -245,7 +245,15 @@ public class BrowserRunner extends ParentRunner<Runner>
 
             for (WebDriver wd : allWebdriver)
             {
-                wd.quit();
+                try
+                {
+                    LOGGER.debug("Quit web driver: " + wd.toString());
+                    wd.quit();
+                }
+                catch (Exception e)
+                {
+                    LOGGER.debug("Error on quitting web driver", e);
+                }
             }
         }
     }
