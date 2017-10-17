@@ -66,7 +66,7 @@ public class NeodymiumRunner extends Runner implements Filterable
         Browser browser = testClass.getAnnotation(Browser.class);
         if (browser != null)
         {
-            LOGGER.debug("Found browser annotation with tags: " + Arrays.toString(browser.value()));
+            LOGGER.debug("Found browser annotation");
             runners.add(new BrowserRunner(testKlass));
         }
 
@@ -302,7 +302,7 @@ public class NeodymiumRunner extends Runner implements Filterable
                         m.setAccessible(true);
                     }
                     List<Runner> childs = (List<Runner>) m.invoke(runner);
-                    LOGGER.debug(runner.getClass() + " added " + childs.size() + " childs");
+                    LOGGER.debug(runner.getClass().getSimpleName() + " added " + childs.size() + " childs");
 
                     for (Runner r : childs)
                     {
@@ -363,7 +363,7 @@ public class NeodymiumRunner extends Runner implements Filterable
                     methodExecutionContext.setRunnerDescription(description);
                     methodExecutionContext.setTestClassInstance(classInstance);
 
-                    LOGGER.debug("Execute runner " + runner.getClass());
+                    LOGGER.debug("Execute runner " + runner.getClass().getSimpleName());
                     try
                     {
                         runner.run(notifier);
