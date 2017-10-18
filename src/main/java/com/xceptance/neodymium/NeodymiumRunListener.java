@@ -1,12 +1,9 @@
 package com.xceptance.neodymium;
 
-import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.xceptance.neodymium.multibrowser.BrowserRunner;
 
 public class NeodymiumRunListener extends RunListener
 {
@@ -30,12 +27,4 @@ public class NeodymiumRunListener extends RunListener
     {
         return failure;
     }
-
-    @Override
-    public void testRunFinished(Result result) throws Exception
-    {
-        LOGGER.debug("All tests finished. Quit cached Browser!");
-        BrowserRunner.quitCachedBrowser();
-    }
-
 }

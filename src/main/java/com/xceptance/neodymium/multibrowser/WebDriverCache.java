@@ -15,6 +15,7 @@ public class WebDriverCache
     private WebDriverCache()
     {
         cache = new HashMap<>();
+        Runtime.getRuntime().addShutdownHook(new WebDriverCacheCleaner());
     }
 
     private static class WebDriverCacheHolder
