@@ -1,5 +1,6 @@
 package com.xceptance.neodymium;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -239,7 +240,15 @@ public class NeodymiumRunner extends Runner implements Filterable
             // https://github.com/eclipse/eclipse.jdt.ui/blob/0e4ddb8f4fd1d3c22748423acba36397e5f020e7/org.eclipse.jdt.junit/src/org/eclipse/jdt/internal/junit/ui/OpenTestAction.java#L108-L122
             Collections.reverse(displayNames);
 
-            Description childDescription = Description.createTestDescription(testClass.getJavaClass(), String.join(" :: ", displayNames));
+            Set<Annotation> methodCategoryAnnotations = new HashSet<>();
+            List<FrameworkMethod> annotatedMethods = testClass.getAnnotatedMethods();
+            for (FrameworkMethod fm : annotatedMethods)
+            {
+                methodCategoryAnnotations.add(fm.getAnnotation(Category.class));
+            }
+
+            Description childDescription = Description.createTestDescription(testClass.getJavaClass(), String.join(" :: ", displayNames),
+                                                                             methodCategoryAnnotations.toArray(new Annotation[0]));
             description.addChild(childDescription);
         }
 
