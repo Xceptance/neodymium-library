@@ -90,7 +90,7 @@ public class MultibrowserConfiguration
         {
             Set<String> subkeysForPrefix = getSubkeysForPrefix(browserProfileProperties, BROWSER_PROFILE_PREFIX + browserProfile + ".");
             Map<String, String> browserProfileConfiguration = new HashMap<>();
-
+            browserProfileConfiguration.put("browserTag", browserProfile);
             for (String subkey : subkeysForPrefix)
             {
                 String value = (String) browserProfileProperties.get(BROWSER_PROFILE_PREFIX + browserProfile + "." + subkey);
