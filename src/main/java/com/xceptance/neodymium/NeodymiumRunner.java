@@ -422,7 +422,7 @@ public class NeodymiumRunner extends Runner implements Filterable
     public void filter(Filter filter) throws NoTestsRemainException
     {
         // this method will be called by surefire and gradle among others
-        // any include/exlude groups defined in maven or gradle build process result in an filter object
+        // any include/exclude groups defined in maven or gradle build process result in an filter object
         System.out.println(filter);
     }
 }
