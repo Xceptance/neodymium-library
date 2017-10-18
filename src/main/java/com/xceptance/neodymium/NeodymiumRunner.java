@@ -99,11 +99,6 @@ public class NeodymiumRunner extends Runner implements Filterable
 
         LOGGER.debug("Build " + testRunner.size() + " test runner");
 
-        // group tests
-        List<Class<?>> groupsToExecute = new LinkedList<>();
-        groupsToExecute.add(DefaultGroup.class); // TODO: maven and gradle can define groups that should be executed. see function 'filter'
-        testRunner = regroupTests(testRunner, groupsToExecute, true);
-
         testDescription = createTestDescription();
     }
 
@@ -423,6 +418,26 @@ public class NeodymiumRunner extends Runner implements Filterable
     {
         // this method will be called by surefire and gradle among others
         // any include/exclude groups defined in maven or gradle build process result in an filter object
-        System.out.println(filter);
+
+        List<List<Runner>> newTestRunner = new LinkedList<>();
+        for (List<Runner> runners : testRunner)
+        {
+            try
+            {
+                NeodymiumMethodRunner runner = (NeodymiumMethodRunner) runners.get(runners.size() - 1);
+                filter.apply(runner);
+                newTestRunner.add(runners);
+            }
+            catch (NoTestsRemainException e)
+            {
+
+            }
+        }
+        testRunner = newTestRunner;
+
+        // groupsToExecute.add(DefaultGroup.class);
+        // testRunner = regroupTests(testRunner, groupsToExecute, true);
+
+        testDescription = createTestDescription();
     }
 }

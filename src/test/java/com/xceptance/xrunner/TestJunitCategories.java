@@ -7,10 +7,10 @@ import org.junit.runner.RunWith;
 import com.xceptance.neodymium.NeodymiumRunner;
 
 @RunWith(NeodymiumRunner.class)
-@Category(Number.class)
+// @RunWith(Categories.class)
+// @Category(Double.class)
 public class TestJunitCategories
 {
-
     public TestJunitCategories()
     {
         System.out.println(this.getClass().getName() + " - constructor");

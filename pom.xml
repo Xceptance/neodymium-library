@@ -30,9 +30,9 @@
 					<!-- <properties> -->
 					<!-- <runSuite>**/*Suite.java</runSuite> -->
 					<!-- </properties> -->
-					<!-- <groups>com.xceptance.xrunner.TestGroup1</groups> -->
+<!-- 					<groups>java.lang.Double</groups> -->
 					<includes>
-						<include>**/*Suite*.java</include>
+						<include>**/TestJunitCategoriesSuite.java</include>
 					</includes>
 				</configuration>
 			</plugin>
