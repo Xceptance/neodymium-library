@@ -235,7 +235,7 @@ public class NeodymiumRunner extends Runner implements Filterable
                 displayNames.add(displayName);
             }
 
-            // necessary to preserver JUnit view feature which lead you to the test method on double click the entry
+            // necessary to preserve JUnit view feature which lead you to the test method on double click the entry
             // https://github.com/eclipse/eclipse.jdt.ui/blob/0e4ddb8f4fd1d3c22748423acba36397e5f020e7/org.eclipse.jdt.junit/src/org/eclipse/jdt/internal/junit/ui/OpenTestAction.java#L108-L122
             Collections.reverse(displayNames);
 
