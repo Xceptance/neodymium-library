@@ -375,7 +375,7 @@ public class NeodymiumRunner extends Runner implements Filterable
                     }
                     catch (Throwable e)
                     {
-                        LOGGER.debug("Test failed");
+                        LOGGER.debug("Test failed", e);
                         // mark test as failed and try the next one
                         testFailure = new Failure(description, e);
                         notifier.fireTestFailure(testFailure);
