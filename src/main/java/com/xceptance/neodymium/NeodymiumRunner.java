@@ -186,6 +186,7 @@ public class NeodymiumRunner extends Runner implements Filterable
             categories.addAll(classCategories);
             // ensure that DefaultGroup is set for all methods that makes it easier afterwards
             categories.add(DefaultGroup.class);
+            categories.remove(null);
 
             testMethods.put(annotatedMethod, categories);
         }
