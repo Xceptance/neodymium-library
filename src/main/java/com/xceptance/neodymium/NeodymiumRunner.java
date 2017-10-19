@@ -241,6 +241,7 @@ public class NeodymiumRunner extends Runner implements Filterable
             {
                 methodCategoryAnnotations.add(fm.getAnnotation(Category.class));
             }
+            methodCategoryAnnotations.remove(null);
 
             Description childDescription = Description.createTestDescription(testClass.getJavaClass(), String.join(" :: ", displayNames),
                                                                              methodCategoryAnnotations.toArray(new Annotation[0]));
