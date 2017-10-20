@@ -324,6 +324,7 @@ public class NeodymiumRunner extends Runner implements Filterable
     @Override
     public void run(RunNotifier notifier)
     {
+        LOGGER.debug("Run " + testRunner.size() + " tests");
         for (int i = 0; i < testRunner.size(); i++)
         {
             LOGGER.debug("Run test " + (i + 1) + "/" + testRunner.size());
@@ -420,8 +421,11 @@ public class NeodymiumRunner extends Runner implements Filterable
     {
         // this method will be called by surefire and gradle among others
         // any include/exclude groups defined in maven or gradle build process result in an filter object
+        LOGGER.debug("Filter type: " + filter.getClass());
+        LOGGER.debug("Runner size before filter: " + testRunner.size());
 
         List<List<Runner>> newTestRunner = new LinkedList<>();
+
         for (List<Runner> runners : testRunner)
         {
             try
@@ -432,14 +436,16 @@ public class NeodymiumRunner extends Runner implements Filterable
             }
             catch (NoTestsRemainException e)
             {
-
+                // doesn't matter
             }
         }
+
         testRunner = newTestRunner;
 
         // groupsToExecute.add(DefaultGroup.class);
         // testRunner = regroupTests(testRunner, groupsToExecute, true);
-
         testDescription = createTestDescription();
+
+        LOGGER.debug("Runner size after filter: " + testRunner.size());
     }
 }
