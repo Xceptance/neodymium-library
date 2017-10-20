@@ -12,7 +12,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Categories.class)
 @IncludeCategory(
     {
-        Long.class
+        Number.class
     })
 public class TestJunitCategoriesSuite
 {
