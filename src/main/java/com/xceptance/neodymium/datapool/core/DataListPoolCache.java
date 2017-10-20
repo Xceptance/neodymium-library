@@ -1,24 +1,24 @@
-package com.xceptance.neodymium.dataprovider.core;
+package com.xceptance.neodymium.datapool.core;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class DataListProviderCache
+public class DataListPoolCache
 {
-    private Map<Class<? extends DataListProvider<?>>, Map<String, Object>> dataListProviderCache = new HashMap<>();
+    private Map<Class<? extends DataListPool<?>>, Map<String, Object>> dataListProviderCache = new HashMap<>();
 
-    private DataListProviderCache()
+    private DataListPoolCache()
     {
 
     }
 
-    public <T extends DataListProvider<?>> void addDataListProvider(T dataListProvider)
+    public <T extends DataListPool<?>> void addDataListProvider(T dataListProvider)
     {
         addDataListProvider(dataListProvider, "");
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends DataListProvider<?>> void addDataListProvider(T dataListProvider, String providerInstanceName)
+    public <T extends DataListPool<?>> void addDataListProvider(T dataListProvider, String providerInstanceName)
     {
         synchronized (dataListProviderCache)
         {
@@ -27,7 +27,7 @@ public class DataListProviderCache
             {
                 Map<String, Object> newDataListProviderMap = new HashMap<>();
                 newDataListProviderMap.put(providerInstanceName, dataListProvider);
-                dataListProviderCache.put((Class<? extends DataListProvider<?>>) dataListProvider.getClass(), newDataListProviderMap);
+                dataListProviderCache.put((Class<? extends DataListPool<?>>) dataListProvider.getClass(), newDataListProviderMap);
             }
             else
             {
@@ -94,13 +94,13 @@ public class DataListProviderCache
         return false;
     }
 
-    public static DataListProviderCache getInstance()
+    public static DataListPoolCache getInstance()
     {
         return DataListProviderCacheHolder.INSTANCE;
     }
 
     private static class DataListProviderCacheHolder
     {
-        private static final DataListProviderCache INSTANCE = new DataListProviderCache();
+        private static final DataListPoolCache INSTANCE = new DataListPoolCache();
     }
 }

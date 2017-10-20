@@ -1,6 +1,6 @@
-package com.xceptance.neodymium.dataprovider.core;
+package com.xceptance.neodymium.datapool.core;
 
-public interface IDataProvider<T>
+public interface IDataPool<T>
 {
     public boolean addEntry(T newEntry);
 

@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.dataprovider;
+package com.xceptance.neodymium.datapool;
 
 public class Account
 {

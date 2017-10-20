@@ -1,10 +1,10 @@
-package com.xceptance.neodymium.dataprovider.core;
+package com.xceptance.neodymium.datapool.core;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-public abstract class DataListProvider<T> implements IDataProvider<T>
+public abstract class DataListPool<T> implements IDataPool<T>
 {
     protected List<T> dataList;
 
