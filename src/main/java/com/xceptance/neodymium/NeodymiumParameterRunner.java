@@ -15,6 +15,11 @@ import org.junit.runners.parameterized.TestWithParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.xceptance.neodymium.datapool.core.DataListPool;
+import com.xceptance.neodymium.datapool.core.DataListPoolCache;
+import com.xceptance.neodymium.datapool.core.DataPoolProvider;
+import com.xceptance.neodymium.datapool.core.PoolEntry;
+
 public class NeodymiumParameterRunner extends BlockJUnit4ClassRunnerWithParameters
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumParameterRunner.class);
@@ -60,6 +65,64 @@ public class NeodymiumParameterRunner extends BlockJUnit4ClassRunnerWithParamete
         catch (Exception e)
         {
             throw new RuntimeException(e);
+        }
+
+        try
+        {
+            injectDataPoolParameter();
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void injectDataPoolParameter() throws InstantiationException, IllegalAccessException
+    {
+        List<FrameworkField> dataPoolProvidedFields = getTestClass().getAnnotatedFields(DataPoolProvider.class);
+        DataListPoolCache dataListPoolCache = DataListPoolCache.getInstance();
+
+        for (FrameworkField field : dataPoolProvidedFields)
+        {
+            DataPoolProvider dataPoolProviderAnnotation = field.getAnnotation(DataPoolProvider.class);
+            Class<? extends DataListPool<?>> pool = dataPoolProviderAnnotation.pool();
+
+            Object dataProvider = dataListPoolCache.getDataListProvider(pool);
+            if (dataProvider == null)
+            {
+                pool.newInstance();
+                dataProvider = dataListPoolCache.getDataListProvider(pool);
+                if (dataProvider == null)
+                {
+                    throw new RuntimeException("Could not initialize data pool provider: " + pool.getCanonicalName());
+                }
+            }
+
+            PoolEntry entry = dataPoolProviderAnnotation.entry();
+            Object value;
+            switch (entry)
+            {
+                case First:
+                    // TODO: first, not random
+                    value = ((DataListPool) dataProvider).getRandomEntry();
+                    break;
+                case Last:
+                    // TODO: last, not random
+                    value = ((DataListPool) dataProvider).getRandomEntry();
+                    break;
+                case Random:
+                default:
+                    value = ((DataListPool) dataProvider).getRandomEntry();
+                    break;
+            }
+
+            if (value == null)
+            {
+                throw new RuntimeException("The data pool provider " + dataProvider.getClass().getCanonicalName() +
+                                           " does not contain any entries");
+            }
+
+            field.getField().set(testInstance, value);
         }
     }
 

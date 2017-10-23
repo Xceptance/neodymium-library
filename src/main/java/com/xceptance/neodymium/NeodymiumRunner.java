@@ -29,12 +29,14 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.junit.runners.ParentRunner;
+import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.RunnerBuilder;
 import org.junit.runners.model.TestClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.xceptance.neodymium.datapool.core.DataPoolProvider;
 import com.xceptance.neodymium.groups.DefaultGroup;
 import com.xceptance.neodymium.multibrowser.Browser;
 import com.xceptance.neodymium.multibrowser.BrowserRunner;
@@ -73,7 +75,8 @@ public class NeodymiumRunner extends Runner implements Filterable
 
         // scan for JUnit Parameters
         List<FrameworkMethod> parameterMethods = testClass.getAnnotatedMethods(Parameters.class);
-        if (parameterMethods.size() > 0)
+        List<FrameworkField> dataPoolProviderFields = testClass.getAnnotatedFields(DataPoolProvider.class);
+        if (parameterMethods.size() > 0 || dataPoolProviderFields.size() > 0)
         {
             LOGGER.debug("Found parameters annotation");
             setFinalStatic(Parameterized.class.getDeclaredField("DEFAULT_FACTORY"),
