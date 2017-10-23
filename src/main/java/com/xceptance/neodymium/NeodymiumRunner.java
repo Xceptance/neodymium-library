@@ -73,10 +73,17 @@ public class NeodymiumRunner extends Runner implements Filterable
             runners.add(new BrowserRunner(testKlass));
         }
 
+        // scan for field with annotated data pools
+        List<FrameworkField> dataPoolProviderFields = testClass.getAnnotatedFields(DataPoolProvider.class);
+        if (dataPoolProviderFields.size() > 0)
+        {
+            LOGGER.debug("Found fields with DataPoolProvider annotation");
+            runners.add(new NeodymiumDataPoolRunner(testClass, methodExecutionContext));
+        }
+
         // scan for JUnit Parameters
         List<FrameworkMethod> parameterMethods = testClass.getAnnotatedMethods(Parameters.class);
-        List<FrameworkField> dataPoolProviderFields = testClass.getAnnotatedFields(DataPoolProvider.class);
-        if (parameterMethods.size() > 0 || dataPoolProviderFields.size() > 0)
+        if (parameterMethods.size() > 0)
         {
             LOGGER.debug("Found parameters annotation");
             setFinalStatic(Parameterized.class.getDeclaredField("DEFAULT_FACTORY"),
@@ -320,6 +327,13 @@ public class NeodymiumRunner extends Runner implements Filterable
 
                     vectors.add(childs);
                 }
+            }
+            else
+            {
+                LOGGER.debug(runner.getClass().getCanonicalName());
+                List<Runner> child = new LinkedList<>();
+                child.add(runner);
+                vectors.add(child);
             }
         }
     }
