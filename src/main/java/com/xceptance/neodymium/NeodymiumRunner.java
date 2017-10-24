@@ -234,12 +234,18 @@ public class NeodymiumRunner extends Runner implements Filterable
                 {
                     displayName = runner.getDescription().getDisplayName();
                 }
+                else if (runner instanceof NeodymiumDataPoolRunner)
+                {
+                    // Data pools should not be visible in test description
+                    displayName = null;
+                }
                 else
                 {
                     displayName = runnerDescription.getDisplayName();
                 }
 
-                displayNames.add(displayName);
+                if (displayName != null)
+                    displayNames.add(displayName);
             }
 
             // necessary to preserve JUnit view feature which lead you to the test method on double click the entry
