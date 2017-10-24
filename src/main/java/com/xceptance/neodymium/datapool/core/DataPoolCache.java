@@ -3,11 +3,11 @@ package com.xceptance.neodymium.datapool.core;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DataListPoolCache
+public class DataPoolCache
 {
     private Map<Class<? extends DataListPool<?>>, Map<String, Object>> dataListProviderCache = new HashMap<>();
 
-    private DataListPoolCache()
+    private DataPoolCache()
     {
 
     }
@@ -94,13 +94,13 @@ public class DataListPoolCache
         return false;
     }
 
-    public static DataListPoolCache getInstance()
+    public static DataPoolCache getInstance()
     {
         return DataListProviderCacheHolder.INSTANCE;
     }
 
     private static class DataListProviderCacheHolder
     {
-        private static final DataListPoolCache INSTANCE = new DataListPoolCache();
+        private static final DataPoolCache INSTANCE = new DataPoolCache();
     }
 }

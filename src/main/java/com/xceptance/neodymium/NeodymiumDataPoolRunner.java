@@ -9,7 +9,7 @@ import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.TestClass;
 
 import com.xceptance.neodymium.datapool.core.DataListPool;
-import com.xceptance.neodymium.datapool.core.DataListPoolCache;
+import com.xceptance.neodymium.datapool.core.DataPoolCache;
 import com.xceptance.neodymium.datapool.core.SourceDataPool;
 
 public class NeodymiumDataPoolRunner extends Runner
@@ -47,7 +47,7 @@ public class NeodymiumDataPoolRunner extends Runner
     private void injectDataPoolParameter() throws InstantiationException, IllegalAccessException
     {
         List<FrameworkField> dataPoolProvidedFields = testClass.getAnnotatedFields(SourceDataPool.class);
-        DataListPoolCache dataListPoolCache = DataListPoolCache.getInstance();
+        DataPoolCache dataListPoolCache = DataPoolCache.getInstance();
 
         Object testInstance = methodExecutionContext.getTestClassInstance();
 
