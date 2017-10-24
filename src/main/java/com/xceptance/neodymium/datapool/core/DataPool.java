@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 
 @Retention(RUNTIME)
 @Target(FIELD)
-public @interface DataPoolProvider
+public @interface DataPool
 {
     Class<? extends DataListPool<?>> pool();
 
