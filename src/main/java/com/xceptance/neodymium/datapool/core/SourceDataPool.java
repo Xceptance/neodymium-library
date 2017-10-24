@@ -8,9 +8,7 @@ import java.lang.annotation.Target;
 
 @Retention(RUNTIME)
 @Target(FIELD)
-public @interface DataPool
+public @interface SourceDataPool
 {
     Class<? extends DataListPool<?>> pool();
-
-    PoolEntry entry() default PoolEntry.Random;
 }

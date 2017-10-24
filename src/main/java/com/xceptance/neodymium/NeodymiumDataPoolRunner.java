@@ -10,8 +10,7 @@ import org.junit.runners.model.TestClass;
 
 import com.xceptance.neodymium.datapool.core.DataListPool;
 import com.xceptance.neodymium.datapool.core.DataListPoolCache;
-import com.xceptance.neodymium.datapool.core.DataPool;
-import com.xceptance.neodymium.datapool.core.PoolEntry;
+import com.xceptance.neodymium.datapool.core.SourceDataPool;
 
 public class NeodymiumDataPoolRunner extends Runner
 {
@@ -47,14 +46,14 @@ public class NeodymiumDataPoolRunner extends Runner
 
     private void injectDataPoolParameter() throws InstantiationException, IllegalAccessException
     {
-        List<FrameworkField> dataPoolProvidedFields = testClass.getAnnotatedFields(DataPool.class);
+        List<FrameworkField> dataPoolProvidedFields = testClass.getAnnotatedFields(SourceDataPool.class);
         DataListPoolCache dataListPoolCache = DataListPoolCache.getInstance();
 
         Object testInstance = methodExecutionContext.getTestClassInstance();
 
         for (FrameworkField field : dataPoolProvidedFields)
         {
-            DataPool dataPoolProviderAnnotation = field.getAnnotation(DataPool.class);
+            SourceDataPool dataPoolProviderAnnotation = field.getAnnotation(SourceDataPool.class);
             Class<? extends DataListPool<?>> pool = dataPoolProviderAnnotation.pool();
 
             Object dataProvider = dataListPoolCache.getDataListProvider(pool);
@@ -68,23 +67,7 @@ public class NeodymiumDataPoolRunner extends Runner
                 }
             }
 
-            PoolEntry entry = dataPoolProviderAnnotation.entry();
-            Object value;
-            switch (entry)
-            {
-                case First:
-                    // TODO: first, not random
-                    value = ((DataListPool) dataProvider).getRandomEntry();
-                    break;
-                case Last:
-                    // TODO: last, not random
-                    value = ((DataListPool) dataProvider).getRandomEntry();
-                    break;
-                case Random:
-                default:
-                    value = ((DataListPool) dataProvider).getRandomEntry();
-                    break;
-            }
+            Object value = ((DataListPool) dataProvider).getRandomEntry();
 
             if (value == null)
             {
