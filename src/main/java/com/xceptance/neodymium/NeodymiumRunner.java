@@ -36,7 +36,7 @@ import org.junit.runners.model.TestClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xceptance.neodymium.datapool.core.DataPool;
+import com.xceptance.neodymium.datapool.core.SourceDataPool;
 import com.xceptance.neodymium.groups.DefaultGroup;
 import com.xceptance.neodymium.multibrowser.Browser;
 import com.xceptance.neodymium.multibrowser.BrowserRunner;
@@ -74,7 +74,7 @@ public class NeodymiumRunner extends Runner implements Filterable
         }
 
         // scan for field with annotated data pools
-        List<FrameworkField> dataPoolProviderFields = testClass.getAnnotatedFields(DataPool.class);
+        List<FrameworkField> dataPoolProviderFields = testClass.getAnnotatedFields(SourceDataPool.class);
         if (dataPoolProviderFields.size() > 0)
         {
             LOGGER.debug("Found fields with DataPoolProvider annotation");
