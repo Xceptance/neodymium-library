@@ -54,7 +54,7 @@ public class NeodymiumDataPoolRunner extends Runner
         for (FrameworkField field : dataPoolProvidedFields)
         {
             SourceDataPool dataPoolProviderAnnotation = field.getAnnotation(SourceDataPool.class);
-            Class<? extends DataListPool<?>> pool = dataPoolProviderAnnotation.pool();
+            Class<? extends DataListPool<?>> pool = dataPoolProviderAnnotation.value();
 
             Object dataProvider = dataListPoolCache.getDataListProvider(pool);
             if (dataProvider == null)

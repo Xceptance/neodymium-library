@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 @Target(FIELD)
 public @interface SourceDataPool
 {
-    Class<? extends DataListPool<?>> pool();
+    Class<? extends DataListPool<?>> value();
 }
