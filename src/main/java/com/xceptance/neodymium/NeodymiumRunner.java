@@ -29,14 +29,12 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.junit.runners.ParentRunner;
-import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.RunnerBuilder;
 import org.junit.runners.model.TestClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xceptance.neodymium.datapool.core.SourceDataPool;
 import com.xceptance.neodymium.groups.DefaultGroup;
 import com.xceptance.neodymium.multibrowser.Browser;
 import com.xceptance.neodymium.multibrowser.BrowserRunner;
@@ -71,14 +69,6 @@ public class NeodymiumRunner extends Runner implements Filterable
         {
             LOGGER.debug("Found browser annotation");
             runners.add(new BrowserRunner(testKlass));
-        }
-
-        // scan for field with annotated data pools
-        List<FrameworkField> dataPoolProviderFields = testClass.getAnnotatedFields(SourceDataPool.class);
-        if (dataPoolProviderFields.size() > 0)
-        {
-            LOGGER.debug("Found fields with DataPoolProvider annotation");
-            runners.add(new NeodymiumDataPoolRunner(testClass, methodExecutionContext));
         }
 
         // scan for JUnit Parameters
@@ -234,18 +224,12 @@ public class NeodymiumRunner extends Runner implements Filterable
                 {
                     displayName = runner.getDescription().getDisplayName();
                 }
-                else if (runner instanceof NeodymiumDataPoolRunner)
-                {
-                    // Data pools should not be visible in test description
-                    displayName = null;
-                }
                 else
                 {
                     displayName = runnerDescription.getDisplayName();
                 }
 
-                if (displayName != null)
-                    displayNames.add(displayName);
+                displayNames.add(displayName);
             }
 
             // necessary to preserve JUnit view feature which lead you to the test method on double click the entry
