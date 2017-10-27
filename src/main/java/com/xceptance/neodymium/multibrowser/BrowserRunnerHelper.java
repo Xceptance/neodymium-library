@@ -249,6 +249,11 @@ public final class BrowserRunnerHelper
         {
             TestEnvironment testEnvironmentProperties = MultibrowserConfiguration.getInstance().getTestEnvironment(testEnvironment);
 
+            if (testEnvironmentProperties == null)
+            {
+                throw new IllegalArgumentException("No properties found for test environment: \"" + testEnvironment + "\"");
+            }
+
             final String gridUsername = testEnvironmentProperties.getUsername();
             final String gridPassword = testEnvironmentProperties.getPassword();
             final String gridUrlString = testEnvironmentProperties.getUrl();
