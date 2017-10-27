@@ -146,7 +146,7 @@ public class BrowserConfigurationMapper
          */
         String testEnvironment = o.get(TEST_ENVIRONMENT);
         if (!StringUtils.isEmpty(testEnvironment))
-            r.setTestEnvironment(testEnvironment);
+            r.setTestEnvironment(testEnvironment.trim());
 
         /*
          * Browser resolution
