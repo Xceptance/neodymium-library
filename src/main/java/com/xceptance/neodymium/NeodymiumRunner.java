@@ -81,6 +81,15 @@ public class NeodymiumRunner extends Runner implements Filterable
             runners.add(new Parameterized(testKlass));
         }
 
+        try
+        {
+            runners.add(new NeodymiumDataRunner(testKlass, methodExecutionContext));
+        }
+        catch (IllegalArgumentException e)
+        {
+            // no test data found, proceed
+        }
+
         // collect children of ParentRunner sub classes
         doMagic(runners, vectors);
 
