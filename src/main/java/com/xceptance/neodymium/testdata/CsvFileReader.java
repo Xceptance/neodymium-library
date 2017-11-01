@@ -1,10 +1,14 @@
 package com.xceptance.neodymium.testdata;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -12,37 +16,45 @@ import org.apache.commons.csv.CSVRecord;
 
 public class CsvFileReader
 {
-    public static List<Object[]> readFile(String filename)
-    {
-        return readFile(filename, Charset.forName("UTF-8"), CSVFormat.DEFAULT.withCommentMarker('#'));
-    }
+    private static final CSVFormat CSV_FORMAT = CSVFormat.DEFAULT.withFirstRecordAsHeader().withCommentMarker('#');
 
-    public static List<Object[]> readFile(String filename, Charset charset, CSVFormat format)
-    {
-        List<Object[]> csvData = new LinkedList<>();
+    private static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
 
+    public static List<Map<String, String>> readFile(InputStream inputStream)
+    {
+        List<Map<String, String>> data = new LinkedList<>();
+        CSVParser csvParser;
         try
         {
-            CSVParser csvParser = CSVParser.parse(new File(filename), charset, format);
-            List<CSVRecord> records = csvParser.getRecords();
-            for (CSVRecord record : records)
+            csvParser = CSVParser.parse(inputStream, CHARSET_UTF8, CSV_FORMAT);
+            for (CSVRecord record : csvParser.getRecords())
             {
-                Object[] line = new Object[record.size()];
-
-                for (int i = 0; i < record.size(); i++)
-                {
-                    line[i] = record.get(i);
-                }
-
-                csvData.add(line);
+                data.add(record.toMap());
             }
-            csvParser.close();
 
-            return csvData;
         }
         catch (IOException e)
         {
             throw new RuntimeException(e);
         }
+
+        return data;
+    }
+
+    public static List<Map<String, String>> readFile(File file)
+    {
+        try
+        {
+            return readFile(new FileInputStream(file));
+        }
+        catch (FileNotFoundException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<Map<String, String>> readFile(String filename)
+    {
+        return readFile(new File(filename));
     }
 }

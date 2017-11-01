@@ -5,10 +5,11 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class GenericFileReader
 {
-    public static List<Object[]> readFile()
+    public static List<Map<String, String>> readFile()
     {
         String callerClassName = getCallerClassName();
         File dataFile = findDataFile(callerClassName);
@@ -21,14 +22,15 @@ public class GenericFileReader
             {
                 return CsvFileReader.readFile(pathToFile.toString());
             }
-            else if (lowerCaseFilename.endsWith(".json"))
-            {
-                return JsonFileReader.readFile(pathToFile.toString());
-            }
-            else if (lowerCaseFilename.endsWith(".xml"))
-            {
-                return XmlFileReader.readFile(pathToFile.toString());
-            }
+            // TODO:
+            // else if (lowerCaseFilename.endsWith(".json"))
+            // {
+            // return JsonFileReader.readFile(pathToFile.toString());
+            // }
+            // else if (lowerCaseFilename.endsWith(".xml"))
+            // {
+            // return XmlFileReader.readFile(pathToFile.toString());
+            // }
         }
 
         throw new RuntimeException("No data file found for class: " + callerClassName);
