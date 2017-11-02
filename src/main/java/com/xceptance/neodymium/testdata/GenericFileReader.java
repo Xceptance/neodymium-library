@@ -20,7 +20,7 @@ public class GenericFileReader
             String lowerCaseFilename = pathToFile.getFileName().toString().toLowerCase();
             if (lowerCaseFilename.endsWith(".csv"))
             {
-                return CsvFileReader.readFile(pathToFile.toString());
+                return CsvFileReader.readFile(pathToFile.toFile());
             }
             // TODO:
             // else if (lowerCaseFilename.endsWith(".json"))

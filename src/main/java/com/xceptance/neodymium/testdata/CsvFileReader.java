@@ -52,9 +52,4 @@ public class CsvFileReader
             throw new RuntimeException(e);
         }
     }
-
-    public static List<Map<String, String>> readFile(String filename)
-    {
-        return readFile(new File(filename));
-    }
 }
