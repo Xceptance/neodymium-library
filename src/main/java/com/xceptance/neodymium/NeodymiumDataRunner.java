@@ -1,5 +1,6 @@
 package com.xceptance.neodymium;
 
+import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,8 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
 {
     private List<Runner> children;
 
-    public NeodymiumDataRunner(Class<?> testClass, MethodExecutionContext methodExecutionContext) throws InitializationError
+    public NeodymiumDataRunner(Class<?> testClass, MethodExecutionContext methodExecutionContext)
+        throws InitializationError, NoSuchFieldException
     {
         super(testClass);
         List<Map<String, String>> dataSets;
@@ -26,8 +28,27 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
         try
         {
             dataSets = TestDataUtils.getDataSets(testClass);
+            // Map<String, String> packageTestData = TestDataUtils.getPackageTestData(testClass);
+            // System.out.println(packageTestData.size());
         }
         catch (Exception e)
+        {
+            throw new InitializationError(e);
+        }
+
+        // check if there is a field Map<String, String> data
+        Field dataField;
+        try
+        {
+            dataField = testClass.getField("data");
+        }
+        catch (NoSuchFieldException e)
+        {
+            // throw new RuntimeException("No public field \"Map<String, String> data\" was found in class hierarchy");
+            // expected and caught in NeodymiumRunner
+            throw e;
+        }
+        catch (SecurityException e)
         {
             throw new InitializationError(e);
         }
@@ -37,7 +58,7 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
 
             for (Map<String, String> dataSet : dataSets)
             {
-                children.add(new NeodymiumDataRunnerRunner(testClass, dataSet, methodExecutionContext));
+                children.add(new NeodymiumDataRunnerRunner(testClass, dataField, dataSet, methodExecutionContext));
             }
         }
         else
@@ -75,9 +96,13 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
 
         private MethodExecutionContext methodExecutionContext;
 
-        public NeodymiumDataRunnerRunner(Class<?> testClass, Map<String, String> data, MethodExecutionContext methodExecutionContext)
+        private Field dataField;
+
+        public NeodymiumDataRunnerRunner(Class<?> testClass, Field dataField, Map<String, String> data,
+                                         MethodExecutionContext methodExecutionContext)
         {
             this.testClass = testClass;
+            this.dataField = dataField;
             this.data = data;
             this.methodExecutionContext = methodExecutionContext;
         }
@@ -93,11 +118,7 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
         {
             try
             {
-                testClass.getField("data").set(methodExecutionContext.getTestClassInstance(), data);
-            }
-            catch (NoSuchFieldException e)
-            {
-                throw new RuntimeException("No field \"data\" was found in class hierarchy");
+                dataField.set(methodExecutionContext.getTestClassInstance(), data);
             }
             catch (Exception e)
             {

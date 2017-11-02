@@ -89,6 +89,10 @@ public class NeodymiumRunner extends Runner implements Filterable
         {
             // no test data found, proceed
         }
+        catch (NoSuchFieldException e)
+        {
+            // test data was found, but no (public) data field in test case defined
+        }
 
         // collect children of ParentRunner sub classes
         doMagic(runners, vectors);
