@@ -18,6 +18,7 @@ public class TestParameter
         // return JsonFileReader.readFile("src/test/resources/test_data.json");
         // return CsvFileReader.readFile("src/test/resources/test_data.csv");
         return null;
+        // return GenericFileReader.readFile();
         // return XmlFileReader.readFile("test_data.xml");
     }
 
