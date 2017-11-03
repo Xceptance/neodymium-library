@@ -72,9 +72,9 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
         if (dataSets != null)
         {
 
-            for (Map<String, String> dataSet : dataSets)
+            for (int i = 0; i < dataSets.size(); i++)
             {
-                children.add(new NeodymiumDataRunnerRunner(testClass.getJavaClass(), dataField, dataSet, methodExecutionContext));
+                children.add(new NeodymiumDataRunnerRunner(testClass.getJavaClass(), dataField, dataSets, i, methodExecutionContext));
             }
         }
         else
@@ -106,7 +106,7 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
     private class NeodymiumDataRunnerRunner extends Runner
     {
 
-        private Map<String, String> data;
+        private List<Map<String, String>> dataSets;
 
         private Class<?> testClass;
 
@@ -114,19 +114,22 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
 
         private Field dataField;
 
-        public NeodymiumDataRunnerRunner(Class<?> testClass, Field dataField, Map<String, String> data,
+        private int index;
+
+        public NeodymiumDataRunnerRunner(Class<?> javaClass, Field dataField, List<Map<String, String>> dataSets, int index,
                                          MethodExecutionContext methodExecutionContext)
         {
-            this.testClass = testClass;
+            this.index = index;
+            this.testClass = javaClass;
             this.dataField = dataField;
-            this.data = data;
+            this.dataSets = dataSets;
             this.methodExecutionContext = methodExecutionContext;
         }
 
         @Override
         public Description getDescription()
         {
-            return Description.createSuiteDescription(data.toString(), testClass.getAnnotations());
+            return Description.createSuiteDescription("Data set " + (index + 1) + " / " + dataSets.size(), testClass.getAnnotations());
         }
 
         @Override
@@ -134,7 +137,7 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
         {
             try
             {
-                dataField.set(methodExecutionContext.getTestClassInstance(), data);
+                dataField.set(methodExecutionContext.getTestClassInstance(), dataSets.get(index));
             }
             catch (Exception e)
             {
