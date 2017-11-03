@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -91,7 +92,12 @@ public class NeodymiumRunner extends Runner implements Filterable
         }
         catch (NoSuchFieldException e)
         {
-            // test data was found, but no (public) data field in test case defined
+            // test data was found
+            // if the message is empty then no field was defined (annotated) and we drop the exception
+            // if the message is not empty then a correct annotated field was found but
+            // its either not a map or not public
+            if (StringUtils.isNotBlank(e.getMessage()))
+                throw e;
         }
 
         // collect children of ParentRunner sub classes

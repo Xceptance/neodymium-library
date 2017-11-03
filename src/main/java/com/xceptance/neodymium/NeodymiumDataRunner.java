@@ -51,18 +51,13 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
             FrameworkField frameworkField = testDataFields.get(0);
             Class<?> type = frameworkField.getType();
 
-            if (type != Map.class)
-                throw new NoSuchFieldException();
+            if (type != Map.class || !frameworkField.isPublic())
+            {
+                // expected and caught in NeodymiumRunner
+                throw new NoSuchFieldException("The TestData field has to be a public map e.g. \"public Map<String, String> data;\"");
+            }
 
             dataField = frameworkField.getField();
-
-            // dataField = testClass.getField("data");
-        }
-        catch (NoSuchFieldException e)
-        {
-            // throw new RuntimeException("No public field \"Map<String, String> data\" was found in class hierarchy");
-            // expected and caught in NeodymiumRunner
-            throw e;
         }
         catch (SecurityException e)
         {
