@@ -47,6 +47,8 @@ public class BrowserRunner extends ParentRunner<Runner>
 
     private BrowserConfiguration browserConfig;
 
+    private static final String SYSTEM_PROPERTY_BROWSERDEFINITION = "browserdefinition";
+
     /**
      * Sets the test instance up.
      *
@@ -146,19 +148,18 @@ public class BrowserRunner extends ParentRunner<Runner>
         }
         boolean foundTargetsAnnotation = false;
 
-        // // get test specific browser definitions (aka browser tag see browser.properties)
-        // // could be one value or comma separated list of values
-        // String browserDefinitionsProperty = XltProperties.getInstance().getProperty(SYSTEM_PROPERTY_BROWSERDEFINITION, "");
-        // if (browserDefinitionsProperty != null)
-        // browserDefinitionsProperty = browserDefinitionsProperty.replaceAll("\\s", "");
+        // get test specific browser definitions (aka browser tag see browser.properties)
+        // could be one value or comma separated list of values
+        String browserDefinitionsProperty = System.getProperty(SYSTEM_PROPERTY_BROWSERDEFINITION, "");
+        browserDefinitionsProperty = browserDefinitionsProperty.replaceAll("\\s", "");
 
         List<String> browserDefinitions = null;
 
-        // // parse test specific browser definitions
-        // if (!StringUtils.isEmpty(browserDefinitionsProperty))
-        // {
-        // browserDefinitions = Arrays.asList(browserDefinitionsProperty.split(","));
-        // }
+        // parse test specific browser definitions
+        if (!StringUtils.isEmpty(browserDefinitionsProperty))
+        {
+            browserDefinitions = Arrays.asList(browserDefinitionsProperty.split(","));
+        }
 
         // Get annotations of test class.
         final Annotation[] annotations = testCaseClass.getAnnotations();
