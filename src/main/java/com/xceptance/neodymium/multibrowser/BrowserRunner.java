@@ -2,10 +2,13 @@ package com.xceptance.neodymium.multibrowser;
 
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.runner.Description;
@@ -166,7 +169,11 @@ public class BrowserRunner extends ParentRunner<Runner>
             {
                 foundTargetsAnnotation = true;
 
-                final String[] targets = ((Browser) annotation).value();
+                // remove duplicate targets by putting them into a set and get them back out
+                // use LinkedHashSet to preserve order of insertion
+                Set<String> targetSet = new LinkedHashSet<>();
+                targetSet.addAll(Arrays.asList(((Browser) annotation).value()));
+                final String[] targets = targetSet.toArray(new String[0]);
 
                 for (final String target : targets)
                 {
