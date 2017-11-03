@@ -1,13 +1,21 @@
 package com.xceptance.xrunner;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
+import com.xceptance.neodymium.TestData;
 
 @RunWith(NeodymiumRunner.class)
+// @Browser({"Chrome_1024x768", "FF_1024x768"})
+// @Browser({"Chrome_1024x768"})
 public class TestParameterInheritance extends TestParameterBase
 {
+    @TestData
+    public Map<String, String> data = new HashMap<String, String>();
 
     @Test
     public void testMethod0()
@@ -18,43 +26,8 @@ public class TestParameterInheritance extends TestParameterBase
     }
 
     @Test
-    public void testMethod1()
+    public void t0()
     {
-    }
 
-    @Test
-    public void testMethod2()
-    {
     }
-
-    @Test
-    public void testMethod3()
-    {
-    }
-
-    @Test
-    public void testMethod4()
-    {
-    }
-
-    @Test
-    public void testMethod5()
-    {
-    }
-
-    @Test
-    public void testMethod6()
-    {
-    }
-
-    @Test
-    public void testMethod7()
-    {
-    }
-
-    @Test
-    public void testMethod8()
-    {
-    }
-
 }

@@ -83,7 +83,7 @@ public class NeodymiumRunner extends Runner implements Filterable
 
         try
         {
-            runners.add(new NeodymiumDataRunner(testKlass, methodExecutionContext));
+            runners.add(new NeodymiumDataRunner(testClass, methodExecutionContext));
         }
         catch (IllegalArgumentException e)
         {

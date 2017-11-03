@@ -9,7 +9,9 @@ import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.ParentRunner;
+import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.InitializationError;
+import org.junit.runners.model.TestClass;
 
 import com.xceptance.neodymium.testdata.TestDataUtils;
 
@@ -17,17 +19,17 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
 {
     private List<Runner> children;
 
-    public NeodymiumDataRunner(Class<?> testClass, MethodExecutionContext methodExecutionContext)
+    public NeodymiumDataRunner(TestClass testClass, MethodExecutionContext methodExecutionContext)
         throws InitializationError, NoSuchFieldException
     {
-        super(testClass);
+        super(testClass.getJavaClass());
         List<Map<String, String>> dataSets;
 
         children = new LinkedList<>();
 
         try
         {
-            dataSets = TestDataUtils.getDataSets(testClass);
+            dataSets = TestDataUtils.getDataSets(testClass.getJavaClass());
             // Map<String, String> packageTestData = TestDataUtils.getPackageTestData(testClass);
             // System.out.println(packageTestData.size());
         }
@@ -40,7 +42,21 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
         Field dataField;
         try
         {
-            dataField = testClass.getField("data");
+            List<FrameworkField> testDataFields = testClass.getAnnotatedFields(TestData.class);
+
+            if (testDataFields.size() == 0)
+                throw new NoSuchFieldException();
+
+            // we simply take the first field
+            FrameworkField frameworkField = testDataFields.get(0);
+            Class<?> type = frameworkField.getType();
+
+            if (type != Map.class)
+                throw new NoSuchFieldException();
+
+            dataField = frameworkField.getField();
+
+            // dataField = testClass.getField("data");
         }
         catch (NoSuchFieldException e)
         {
@@ -58,7 +74,7 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
 
             for (Map<String, String> dataSet : dataSets)
             {
-                children.add(new NeodymiumDataRunnerRunner(testClass, dataField, dataSet, methodExecutionContext));
+                children.add(new NeodymiumDataRunnerRunner(testClass.getJavaClass(), dataField, dataSet, methodExecutionContext));
             }
         }
         else
