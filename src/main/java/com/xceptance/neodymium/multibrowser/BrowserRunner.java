@@ -103,10 +103,7 @@ public class BrowserRunner extends ParentRunner<Runner>
     @Override
     public void run(RunNotifier notifier)
     {
-        // super.run(notifier);
-        // notifier.fireTestRunStarted(getDescription());
         setUpTest();
-        // notifier.fireTestFinished(getDescription());
     }
 
     private BrowserRunner(Class<?> testCaseClass, BrowserConfiguration browserConfig) throws InitializationError
@@ -190,14 +187,8 @@ public class BrowserRunner extends ParentRunner<Runner>
                         throw new IllegalArgumentException("Can not find browser configuration with tag: " + target);
                     }
 
-                    // for (final FrameworkMethod frameworkMethod : getTestClass().getAnnotatedMethods(Test.class))
-                    // {
-                    // get the test method to run
-                    // final Method testMethod = frameworkMethod.getMethod();
-
                     // create the JUnit children
                     browser.add(new BrowserRunner(testCaseClass, foundBrowserConfiguration));
-                    // }
                 }
             }
         }
@@ -269,15 +260,12 @@ public class BrowserRunner extends ParentRunner<Runner>
     @Override
     protected Description describeChild(Runner child)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     protected void runChild(Runner child, RunNotifier notifier)
     {
-        // TODO Auto-generated method stub
-        System.out.println("run annotation child");
     }
 
     /**
