@@ -213,18 +213,25 @@ public final class TestDataUtils
 
         if (StringUtils.isNotBlank(packageName))
         {
+            // create a list of packages to look up test data
+            // com.foo.bar
+            // com.foo
+            // com
             List<String> packageParts = new LinkedList<>(Arrays.asList(packageName.split("\\.")));
             while (packageParts.size() > 0)
             {
                 packages.add(String.join(".", packageParts));
                 packageParts.remove(packageParts.size() - 1);
             }
+            // reverse the package list so we will first look up "com" then "com.foo"
             Collections.reverse(packages);
         }
 
+        // the final test data map
         final Map<String, String> m = new HashMap<String, String>(readPackageTestData(clazz, baseDir, packageName));
         for (String pck : packages)
         {
+            // add file contents if present
             m.putAll(readPackageTestData(clazz, baseDir, pck));
         }
         return m;

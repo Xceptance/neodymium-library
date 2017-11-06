@@ -133,8 +133,11 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
             this.dataSetCount = dataSets.size();
             this.methodExecutionContext = methodExecutionContext;
 
+            // these are the test data that will be injected into the test class
             testData = new HashMap<>();
+            // first put all package test data into the map
             testData.putAll(packageTestData);
+            // if data sets are present then add them afterwards so they can overwrite package data
             if (index >= 0)
                 testData.putAll(dataSets.get(index));
         }
