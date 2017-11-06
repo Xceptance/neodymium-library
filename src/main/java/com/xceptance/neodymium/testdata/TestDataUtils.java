@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -19,6 +19,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,21 +34,6 @@ public final class TestDataUtils
      * Class logger.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(TestDataUtils.class);
-
-    /**
-     * Loaded test data.
-     */
-    private static final Map<Object, Map<String, String>> LOADED_DATA = new HashMap<Object, Map<String, String>>();
-
-    /**
-     * Loaded package data.
-     */
-    private static final Map<String, Map<String, String>> LOADED_PKG_DATA = new HashMap<String, Map<String, String>>();
-
-    /**
-     * Name of the default script package.
-     */
-    public static final String DEFAULT_PACKAGE = "";
 
     /**
      * Returns the test data sets associated with the given test case class.
@@ -176,8 +162,7 @@ public final class TestDataUtils
                 throw new NotImplementedException("Not implemented for file type: " + fileExtension);
         }
     }
-    
-    
+
     /**
      * Returns the package test data for the given test class.
      * 
@@ -188,28 +173,18 @@ public final class TestDataUtils
     public static Map<String, String> getPackageTestData(final Class<?> clazz)
     {
         final Package pkg = clazz.getPackage();
-        final String packageName = pkg == null ? DEFAULT_PACKAGE : pkg.getName();
+        String packageName = ((pkg == null) ? "" : pkg.getName());
 
         try
         {
-            final String baseDir;
-            if (packageName.length() > 0)
+            String baseDir = ".";
+            if (StringUtils.isNotBlank(packageName))
             {
-                final int nbPkgDelims = org.apache.commons.lang3.StringUtils.countMatches(packageName, ".");
-                final StringBuilder sb = new StringBuilder();
-
-                sb.append("..");
-                for (int i = 0; i < nbPkgDelims; i++)
-                {
-                    sb.append('/').append("..");
-
-                }
-
-                baseDir = sb.toString();
-            }
-            else
-            {
-                baseDir = ".";
+                // use package structure to get locator to base directory
+                // e.g. "com.foo.bar" will result in "../../.."
+                String[] packages = packageName.split("\\.");
+                Arrays.fill(packages, "..");
+                baseDir = String.join("/", packages);
             }
 
             return getPackageTestData(clazz, baseDir, packageName);
@@ -234,56 +209,74 @@ public final class TestDataUtils
      */
     private static Map<String, String> getPackageTestData(final Class<?> clazz, final String baseDir, final String packageName)
     {
-        final ArrayList<String> pkgs = new ArrayList<String>();
-        String pkgName = packageName;
-        int idx = pkgName.lastIndexOf('.');
-        while (idx > -1)
+        final List<String> packages = new LinkedList<>();
+
+        if (StringUtils.isNotBlank(packageName))
         {
-            pkgs.add(pkgName);
-            pkgName = pkgName.substring(0, idx);
-            idx = pkgName.lastIndexOf('.');
+            List<String> packageParts = new LinkedList<>(Arrays.asList(packageName.split("\\.")));
+            while (packageParts.size() > 0)
+            {
+                packages.add(String.join(".", packageParts));
+                packageParts.remove(packageParts.size() - 1);
+            }
+            Collections.reverse(packages);
         }
 
-        if (!DEFAULT_PACKAGE.equals(pkgName))
+        final Map<String, String> m = new HashMap<String, String>(readPackageTestData(clazz, baseDir, packageName));
+        for (String pck : packages)
         {
-            pkgs.add(pkgName);
+            m.putAll(readPackageTestData(clazz, baseDir, pck));
         }
-
-        final Map<String, String> m = new HashMap<String, String>(getOrLoadPackageData(clazz, baseDir, DEFAULT_PACKAGE));
-        for (int i = pkgs.size() - 1; i >= 0; i--)
-        {
-            m.putAll(getOrLoadPackageData(clazz, baseDir, pkgs.get(i)));
-        }
-
         return m;
     }
 
     /**
-     * Returns the package test data from the internal cache or loads it from disk.
-     * 
+     * Loads and returns the package test data for the given script package.
+     *
      * @param clazz
-     *            the context class to be used for resource lookup (pass {@code null} to force file lookup)
+     *            the class object to use for resource lookup
      * @param baseDir
-     *            the base directory
+     *            the base directory to use for data file lookup
      * @param packageName
-     *            the package name
-     * @return the package test data
+     *            the name of the script package
+     * @return test data of given script package
      */
-    private static Map<String, String> getOrLoadPackageData(final Class<?> clazz, final String baseDir, final String packageName)
+    public static Map<String, String> readPackageTestData(final Class<?> clazz, final String baseDir, final String packageName)
     {
-        Map<String, String> data = LOADED_PKG_DATA.get(packageName);
-        if (data == null)
+        final String baseName = packageName.replace('.', '/') + "/package_testdata.";
+
+        try
         {
-            synchronized (LOADED_PKG_DATA)
+            InputStream is = null;
+            final String base = baseDir + "/" + baseName;
+            is = clazz.getResourceAsStream(base + "xml");
+            if (is != null)
             {
-                data = LOADED_PKG_DATA.get(packageName);
-                if (data == null)
-                {
-                    data = TestDataUtils.getPackageTestData(clazz, baseDir, packageName);
-                    LOADED_PKG_DATA.put(packageName, data);
-                }
+                // TODO:
+                // return parseXMLData(is);
             }
+
+            is = clazz.getResourceAsStream(base + "csv");
+            if (is != null)
+            {
+                return CsvFileReader.readFile(is).get(0);
+                // return parseCSVData(is);
+            }
+
+            is = clazz.getResourceAsStream(base + "properties");
+            if (is != null)
+            {
+                // TODO:
+                // return parsePropertiesData(is);
+            }
+
         }
-        return data;
+        catch (final Exception e)
+        {
+            LOGGER.error("Failed to parse package test data for package '" + packageName + "'", e);
+        }
+
+        return Collections.emptyMap();
+
     }
 }

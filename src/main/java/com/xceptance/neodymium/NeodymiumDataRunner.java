@@ -1,6 +1,7 @@
 package com.xceptance.neodymium;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -24,21 +25,20 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
     {
         super(testClass.getJavaClass());
         List<Map<String, String>> dataSets;
+        Map<String, String> packageTestData;
 
         children = new LinkedList<>();
 
         try
         {
             dataSets = TestDataUtils.getDataSets(testClass.getJavaClass());
-            // Map<String, String> packageTestData = TestDataUtils.getPackageTestData(testClass);
-            // System.out.println(packageTestData.size());
+            packageTestData = TestDataUtils.getPackageTestData(testClass.getJavaClass());
         }
         catch (Exception e)
         {
             throw new InitializationError(e);
         }
 
-        // check if there is a field Map<String, String> data
         Field dataField;
         try
         {
@@ -69,7 +69,8 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
 
             for (int i = 0; i < dataSets.size(); i++)
             {
-                children.add(new NeodymiumDataRunnerRunner(testClass.getJavaClass(), dataField, dataSets, i, methodExecutionContext));
+                children.add(new NeodymiumDataRunnerRunner(testClass.getJavaClass(), dataField, dataSets, i, packageTestData,
+                                                           methodExecutionContext));
             }
         }
         else
@@ -101,8 +102,6 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
     private class NeodymiumDataRunnerRunner extends Runner
     {
 
-        private List<Map<String, String>> dataSets;
-
         private Class<?> testClass;
 
         private MethodExecutionContext methodExecutionContext;
@@ -111,20 +110,28 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
 
         private int index;
 
+        private Map<String, String> testData;
+
+        private int dataSetCount;
+
         public NeodymiumDataRunnerRunner(Class<?> javaClass, Field dataField, List<Map<String, String>> dataSets, int index,
-                                         MethodExecutionContext methodExecutionContext)
+                                         Map<String, String> packageTestData, MethodExecutionContext methodExecutionContext)
         {
             this.index = index;
             this.testClass = javaClass;
             this.dataField = dataField;
-            this.dataSets = dataSets;
+            this.dataSetCount = dataSets.size();
             this.methodExecutionContext = methodExecutionContext;
+
+            testData = new HashMap<>();
+            testData.putAll(packageTestData);
+            testData.putAll(dataSets.get(index));
         }
 
         @Override
         public Description getDescription()
         {
-            return Description.createSuiteDescription("Data set " + (index + 1) + " / " + dataSets.size(), testClass.getAnnotations());
+            return Description.createSuiteDescription("Data set " + (index + 1) + " / " + dataSetCount, testClass.getAnnotations());
         }
 
         @Override
@@ -132,7 +139,7 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
         {
             try
             {
-                dataField.set(methodExecutionContext.getTestClassInstance(), dataSets.get(index));
+                dataField.set(methodExecutionContext.getTestClassInstance(), testData);
             }
             catch (Exception e)
             {
