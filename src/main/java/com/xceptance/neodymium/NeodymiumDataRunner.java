@@ -64,12 +64,22 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
             throw new InitializationError(e);
         }
 
-        if (dataSets != null)
+        if (!dataSets.isEmpty() || !packageTestData.isEmpty())
         {
 
-            for (int i = 0; i < dataSets.size(); i++)
+            if (!dataSets.isEmpty())
             {
-                children.add(new NeodymiumDataRunnerRunner(testClass.getJavaClass(), dataField, dataSets, i, packageTestData,
+                // data sets found
+                for (int i = 0; i < dataSets.size(); i++)
+                {
+                    children.add(new NeodymiumDataRunnerRunner(testClass.getJavaClass(), dataField, dataSets, i, packageTestData,
+                                                               methodExecutionContext));
+                }
+            }
+            else
+            {
+                // only package data, no data sets
+                children.add(new NeodymiumDataRunnerRunner(testClass.getJavaClass(), dataField, dataSets, -1, packageTestData,
                                                            methodExecutionContext));
             }
         }
@@ -125,13 +135,23 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
 
             testData = new HashMap<>();
             testData.putAll(packageTestData);
-            testData.putAll(dataSets.get(index));
+            if (index >= 0)
+                testData.putAll(dataSets.get(index));
         }
 
         @Override
         public Description getDescription()
         {
-            return Description.createSuiteDescription("Data set " + (index + 1) + " / " + dataSetCount, testClass.getAnnotations());
+            if (index >= 0)
+            {
+                // data sets and (maybe) package data
+                return Description.createSuiteDescription("Data set " + (index + 1) + " / " + dataSetCount, testClass.getAnnotations());
+            }
+            else
+            {
+                // only package data
+                return Description.createSuiteDescription("TestData", testClass.getAnnotations());
+            }
         }
 
         @Override
