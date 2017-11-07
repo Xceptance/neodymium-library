@@ -133,7 +133,7 @@ public final class TestDataUtils
             }
         }
 
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     /**
