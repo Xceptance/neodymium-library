@@ -105,8 +105,17 @@ public class NeodymiumRunner extends Runner implements Filterable
 
         // create method runners that actually execute the methods annotated with @Test
         List<Runner> methodVector = new LinkedList<>();
-        LOGGER.debug("Found methods to run");
-        for (FrameworkMethod method : testClass.getAnnotatedMethods(Test.class))
+        List<FrameworkMethod> annotatedMethods = testClass.getAnnotatedMethods(Test.class);
+        if (annotatedMethods.size() > 0)
+        {
+            LOGGER.debug("Found methods to run");
+        }
+        else
+        {
+            LOGGER.debug("No test methods found");
+        }
+        
+        for (FrameworkMethod method : annotatedMethods)
         {
             NeodymiumMethodRunner methodRunner = new NeodymiumMethodRunner(testKlass, method, methodExecutionContext);
             LOGGER.debug("\t" + methodRunner.getDescription().getDisplayName());
