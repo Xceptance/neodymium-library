@@ -259,8 +259,7 @@ public final class TestDataUtils
             is = clazz.getResourceAsStream(base + "xml");
             if (is != null)
             {
-                // TODO:
-                // return parseXMLData(is);
+                return XmlFileReader.readFile(is).get(0);
             }
 
             is = clazz.getResourceAsStream(base + "csv");

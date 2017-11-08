@@ -1,8 +1,13 @@
 package com.xceptance.neodymium.testdata;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -14,15 +19,17 @@ import org.w3c.dom.NodeList;
 
 public class XmlFileReader
 {
-    public static List<Object[]> readFile(String filename)
+    // public static List<Object[]> readFile(String filename)
+    public static List<Map<String, String>> readFile(InputStream inputStream)
     {
-        List<Object[]> testData = new LinkedList<>();
+
+        List<Map<String, String>> testData = new LinkedList<>();
         try
         {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
-            Document doc = documentBuilder.parse(new File(filename));
+            Document doc = documentBuilder.parse(inputStream);
 
             doc.getDocumentElement().normalize();
 
@@ -34,17 +41,21 @@ public class XmlFileReader
                 {
                     Node dataSet = dataSets.item(i);
                     NodeList datas = dataSet.getChildNodes();
-                    List<Object> newTestData = new LinkedList<>();
+                    Map<String, String> newTestData = new HashMap<>();
 
                     for (int j = 0; j < datas.getLength(); j++)
                     {
                         Node dataItem = datas.item(j);
                         if (dataItem.getNodeName().equals("data"))
                         {
-                            newTestData.add(dataItem.getTextContent());
+                            Node key = dataItem.getAttributes().getNamedItem("key");
+                            if (key != null)
+                            {
+                                newTestData.put(key.getNodeValue(), dataItem.getTextContent());
+                            }
                         }
                     }
-                    testData.add(newTestData.toArray(new Object[0]));
+                    testData.add(newTestData);
                 }
             }
         }
@@ -52,7 +63,20 @@ public class XmlFileReader
         {
             throw new RuntimeException(e);
         }
-        
+
         return testData;
     }
+
+    public static List<Map<String, String>> readFile(File file)
+    {
+        try
+        {
+            return readFile(new FileInputStream(file));
+        }
+        catch (FileNotFoundException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
