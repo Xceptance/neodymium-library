@@ -22,15 +22,14 @@ public class GenericFileReader
             {
                 return CsvFileReader.readFile(pathToFile.toFile());
             }
-            // TODO:
-            // else if (lowerCaseFilename.endsWith(".json"))
-            // {
-            // return JsonFileReader.readFile(pathToFile.toString());
-            // }
-            // else if (lowerCaseFilename.endsWith(".xml"))
-            // {
-            // return XmlFileReader.readFile(pathToFile.toString());
-            // }
+            else if (lowerCaseFilename.endsWith(".json"))
+            {
+                return JsonFileReader.readFile(pathToFile.toFile());
+            }
+            else if (lowerCaseFilename.endsWith(".xml"))
+            {
+                return XmlFileReader.readFile(pathToFile.toFile());
+            }
         }
 
         throw new RuntimeException("No data file found for class: " + callerClassName);

@@ -1,11 +1,16 @@
 package com.xceptance.neodymium.testdata;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -13,19 +18,13 @@ import com.google.gson.stream.JsonReader;
 
 public class JsonFileReader
 {
-    public static List<Object[]> readFile(String filename)
+    public static List<Map<String, String>> readFile(InputStream inputStream)
     {
-        return readFile(filename, Charset.forName("UTF-8"));
-    }
-
-    public static List<Object[]> readFile(String filename, Charset charset)
-    {
-        List<Object[]> data = new LinkedList<>();
+        List<Map<String, String>> data = new LinkedList<>();
         try
         {
-            FileInputStream fileStram = new FileInputStream(filename);
-            BufferedInputStream bufferedStream = new BufferedInputStream(fileStram);
-            InputStreamReader streamReader = new InputStreamReader(new BufferedInputStream(bufferedStream), charset);
+            BufferedInputStream bufferedStream = new BufferedInputStream(inputStream);
+            InputStreamReader streamReader = new InputStreamReader(new BufferedInputStream(bufferedStream), Charset.forName("UTF-8"));
             JsonReader jsonReader = new JsonReader(streamReader);
 
             JsonArray asJsonArray = new JsonParser().parse(jsonReader).getAsJsonArray();
@@ -33,10 +32,12 @@ public class JsonFileReader
             for (int i = 0; i < asJsonArray.size(); i++)
             {
                 JsonArray dataSet = asJsonArray.get(i).getAsJsonArray();
-                Object[] newDataSet = new Object[dataSet.size()];
+                // Object[] newDataSet = new Object[dataSet.size()];
+                Map<String, String> newDataSet = new HashMap<>();
                 for (int j = 0; j < dataSet.size(); j++)
                 {
-                    newDataSet[j] = dataSet.get(j).getAsString();
+                    // newDataSet[j] = dataSet.get(j).getAsString();
+                    newDataSet.put(String.valueOf(j), dataSet.get(j).getAsString());
                 }
                 data.add(newDataSet);
             }
@@ -44,11 +45,22 @@ public class JsonFileReader
             jsonReader.close();
             streamReader.close();
             bufferedStream.close();
-            fileStram.close();
 
             return data;
         }
         catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<Map<String, String>> readFile(File file)
+    {
+        try
+        {
+            return readFile(new FileInputStream(file));
+        }
+        catch (FileNotFoundException e)
         {
             throw new RuntimeException(e);
         }
