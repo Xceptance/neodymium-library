@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
@@ -40,6 +41,7 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
         }
 
         Field dataField;
+        String identifierName;
         try
         {
             List<FrameworkField> testDataFields = testClass.getAnnotatedFields(TestData.class);
@@ -58,6 +60,8 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
             }
 
             dataField = frameworkField.getField();
+
+            identifierName = frameworkField.getAnnotation(TestData.class).value();
         }
         catch (SecurityException e)
         {
@@ -72,14 +76,14 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
                 // data sets found
                 for (int i = 0; i < dataSets.size(); i++)
                 {
-                    children.add(new NeodymiumDataRunnerRunner(testClass.getJavaClass(), dataField, dataSets, i, packageTestData,
-                                                               methodExecutionContext));
+                    children.add(new NeodymiumDataRunnerRunner(testClass.getJavaClass(), dataField, dataSets, identifierName, i,
+                                                               packageTestData, methodExecutionContext));
                 }
             }
             else
             {
                 // only package data, no data sets
-                children.add(new NeodymiumDataRunnerRunner(testClass.getJavaClass(), dataField, dataSets, -1, packageTestData,
+                children.add(new NeodymiumDataRunnerRunner(testClass.getJavaClass(), dataField, dataSets, "", -1, packageTestData,
                                                            methodExecutionContext));
             }
         }
@@ -124,9 +128,12 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
 
         private int dataSetCount;
 
-        public NeodymiumDataRunnerRunner(Class<?> javaClass, Field dataField, List<Map<String, String>> dataSets, int index,
-                                         Map<String, String> packageTestData, MethodExecutionContext methodExecutionContext)
+        private String identifier;
+
+        public NeodymiumDataRunnerRunner(Class<?> javaClass, Field dataField, List<Map<String, String>> dataSets, String identifier,
+                                         int index, Map<String, String> packageTestData, MethodExecutionContext methodExecutionContext)
         {
+            this.identifier = identifier;
             this.index = index;
             this.testClass = javaClass;
             this.dataField = dataField;
@@ -148,7 +155,13 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
             if (index >= 0)
             {
                 // data sets and (maybe) package data
-                return Description.createSuiteDescription("Data set " + (index + 1) + " / " + dataSetCount, testClass.getAnnotations());
+                String testDatasetIndetifier = testData.get(identifier);
+                if (StringUtils.isBlank(testDatasetIndetifier))
+                {
+                    testDatasetIndetifier = "Data set";
+                }
+                String displayName = String.format("%s %d / %d", testDatasetIndetifier, (index + 1), dataSetCount);
+                return Description.createSuiteDescription(displayName, testClass.getAnnotations());
             }
             else
             {
