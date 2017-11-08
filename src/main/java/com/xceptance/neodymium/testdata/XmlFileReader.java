@@ -19,7 +19,6 @@ import org.w3c.dom.NodeList;
 
 public class XmlFileReader
 {
-    // public static List<Object[]> readFile(String filename)
     public static List<Map<String, String>> readFile(InputStream inputStream)
     {
 
@@ -78,5 +77,4 @@ public class XmlFileReader
             throw new RuntimeException(e);
         }
     }
-
 }
