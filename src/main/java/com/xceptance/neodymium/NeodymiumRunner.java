@@ -36,6 +36,7 @@ import org.junit.runners.model.TestClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.xceptance.neodymium.NeodymiumDataRunner.NeodymiumDataRunnerRunner;
 import com.xceptance.neodymium.groups.DefaultGroup;
 import com.xceptance.neodymium.multibrowser.Browser;
 import com.xceptance.neodymium.multibrowser.BrowserRunner;
@@ -114,7 +115,7 @@ public class NeodymiumRunner extends Runner implements Filterable
         {
             LOGGER.debug("No test methods found");
         }
-        
+
         for (FrameworkMethod method : annotatedMethods)
         {
             NeodymiumMethodRunner methodRunner = new NeodymiumMethodRunner(testKlass, method, methodExecutionContext);
@@ -252,12 +253,25 @@ public class NeodymiumRunner extends Runner implements Filterable
                 {
                     displayName = runner.getDescription().getDisplayName();
                 }
+                else if (runner instanceof NeodymiumDataRunnerRunner)
+                {
+                    NeodymiumDataRunnerRunner dataRunner = (NeodymiumDataRunnerRunner) runner;
+                    if (dataRunner.hasDataSets())
+                    {
+                        displayName = runnerDescription.getDisplayName();
+                    }
+                    else
+                    {
+                        displayName = null;
+                    }
+                }
                 else
                 {
                     displayName = runnerDescription.getDisplayName();
                 }
 
-                displayNames.add(displayName);
+                if (displayName != null)
+                    displayNames.add(displayName);
             }
 
             // necessary to preserve JUnit view feature which lead you to the test method on double click the entry

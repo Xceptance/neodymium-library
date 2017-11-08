@@ -109,7 +109,7 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
         child.run(notifier);
     }
 
-    private class NeodymiumDataRunnerRunner extends Runner
+    public class NeodymiumDataRunnerRunner extends Runner
     {
 
         private Class<?> testClass;
@@ -155,6 +155,12 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
                 // only package data
                 return Description.createSuiteDescription("TestData", testClass.getAnnotations());
             }
+        }
+
+        public boolean hasDataSets()
+        {
+            // used in NeodymiumRunner to determine if this runner should be visible in the runner list / JUnit view / test report
+            return (index >= 0);
         }
 
         @Override
