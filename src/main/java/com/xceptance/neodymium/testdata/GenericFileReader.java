@@ -30,8 +30,10 @@ public class GenericFileReader
             {
                 return XmlFileReader.readFile(pathToFile.toFile());
             }
-
-            // TODO: property file reader
+            else if (lowerCaseFilename.endsWith(".properties"))
+            {
+                return PropertyFileReader.readFile(pathToFile.toFile());
+            }
         }
 
         throw new RuntimeException("No data file found for class: " + callerClassName);
@@ -67,7 +69,7 @@ public class GenericFileReader
 
         String[] filetype = new String[]
             {
-                ".csv", ".json", ".xml" // TODO: add properties once the file reader is created
+                ".csv", ".json", ".xml", ".properties"
             };
 
         String testClassPath = String.join("/", qualifier);
