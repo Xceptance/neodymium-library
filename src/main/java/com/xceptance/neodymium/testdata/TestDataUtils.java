@@ -157,9 +157,13 @@ public final class TestDataUtils
                 return CsvFileReader.readFile(dataSetsFile);
 
             case "xml":
+                return XmlFileReader.readFile(dataSetsFile);
+
             case "json":
+                return JsonFileReader.readFile(dataSetsFile);
+
             default:
-                // TODO: xml, json, ...
+                // TODO: properties files
                 throw new NotImplementedException("Not implemented for file type: " + fileExtension);
         }
     }
@@ -283,7 +287,6 @@ public final class TestDataUtils
             if (is != null)
             {
                 return CsvFileReader.readFile(is).get(0);
-                // return parseCSVData(is);
             }
 
             is = clazz.getResourceAsStream(base + "properties");
@@ -293,6 +296,11 @@ public final class TestDataUtils
                 // return parsePropertiesData(is);
             }
 
+            is = clazz.getResourceAsStream(base + "json");
+            if (is != null)
+            {
+                return JsonFileReader.readFile(is).get(0);
+            }
         }
         catch (final Exception e)
         {
