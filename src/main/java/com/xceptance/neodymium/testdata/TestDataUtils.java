@@ -289,18 +289,18 @@ public final class TestDataUtils
                 return CsvFileReader.readFile(is).get(0);
             }
 
+            is = clazz.getResourceAsStream(base + "properties");
+            if (is != null)
+            {
+                // TODO:
+                // return parsePropertiesData(is);
+            }
+
             is = clazz.getResourceAsStream(base + "json");
             if (is != null)
             {
                 return JsonFileReader.readFile(is).get(0);
             }
-
-            is = clazz.getResourceAsStream(base + "properties");
-            if (is != null)
-            {
-                return PropertyFileReader.readFile(is).get(0);
-            }
-            // TODO: discuss order of file extensions
         }
         catch (final Exception e)
         {
