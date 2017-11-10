@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.runner.Description;
@@ -14,11 +15,15 @@ import org.junit.runners.ParentRunner;
 import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.TestClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.xceptance.neodymium.testdata.TestDataUtils;
 
 public class NeodymiumDataRunner extends ParentRunner<Runner>
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumDataRunner.class);
+
     private List<Runner> children;
 
     public NeodymiumDataRunner(TestClass testClass, MethodExecutionContext methodExecutionContext)
@@ -146,7 +151,21 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
             testData.putAll(packageTestData);
             // if data sets are present then add them afterwards so they can overwrite package data
             if (index >= 0)
+            {
+                for (Entry<String, String> newDataEntry : dataSets.get(index).entrySet())
+                {
+                    // only log if a data set entry overwrites an package data entry
+                    if (testData.containsKey(newDataEntry.getKey()))
+                    {
+                        LOGGER.debug(String.format("Data entry \"%s\" overwritten by data set #%d (old: \"%s\", new: \"%s\")",
+                                                   newDataEntry.getKey(), index + 1, testData.get(newDataEntry.getKey()),
+                                                   newDataEntry.getValue()));
+                    }
+                    testData.put(newDataEntry.getKey(), newDataEntry.getValue());
+                }
+
                 testData.putAll(dataSets.get(index));
+            }
         }
 
         @Override

@@ -13,6 +13,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -228,11 +229,27 @@ public final class TestDataUtils
         }
 
         // the final test data map
-        final Map<String, String> m = new HashMap<String, String>(readPackageTestData(clazz, baseDir, packageName));
+        final Map<String, String> m = new HashMap<String, String>();
         for (String pck : packages)
         {
             // add file contents if present
-            m.putAll(readPackageTestData(clazz, baseDir, pck));
+            Map<String, String> newData = readPackageTestData(clazz, baseDir, pck);
+            // iterate over data entries to put them one by one in the map
+            for (Entry<String, String> newDataEntry : newData.entrySet())
+            {
+                // log if it is a new entry or if it overwrites an existing one
+                if (m.containsKey(newDataEntry.getKey()))
+                {
+                    LOGGER.debug(String.format("Data entry \"%s\" overwritten by test data from package \"%s\" (old: \"%s\", new: \"%s\")",
+                                               newDataEntry.getKey(), pck, m.get(newDataEntry.getKey()), newDataEntry.getValue()));
+                }
+                else
+                {
+                    LOGGER.debug(String.format("New package test data entry \"%s\"=\"%s\" in package \"%s\"", newDataEntry.getKey(),
+                                               newDataEntry.getValue(), pck));
+                }
+                m.put(newDataEntry.getKey(), newDataEntry.getValue());
+            }
         }
         return m;
     }
