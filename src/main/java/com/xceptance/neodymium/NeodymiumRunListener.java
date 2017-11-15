@@ -1,5 +1,8 @@
 package com.xceptance.neodymium;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
@@ -10,7 +13,7 @@ public class NeodymiumRunListener extends RunListener
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumRunListener.class);
 
-    private Failure failure = null;
+    private List<Failure> failures = new LinkedList<>();
 
     @Override
     public void testStarted(Description description) throws Exception
@@ -28,16 +31,16 @@ public class NeodymiumRunListener extends RunListener
     public void testFailure(Failure failure) throws Exception
     {
         LOGGER.debug("Test failed: " + failure);
-        this.failure = failure;
+        failures.add(failure);
     }
 
     public boolean hasFailure()
     {
-        return (failure != null);
+        return (failures.size() > 0);
     }
 
-    public Failure getFailure()
+    public List<Failure> getFailures()
     {
-        return failure;
+        return failures;
     }
 }
