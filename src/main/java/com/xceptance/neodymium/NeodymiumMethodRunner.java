@@ -73,15 +73,17 @@ public class NeodymiumMethodRunner extends BlockJUnit4ClassRunner
             statement.evaluate();
             if (runListener.hasFailure())
             {
-                notifier.fireTestFailure(new Failure(methodExecutionContext.getRunnerDescription(),
-                                                     runListener.getFailure().getException()));
-                LOGGER.debug("Execution failed", runListener.getFailure().getException());
+                for (Failure failure : runListener.getFailures())
+                {
+                    notifier.fireTestFailure(new Failure(methodExecutionContext.getRunnerDescription(), failure.getException()));
+                    LOGGER.debug("Execution failed", failure.getException());
+                }
+
             }
         }
         catch (AssumptionViolatedException e)
         {
-            notifier.fireTestAssumptionFailed(new Failure(methodExecutionContext.getRunnerDescription(),
-                                                          runListener.getFailure().getException()));
+            notifier.fireTestAssumptionFailed(new Failure(methodExecutionContext.getRunnerDescription(), e));
         }
         catch (StoppedByUserException e)
         {
