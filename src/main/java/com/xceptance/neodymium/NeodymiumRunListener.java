@@ -9,6 +9,8 @@ import org.junit.runner.notification.RunListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.qameta.allure.Attachment;
+
 public class NeodymiumRunListener extends RunListener
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumRunListener.class);
@@ -32,6 +34,25 @@ public class NeodymiumRunListener extends RunListener
     {
         LOGGER.debug("Test failed: " + failure);
         failures.add(failure);
+
+        byte[] screenshot = SelenideHelper.getScreenshotFromFailure(failure);
+
+        if (screenshot != null)
+        {
+            String screenshotFilename = SelenideHelper.getFilenameFromFailure(failure);
+            LOGGER.debug("Attach screenshot with file name: " + screenshotFilename);
+            attachPNG(screenshot, screenshotFilename);
+        }
+        else
+        {
+            LOGGER.debug("No screenshot available");
+        }
+    }
+
+    @Attachment(type = "image/png", value = "{filename}", fileExtension = ".png")
+    public byte[] attachPNG(byte[] filedata, String filename)
+    {
+        return filedata;
     }
 
     public boolean hasFailure()
