@@ -45,8 +45,9 @@ import com.xceptance.neodymium.multibrowser.BrowserRunner;
 
 /**
  * This class executes {@link JUnit4} test classes (aka JUnit Runner) and adds several features to test execution e.g.
- * multi browser and test data. In order to run a {@link JUnit4} test with this runner the class or its super-class has
- * to be annotated with {@link RunWith}<br>
+ * multi browser ({@link Browser}) and test data ({@link TestData}). In order to run a {@link JUnit4} test with this
+ * runner the class or its super-class has to be annotated with {@link RunWith}
+ * <p>
  * <b>Example</b>
  * 
  * <pre>
