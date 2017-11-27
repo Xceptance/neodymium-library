@@ -3,6 +3,7 @@ package com.xceptance.neodymium;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
@@ -34,6 +35,7 @@ public class NeodymiumRunListener extends RunListener
     {
         LOGGER.debug("Test failed: " + failure);
         failures.add(failure);
+        attachTxt(ExceptionUtils.getStackTrace(failure.getException()).getBytes(), "Stacktrace");
 
         byte[] screenshot = SelenideHelper.getScreenshotFromFailure(failure);
 
@@ -51,6 +53,12 @@ public class NeodymiumRunListener extends RunListener
 
     @Attachment(type = "image/png", value = "{filename}", fileExtension = ".png")
     public byte[] attachPNG(byte[] filedata, String filename)
+    {
+        return filedata;
+    }
+
+    @Attachment(type = "text/plain", value = "{filename}")
+    public byte[] attachTxt(byte[] filedata, String filename)
     {
         return filedata;
     }
