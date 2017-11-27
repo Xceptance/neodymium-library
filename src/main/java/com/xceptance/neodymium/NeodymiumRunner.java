@@ -53,6 +53,7 @@ import com.xceptance.neodymium.multibrowser.BrowserRunner;
  * &#64;RunWith(NeodymiumRunner.class)
  * public class MyTests
  * {
+ *     &#64;Test
  *     public void testMethod()
  *     {
  *     }
@@ -64,6 +65,7 @@ import com.xceptance.neodymium.multibrowser.BrowserRunner;
  * <pre>
  * public class MyTests extends BaseTestClass
  * {
+ *     &#64;Test
  *     public void testMethod()
  *     {
  *     }
