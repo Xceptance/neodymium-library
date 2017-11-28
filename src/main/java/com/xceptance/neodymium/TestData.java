@@ -17,7 +17,8 @@ import org.junit.runners.JUnit4;
  * class.
  * <p>
  * For futher information about test data see
- * <a href="https://github.com/Xceptance/neodymium-library">https://github.com/Xceptance/neodymium-library</a>
+ * <a href="https://github.com/Xceptance/neodymium-library">https://github.com/Xceptance/neodymium-library</a> TODO:
+ * update URL
  * <p>
  * <b>Example</b>
  * 
