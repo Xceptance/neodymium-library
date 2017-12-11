@@ -39,4 +39,11 @@ public class TestPackageData
     {
         Assert.assertEquals("The package data from this package should overwrite the parenty data", "xyz", data.get("packageField2"));
     }
+
+    @Test
+    public void testPackageFileEndingHierachy()
+    {
+        Assert.assertEquals("The package data from this package should overwrite the parenty data", null, data.get("packageField4"));
+    }
+
 }
