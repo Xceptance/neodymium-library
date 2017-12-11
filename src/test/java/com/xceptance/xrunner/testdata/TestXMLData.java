@@ -16,11 +16,30 @@ public class TestXMLData
     public Map<String, String> data;
 
     @Test
-    public void test()
+    public void testAmountOfAvailableData()
     {
-        Assert.assertEquals("name", data.get("field1"));
-        Assert.assertEquals("1234", data.get("field2"));
-        Assert.assertEquals("12.3", data.get("field3"));
-        Assert.assertEquals("ßäüö", data.get("field4"));
+        Assert.assertEquals("The data pool should have the correct number of items", 6, data.size());
+    }
+
+    @Test
+    public void testXML()
+    {
+        Assert.assertEquals("The field1 should be available.", "name", data.get("field1"));
+        Assert.assertEquals("The field2 should be available.", "1234", data.get("field2"));
+        Assert.assertEquals("The field3 should be available.", "12.3", data.get("field3"));
+        Assert.assertEquals("The field4 should be available.", "ßäüö", data.get("field4"));
+    }
+
+    @Test
+    public void testFieldNotAvailable()
+    {
+        Assert.assertEquals("The field123 should not be available.", null, data.get("field123"));
+    }
+
+    @Test
+    public void testPackageData()
+    {
+        Assert.assertEquals("The package data from this package should be available.", "abc", data.get("packageField1"));
+        Assert.assertEquals("The package data from this package should be available.", "1234", data.get("packageField2"));
     }
 }

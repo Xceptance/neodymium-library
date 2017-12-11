@@ -17,20 +17,26 @@ public class TestPackageData
     public Map<String, String> data;
 
     @Test
+    public void testAmountOfAvailableData()
+    {
+        Assert.assertEquals("The data pool should have the correct number of items", 3, data.size());
+    }
+
+    @Test
     public void testSamePackage()
     {
-        Assert.assertEquals("The package data from this package", "6789", data.get("field3"));
+        Assert.assertEquals("The package data from this package", "6789", data.get("packageField3"));
     }
 
     @Test
     public void testParentPackage()
     {
-        Assert.assertEquals("The package data from parent package", "abc", data.get("field1"));
+        Assert.assertEquals("The package data from parent package", "abc", data.get("packageField1"));
     }
 
     @Test
     public void testPackageInheritance()
     {
-        Assert.assertEquals("The package data from this package should overwrite the parenty data", "xyz", data.get("field2"));
+        Assert.assertEquals("The package data from this package should overwrite the parenty data", "xyz", data.get("packageField2"));
     }
 }
