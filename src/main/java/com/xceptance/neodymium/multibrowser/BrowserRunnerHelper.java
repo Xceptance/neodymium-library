@@ -145,7 +145,8 @@ public final class BrowserRunnerHelper
 
         try
         {
-            driver.manage().window().setSize(browserSize);
+            if (browserSize != null)
+                driver.manage().window().setSize(browserSize);
         }
         catch (final UnsupportedCommandException e)
         {

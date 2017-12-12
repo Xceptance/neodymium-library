@@ -20,6 +20,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.Description;
+import org.junit.runner.RunWith;
 import org.junit.runner.Runner;
 import org.junit.runner.manipulation.Filter;
 import org.junit.runner.manipulation.Filterable;
@@ -27,6 +28,7 @@ import org.junit.runner.manipulation.NoTestsRemainException;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.JUnit4;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.junit.runners.ParentRunner;
@@ -41,6 +43,46 @@ import com.xceptance.neodymium.groups.DefaultGroup;
 import com.xceptance.neodymium.multibrowser.Browser;
 import com.xceptance.neodymium.multibrowser.BrowserRunner;
 
+/**
+ * This class executes {@link JUnit4} test classes (aka JUnit Runner) and adds several features to test execution e.g.
+ * multi browser ({@link Browser}) and test data ({@link TestData}). Vanilla JUnit parameterized tests are supported as
+ * well but only with parameter injection (as described here: <a href=
+ * "https://github.com/junit-team/junit4/wiki/parameterized-tests#using-parameter-for-field-injection-instead-of-constructor">Using @Parameter
+ * for Field injection instead of Constructor</a>). In order to run a {@link JUnit4} test with this runner the class or
+ * its super-class has to be annotated with {@link RunWith}
+ * <p>
+ * <b>Example</b>
+ * 
+ * <pre>
+ * &#64;RunWith(NeodymiumRunner.class)
+ * public class MyTests
+ * {
+ *     &#64;Test
+ *     public void testMethod()
+ *     {
+ *     }
+ * }
+ * </pre>
+ * 
+ * <b>Example</b>
+ * 
+ * <pre>
+ * public class MyTests extends BaseTestClass
+ * {
+ *     &#64;Test
+ *     public void testMethod()
+ *     {
+ *     }
+ * }
+ * 
+ * &#64;RunWith(NeodymiumRunner.class)
+ * public class BaseTestClass
+ * {
+ * }
+ * </pre>
+ * 
+ * @author m.kaufmann
+ */
 public class NeodymiumRunner extends Runner implements Filterable
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumRunner.class);
