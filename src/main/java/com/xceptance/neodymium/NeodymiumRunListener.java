@@ -3,7 +3,6 @@ package com.xceptance.neodymium;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
@@ -35,7 +34,6 @@ public class NeodymiumRunListener extends RunListener
     {
         LOGGER.debug("Test failed: " + failure);
         failures.add(failure);
-        attachTxt(ExceptionUtils.getStackTrace(failure.getException()).getBytes(), "Stacktrace");
 
         byte[] screenshot = SelenideHelper.getScreenshotFromFailure(failure);
 
