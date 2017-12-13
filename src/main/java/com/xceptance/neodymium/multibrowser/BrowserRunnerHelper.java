@@ -236,7 +236,7 @@ public final class BrowserRunnerHelper
             {
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 firefoxOptions.setBinary(createFirefoxBinary(driverServerPath.getFirefoxBrowserPath()));
-                firefoxOptions.addCapabilities(capabilities);
+                firefoxOptions.merge(capabilities);
 
                 return new FirefoxDriver(firefoxOptions);
             }
