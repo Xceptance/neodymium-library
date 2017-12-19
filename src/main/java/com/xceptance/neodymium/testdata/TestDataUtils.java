@@ -162,8 +162,10 @@ public final class TestDataUtils
             case "json":
                 return JsonFileReader.readFile(dataSetsFile);
 
+            case "properties":
+                return PropertyFileReader.readFile(dataSetsFile);
+
             default:
-                // TODO: properties files
                 throw new NotImplementedException("Not implemented for file type: " + fileExtension);
         }
     }
