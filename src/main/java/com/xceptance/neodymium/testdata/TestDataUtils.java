@@ -55,9 +55,9 @@ public final class TestDataUtils
         final String slashedName = dottedName.replace('.', '/');
 
         String[] filetype = new String[]
-            {
-                ".csv", ".json", ".xml"
-            };
+        {
+          ".csv", ".json", ".xml"
+        };
         for (final String fileExtension : filetype)
         {
             fileNames.add(slashedName + fileExtension);
@@ -97,7 +97,7 @@ public final class TestDataUtils
                 final File batchDataFile = new File(directory, fileName);
                 if (batchDataFile.isFile())
                 {
-                    return readDataSets(batchDataFile);
+                    return readDataSetsFromFile(batchDataFile);
                 }
             }
         }
@@ -122,7 +122,7 @@ public final class TestDataUtils
                     output.flush();
 
                     // read the data sets from the temporary file
-                    return readDataSets(batchDataFile);
+                    return readDataSetsFromFile(batchDataFile);
                 }
                 finally
                 {
@@ -145,7 +145,7 @@ public final class TestDataUtils
      *            the test data set file
      * @return the data sets
      */
-    private static List<Map<String, String>> readDataSets(final File dataSetsFile)
+    public static List<Map<String, String>> readDataSetsFromFile(final File dataSetsFile)
     {
         LOGGER.debug("Test data set file used: " + dataSetsFile.getAbsolutePath());
 
@@ -272,34 +272,41 @@ public final class TestDataUtils
     public static Map<String, String> readPackageTestData(final Class<?> clazz, final String baseDir, final String packageName)
     {
         final String baseName = packageName.replace('.', '/') + "/package_testdata.";
+        final String base = baseDir + "/" + baseName;
 
         try
         {
             InputStream is = null;
-            final String base = baseDir + "/" + baseName;
-            is = clazz.getResourceAsStream(base + "xml");
+            String path;
+
+            path = base + "csv";
+            is = clazz.getResourceAsStream(path);
             if (is != null)
             {
-                return XmlFileReader.readFile(is).get(0);
+                return getFirstDataSetFromFile(CsvFileReader.readFile(is), path);
             }
 
-            is = clazz.getResourceAsStream(base + "csv");
+            path = base + "xml";
+            is = clazz.getResourceAsStream(path);
             if (is != null)
             {
-                return CsvFileReader.readFile(is).get(0);
+                return getFirstDataSetFromFile(XmlFileReader.readFile(is), path);
             }
 
-            is = clazz.getResourceAsStream(base + "json");
+            path = base + "json";
+            is = clazz.getResourceAsStream(path);
             if (is != null)
             {
-                return JsonFileReader.readFile(is).get(0);
+                return getFirstDataSetFromFile(JsonFileReader.readFile(is), path);
             }
 
-            is = clazz.getResourceAsStream(base + "properties");
+            path = base + "properties";
+            is = clazz.getResourceAsStream(path);
             if (is != null)
             {
-                return PropertyFileReader.readFile(is).get(0);
+                return getFirstDataSetFromFile(PropertyFileReader.readFile(is), path);
             }
+
             // TODO: discuss order of file extensions
         }
         catch (final Exception e)
@@ -309,5 +316,18 @@ public final class TestDataUtils
 
         return Collections.emptyMap();
 
+    }
+
+    private static Map<String, String> getFirstDataSetFromFile(List<Map<String, String>> list, String path)
+    {
+        if (list.size() == 0)
+        {
+            LOGGER.warn("No data set found in data file: " + path);
+        }
+        else if (list.size() > 1)
+        {
+            LOGGER.warn("More than one data set found in data file: " + path);
+        }
+        return list.get(0);
     }
 }
