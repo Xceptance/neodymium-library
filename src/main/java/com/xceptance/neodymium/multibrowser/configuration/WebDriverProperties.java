@@ -9,22 +9,22 @@ import org.aeonbits.owner.Config.Sources;
     })
 public interface WebDriverProperties extends Config
 {
-    @Key("xlt.webDriver.window.width")
+    @Key("neodymium.webDriver.window.width")
     @DefaultValue("-1")
     public Integer getWindowWidth();
 
-    @Key("xlt.webDriver.window.height")
+    @Key("neodymium.webDriver.window.height")
     @DefaultValue("-1")
     public Integer getWindowHeight();
 
-    @Key("xlt.webDriver.firefox.legacyMode")
+    @Key("neodymium.webDriver.firefox.legacyMode")
     public boolean useFirefoxLegacy();
 
-    @Key("xlt.webDriver.reuseDriver")
+    @Key("neodymium.webDriver.reuseDriver")
     @DefaultValue("false")
     public boolean reuseWebDriver();
 
-    @Key("xlt.webDriver.keepBrowserOpen")
+    @Key("neodymium.webDriver.keepBrowserOpen")
     @DefaultValue("false")
     public boolean keepBrowserOpen();
 }

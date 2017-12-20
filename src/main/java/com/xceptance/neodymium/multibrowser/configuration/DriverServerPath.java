@@ -9,30 +9,30 @@ import org.aeonbits.owner.Config.Sources;
     })
 public interface DriverServerPath extends Config
 {
-    @Key("xlt.webDriver.chrome.pathToDriverServer")
+    @Key("neodymium.webDriver.chrome.pathToDriverServer")
     public String getChromeDriverPath();
 
-    @Key("xlt.webDriver.edge.pathToDriverServer")
+    @Key("neodymium.webDriver.edge.pathToDriverServer")
     public String getEdgeDriverPath();
 
-    @Key("xlt.webDriver.firefox.pathToDriverServer")
+    @Key("neodymium.webDriver.firefox.pathToDriverServer")
     public String getFirefoxDriverPath();
 
-    @Key("xlt.webDriver.ie.pathToDriverServer")
+    @Key("neodymium.webDriver.ie.pathToDriverServer")
     public String getIeDriverPath();
 
-    @Key("xlt.webDriver.opera.pathToDriverServer")
+    @Key("neodymium.webDriver.opera.pathToDriverServer")
     public String getOperaDriverPath();
 
-    @Key("xlt.webDriver.phantomjs.pathToDriverServer")
+    @Key("neodymium.webDriver.phantomjs.pathToDriverServer")
     public String getPhantomJsDriverPath();
 
-    @Key("xlt.webDriver.chrome.pathToBrowser")
+    @Key("neodymium.webDriver.chrome.pathToBrowser")
     public String getChromeBrowserPath();
 
-    @Key("xlt.webDriver.firefox.pathToBrowser")
+    @Key("neodymium.webDriver.firefox.pathToBrowser")
     public String getFirefoxBrowserPath();
 
-    @Key("xlt.webDriver.opera.pathToBrowser")
+    @Key("neodymium.webDriver.opera.pathToBrowser")
     public String getOperaBrowserPath();
 }

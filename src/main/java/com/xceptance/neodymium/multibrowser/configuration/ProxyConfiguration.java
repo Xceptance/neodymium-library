@@ -9,22 +9,22 @@ import org.aeonbits.owner.Config.Sources;
     })
 public interface ProxyConfiguration extends Config
 {
-    @Key("com.xceptance.xlt.proxy")
+    @Key("neodymium.proxy")
     @DefaultValue("false")
     public boolean useProxy();
 
-    @Key("com.xceptance.xlt.proxy.host")
+    @Key("neodymium.proxy.host")
     public String getHost();
 
-    @Key("com.xceptance.xlt.proxy.port")
+    @Key("neodymium.proxy.port")
     public String getPort();
 
-    @Key("com.xceptance.xlt.proxy.userName")
+    @Key("neodymium.proxy.userName")
     public String getUsername();
 
-    @Key("com.xceptance.xlt.proxy.password")
+    @Key("neodymium.proxy.password")
     public String getPassword();
 
-    @Key("com.xceptance.xlt.proxy.bypassForHosts")
+    @Key("neodymium.proxy.bypassForHosts")
     public String getBypass();
 }
