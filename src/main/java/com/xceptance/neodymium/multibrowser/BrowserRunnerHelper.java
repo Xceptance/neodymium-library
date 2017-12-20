@@ -115,8 +115,8 @@ public final class BrowserRunnerHelper
     /**
      * Sets the browser window size
      * <p>
-     * Reads the default size from xlt properties and applies them to the browser window as long as its no device-emulation
-     * test. In case of device-emulation the emulated device specifies the size of the browser window.
+     * Reads the default size from browser properties and applies them to the browser window as long as its no
+     * device-emulation test. In case of device-emulation the emulated device specifies the size of the browser window.
      *
      * @param config
      * @param driver
@@ -133,7 +133,7 @@ public final class BrowserRunnerHelper
         final int configuredBrowserHeight = config.getBrowserHeight();
 
         Dimension browserSize = null;
-        // first check if the configured browserprofile has a defined size, else use the xlt default browser size
+        // first check if the configured browser profile has a defined size, else use the default browser size
         if (configuredBrowserWidth > 0 && configuredBrowserHeight > 0)
         {
             browserSize = new Dimension(configuredBrowserWidth, configuredBrowserHeight);
