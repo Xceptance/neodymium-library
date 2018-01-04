@@ -5,7 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 
-import com.sun.istack.internal.Nullable;
+import javax.annotation.Nullable;
+
 import com.xceptance.neodymium.visual.image.algorithm.ComparisonAlgorithm;
 
 /**
