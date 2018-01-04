@@ -18,6 +18,7 @@ public interface WebDriverProperties extends Config
     public Integer getWindowHeight();
 
     @Key("neodymium.webDriver.firefox.legacyMode")
+    @DefaultValue("false")
     public boolean useFirefoxLegacy();
 
     @Key("neodymium.webDriver.reuseDriver")
