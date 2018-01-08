@@ -2,10 +2,16 @@ package com.xceptance.neodymium.util;
 
 import static org.aeonbits.owner.Config.DisableableFeature.VARIABLE_EXPANSION;
 
+import org.aeonbits.owner.Config.LoadPolicy;
+import org.aeonbits.owner.Config.LoadType;
 import org.aeonbits.owner.Config.Sources;
 import org.aeonbits.owner.Mutable;
 
-@Sources({ "file:config/test.properties", "file:config/credentials.properties"})
+@LoadPolicy(LoadType.MERGE)
+@Sources(
+{
+  "file:config/test.properties", "file:config/credentials.properties"
+})
 public interface Configuration extends Mutable
 {
     // standard timeout for selenide interaction
@@ -46,7 +52,10 @@ public interface Configuration extends Mutable
     public String path();
 
     @Key("url.path")
-    @DisableFeature({VARIABLE_EXPANSION})
+    @DisableFeature(
+    {
+      VARIABLE_EXPANSION
+    })
     public String rawPath();
 
     @Key("url.site")
@@ -71,7 +80,7 @@ public interface Configuration extends Mutable
     @Key("screenshots.perstep.always")
     @DefaultValue("false")
     public boolean screenshotPerStep();
-    
+
     @Key("device.breakpoint.small")
     @DefaultValue("544")
     public int smallDeviceBreakpoint();
