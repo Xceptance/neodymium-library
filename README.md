@@ -7,9 +7,7 @@ It's a sophisticated approach to develop fast and meaningful tests. We take [**J
 just write acceptance/unit tests. Since Neodymium aims for web tests we added [**Selenide**](https://github.com/codeborne/selenide), a comprehensive and smart framework for
 HTML tests that is based on [**Selenium**](https://github.com/SeleniumHQ/selenium) which in turn allows you to control web
 browsers. Then we added our [**multi browser support**](https://github.com/Xceptance/multi-browser-suite) which enables you to
-run you tests in all different browser configurations either local or in the cloud (e.g. BrowserStack, Sauce Labs). Also we have a well tested and straight
-forward **Test data** approach. Just write down your data sets and Neodymium will
-take care of it. Finally we take all the test output and put them in a nifty [**Allure**](https://github.com/allure-framework/allure2) report.
+run you tests in all different browser configurations either local or in the cloud (e.g. BrowserStack, Sauce Labs). Also we have a well tested and straight forward **Test data** approach. Just write down your data sets and Neodymium will take care of it. Finally we take all the test output and put them in a nifty [**Allure**](https://github.com/allure-framework/allure2) report.
 Sounds good? Take a closer look at [**Neodymium-Example**](https://github.com/Xceptance/neodymium-example).
 
 
@@ -35,26 +33,25 @@ public class MyTests
     @Test 
     public void testMethod()
     {
+        // test code
     }
 }
 ```
 
 ## Features
-### Multi-Browser
+### Multi browser
 Enables you to run you Selenide tests in many different browsers.
+You also can use cloud-based browser like Sauce Labs and BrowserStack or you can create your own browser cloud with [**Grid2**](https://github.com/SeleniumHQ/selenium/wiki/Grid2). See the wiki page [**Multi-browser-support**](https://github.com/Xceptance/neodymium-library/wiki/Multi-browser-support)
 
-You also can use cloud-based browser like Sauce Labs and BrowserStack or you can create your own browser cloud.
- 
-Run your Selenide tests in any browser. Just define  
 ### Test data
-- 
+Our [**test data provider**](https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider) enables you to define your [**test data**](https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider#package-test-data) and data sets alongside your test cases. While test data or package test data are used to configure common settings (e.g. web site URL, language, currency and so on) for many test cases in that package or sub package, data sets are specific for one test case that cause the test case to be executed for every data set that is defined (e.g. search terms: do the same test over and over again for every defined search term). Neodymium will look up test data for each test case and inject that data into your test context.
 
 ### Cucumber multi browser support
 We added multi browser support to Cucumber test cases by 
 A Java BDD (Behaviour Driven Development) implementation 
 
-A test automation template based on best practice libraries and added missing functionalities to aid test automation done by Xceptance.
-
 
 ### Allure
-Allure reports are 
+A tool that creates reports from test executions. See [**Allure**](https://github.com/allure-framework/allure2) 
+
+A test automation template based on best practice libraries and added missing functionalities to aid test automation done by Xceptance.
