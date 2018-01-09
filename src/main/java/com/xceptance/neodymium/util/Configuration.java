@@ -72,14 +72,6 @@ public interface Configuration extends Mutable
     @DefaultValue("config/localization.yaml")
     public String localizationFile();
 
-    @Key("email.domain")
-    @DefaultValue("varmail.de")
-    public String emailDomain();
-
-    @Key("email.local.prefix")
-    @DefaultValue("test")
-    public String emailLocalPrefix();
-
     @Key("screenshots.perstep.always")
     @DefaultValue("false")
     public boolean screenshotPerStep();
@@ -99,4 +91,33 @@ public interface Configuration extends Mutable
     @Key("device.breakpoint.xlarge")
     @DefaultValue("1200")
     public int xlargeDeviceBreakpoint();
+
+    @Key("dataUtils.email.domain")
+    @DefaultValue("varmail.de")
+    public String dataUtilsEmailDomain();
+
+    @Key("dataUtils.email.local.prefix")
+    @DefaultValue("test")
+    public String dataUtilsEmailLocalPrefix();
+
+    @Key("dataUtils.password.uppercaseCharAmount")
+    @DefaultValue("2")
+    public int dataUtilsPasswordUppercaseCharAmount();
+
+    @Key("dataUtils.password.lowercaseCharAmount")
+    @DefaultValue("5")
+    public int dataUtilsPasswordLowercaseCharAmount();
+
+    @Key("dataUtils.password.digitAmount")
+    @DefaultValue("2")
+    public int dataUtilsPasswordDigitAmount();
+
+    @Key("dataUtils.password.specialCharAmount")
+    @DefaultValue("2")
+    public int dataUtilsPasswordSpecialCharAmount();
+
+    @Key("dataUtils.password.specialChars")
+    @DefaultValue("+-#$%&.;,_")
+    public String dataUtilsPasswordSpecialChars();
+
 }
