@@ -39,6 +39,9 @@ public interface Configuration extends Mutable
     @DefaultValue("true")
     public boolean javaScriptMustHaveBeenActive();
 
+    @Key("javascript.loading.animationSelector")
+    public String javascriptLoadingAnimationSelector();
+
     @Key("url")
     public String url();
 
