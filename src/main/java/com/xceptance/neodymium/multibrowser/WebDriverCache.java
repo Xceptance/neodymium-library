@@ -29,7 +29,7 @@ public class WebDriverCache
     private WebDriverCache()
     {
         cache = Collections.synchronizedMap(new HashMap<>());
-        Runtime.getRuntime().addShutdownHook(new WebDriverCacheCleaner());
+        Runtime.getRuntime().addShutdownHook(new WebDriverCacheCleanupHook());
     }
 
     /**

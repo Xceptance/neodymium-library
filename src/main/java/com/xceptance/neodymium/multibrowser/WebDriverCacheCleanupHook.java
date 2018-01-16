@@ -3,10 +3,10 @@ package com.xceptance.neodymium.multibrowser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WebDriverCacheCleaner extends Thread
+public class WebDriverCacheCleanupHook extends Thread
 {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverCacheCleaner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverCacheCleanupHook.class);
 
     @Override
     public void run()
