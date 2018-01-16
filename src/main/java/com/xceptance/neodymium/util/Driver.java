@@ -19,7 +19,7 @@ public class Driver
 
         if (MultibrowserConfiguration.getInstance().getWebDriverProperties().reuseWebDriver())
         {
-            driver = WebDriverCache.getIntance().removeGetWebDriver(browserProfileName);
+            driver = WebDriverCache.getIntance().getRemoveWebDriver(browserProfileName);
         }
 
         // nothing in the cache or nothing set yet
@@ -51,7 +51,7 @@ public class Driver
         WebDriverProperties webDriverProperties = MultibrowserConfiguration.getInstance().getWebDriverProperties();
         if (webDriverProperties.reuseWebDriver())
         {
-            WebDriverCache.getIntance().putWebDriverForTag(Context.get().browserProfileName, Context.get().driver);
+            WebDriverCache.getIntance().putWebDriver(Context.get().browserProfileName, Context.get().driver);
         }
         else
         {
