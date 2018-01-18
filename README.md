@@ -24,7 +24,7 @@ Quicklinks
 	An example test project for the Posters store based on Neodymium Template. Uses only BDD ([Cucumber](https://github.com/cucumber/cucumber)) defined tests.
 	
 ## Getting started
-Add Neodymium-Library to you project
+Add Neodymium-Library to your project
 ```xml
 <repository>
     <id>xc-nexus</id>
