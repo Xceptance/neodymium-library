@@ -59,8 +59,7 @@ You also can use cloud-based browser like Sauce Labs and BrowserStack or you can
 Our [**test data provider**](https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider) enables you to define your [**test data**](https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider#package-test-data) and data sets alongside your test cases. While test data or package test data are used to configure common settings (e.g. web site URL, language, currency and so on) for many test cases in that package or sub package, data sets are specific for one test case that cause the test case to be executed for every data set that is defined (e.g. search terms: do the same test over and over again for every defined search term). Neodymium will look up test data for each test case and inject that data into your test context.
 
 ### Cucumber multi browser support
-We added multi browser support to Cucumber test cases by 
-A Java BDD (Behaviour Driven Development) implementation 
+We added multi browser support to Cucumber test cases that allows you to run your tests in different web browser 
 
 
 ### Allure
