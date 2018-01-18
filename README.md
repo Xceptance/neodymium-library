@@ -24,6 +24,8 @@ Quicklinks
 	An example test project for the Posters store based on Neodymium Template. Uses only BDD ([Cucumber](https://github.com/cucumber/cucumber)) defined tests.
 	
 ## Getting started
+Note: Consider using [Neodymium Template](https://github.com/Xceptance/neodymium-template) as starting point instead of starting from scratch. The template is ready to run and ships with a basic structure giving an idea of page objects and components.
+
 Add Neodymium-Library to your project
 ```xml
 <repository>
