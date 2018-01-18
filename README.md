@@ -12,12 +12,15 @@ Sounds good? Take a closer look at [**Neodymium-Example**](https://github.com/Xc
 
 Quicklinks
 * [Neodymium Template](https://github.com/Xceptance/neodymium-template)
+
 	A ready to start project that can be used as starting point for both JUnit and Cucumber test projects
    
 * [Neodymium Example](https://github.com/Xceptance/neodymium-example)
+
 	JUnit demo project for the [Posters](https://github.com/Xceptance/neodymium-library/wiki/Posters-demo-store) store based on Neodymium Template. Uses all the framework sugar that Neodymium Library offers.
 
 * [Neodymium Cucumber Example](https://github.com/Xceptance/neodymium-cucumber-example)
+
 	An example test project for the Posters store based on Neodymium Template. Uses only BDD ([Cucumber](https://github.com/cucumber/cucumber)) defined tests.
 	
 ## Getting started
