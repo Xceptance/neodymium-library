@@ -64,5 +64,3 @@ We added multi browser support to Cucumber test cases that allows you to run you
 
 ### Allure
 A tool that creates reports from test executions. See [**Allure**](https://github.com/allure-framework/allure2) 
-
-A test automation template based on best practice libraries and added missing functionalities to aid test automation done by Xceptance.
