@@ -1,7 +1,7 @@
 package com.xceptance.neodymium;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -16,9 +16,8 @@ import org.junit.runners.JUnit4;
  * must be an public {@code public Map<String, String>} and may be static. Also this variable may be defined in a super
  * class.
  * <p>
- * For futher information about test data see
- * <a href="https://github.com/Xceptance/neodymium-library">https://github.com/Xceptance/neodymium-library</a> TODO:
- * update URL
+ * For futher information about test data see <a href=
+ * "https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider">https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider</a>
  * <p>
  * <b>Example</b>
  * 
