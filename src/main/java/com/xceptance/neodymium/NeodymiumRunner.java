@@ -182,7 +182,7 @@ public class NeodymiumRunner extends Runner implements Filterable
         for (List<Runner> runners : testRunner)
         {
             FrameworkMethod method = null;
-            // the last runner in the list should always be an XCMethodRunner
+            // the last runner in the list should always be an NeodymiumMethodRunner
             // get this method
             Runner runner = runners.get(runners.size() - 1);
             if (runner instanceof NeodymiumMethodRunner)
