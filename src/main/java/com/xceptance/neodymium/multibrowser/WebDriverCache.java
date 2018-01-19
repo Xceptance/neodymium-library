@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 import org.openqa.selenium.WebDriver;
 
 /**
- * A cache to hold different instances of {@link WebDriver} Instances are kept in a synchronized {@link HashMap} which
+ * A cache to hold different instances of {@link WebDriver}. Instances are kept in a synchronized {@link HashMap} which
  * are indexed by an "browserTag" {@link String}. That browserTag is a unique character sequence. All access to the
  * cache will be done in a synchronized way. The constructor adds an VM shutdown hook to clean up the cache and close
  * the cached {@link WebDriver} gracefully.
