@@ -66,7 +66,7 @@ public class BrowserRunner extends ParentRunner<Runner>
             // try to find appropriate web driver in cache before create a new instance
             if (MultibrowserConfiguration.getInstance().getWebDriverProperties().reuseWebDriver())
             {
-                webdriver = WebDriverCache.getIntance().getRemoveWebDriver(browserConfig.getConfigTag());
+                webdriver = WebDriverCache.instance.getRemoveWebDriver(browserConfig.getConfigTag());
                 if (webdriver != null)
                 {
                     webdriver.manage().deleteAllCookies();
@@ -222,7 +222,7 @@ public class BrowserRunner extends ParentRunner<Runner>
         if (webDriverProperties.reuseWebDriver())
         {
             LOGGER.debug("Put browser into cache");
-            WebDriverCache.getIntance().putWebDriver(browserConfig.getConfigTag(), webdriver);
+            WebDriverCache.instance.putWebDriver(browserConfig.getConfigTag(), webdriver);
         }
         else
         {
@@ -239,8 +239,7 @@ public class BrowserRunner extends ParentRunner<Runner>
         WebDriverProperties webDriverProperties = MultibrowserConfiguration.getInstance().getWebDriverProperties();
         if (!webDriverProperties.keepBrowserOpen())
         {
-            WebDriverCache cache = WebDriverCache.getIntance();
-            Collection<WebDriver> allWebdriver = cache.getAllWebdriver();
+            Collection<WebDriver> allWebdriver = WebDriverCache.instance.getAllWebdriver();
 
             for (WebDriver wd : allWebdriver)
             {

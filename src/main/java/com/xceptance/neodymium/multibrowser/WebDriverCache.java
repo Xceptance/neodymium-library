@@ -18,7 +18,9 @@ import org.openqa.selenium.WebDriver;
  */
 public class WebDriverCache
 {
-    Map<String, WebDriver> cache;
+    public static final WebDriverCache instance = new WebDriverCache();
+
+    private static final Map<String, WebDriver> cache = Collections.synchronizedMap(new HashMap<>());
 
     /**
      * The private constructor of the {@link WebDriverCache}. Creates the synchronized {@link HashMap} instance and add's a
@@ -28,31 +30,7 @@ public class WebDriverCache
      */
     private WebDriverCache()
     {
-        cache = Collections.synchronizedMap(new HashMap<>());
         Runtime.getRuntime().addShutdownHook(new WebDriverCacheCleanupHook());
-    }
-
-    /**
-     * A singleton holder class. Designed to hold the singleton instance of {@link WebDriverCache}
-     * 
-     * @author m.kaufmann
-     */
-    private static class WebDriverCacheHolder
-    {
-        /**
-         * The singleton instance of the {@link WebDriverCache}
-         */
-        private static final WebDriverCache INSTANCE = new WebDriverCache();
-    }
-
-    /**
-     * Function to acquire the singleton instance of the {@link WebDriverCache}
-     * 
-     * @return the stored {@link WebDriverCache} instance
-     */
-    public static WebDriverCache getIntance()
-    {
-        return WebDriverCacheHolder.INSTANCE;
     }
 
     /**
@@ -64,10 +42,7 @@ public class WebDriverCache
      */
     public WebDriver getWebDriverForBrowserTag(String browserTag)
     {
-        synchronized (cache)
-        {
-            return cache.get(browserTag);
-        }
+        return cache.get(browserTag);
     }
 
     /**
@@ -81,10 +56,7 @@ public class WebDriverCache
      */
     public void putWebDriver(String browserTag, WebDriver webDriver)
     {
-        synchronized (cache)
-        {
-            cache.put(browserTag, webDriver);
-        }
+        cache.put(browserTag, webDriver);
     }
 
     /**
@@ -97,10 +69,7 @@ public class WebDriverCache
      */
     public boolean removeWebDriver(String browserTag)
     {
-        synchronized (cache)
-        {
-            return (getRemoveWebDriver(browserTag) != null);
-        }
+        return (getRemoveWebDriver(browserTag) != null);
     }
 
     /**
@@ -112,10 +81,7 @@ public class WebDriverCache
      */
     public WebDriver getRemoveWebDriver(String browserTag)
     {
-        synchronized (cache)
-        {
-            return cache.remove(browserTag);
-        }
+        return cache.remove(browserTag);
     }
 
     /**
@@ -150,9 +116,6 @@ public class WebDriverCache
      */
     public Collection<WebDriver> getAllWebdriver()
     {
-        synchronized (cache)
-        {
-            return Collections.unmodifiableCollection(cache.values());
-        }
+        return Collections.unmodifiableCollection(cache.values());
     }
 }
