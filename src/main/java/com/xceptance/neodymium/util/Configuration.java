@@ -65,7 +65,7 @@ public interface Configuration extends Mutable
     public String site();
 
     @Key("locale")
-    @DefaultValue("default")
+    @DefaultValue("en_US")
     public String locale();
 
     @Key("localization.file")
