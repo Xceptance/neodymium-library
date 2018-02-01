@@ -42,19 +42,6 @@ public class NeodymiumRunListener extends RunListener
     {
         LOGGER.debug("Test failed: " + failure);
         failures.add(failure);
-
-        byte[] screenshot = SelenideHelper.getScreenshotFromFailure(failure);
-
-        if (screenshot != null)
-        {
-            String screenshotFilename = SelenideHelper.getFilenameFromFailure(failure);
-            LOGGER.debug("Attach screenshot with file name: " + screenshotFilename);
-            attachPNG(screenshot, screenshotFilename);
-        }
-        else
-        {
-            LOGGER.debug("No screenshot available");
-        }
     }
 
     @Attachment(type = "image/png", value = "{filename}", fileExtension = ".png")
