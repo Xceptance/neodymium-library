@@ -9,13 +9,21 @@ import org.junit.runner.notification.RunListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codeborne.selenide.logevents.SelenideLogger;
+
 import io.qameta.allure.Attachment;
+import io.qameta.allure.selenide.AllureSelenide;
 
 public class NeodymiumRunListener extends RunListener
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumRunListener.class);
 
     private List<Failure> failures = new LinkedList<>();
+
+    public NeodymiumRunListener()
+    {
+        SelenideLogger.addListener("allure-selenide", new AllureSelenide());
+    }
 
     @Override
     public void testStarted(Description description) throws Exception
