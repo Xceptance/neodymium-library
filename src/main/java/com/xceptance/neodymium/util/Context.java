@@ -172,4 +172,16 @@ public class Context
     {
         return get().localization.getText(key);
     }
+
+    /**
+     * Shortcut for data access. Will fail with an assertion if the key cannot be found
+     *
+     * @param key
+     *            key to lookup
+     * @return value of the data map
+     */
+    public static String dataValue(final String key)
+    {
+        return get().data.get(key);
+    }
 }
