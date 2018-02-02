@@ -12,6 +12,13 @@
         <surefire.version>2.20.1</surefire.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>xceptance-public</id>
+            <url>https://lab.xceptance.de/nexus/content/repositories/public/</url>
+        </repository>
+    </repositories>
+
     <distributionManagement>
         <repository>
             <id>xceptance-releases</id>
