@@ -1,32 +1,41 @@
 # Neodymium
-A library to extend and improve the JUnit testing framework.
+Neodymium tries to solve your typical and most pressing UI test automation problems by combining  JUnit, WebDriver, BDD/Cucumber, and proper reporting. It gives you ready to use templates, assembles well-known open source projects, and enhances this all with additional functionality that is often missing.
 
-## What is Neodymium?
-Neodymium is the glue between today's state of the art testing technologies.
-It's a sophisticated approach to develop fast and meaningful tests. We take [**JUnit4**](https://github.com/junit-team/junit4) as testing framework so you basically
-just write acceptance/unit tests. Since Neodymium aims for web tests we added [**Selenide**](https://github.com/codeborne/selenide), a comprehensive and smart framework for
-HTML tests that is based on [**Selenium**](https://github.com/SeleniumHQ/selenium) which in turn allows you to control web
-browsers. Then we added our [**multi browser support**](https://github.com/Xceptance/multi-browser-suite) which enables you to
-run you tests in all different browser configurations either local or in the cloud with Sauce Labs for instance. Also we have a well tested and straight forward [**Test data**](https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider) approach. Just write down your data sets and Neodymium will take care of it. Finally we take all the test output and put them in a nifty [**Allure**](https://github.com/allure-framework/allure2) report.
-Sounds good? Take a closer look at [**Neodymium-Example**](https://github.com/Xceptance/neodymium-example) which is an test project for our [**Posters**](https://github.com/Xceptance/neodymium-library/wiki/Posters-demo-store) demo shop. If you want to straight start over with your own site then consider using our [**template**](https://github.com/Xceptance/neodymium-template).
+Neodymium is basically the combination of state of the art open source test libraries with additionally glue to make it stick reliably together.
 
-Quicklinks
-* [Neodymium Template](https://github.com/Xceptance/neodymium-template)
+## Included Projects
 
-	A ready to start project that can be used as starting point for both JUnit and Cucumber test projects
-   
-* [Neodymium Example](https://github.com/Xceptance/neodymium-example)
+* [**JUnit**](https://github.com/junit-team/junit4): It is the base test framework because JUnit support can be found everywhere, so it is the perfect base for easy integration and comprehensive IDE support. Right now it is version 4, but as soon as version 5 features are high in demand, version 5 support will be added.
+* **WebDriver**: Of course WebDriver is the core, because it is the only way to communicate with browsers consistently without using proprietary technologies.
+* [**Selenide**](https://github.com/codeborne/selenide): There are plenty of UI automation libraries available that are built on top of WebDriver. Selenide is one of the most popular approaches that is compact, fluent, and solves a lot of the basic challenges, hence we included it.
+* [**Allure**](https://github.com/allure-framework/allure2): The Allure Framework is a flexible lightweight multi-language test report tool that not only shows a very concise representation of what have been tested in a neat web report form, but allows everyone participating in the development process to extract maximum of useful information from everyday execution of tests.
+* **BDD/Cucumber**: Neodymium offers two ways of writing tests. If you prefer BDD style testing, go for it. If you rather put everything in code, fine that works as well. See our example projects for more information.
 
-	JUnit demo project for the [Posters](https://github.com/Xceptance/neodymium-library/wiki/Posters-demo-store) store based on Neodymium Template. Uses all the framework sugar that Neodymium Library offers.
 
-* [Neodymium Cucumber Example](https://github.com/Xceptance/neodymium-cucumber-example)
+## Quicklinks
+If you already know what you want to do, you can pick one of the demo test suites or our test suite template. If you are new to Neodymium, please read on. 
 
-	An example test project for the Posters store based on Neodymium Template. Uses only BDD ([Cucumber](https://github.com/cucumber/cucumber)) defined tests.
-	
-## Getting started
-Note: Consider using [Neodymium Template](https://github.com/Xceptance/neodymium-template) as starting point instead of starting from scratch. The template is ready to run and ships with a basic structure giving an idea of page objects and components.
+* [Neodymium Template](https://github.com/Xceptance/neodymium-template): A template to start a new test suite quickly either as Cucumber or as pure Java. 
+* [Neodymium Pure Java Example](https://github.com/Xceptance/neodymium-example): A demo test suite against the Xceptance reference demo store [Posters](https://github.com/Xceptance/neodymium-library/wiki/Posters-demo-store) as pure Java version.  
+* [Neodymium Cucumber Example](https://github.com/Xceptance/neodymium-cucumber-example): For the fans of BDD/Cucumber, this is almost the same test suite as before but driven by BDD syntax.
 
-Add Neodymium-Library to your project
+
+## Additional Features
+These are our **additions** to make test automation nicer, quicker, and less painful. 
+
+* **Multi Browser Support**: Simple setup and use of different browsers including remote browsers. Annotation per test case defines what browsers are supported by this very test case. Automatic execution of the test case per browser.
+* **Page and Component Concept**: The test suite showcase a page and component concept for easier test design.
+* **Test Data**: Externalized test data for Java test cases including automatic execution per test data set.
+* **Localization**: Simply concept to run localized test cases in conjunction with test data management.
+* **Concurrent Execution**: Concurrent execution of tests with Maven.
+
+## Getting Started
+We recommend to start with our template instead of writing a suite from scratch. If you need more guidance, you can also start from one of our full demo test suites.
+
+Please hop over to the [Wiki](https://github.com/Xceptance/neodymium-library/wiki/) for a full tour of Neodymium and a Getting Started guide. 
+
+If you are still impatient, here is the quickest way to get Neodymium added to your project. Don't forget the update the version number if you prefer a particular version.
+
 ```xml
 <repository>
     <id>xc-nexus</id>
@@ -39,7 +48,7 @@ Add Neodymium-Library to your project
     <version>1.0.0</version>
 </dependency>
 ```
-Add the `@RunWith` annotation to your test class or its superclass. This enables Neodymium for test execution.
+Add the `@RunWith` annotation to your test class or its superclass. This enables test execution with Neodymium.
 ```java
 @RunWith(NeodymiumRunner.class)
 public class MyTests
@@ -51,18 +60,14 @@ public class MyTests
     }
 }
 ```
+And now is the time to dive into the features we added to make the most out of it. [Please head over to our Wiki](https://github.com/Xceptance/neodymium-library/wiki/).
 
-## Features
-### Multi browser
-Enables you to run you Selenide tests in many different browsers.
-You also can use cloud-based browser like Sauce Labs and BrowserStack or you can create your own browser cloud with [**Grid2**](https://github.com/SeleniumHQ/selenium/wiki/Grid2). See the wiki page [**Multi-browser-support**](https://github.com/Xceptance/neodymium-library/wiki/Multi-browser-support)
+## License
+Neodymium is licensed under the MIT License.
 
-### Test data
-Our [**test data provider**](https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider) enables you to define your [**test data**](https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider#package-test-data) and data sets alongside your test cases. While test data or package test data are used to configure common settings (e.g. web site URL, language, currency and so on) for many test cases in that package or sub package, data sets are specific for one test case that cause the test case to be executed for every data set that is defined (e.g. search terms: do the same test over and over again for every defined search term). Neodymium will look up test data for each test case and inject that data into your test context.
+## Who Are We
+We are [Xceptance](https://www.xceptance.com/). A software testing company with strong commerce knowledge and projects with customers from all around the world. Besides Neodymium, we have developed [Xceptance Load Test (XLT)](https://www.xceptance.com/en/xlt/), a load and performance test tool that is available free of charge and features an extensive range of awesome features to make the tester's and developer's life easier.
 
-### Cucumber multi browser support
-We added multi browser support to Cucumber test cases that allows you to run your tests in different web browser 
+If you are looking for test automation that also covers the performance side of life, take a look at XLT. You can write and run load tests with real browsers including access to data from the [Web Performance Timing API](http://w3c.github.io/perf-timing-primer/). In case browsers are too heavy, XLT has other modes of load testing to offer as well. 
 
-
-### Allure
-A tool that creates reports from test executions. See [**Allure**](https://github.com/allure-framework/allure2) 
+We offer professional support for Neodymium as well as implementation and training services.
