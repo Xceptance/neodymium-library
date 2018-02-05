@@ -26,6 +26,7 @@ import com.xceptance.neodymium.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.multibrowser.configuration.DriverServerPath;
 import com.xceptance.neodymium.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.multibrowser.configuration.WebDriverProperties;
+import com.xceptance.neodymium.util.Context;
 
 /**
  * JUnit runner used to run testcases that are annotated with {@link Browser}. This class reads the annotation based
@@ -92,6 +93,8 @@ public class BrowserRunner extends ParentRunner<Runner>
             // set browser window size
             BrowserRunnerHelper.setBrowserWindowSize(browserConfig, webdriver);
             WebDriverRunner.setWebDriver(webdriver);
+            Context.get().driver = webdriver;
+            Context.get().browserProfileName = browserConfig.getConfigTag();
         }
         else
         {
@@ -232,6 +235,8 @@ public class BrowserRunner extends ParentRunner<Runner>
                 webdriver.quit();
             }
         }
+        Context.get().driver = null;
+        Context.get().browserProfileName = null;
     }
 
     public static void quitCachedBrowser()
