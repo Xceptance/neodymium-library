@@ -40,7 +40,7 @@ public class Context
         this.data.putAll(testDataOfTestCase);
         this.clazz = clazz;
 
-        // build our config and use the offical caching for that
+        // build our config and use the official caching for that
         // use our test data as properties as well
         final Properties testData = new Properties();
         testData.putAll(data);
