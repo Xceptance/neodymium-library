@@ -1,6 +1,5 @@
 package com.xceptance.neodymium;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,13 +11,13 @@ import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.ParentRunner;
-import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.TestClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xceptance.neodymium.testdata.TestDataUtils;
+import com.xceptance.neodymium.util.Context;
 
 public class NeodymiumDataRunner extends ParentRunner<Runner>
 {
@@ -45,34 +44,6 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
             throw new InitializationError(e);
         }
 
-        Field dataField;
-        String identifierName;
-        try
-        {
-            List<FrameworkField> testDataFields = testClass.getAnnotatedFields(TestData.class);
-
-            if (testDataFields.size() == 0)
-                throw new NoSuchFieldException();
-
-            // we simply take the first field
-            FrameworkField frameworkField = testDataFields.get(0);
-            Class<?> type = frameworkField.getType();
-
-            if (type != Map.class || !frameworkField.isPublic())
-            {
-                // expected and caught in NeodymiumRunner
-                throw new NoSuchFieldException("The TestData field has to be a public map e.g. \"public Map<String, String> data;\"");
-            }
-
-            dataField = frameworkField.getField();
-
-            identifierName = frameworkField.getAnnotation(TestData.class).value();
-        }
-        catch (SecurityException e)
-        {
-            throw new InitializationError(e);
-        }
-
         if (!dataSets.isEmpty() || !packageTestData.isEmpty())
         {
 
@@ -81,14 +52,14 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
                 // data sets found
                 for (int i = 0; i < dataSets.size(); i++)
                 {
-                    children.add(new NeodymiumDataRunnerRunner(testClass.getJavaClass(), dataField, dataSets, identifierName, i,
-                                                               packageTestData, methodExecutionContext));
+                    children.add(new NeodymiumDataRunnerRunner(testClass.getJavaClass(), dataSets, i, packageTestData,
+                                                               methodExecutionContext));
                 }
             }
             else
             {
                 // only package data, no data sets
-                children.add(new NeodymiumDataRunnerRunner(testClass.getJavaClass(), dataField, dataSets, "", -1, packageTestData,
+                children.add(new NeodymiumDataRunnerRunner(testClass.getJavaClass(), dataSets, -1, packageTestData,
                                                            methodExecutionContext));
             }
         }
@@ -125,23 +96,17 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
 
         private MethodExecutionContext methodExecutionContext;
 
-        private Field dataField;
-
         private int index;
 
         private Map<String, String> testData;
 
         private int dataSetCount;
 
-        private String identifier;
-
-        public NeodymiumDataRunnerRunner(Class<?> javaClass, Field dataField, List<Map<String, String>> dataSets, String identifier,
-                                         int index, Map<String, String> packageTestData, MethodExecutionContext methodExecutionContext)
+        public NeodymiumDataRunnerRunner(Class<?> javaClass, List<Map<String, String>> dataSets, int index,
+                                         Map<String, String> packageTestData, MethodExecutionContext methodExecutionContext)
         {
-            this.identifier = identifier;
             this.index = index;
             this.testClass = javaClass;
-            this.dataField = dataField;
             this.dataSetCount = dataSets.size();
             this.methodExecutionContext = methodExecutionContext;
 
@@ -174,7 +139,7 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
             if (index >= 0)
             {
                 // data sets and (maybe) package data
-                String testDatasetIndetifier = testData.get(identifier);
+                String testDatasetIndetifier = testData.get("ID");
                 if (StringUtils.isBlank(testDatasetIndetifier))
                 {
                     testDatasetIndetifier = "Data set";
@@ -200,7 +165,7 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
         {
             try
             {
-                dataField.set(methodExecutionContext.getTestClassInstance(), testData);
+                Context.get().data.putAll(testData);
             }
             catch (Exception e)
             {
