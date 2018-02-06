@@ -79,10 +79,9 @@ public class Context
      */
     public static Context create(final Map<String, String> testDataOfTestCase, Class<? extends Configuration> clazz)
     {
-        return CONTEXTS.compute(Thread.currentThread(),
-                                (key, value) -> {
-                                    return new Context(testDataOfTestCase, clazz);
-                                });
+        return CONTEXTS.computeIfAbsent(Thread.currentThread(), (key) -> {
+            return new Context(testDataOfTestCase, clazz);
+        });
     }
 
     /**
@@ -97,7 +96,7 @@ public class Context
                                         key -> {
                                             return new Context(Collections.emptyMap(), Configuration.class);
                                         });
-    }
+            }
 
     /**
      * Current window height
