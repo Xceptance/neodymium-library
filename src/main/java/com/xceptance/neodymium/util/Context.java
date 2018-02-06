@@ -45,17 +45,13 @@ public class Context
         final Properties testData = new Properties();
         testData.putAll(data);
 
-        configuration = ConfigFactory.create(clazz,
-                                             System.getProperties(),
-                                             System.getenv(),
-                                             testData);
+        configuration = ConfigFactory.create(clazz, System.getProperties(), System.getenv(), testData);
 
         localization = Localization.build(configuration.localizationFile());
     }
 
     /**
-     * Create a new context and associates it with the threads, if there is any previous context, it is just
-     * overwritten.
+     * Create a new context and associates it with the threads, if there is any previous context, it is just overwritten.
      * 
      * @param clazz
      * @return the context instance for the current Thread
@@ -71,8 +67,7 @@ public class Context
     }
 
     /**
-     * Create a new context and associates it with the threads, if there is any previous context, it is just
-     * overwritten.
+     * Create a new context and associates it with the threads, if there is any previous context, it is just overwritten.
      * 
      * @param clazz
      * @return the context instance for the current Thread
@@ -92,11 +87,10 @@ public class Context
      */
     public static Context get()
     {
-        return CONTEXTS.computeIfAbsent(Thread.currentThread(),
-                                        key -> {
-                                            return new Context(Collections.emptyMap(), Configuration.class);
-                                        });
-            }
+        return CONTEXTS.computeIfAbsent(Thread.currentThread(), key -> {
+            return new Context(Collections.emptyMap(), Configuration.class);
+        });
+    }
 
     /**
      * Current window height
@@ -131,8 +125,7 @@ public class Context
      */
     public boolean isTablet()
     {
-        return getWindowWidth() >= configuration.mediumDeviceBreakpoint()
-               && getWindowWidth() < configuration.largeDeviceBreakpoint();
+        return getWindowWidth() >= configuration.mediumDeviceBreakpoint() && getWindowWidth() < configuration.largeDeviceBreakpoint();
     }
 
     /**
@@ -140,8 +133,7 @@ public class Context
      */
     public boolean isSmallDesktop()
     {
-        return getWindowWidth() >= configuration.largeDeviceBreakpoint()
-               && getWindowWidth() < configuration.xlargeDeviceBreakpoint();
+        return getWindowWidth() >= configuration.largeDeviceBreakpoint() && getWindowWidth() < configuration.xlargeDeviceBreakpoint();
     }
 
     /**
