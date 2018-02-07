@@ -15,15 +15,20 @@
     <repositories>
         <repository>
             <id>xceptance-public</id>
-            <url>https://lab.xceptance.de/nexus/content/repositories/public/</url>
+            <url>https://lab.xceptance.de/nexus/content/repositories/public</url>
         </repository>
     </repositories>
 
     <distributionManagement>
         <repository>
             <id>xceptance-releases</id>
-            <url>https://lab.xceptance.de/nexus/content/repositories/releases/</url>
+            <url>https://lab.xceptance.de/nexus/content/repositories/releases</url>
         </repository>
+        <snapshotRepository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>xceptance-snaphots</id>
+            <url>https://lab.xceptance.de/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <build>
