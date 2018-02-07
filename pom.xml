@@ -25,7 +25,7 @@
         </repository>
         <snapshotRepository>
             <uniqueVersion>false</uniqueVersion>
-            <id>xceptance-snaphots</id>
+            <id>xceptance-snapshots</id>
             <url>https://lab.xceptance.de/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
@@ -73,7 +73,7 @@
                     <!-- The Base URL of Nexus instance where we want to stage -->
                     <nexusUrl>https://lab.xceptance.de/nexus/</nexusUrl>
                     <!-- The server "id" element from settings to use authentication from -->
-                    <serverId>xceptance-snaphots</serverId>
+                    <serverId>xceptance-snapshots</serverId>
                 </configuration>
             </plugin>
         </plugins>
