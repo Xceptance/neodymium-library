@@ -37,10 +37,12 @@ Please hop over to the [Wiki](https://github.com/Xceptance/neodymium-library/wik
 If you are still impatient, here is the quickest way to get Neodymium added to your project. Don't forget the update the version number if you prefer a particular version.
 
 ```xml
-<repository>
-    <id>xc-nexus</id>
-    <url>https://lab.xceptance.de/nexus/content/groups/public</url>
-</repository>
+<repositories>
+    <repository>
+        <id>xc-nexus</id>
+        <url>https://lab.xceptance.de/nexus/content/groups/public</url>
+    </repository>
+</repositories>
 ...
 <dependency>
     <groupId>com.xceptance</groupId>
