@@ -45,8 +45,9 @@ import com.xceptance.neodymium.multibrowser.BrowserRunner;
 
 /**
  * This class executes {@link JUnit4} test classes (aka JUnit Runner) and adds several features to test execution e.g.
- * multi browser ({@link Browser}) and test data ({@link TestData}). Vanilla JUnit parameterized tests are supported as
- * well but only with parameter injection (as described here: <a href=
+ * multi {@link Browser browser} and
+ * <a href="https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider">test data</a>. Vanilla JUnit
+ * parameterized tests are supported as well but only with parameter injection (as described here: <a href=
  * "https://github.com/junit-team/junit4/wiki/parameterized-tests#using-parameter-for-field-injection-instead-of-constructor">Using @Parameter
  * for Field injection instead of Constructor</a>). In order to run a {@link JUnit4} test with this runner the class or
  * its super-class has to be annotated with {@link RunWith}
