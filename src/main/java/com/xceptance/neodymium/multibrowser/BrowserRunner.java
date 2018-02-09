@@ -33,7 +33,7 @@ import com.xceptance.neodymium.util.Context;
  * configuration of {@link Browser} and executes the testcase multiple-times with different configurations.
  * 
  * @author m.kaufmann
- * @see {@link Browser}
+ * @see Browser
  */
 public class BrowserRunner extends ParentRunner<Runner>
 {
@@ -52,11 +52,6 @@ public class BrowserRunner extends ParentRunner<Runner>
 
     /**
      * Sets the test instance up.
-     *
-     * @param method
-     *            the method
-     * @param test
-     *            the test instance
      */
     protected void setUpTest()
     {

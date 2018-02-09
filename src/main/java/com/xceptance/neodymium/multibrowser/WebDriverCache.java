@@ -77,6 +77,7 @@ public class WebDriverCache
      * stored {@link WebDriver} instance if found.
      * 
      * @param browserTag
+     *            The String used in {@link Browser} to reference a browser configuration
      * @return {@link WebDriver} if found, else <code>null</code>
      */
     public WebDriver getRemoveWebDriver(String browserTag)
@@ -112,7 +113,7 @@ public class WebDriverCache
     /**
      * Retrieves a unmodifiable copy of all cached {@link WebDriver}
      * 
-     * @return {@link Collection}<{@link WebDriver}>
+     * @return unmodifiable {@link Collection} of all {@link WebDriver} that are currently in the {@link WebDriverCache}
      */
     public Collection<WebDriver> getAllWebdriver()
     {

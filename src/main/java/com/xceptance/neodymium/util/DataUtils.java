@@ -36,13 +36,16 @@ public class DataUtils
      */
     public static String randomPassword()
     {
-        final String upper = new RandomStringGenerator.Builder().selectFrom("abcdefghijklmnopqrstuvwxyz".toUpperCase().toCharArray()).build()
+        final String upper = new RandomStringGenerator.Builder().selectFrom("abcdefghijklmnopqrstuvwxyz".toUpperCase().toCharArray())
+                                                                .build()
                                                                 .generate(Context.get().configuration.dataUtilsPasswordUppercaseCharAmount());
         final String lower = new RandomStringGenerator.Builder().selectFrom("abcdefghijklmnopqrstuvwxyz".toCharArray()).build()
                                                                 .generate(Context.get().configuration.dataUtilsPasswordLowercaseCharAmount());
         final String number = new RandomStringGenerator.Builder().selectFrom("0123456789".toCharArray()).build()
                                                                  .generate(Context.get().configuration.dataUtilsPasswordDigitAmount());
-        final String special = new RandomStringGenerator.Builder().selectFrom(Context.get().configuration.dataUtilsPasswordSpecialChars().toCharArray()).build()
+        final String special = new RandomStringGenerator.Builder().selectFrom(Context.get().configuration.dataUtilsPasswordSpecialChars()
+                                                                                                         .toCharArray())
+                                                                  .build()
                                                                   .generate(Context.get().configuration.dataUtilsPasswordSpecialCharAmount());
 
         final char[] all = (upper + lower + number + special).toCharArray();
@@ -54,7 +57,11 @@ public class DataUtils
     /**
      * Returns data for the data type requested
      * 
-     * @return
+     * @param <T>
+     *            the inferred class
+     * @param clazz
+     *            A reference to an clazz that should be instaciated and filled from test data
+     * @return an instance of the class provided
      */
     public static <T> T get(final Class<T> clazz)
     {

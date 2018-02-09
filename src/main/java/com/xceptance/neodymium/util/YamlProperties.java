@@ -145,11 +145,10 @@ public class YamlProperties
     }
 
     /**
-     * Parses yaml properties and turns them into regular Java properties. If the file does not
-     * exists, it returns null.
+     * Parses yaml properties and turns them into regular Java properties. If the file does not exists, it returns null.
      *
-     * @param reader
-     *            a reader for a YAML file
+     * @param file
+     *            a {@link File} for a YAML file
      * @return a Java properties file reader
      */
     public static Properties build(final File file)

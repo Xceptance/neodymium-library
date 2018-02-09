@@ -67,8 +67,17 @@ public final class BrowserRunnerHelper
     /**
      * Returns an {@link URL} to a Selenium grid (e.g. SauceLabs) that contains basic authentication for access
      * 
+     * @param proxyConfig
+     *            {@link ProxyConfiguration} that is used to connect to gridUrl
+     * @param gridUrl
+     *            The {@link URL} to the grid
+     * @param gridUsername
+     *            The username that should be used to accesd the grid
+     * @param gridPassword
+     *            The password that should be used to get access to the grid
      * @return {@link URL} to Selenium grid augmented with credentials
      * @throws MalformedURLException
+     *             if the given gridUrl is invalid
      */
     protected static HttpCommandExecutor createGridExecutor(final ProxyConfiguration proxyConfig, final URL gridUrl,
                                                             final String gridUsername, final String gridPassword)
@@ -119,7 +128,9 @@ public final class BrowserRunnerHelper
      * device-emulation test. In case of device-emulation the emulated device specifies the size of the browser window.
      *
      * @param config
+     *            {@link BrowserConfiguration} that describes the requested browser properties
      * @param driver
+     *            {@link WebDriver} instance of the configured {@link BrowserConfiguration}
      */
     protected static void setBrowserWindowSize(final BrowserConfiguration config, final WebDriver driver)
     {
@@ -186,11 +197,12 @@ public final class BrowserRunnerHelper
 
     /**
      * Instantiate the {@link WebDriver} according to the configuration read from {@link Browser} annotations.
-     *
+     * 
      * @param config
-     * @param proxyConfig
-     * @return
+     *            {@link BrowserConfiguration} that describes the descired browser instance
+     * @return {@link WebDriver} the instance of the browser described in {@link BrowserConfiguration}
      * @throws MalformedURLException
+     *             if <a href="https://github.com/Xceptance/neodymium-library/wiki/Selenium-grid">Selenium grid</a> is used
      */
     protected static WebDriver createWebdriver(final BrowserConfiguration config) throws MalformedURLException
     {

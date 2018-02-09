@@ -9,6 +9,11 @@ import java.util.WeakHashMap;
 import org.aeonbits.owner.ConfigFactory;
 import org.openqa.selenium.WebDriver;
 
+/**
+ * See our Github wiki: <a href="https://github.com/Xceptance/neodymium-library/wiki/Context">Context</a>
+ * 
+ * @author m.kaufmann
+ */
 public class Context
 {
     private static final Map<Thread, Context> CONTEXTS = Collections.synchronizedMap(new WeakHashMap<>());
@@ -54,6 +59,7 @@ public class Context
      * Create a new context and associates it with the threads, if there is any previous context, it is just overwritten.
      * 
      * @param clazz
+     *            A {@link Class} extends {@link Configuration} that is used to initialize the {@link Context}
      * @return the context instance for the current Thread
      */
     public static Context create(Class<? extends Configuration> clazz)
@@ -69,8 +75,13 @@ public class Context
     /**
      * Create a new context and associates it with the threads, if there is any previous context, it is just overwritten.
      * 
+     * @param testDataOfTestCase
+     *            A {@link Map} that contains all the
+     *            <a href="https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider">test data</a> that can be
+     *            accessed from the test
      * @param clazz
-     * @return the context instance for the current Thread
+     *            A {@link Class} extends {@link Configuration} that is used to initialize the {@link Context}
+     * @return {@link Context} that was freshly created or served from cache
      */
     public static Context create(final Map<String, String> testDataOfTestCase, Class<? extends Configuration> clazz)
     {
@@ -82,7 +93,6 @@ public class Context
     /**
      * Retrieves the context instance for the current Thread.
      * 
-     * @param clazz
      * @return the context instance for the current Thread
      */
     public static Context get()
@@ -114,6 +124,8 @@ public class Context
 
     /**
      * Phone or smaller
+     * 
+     * @return boolean value indicating whether it is a mobile device or not
      */
     public boolean isMobile()
     {
@@ -122,6 +134,9 @@ public class Context
 
     /**
      * Tablet or large phone
+     * 
+     * @return boolean value indicating whether it is a tablet device/large phone or not
+     * @see Context
      */
     public boolean isTablet()
     {
@@ -130,6 +145,9 @@ public class Context
 
     /**
      * Small desktop aka half window or stuff, can be tablet as well
+     * 
+     * @return boolean value indicating whether it is a device with small desktop or not
+     * @see Context
      */
     public boolean isSmallDesktop()
     {
@@ -138,6 +156,9 @@ public class Context
 
     /**
      * Large desktop resolution?
+     * 
+     * @return boolean value indicating whether it is a device with small desktop or not
+     * @see Context
      */
     public boolean isLargeDesktop()
     {
@@ -146,6 +167,9 @@ public class Context
 
     /**
      * Desktop of any kind?
+     * 
+     * @return boolean value indicating whether it is a device desktop (neither small nor large) or not
+     * @see Context
      */
     public boolean isDesktop()
     {
