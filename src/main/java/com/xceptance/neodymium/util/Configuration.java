@@ -117,7 +117,7 @@ public interface Configuration extends Mutable
     public int dataUtilsPasswordSpecialCharAmount();
 
     @Key("dataUtils.password.specialChars")
-    @DefaultValue("+-#$%&.;,_")
+    @DefaultValue("+-#$%%&.;,_")
     public String dataUtilsPasswordSpecialChars();
 
 }
