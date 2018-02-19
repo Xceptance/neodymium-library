@@ -1,6 +1,6 @@
 package com.xceptance.neodymium.util;
 
-import static org.aeonbits.owner.Config.DisableableFeature.VARIABLE_EXPANSION;
+import static org.aeonbits.owner.Config.DisableableFeature.*;
 
 import org.aeonbits.owner.Config.LoadPolicy;
 import org.aeonbits.owner.Config.LoadType;
@@ -9,9 +9,9 @@ import org.aeonbits.owner.Mutable;
 
 @LoadPolicy(LoadType.MERGE)
 @Sources(
-{
-  "file:config/test.properties", "file:config/credentials.properties"
-})
+    {
+        "file:config/test.properties", "file:config/credentials.properties"
+    })
 public interface Configuration extends Mutable
 {
     // standard timeout for selenide interaction
@@ -56,13 +56,19 @@ public interface Configuration extends Mutable
 
     @Key("url.path")
     @DisableFeature(
-    {
-      VARIABLE_EXPANSION
-    })
+        {
+            VARIABLE_EXPANSION
+        })
     public String rawPath();
 
     @Key("url.site")
     public String site();
+
+    @Key("basicauth.username")
+    public String basicAuthUsername();
+
+    @Key("basicauth.password")
+    public String basicAuthPassword();
 
     @Key("locale")
     @DefaultValue("en_US")
