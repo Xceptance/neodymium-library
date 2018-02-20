@@ -9,6 +9,8 @@ import java.util.WeakHashMap;
 import org.aeonbits.owner.ConfigFactory;
 import org.openqa.selenium.WebDriver;
 
+import com.codeborne.selenide.Selenide;
+
 /**
  * See our Github wiki: <a href="https://github.com/Xceptance/neodymium-library/wiki/Context">Context</a>
  * 
@@ -119,7 +121,11 @@ public class Context
      */
     public int getWindowWidth()
     {
-        return driver.manage().window().getSize().getWidth();
+        Long width = Selenide.executeJavaScript("return document.body.clientWidth");
+        return width.intValue();
+
+        // this code doesn't work for chrome device emulation since it returns the whole window width
+        // return driver.manage().window().getSize().getWidth();
     }
 
     /**
