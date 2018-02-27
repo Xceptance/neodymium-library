@@ -58,7 +58,8 @@ public class Context
     }
 
     /**
-     * Create a new context and associates it with the threads, if there is any previous context, it is just overwritten.
+     * Create a new context and associates it with the threads, if there is any previous context, it is just
+     * overwritten.
      * 
      * @param clazz
      *            A {@link Class} extends {@link Configuration} that is used to initialize the {@link Context}
@@ -75,12 +76,13 @@ public class Context
     }
 
     /**
-     * Create a new context and associates it with the threads, if there is any previous context, it is just overwritten.
+     * Create a new context and associates it with the threads, if there is any previous context, it is just
+     * overwritten.
      * 
      * @param testDataOfTestCase
      *            A {@link Map} that contains all the
-     *            <a href="https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider">test data</a> that can be
-     *            accessed from the test
+     *            <a href="https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider">test data</a> that
+     *            can be accessed from the test
      * @param clazz
      *            A {@link Class} extends {@link Configuration} that is used to initialize the {@link Context}
      * @return {@link Context} that was freshly created or served from cache
@@ -102,6 +104,14 @@ public class Context
         return CONTEXTS.computeIfAbsent(Thread.currentThread(), key -> {
             return new Context(Collections.emptyMap(), Configuration.class);
         });
+    }
+
+    /**
+     * Clears the context instance for the current Thread.
+     */
+    public static void clearThreadContext()
+    {
+        CONTEXTS.remove(Thread.currentThread());
     }
 
     /**

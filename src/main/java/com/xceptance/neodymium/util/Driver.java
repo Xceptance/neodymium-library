@@ -41,6 +41,9 @@ public class Driver
             driver.manage().deleteAllCookies();
         }
 
+        // clear Context for every browser instance
+        Context.clearThreadContext();
+
         // keep in globally
         Context.get().driver = driver;
         Context.get().browserProfileName = browserProfileName;
