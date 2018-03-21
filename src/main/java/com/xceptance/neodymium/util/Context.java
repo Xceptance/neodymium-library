@@ -116,26 +116,6 @@ public class Context
     }
 
     /**
-     * Current window height
-     *
-     * @return current height of the window, not viewport height!
-     */
-    public int getWindowHeight()
-    {
-        return getWindowSize().getHeight();
-    }
-
-    /**
-     * Current window width
-     *
-     * @return current width of the window, not viewport width!
-     */
-    public int getWindowWidth()
-    {
-        return getWindowSize().getWidth();
-    }
-
-    /**
      * Current window width and height
      * 
      * @return {@link Dimension} object containing width and height of current window
