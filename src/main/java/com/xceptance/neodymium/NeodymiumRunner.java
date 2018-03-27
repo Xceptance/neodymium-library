@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -29,8 +28,6 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.JUnit4;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 import org.junit.runners.ParentRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.RunnerBuilder;
@@ -40,6 +37,9 @@ import org.slf4j.LoggerFactory;
 
 import com.xceptance.neodymium.NeodymiumDataRunner.NeodymiumDataRunnerRunner;
 import com.xceptance.neodymium.groups.DefaultGroup;
+import com.xceptance.neodymium.module.order.MethodOnlyRunOrder;
+import com.xceptance.neodymium.module.order.VectorRunOrder;
+import com.xceptance.neodymium.module.vector.RunnerVector;
 import com.xceptance.neodymium.multibrowser.Browser;
 import com.xceptance.neodymium.multibrowser.BrowserRunner;
 
@@ -99,79 +99,88 @@ public class NeodymiumRunner extends Runner implements Filterable
     public NeodymiumRunner(Class<?> testKlass, RunnerBuilder rb) throws Throwable
     {
         LOGGER.debug(testKlass.getCanonicalName());
-        List<List<Runner>> vectors = new LinkedList<>();
+
+        VectorRunOrder defaultVectorRunOrder = new MethodOnlyRunOrder(); // new DefaultVectorRunOrder();
+        List<RunnerVector> vectorRunOrder = defaultVectorRunOrder.getVectorRunOrder();
+
         testClass = new TestClass(testKlass);
-        List<Runner> runners = new LinkedList<>();
-        methodExecutionContext = new MethodExecutionContext();
-
-        // find test vectors
-        // scan for Browser and Parameters annotation
-        // later on we could add handler for any annotation that should influence test run
-
-        // lookup Browser annotation
-        Browser browser = testClass.getAnnotation(Browser.class);
-        if (browser != null)
+        for (RunnerVector runVector : vectorRunOrder)
         {
-            LOGGER.debug("Found browser annotation");
-            runners.add(new BrowserRunner(testKlass));
+            runVector.init(testClass);
         }
 
-        // scan for JUnit Parameters
-        List<FrameworkMethod> parameterMethods = testClass.getAnnotatedMethods(Parameters.class);
-        if (parameterMethods.size() > 0)
-        {
-            LOGGER.debug("Found parameters annotation");
-            setFinalStatic(Parameterized.class.getDeclaredField("DEFAULT_FACTORY"),
-                           new NeodymiumParameterRunnerFactory(methodExecutionContext));
-            runners.add(new Parameterized(testKlass));
-        }
-
-        try
-        {
-            runners.add(new NeodymiumDataRunner(testClass, methodExecutionContext));
-        }
-        catch (IllegalArgumentException e)
-        {
-            // no test data found, proceed
-        }
-        catch (NoSuchFieldException e)
-        {
-            // test data was found
-            // if the message is empty then no field was defined (annotated) and we drop the exception
-            // if the message is not empty then a correct annotated field was found but
-            // its either not a map or not public
-            if (StringUtils.isNotBlank(e.getMessage()))
-                throw e;
-        }
-
-        // collect children of ParentRunner sub classes
-        doMagic(runners, vectors);
-
-        // create method runners that actually execute the methods annotated with @Test
-        List<Runner> methodVector = new LinkedList<>();
-        List<FrameworkMethod> annotatedMethods = testClass.getAnnotatedMethods(Test.class);
-        if (annotatedMethods.size() > 0)
-        {
-            LOGGER.debug("Found methods to run");
-        }
-        else
-        {
-            LOGGER.debug("No test methods found");
-        }
-
-        for (FrameworkMethod method : annotatedMethods)
-        {
-            NeodymiumMethodRunner methodRunner = new NeodymiumMethodRunner(testKlass, method, methodExecutionContext);
-            LOGGER.debug("\t" + methodRunner.getDescription().getDisplayName());
-            methodVector.add(methodRunner);
-        }
-        vectors.add(methodVector);
-
-        testRunner = buildTestRunnerLists(vectors);
-
-        LOGGER.debug("Build " + testRunner.size() + " test runner");
-
-        testDescription = createTestDescription();
+        // List<List<Runner>> vectors = new LinkedList<>();
+        // List<Runner> runners = new LinkedList<>();
+        // methodExecutionContext = new MethodExecutionContext();
+        //
+        // // find test vectors
+        // // scan for Browser and Parameters annotation
+        // // later on we could add handler for any annotation that should influence test run
+        //
+        // // lookup Browser annotation
+        // Browser browser = testClass.getAnnotation(Browser.class);
+        // if (browser != null)
+        // {
+        // LOGGER.debug("Found browser annotation");
+        // runners.add(new BrowserRunner(testKlass));
+        // }
+        //
+        // // scan for JUnit Parameters
+        // List<FrameworkMethod> parameterMethods = testClass.getAnnotatedMethods(Parameters.class);
+        // if (parameterMethods.size() > 0)
+        // {
+        // LOGGER.debug("Found parameters annotation");
+        // setFinalStatic(Parameterized.class.getDeclaredField("DEFAULT_FACTORY"),
+        // new NeodymiumParameterRunnerFactory(methodExecutionContext));
+        // runners.add(new Parameterized(testKlass));
+        // }
+        //
+        // try
+        // {
+        // runners.add(new NeodymiumDataRunner(testClass, methodExecutionContext));
+        // }
+        // catch (IllegalArgumentException e)
+        // {
+        // // no test data found, proceed
+        // }
+        // catch (NoSuchFieldException e)
+        // {
+        // // test data was found
+        // // if the message is empty then no field was defined (annotated) and we drop the exception
+        // // if the message is not empty then a correct annotated field was found but
+        // // its either not a map or not public
+        // if (StringUtils.isNotBlank(e.getMessage()))
+        // throw e;
+        // }
+        //
+        // // collect children of ParentRunner sub classes
+        // doMagic(runners, vectors);
+        //
+        // // create method runners that actually execute the methods annotated with @Test
+        // List<Runner> methodVector = new LinkedList<>();
+        // List<FrameworkMethod> annotatedMethods = testClass.getAnnotatedMethods(Test.class);
+        // if (annotatedMethods.size() > 0)
+        // {
+        // LOGGER.debug("Found methods to run");
+        // }
+        // else
+        // {
+        // LOGGER.debug("No test methods found");
+        // }
+        //
+        // for (FrameworkMethod method : annotatedMethods)
+        // {
+        // NeodymiumMethodRunner methodRunner = new NeodymiumMethodRunner(testKlass, method, methodExecutionContext);
+        // LOGGER.debug("\t" + methodRunner.getDescription().getDisplayName());
+        // methodVector.add(methodRunner);
+        // }
+        // vectors.add(methodVector);
+        //
+        // testRunner = buildTestRunnerLists(vectors);
+        //
+        // LOGGER.debug("Build " + testRunner.size() + " test runner");
+        //
+        // testDescription = createTestDescription();
     }
 
     private List<List<Runner>> regroupTests(List<List<Runner>> testRunner, List<Class<?>> groupsToExecute, boolean matchAny)

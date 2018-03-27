@@ -13,7 +13,10 @@ import java.lang.annotation.Target;
  * @author m.kaufmann
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target(
+    {
+        ElementType.TYPE, ElementType.METHOD
+    })
 @Inherited
 public @interface Browser
 {
