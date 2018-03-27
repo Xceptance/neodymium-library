@@ -43,8 +43,8 @@ public class Localization
      */
     public String getText(final String key)
     {
-        final String localeString = Context.get().configuration.locale();
-        final Locale locale = LocaleUtils.toLocale(Context.get().configuration.locale());
+        final String localeString = Context.configuration.locale();
+        final Locale locale = LocaleUtils.toLocale(Context.configuration.locale());
 
         // en_US
         String result = properties.getProperty(localeString + "." + key);

@@ -90,7 +90,7 @@ public class SelenidePlus
      */
     public static SelenideElement $safe(final Supplier<SelenideElement> code)
     {
-        int retryCounter = Context.get().configuration.staleElementRetryCount();
+        int retryCounter = Context.configuration.staleElementRetryCount();
 
         while (retryCounter >= 0)
         {
@@ -111,7 +111,7 @@ public class SelenidePlus
                 // wait
                 try
                 {
-                    Thread.sleep(Context.get().configuration.staleElementRetryTimeout());
+                    Thread.sleep(Context.configuration.staleElementRetryTimeout());
                 }
                 catch (final InterruptedException e1)
                 {

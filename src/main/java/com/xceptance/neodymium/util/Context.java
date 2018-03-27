@@ -3,9 +3,9 @@ package com.xceptance.neodymium.util;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.WeakHashMap;
 
+import org.aeonbits.owner.Config;
 import org.aeonbits.owner.ConfigFactory;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
@@ -28,12 +28,12 @@ public class Context
     public String browserProfileName;
 
     // our global configuration
-    public final Configuration configuration;
-
-    public final Class<? extends Configuration> clazz;
+    public static final Configuration configuration = ConfigFactory.create(Configuration.class, System.getProperties(), System.getenv());
 
     // localization
-    public final Localization localization;
+    public static final Localization localization = Localization.build(configuration.localizationFile());
+
+    public static Class<? extends Config> userConfiguration;
 
     // our data for anywhere access
     public final Map<String, String> data = new HashMap<>();
@@ -43,56 +43,8 @@ public class Context
      * 
      * @param clazz
      */
-    private Context(final Map<String, String> testDataOfTestCase, Class<? extends Configuration> clazz)
+    private Context()
     {
-        this.data.putAll(testDataOfTestCase);
-        this.clazz = clazz;
-
-        // build our config and use the official caching for that
-        // use our test data as properties as well
-        final Properties testData = new Properties();
-        testData.putAll(data);
-
-        configuration = ConfigFactory.create(clazz, System.getProperties(), System.getenv(), testData);
-
-        localization = Localization.build(configuration.localizationFile());
-    }
-
-    /**
-     * Create a new context and associates it with the threads, if there is any previous context, it is just
-     * overwritten.
-     * 
-     * @param clazz
-     *            A {@link Class} extends {@link Configuration} that is used to initialize the {@link Context}
-     * @return the context instance for the current Thread
-     */
-    public static Context create(Class<? extends Configuration> clazz)
-    {
-        return create(Collections.emptyMap(), clazz);
-    }
-
-    public static Context create(final Map<String, String> testDataOfTestCase)
-    {
-        return create(testDataOfTestCase, Configuration.class);
-    }
-
-    /**
-     * Create a new context and associates it with the threads, if there is any previous context, it is just
-     * overwritten.
-     * 
-     * @param testDataOfTestCase
-     *            A {@link Map} that contains all the
-     *            <a href="https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider">test data</a> that
-     *            can be accessed from the test
-     * @param clazz
-     *            A {@link Class} extends {@link Configuration} that is used to initialize the {@link Context}
-     * @return {@link Context} that was freshly created or served from cache
-     */
-    public static Context create(final Map<String, String> testDataOfTestCase, Class<? extends Configuration> clazz)
-    {
-        return CONTEXTS.computeIfAbsent(Thread.currentThread(), (key) -> {
-            return new Context(testDataOfTestCase, clazz);
-        });
     }
 
     /**
@@ -103,7 +55,7 @@ public class Context
     public static Context get()
     {
         return CONTEXTS.computeIfAbsent(Thread.currentThread(), key -> {
-            return new Context(Collections.emptyMap(), Configuration.class);
+            return new Context();
         });
     }
 
@@ -216,7 +168,7 @@ public class Context
      */
     public static String localizedText(final String key)
     {
-        return get().localization.getText(key);
+        return localization.getText(key);
     }
 
     /**

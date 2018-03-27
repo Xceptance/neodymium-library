@@ -35,7 +35,7 @@ public class Steps
         }
         finally
         {
-            if (Context.get().configuration.screenshotPerStep())
+            if (Context.configuration.screenshotPerStep())
             {
                 attachPNG(UUID.randomUUID().toString() + ".png");
             }
@@ -51,7 +51,7 @@ public class Steps
         }
         finally
         {
-            if (Context.get().configuration.screenshotPerStep())
+            if (Context.configuration.screenshotPerStep())
             {
                 attachPNG(UUID.randomUUID().toString() + ".png");
             }

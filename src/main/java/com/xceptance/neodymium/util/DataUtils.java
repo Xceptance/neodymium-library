@@ -21,10 +21,10 @@ public class DataUtils
         final String data = uuid.replaceAll("-", "");
         final StringBuilder sb = new StringBuilder(42);
 
-        sb.append(Context.get().configuration.dataUtilsEmailLocalPrefix());
+        sb.append(Context.configuration.dataUtilsEmailLocalPrefix());
         sb.append(data.concat(data).substring(0, 12));
         sb.append("@");
-        sb.append(Context.get().configuration.dataUtilsEmailDomain());
+        sb.append(Context.configuration.dataUtilsEmailDomain());
 
         return sb.toString().toLowerCase();
     }
@@ -38,15 +38,15 @@ public class DataUtils
     {
         final String upper = new RandomStringGenerator.Builder().selectFrom("abcdefghijklmnopqrstuvwxyz".toUpperCase().toCharArray())
                                                                 .build()
-                                                                .generate(Context.get().configuration.dataUtilsPasswordUppercaseCharAmount());
+                                                                .generate(Context.configuration.dataUtilsPasswordUppercaseCharAmount());
         final String lower = new RandomStringGenerator.Builder().selectFrom("abcdefghijklmnopqrstuvwxyz".toCharArray()).build()
-                                                                .generate(Context.get().configuration.dataUtilsPasswordLowercaseCharAmount());
+                                                                .generate(Context.configuration.dataUtilsPasswordLowercaseCharAmount());
         final String number = new RandomStringGenerator.Builder().selectFrom("0123456789".toCharArray()).build()
-                                                                 .generate(Context.get().configuration.dataUtilsPasswordDigitAmount());
-        final String special = new RandomStringGenerator.Builder().selectFrom(Context.get().configuration.dataUtilsPasswordSpecialChars()
-                                                                                                         .toCharArray())
+                                                                 .generate(Context.configuration.dataUtilsPasswordDigitAmount());
+        final String special = new RandomStringGenerator.Builder().selectFrom(Context.configuration.dataUtilsPasswordSpecialChars()
+                                                                                                   .toCharArray())
                                                                   .build()
-                                                                  .generate(Context.get().configuration.dataUtilsPasswordSpecialCharAmount());
+                                                                  .generate(Context.configuration.dataUtilsPasswordSpecialCharAmount());
 
         final char[] all = (upper + lower + number + special).toCharArray();
         ArrayUtils.shuffle(all);
