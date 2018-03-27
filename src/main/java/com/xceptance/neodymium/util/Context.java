@@ -33,7 +33,7 @@ public class Context
     // localization
     public static final Localization localization = Localization.build(configuration.localizationFile());
 
-    public static Class<? extends Config> userConfiguration;
+    public static Config userConfiguration;
 
     // our data for anywhere access
     public final Map<String, String> data = new HashMap<>();
@@ -57,6 +57,16 @@ public class Context
         return CONTEXTS.computeIfAbsent(Thread.currentThread(), key -> {
             return new Context();
         });
+    }
+
+    public static void initializeUserConfiguration(Class<? extends Config> userConfigurationClazz)
+    {
+        userConfiguration = ConfigFactory.create(userConfigurationClazz, System.getProperties(), System.getenv());
+    }
+
+    public static <T> T getUserConfiguration(Class<T> clazz)
+    {
+        return (T) userConfiguration;
     }
 
     /**
