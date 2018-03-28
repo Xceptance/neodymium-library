@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import com.xceptance.neodymium.NeodymiumDataRunner.NeodymiumDataRunnerRunner;
 import com.xceptance.neodymium.groups.DefaultGroup;
-import com.xceptance.neodymium.module.order.MethodOnlyRunOrder;
+import com.xceptance.neodymium.module.order.DefaultVectorRunOrder;
 import com.xceptance.neodymium.module.order.VectorRunOrder;
 import com.xceptance.neodymium.module.vector.RunnerVector;
 import com.xceptance.neodymium.multibrowser.Browser;
@@ -100,18 +100,24 @@ public class NeodymiumRunner extends Runner implements Filterable
     {
         LOGGER.debug(testKlass.getCanonicalName());
 
-        VectorRunOrder defaultVectorRunOrder = new MethodOnlyRunOrder(); // new DefaultVectorRunOrder();
+        // VectorRunOrder defaultVectorRunOrder = new MethodOnlyRunOrder(); // new DefaultVectorRunOrder();
+        VectorRunOrder defaultVectorRunOrder = new DefaultVectorRunOrder();
         List<RunnerVector> vectorRunOrder = defaultVectorRunOrder.getVectorRunOrder();
-
         testClass = new TestClass(testKlass);
+
+        List<List<Runner>> vectors = new LinkedList<>();
+        methodExecutionContext = new MethodExecutionContext();
+
         for (RunnerVector runVector : vectorRunOrder)
         {
-            runVector.init(testClass);
+            runVector.init(testClass, methodExecutionContext);
         }
+
+        testRunner = buildTestRunnerLists(vectors);
 
         // List<List<Runner>> vectors = new LinkedList<>();
         // List<Runner> runners = new LinkedList<>();
-        // methodExecutionContext = new MethodExecutionContext();
+        //
         //
         // // find test vectors
         // // scan for Browser and Parameters annotation
