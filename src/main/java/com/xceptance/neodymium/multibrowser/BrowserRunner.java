@@ -50,6 +50,8 @@ public class BrowserRunner extends ParentRunner<Runner>
 
     private static final String SYSTEM_PROPERTY_BROWSERDEFINITION = "browserdefinition";
 
+    private static final String BROWSER_PROFILE_FILE = "./config/browser.properties";
+
     /**
      * Sets the test instance up.
      */
@@ -115,6 +117,10 @@ public class BrowserRunner extends ParentRunner<Runner>
         super(testCaseClass);
 
         MultibrowserConfiguration multibrowserConfiguration = MultibrowserConfiguration.getInstance();
+
+        // that is like a dirty hack to provide testing ability
+        if (multibrowserConfiguration == null)
+            multibrowserConfiguration = MultibrowserConfiguration.getInstance(BROWSER_PROFILE_FILE);
 
         DriverServerPath driverServerPath = multibrowserConfiguration.getDriverServerPath();
         WebDriverProperties webDriverProperties = multibrowserConfiguration.getWebDriverProperties();

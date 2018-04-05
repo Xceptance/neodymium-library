@@ -2,6 +2,7 @@ package com.xceptance.neodymium.multibrowser.configuration;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -10,13 +11,14 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.aeonbits.owner.ConfigFactory;
+import org.aeonbits.owner.Factory;
 import org.apache.commons.lang3.StringUtils;
 
 public class MultibrowserConfiguration
 {
-    private static final String TEST_ENVIRONMENT_FILE = "./config/credentials.properties";
+    private static final Map<String, MultibrowserConfiguration> CONFIGURATIONS = Collections.synchronizedMap(new LinkedHashMap<>());
 
-    private static final String BROWSER_PROFILE_FILE = "./config/browser.properties";
+    private static final String TEST_ENVIRONMENT_FILE = "./config/credentials.properties";
 
     private static final String BROWSER_PROFILE_PREFIX = "browserprofile.";
 
@@ -36,7 +38,7 @@ public class MultibrowserConfiguration
 
     private Properties browserProfileProperties;
 
-    private MultibrowserConfiguration()
+    private MultibrowserConfiguration(String configFile)
     {
         testEnvironmentProperties = new Properties();
         browserProfileProperties = new Properties();
@@ -50,13 +52,14 @@ public class MultibrowserConfiguration
                 fileInputStream.close();
             }
 
-            File browerProfileFile = new File(BROWSER_PROFILE_FILE);
+            File browerProfileFile = new File(configFile);
             if (browerProfileFile.exists())
             {
                 FileInputStream fileInputStream = new FileInputStream(browerProfileFile);
                 browserProfileProperties.load(fileInputStream);
                 fileInputStream.close();
             }
+
         }
         catch (Exception e)
         {
@@ -66,9 +69,11 @@ public class MultibrowserConfiguration
         parseTestEnvironments();
         parseBrowserProfiles();
 
-        driverServerPath = ConfigFactory.create(DriverServerPath.class);
-        webDriverProperties = ConfigFactory.create(WebDriverProperties.class);
-        proxyConfiguration = ConfigFactory.create(ProxyConfiguration.class);
+        Factory configurationFactory = ConfigFactory.newInstance();
+        configurationFactory.setProperty("configurationFile", configFile);
+        driverServerPath = configurationFactory.create(DriverServerPath.class);
+        webDriverProperties = configurationFactory.create(WebDriverProperties.class);
+        proxyConfiguration = configurationFactory.create(ProxyConfiguration.class);
     }
 
     private void parseTestEnvironments()
@@ -133,14 +138,31 @@ public class MultibrowserConfiguration
         return keys;
     }
 
-    private static class MultibrowserConfigurationHolder
-    {
-        private static final MultibrowserConfiguration INSTANCE = new MultibrowserConfiguration();
-    }
-
     public static MultibrowserConfiguration getInstance()
     {
-        return MultibrowserConfigurationHolder.INSTANCE;
+        if (CONFIGURATIONS.size() == 0)
+            throw new RuntimeException("No multi browser configuration available. Call getInstance(String configFile) first to create default configuration");
+
+        return CONFIGURATIONS.entrySet().iterator().next().getValue();
+    }
+
+    /**
+     * Returns an {@link MultibrowserConfiguration} parsed from an properties file
+     * 
+     * @param configFile
+     *            a relative path to the file containing browser configuration (properties)
+     * @return {@link MultibrowserConfiguration}
+     */
+    public static MultibrowserConfiguration getInstance(String configFile)
+    {
+        MultibrowserConfiguration configuration = CONFIGURATIONS.get(configFile);
+
+        if (configuration == null)
+        {
+            configuration = new MultibrowserConfiguration(configFile);
+            CONFIGURATIONS.put(configFile, configuration);
+        }
+        return configuration;
     }
 
     public DriverServerPath getDriverServerPath()
