@@ -45,13 +45,17 @@ public class MultibrowserConfiguration
             File testEnvironmentFile = new File(TEST_ENVIRONMENT_FILE);
             if (testEnvironmentFile.exists())
             {
-                testEnvironmentProperties.load(new FileInputStream(testEnvironmentFile));
+                FileInputStream fileInputStream = new FileInputStream(testEnvironmentFile);
+                testEnvironmentProperties.load(fileInputStream);
+                fileInputStream.close();
             }
 
             File browerProfileFile = new File(BROWSER_PROFILE_FILE);
             if (browerProfileFile.exists())
             {
-                browserProfileProperties.load(new FileInputStream(browerProfileFile));
+                FileInputStream fileInputStream = new FileInputStream(browerProfileFile);
+                browserProfileProperties.load(fileInputStream);
+                fileInputStream.close();
             }
         }
         catch (Exception e)
