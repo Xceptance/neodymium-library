@@ -9,6 +9,7 @@ import org.junit.runner.notification.Failure;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorIterableReturnOne;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorObjectReturn;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorToFewElements;
+import com.xceptance.neodymium.testclasses.parameter.GeneratorToMuchElements;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorVoidReturn;
 import com.xceptance.neodymium.testclasses.parameter.NonStaticGeneratorVoidReturn;
 import com.xceptance.neodymium.testclasses.parameter.ParameterFieldButNoGenerator;
@@ -97,6 +98,21 @@ public class NeodymiumParameterRunnerTest
 
         Failure failure = result.getFailures().get(0);
         Assert.assertEquals("java.lang.Exception: Number of parameters (1) and fields (2) annotated with @Parameter must match!",
+                            failure.getMessage());
+    }
+
+    @Test
+    public void testGeneratorToMuchElements()
+    {
+        Result result = JUnitCore.runClasses(GeneratorToMuchElements.class);
+
+        Assert.assertFalse(result.wasSuccessful());
+        Assert.assertEquals(1, result.getRunCount());
+        Assert.assertEquals(1, result.getFailureCount());
+        Assert.assertEquals(0, result.getIgnoreCount());
+
+        Failure failure = result.getFailures().get(0);
+        Assert.assertEquals("java.lang.Exception: Number of parameters (2) and fields (1) annotated with @Parameter must match!",
                             failure.getMessage());
     }
 
