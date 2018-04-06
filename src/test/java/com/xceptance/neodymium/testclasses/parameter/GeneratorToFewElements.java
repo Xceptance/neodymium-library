@@ -19,7 +19,6 @@ public class GeneratorToFewElements
     {
         List<Integer> list = new ArrayList<>(1);
         list.add(new Integer(5));
-        list.add(new Integer(6));
         return list;
     }
 

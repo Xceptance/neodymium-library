@@ -91,8 +91,8 @@ public class NeodymiumParameterRunnerTest
         Result result = JUnitCore.runClasses(GeneratorToFewElements.class);
 
         Assert.assertFalse(result.wasSuccessful());
-        Assert.assertEquals(2, result.getRunCount());
-        Assert.assertEquals(2, result.getFailureCount());
+        Assert.assertEquals(1, result.getRunCount());
+        Assert.assertEquals(1, result.getFailureCount());
         Assert.assertEquals(0, result.getIgnoreCount());
 
         Failure failure = result.getFailures().get(0);
