@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
 
 import com.xceptance.neodymium.testclasses.method.FailingMethod;
 import com.xceptance.neodymium.testclasses.method.IgnoredClass;
@@ -17,9 +18,14 @@ public class NeodymiumMethodRunnerTest
     {
         // test there is nothing when no test method was found
         Result result = JUnitCore.runClasses(NoTestMethods.class);
-        Assert.assertEquals(0, result.getRunCount());
-        Assert.assertEquals(0, result.getFailureCount());
+
+        Assert.assertFalse(result.wasSuccessful());
+        Assert.assertEquals(1, result.getRunCount());
+        Assert.assertEquals(1, result.getFailureCount());
         Assert.assertEquals(0, result.getIgnoreCount());
+
+        Failure failure = result.getFailures().get(0);
+        Assert.assertEquals("No runnable methods", failure.getMessage());
     }
 
     @Test
@@ -27,7 +33,11 @@ public class NeodymiumMethodRunnerTest
     {
         // test that NeodymiumRunner handles @Test and @Ignore correctly
         Result result = JUnitCore.runClasses(TestAndIgnoreAnnotation.class);
+
         Assert.assertTrue(result.wasSuccessful());
+        Assert.assertEquals(1, result.getRunCount());
+        Assert.assertEquals(0, result.getFailureCount());
+        Assert.assertEquals(1, result.getIgnoreCount());
     }
 
     @Test
@@ -35,6 +45,7 @@ public class NeodymiumMethodRunnerTest
     {
         // no method should be invoked in an ignored class
         Result result = JUnitCore.runClasses(IgnoredClass.class);
+
         Assert.assertEquals(0, result.getRunCount());
         Assert.assertEquals(0, result.getFailureCount());
         Assert.assertEquals(1, result.getIgnoreCount());
@@ -45,8 +56,11 @@ public class NeodymiumMethodRunnerTest
     {
         // test that a failing method fails the test
         Result result = JUnitCore.runClasses(FailingMethod.class);
+
         Assert.assertFalse(result.wasSuccessful());
         Assert.assertEquals(1, result.getFailureCount());
+        Assert.assertEquals(1, result.getRunCount());
+        Assert.assertEquals(0, result.getIgnoreCount());
     }
 
 }
