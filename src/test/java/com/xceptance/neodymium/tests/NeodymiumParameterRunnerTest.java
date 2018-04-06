@@ -63,6 +63,7 @@ public class NeodymiumParameterRunnerTest
     @Test
     public void testGeneratorObjectReturn()
     {
+        // test generator returning object is not accidently castet to correct type
         Result result = JUnitCore.runClasses(GeneratorObjectReturn.class);
 
         Assert.assertFalse(result.wasSuccessful());
@@ -78,6 +79,7 @@ public class NeodymiumParameterRunnerTest
     @Test
     public void testGeneratorIterableReturnOne()
     {
+        // one test data element, one test iteration
         Result result = JUnitCore.runClasses(GeneratorIterableReturnOne.class);
 
         Assert.assertTrue(result.wasSuccessful());
@@ -89,6 +91,7 @@ public class NeodymiumParameterRunnerTest
     @Test
     public void testGeneratorToFewElements()
     {
+        // one test iteration with two parameter fields, but just one data set
         Result result = JUnitCore.runClasses(GeneratorToFewElements.class);
 
         Assert.assertFalse(result.wasSuccessful());
@@ -104,6 +107,7 @@ public class NeodymiumParameterRunnerTest
     @Test
     public void testGeneratorToMuchElements()
     {
+        // one test iteration with one data field, but two data sets
         Result result = JUnitCore.runClasses(GeneratorToMuchElements.class);
 
         Assert.assertFalse(result.wasSuccessful());
