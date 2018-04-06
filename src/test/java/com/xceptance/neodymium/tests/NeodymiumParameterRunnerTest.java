@@ -6,6 +6,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
+import com.xceptance.neodymium.testclasses.parameter.GeneratorAutoTypeConversion;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorIterableReturnOne;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorObjectReturn;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorToFewElements;
@@ -118,6 +119,17 @@ public class NeodymiumParameterRunnerTest
         Failure failure = result.getFailures().get(0);
         Assert.assertEquals("java.lang.Exception: Number of parameters (2) and fields (1) annotated with @Parameter must match!",
                             failure.getMessage());
+    }
+
+    @Test
+    public void testGeneratorAutoTypeConversion()
+    {
+        Result result = JUnitCore.runClasses(GeneratorAutoTypeConversion.class);
+
+        Assert.assertTrue(result.wasSuccessful());
+        Assert.assertEquals(1, result.getRunCount());
+        Assert.assertEquals(0, result.getFailureCount());
+        Assert.assertEquals(0, result.getIgnoreCount());
     }
 
 }
