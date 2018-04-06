@@ -24,6 +24,7 @@ import com.xceptance.neodymium.testclasses.browser.NoBrowserTag;
 
 public class NeodymiumBrowserRunnerTest
 {
+    // holds files that will be deleted in @After method
     static List<File> tempFiles = new LinkedList<>();
 
     @Test
@@ -51,6 +52,8 @@ public class NeodymiumBrowserRunnerTest
     @Test
     public void testMultibrowserConfiguration() throws Throwable
     {
+        // define one chrome browser then validate the parsed multi-browser configuration
+        // TODO: we need more of this tests...
         Map<String, String> properties = new HashMap<>();
         properties.put("browserprofile.test.name", "a test browser");
         properties.put("browserprofile.test.browser", "chrome");
@@ -74,6 +77,12 @@ public class NeodymiumBrowserRunnerTest
         Assert.assertEquals("chrome", testCapabilities.getBrowserName());
     }
 
+    /**
+     * Helper method to write a {@link Map} to an file
+     * 
+     * @param map
+     * @param file
+     */
     public void writeMapToPropertiesFile(Map<String, String> map, File file)
     {
         try
