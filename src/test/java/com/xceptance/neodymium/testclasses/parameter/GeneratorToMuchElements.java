@@ -32,6 +32,6 @@ public class GeneratorToMuchElements
     @Test
     public void test()
     {
-        Assert.assertEquals(5, testInt.intValue());
+        Assert.fail("method shouldn't be called");
     }
 }
