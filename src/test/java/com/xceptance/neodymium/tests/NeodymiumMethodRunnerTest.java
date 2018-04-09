@@ -48,6 +48,7 @@ public class NeodymiumMethodRunnerTest
         // no method should be invoked in an ignored class
         Result result = JUnitCore.runClasses(IgnoredClass.class);
 
+        Assert.assertTrue(result.wasSuccessful());
         Assert.assertEquals(0, result.getRunCount());
         Assert.assertEquals(0, result.getFailureCount());
         Assert.assertEquals(1, result.getIgnoreCount());
