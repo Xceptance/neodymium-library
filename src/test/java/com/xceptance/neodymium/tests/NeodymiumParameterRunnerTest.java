@@ -7,6 +7,7 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
 import com.xceptance.neodymium.testclasses.parameter.GeneratorAutoTypeConversion;
+import com.xceptance.neodymium.testclasses.parameter.GeneratorAutoTypeConversionCanNotHandleArbitraryTypes;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorIterableReturnOne;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorObjectReturn;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorToFewElements;
@@ -124,6 +125,7 @@ public class NeodymiumParameterRunnerTest
     @Test
     public void testGeneratorAutoTypeConversion()
     {
+        // test auto type conversion from string to various data types, aswell as arbitrary type injection
         Result result = JUnitCore.runClasses(GeneratorAutoTypeConversion.class);
 
         Assert.assertTrue(result.wasSuccessful());
@@ -132,4 +134,19 @@ public class NeodymiumParameterRunnerTest
         Assert.assertEquals(0, result.getIgnoreCount());
     }
 
+    @Test
+    public void testGeneratorAutoTypeConversionCanNotHandleArbitraryTypes()
+    {
+        // test that auto type conversion from string to an arbitrary type fails
+        Result result = JUnitCore.runClasses(GeneratorAutoTypeConversionCanNotHandleArbitraryTypes.class);
+
+        Assert.assertFalse(result.wasSuccessful());
+        Assert.assertEquals(1, result.getRunCount());
+        Assert.assertEquals(1, result.getFailureCount());
+        Assert.assertEquals(0, result.getIgnoreCount());
+
+        Failure failure = result.getFailures().get(0);
+        Assert.assertEquals("java.lang.RuntimeException: Could not set parameter of type class java.lang.String to field \"browser\" of type class com.xceptance.neodymium.multibrowser.configuration.BrowserConfiguration. Value: a string can not be parsed to an arbitrary type",
+                            failure.getMessage());
+    }
 }

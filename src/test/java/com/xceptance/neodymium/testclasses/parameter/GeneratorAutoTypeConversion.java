@@ -10,6 +10,7 @@ import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.xceptance.neodymium.NeodymiumRunner;
+import com.xceptance.neodymium.multibrowser.configuration.BrowserConfiguration;
 
 @RunWith(NeodymiumRunner.class)
 public class GeneratorAutoTypeConversion
@@ -21,7 +22,7 @@ public class GeneratorAutoTypeConversion
 
         Object[] data = new Object[]
             {
-                "1", "2", "3", "4", "0.00005", "0.00006", "0.00007", "0.00008", "true", "TrUE", "object", null
+                "1", "2", "3", "4", "0.00005", "0.00006", "0.00007", "0.00008", "true", "TrUE", "object", null, new BrowserConfiguration()
             };
         iterations.add(data);
         return iterations;
@@ -61,7 +62,10 @@ public class GeneratorAutoTypeConversion
     public Object object1;
 
     @Parameter(11)
-    public Object nullObject = new Object();
+    public Object nullObject = new Object(); // initialized to test null value set
+
+    @Parameter(12)
+    public BrowserConfiguration arbitraryType;
 
     @Test
     public void test()
@@ -78,5 +82,6 @@ public class GeneratorAutoTypeConversion
         Assert.assertEquals(true, bool2);
         Assert.assertEquals("object", object1.toString());
         Assert.assertEquals(null, nullObject);
+        Assert.assertNotNull(arbitraryType);
     }
 }
