@@ -8,22 +8,23 @@ import org.junit.runners.Parameterized.Parameters;
 import com.xceptance.neodymium.NeodymiumRunner;
 
 @RunWith(NeodymiumRunner.class)
-public class GeneratorCanNotSetPrivateField
+public class GeneratorAutoTypeConversionFailsOnWrongInputData
 {
     @Parameters
     public static Object[] createData()
     {
         return new Object[]
             {
-                123
+                "true"
             };
     }
 
     @Parameter(0)
-    private int aPrivateInteger;
+    public double aDouble;
 
     @Test
     public void test()
     {
+        System.out.println(aDouble);
     }
 }

@@ -8,8 +8,9 @@ import org.junit.runner.notification.Failure;
 
 import com.xceptance.neodymium.testclasses.parameter.GeneratorAutoTypeConversion;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorAutoTypeConversionCanNotHandleArbitraryTypes;
+import com.xceptance.neodymium.testclasses.parameter.GeneratorAutoTypeConversionFailsOnWrongInputData;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorCanNotSetFinalField;
-import com.xceptance.neodymium.testclasses.parameter.GeneratorCanNotSetPrivateSField;
+import com.xceptance.neodymium.testclasses.parameter.GeneratorCanNotSetPrivateField;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorCanSetStaticField;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorIterableReturnOne;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorObjectReturn;
@@ -185,7 +186,7 @@ public class NeodymiumParameterRunnerTest
     public void testGeneratorCanNotSetPrivateSField()
     {
         // test that a private field can not be set
-        Result result = JUnitCore.runClasses(GeneratorCanNotSetPrivateSField.class);
+        Result result = JUnitCore.runClasses(GeneratorCanNotSetPrivateField.class);
 
         Assert.assertFalse(result.wasSuccessful());
         Assert.assertEquals(1, result.getRunCount());
@@ -197,4 +198,19 @@ public class NeodymiumParameterRunnerTest
                             failure.getMessage());
     }
 
+    @Test
+    public void testGeneratorAutoTypeConversionFailsOnWrongInputData()
+    {
+        // test that auto type conversion from string fails if string content can not match
+        Result result = JUnitCore.runClasses(GeneratorAutoTypeConversionFailsOnWrongInputData.class);
+
+        Assert.assertFalse(result.wasSuccessful());
+        Assert.assertEquals(1, result.getRunCount());
+        Assert.assertEquals(0, result.getIgnoreCount());
+        Assert.assertEquals(1, result.getFailureCount());
+
+        Failure failure = result.getFailures().get(0);
+        Assert.assertEquals("java.lang.RuntimeException: An error occured during conversion of input string \"true\" to type double for field \"aDouble\"",
+                            failure.getMessage());
+    }
 }
