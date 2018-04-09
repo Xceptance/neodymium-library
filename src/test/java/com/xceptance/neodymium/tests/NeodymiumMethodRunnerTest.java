@@ -6,6 +6,8 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
+import com.xceptance.neodymium.testclasses.method.ConstructorThrowsCheckedException;
+import com.xceptance.neodymium.testclasses.method.ConstructorThrowsError;
 import com.xceptance.neodymium.testclasses.method.FailingMethod;
 import com.xceptance.neodymium.testclasses.method.IgnoredClass;
 import com.xceptance.neodymium.testclasses.method.NoTestMethods;
@@ -61,6 +63,36 @@ public class NeodymiumMethodRunnerTest
         Assert.assertEquals(1, result.getFailureCount());
         Assert.assertEquals(1, result.getRunCount());
         Assert.assertEquals(0, result.getIgnoreCount());
+    }
+
+    @Test
+    public void testConstructorThrowsCheckedException()
+    {
+        // test that the test fails if the constructor throws an exception
+        Result result = JUnitCore.runClasses(ConstructorThrowsCheckedException.class);
+
+        Assert.assertFalse(result.wasSuccessful());
+        Assert.assertEquals(1, result.getFailureCount());
+        Assert.assertEquals(0, result.getRunCount());
+        Assert.assertEquals(0, result.getIgnoreCount());
+
+        Failure failure = result.getFailures().get(0);
+        Assert.assertEquals("java.lang.reflect.InvocationTargetException", failure.getMessage());
+    }
+
+    @Test
+    public void ConstructorThrowsError()
+    {
+        // test that the test fails if the constructor throws an error
+        Result result = JUnitCore.runClasses(ConstructorThrowsError.class);
+
+        Assert.assertFalse(result.wasSuccessful());
+        Assert.assertEquals(1, result.getFailureCount());
+        Assert.assertEquals(0, result.getRunCount());
+        Assert.assertEquals(0, result.getIgnoreCount());
+
+        Failure failure = result.getFailures().get(0);
+        Assert.assertEquals("java.lang.reflect.InvocationTargetException", failure.getMessage());
     }
 
 }
