@@ -58,6 +58,7 @@
                     <reuseForks>false</reuseForks>
                     <includes>
                         <include>**/TestJunitCategoriesSuite.java</include>
+                        <include>com/xceptance/neodymium/tests/**</include>
                     </includes>
                 </configuration>
                 <dependencies>

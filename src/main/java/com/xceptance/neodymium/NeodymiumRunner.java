@@ -157,6 +157,7 @@ public class NeodymiumRunner extends Runner implements Filterable
         else
         {
             LOGGER.debug("No test methods found");
+            throw new Exception("No runnable methods");
         }
 
         for (FrameworkMethod method : annotatedMethods)
