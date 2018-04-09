@@ -2,6 +2,7 @@ package com.xceptance.neodymium.multibrowser.configuration;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,9 +14,13 @@ import java.util.Set;
 import org.aeonbits.owner.ConfigFactory;
 import org.aeonbits.owner.Factory;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MultibrowserConfiguration
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MultibrowserConfiguration.class);
+
     private static final Map<String, MultibrowserConfiguration> CONFIGURATIONS = Collections.synchronizedMap(new LinkedHashMap<>());
 
     private static final String TEST_ENVIRONMENT_FILE = "./config/credentials.properties";
@@ -23,6 +28,8 @@ public class MultibrowserConfiguration
     private static final String BROWSER_PROFILE_PREFIX = "browserprofile.";
 
     private static final String TEST_ENVIRONMENT_PREFIX = BROWSER_PROFILE_PREFIX + "testEnvironment.";
+
+    private static final String DEFAULT_BROWSER_PROFILE_FILE = "./config/browser.properties";
 
     private DriverServerPath driverServerPath;
 
@@ -141,7 +148,11 @@ public class MultibrowserConfiguration
     public static MultibrowserConfiguration getInstance()
     {
         if (CONFIGURATIONS.size() == 0)
-            throw new RuntimeException("No multi browser configuration available. Call getInstance(String configFile) first to create default configuration");
+        {
+            LOGGER.debug(MessageFormat.format("No multi-browser configuration loaded. Load default configuration from ''{0}''",
+                                              DEFAULT_BROWSER_PROFILE_FILE));
+            getInstance(DEFAULT_BROWSER_PROFILE_FILE);
+        }
 
         return CONFIGURATIONS.entrySet().iterator().next().getValue();
     }
