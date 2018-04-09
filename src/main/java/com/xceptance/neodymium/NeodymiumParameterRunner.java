@@ -154,7 +154,7 @@ public class NeodymiumParameterRunner extends BlockJUnit4ClassRunnerWithParamete
         }
         catch (IllegalAccessException e)
         {
-            throw new RuntimeException("Could not set parameter due to it is not public");
+            throw new RuntimeException("Could not set parameter due to it is not public or it is final");
         }
     }
 }
