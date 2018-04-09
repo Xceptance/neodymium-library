@@ -25,6 +25,5 @@ public class GeneratorAutoTypeConversionFailsOnWrongInputData
     @Test
     public void test()
     {
-        System.out.println(aDouble);
     }
 }
