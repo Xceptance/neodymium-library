@@ -8,6 +8,9 @@ import org.junit.runner.notification.Failure;
 
 import com.xceptance.neodymium.testclasses.parameter.GeneratorAutoTypeConversion;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorAutoTypeConversionCanNotHandleArbitraryTypes;
+import com.xceptance.neodymium.testclasses.parameter.GeneratorCanNotSetFinalField;
+import com.xceptance.neodymium.testclasses.parameter.GeneratorCanNotSetPrivateSField;
+import com.xceptance.neodymium.testclasses.parameter.GeneratorCanSetStaticField;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorIterableReturnOne;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorObjectReturn;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorToFewElements;
@@ -149,4 +152,49 @@ public class NeodymiumParameterRunnerTest
         Assert.assertEquals("java.lang.RuntimeException: Could not set parameter of type class java.lang.String to field \"browser\" of type class com.xceptance.neodymium.multibrowser.configuration.BrowserConfiguration. Value: a string can not be parsed to an arbitrary type",
                             failure.getMessage());
     }
+
+    @Test
+    public void testGeneratorCanSetStaticField()
+    {
+        // test that a static field can be set
+        Result result = JUnitCore.runClasses(GeneratorCanSetStaticField.class);
+
+        Assert.assertTrue(result.wasSuccessful());
+        Assert.assertEquals(1, result.getRunCount());
+        Assert.assertEquals(0, result.getIgnoreCount());
+        Assert.assertEquals(0, result.getFailureCount());
+    }
+
+    @Test
+    public void testGeneratorCanNotSetFinalField()
+    {
+        // test that a final field can not be set
+        Result result = JUnitCore.runClasses(GeneratorCanNotSetFinalField.class);
+
+        Assert.assertFalse(result.wasSuccessful());
+        Assert.assertEquals(1, result.getRunCount());
+        Assert.assertEquals(0, result.getIgnoreCount());
+        Assert.assertEquals(1, result.getFailureCount());
+
+        Failure failure = result.getFailures().get(0);
+        Assert.assertEquals("java.lang.RuntimeException: Could not set parameter due to it is not public or it is final",
+                            failure.getMessage());
+    }
+
+    @Test
+    public void testGeneratorCanNotSetPrivateSField()
+    {
+        // test that a private field can not be set
+        Result result = JUnitCore.runClasses(GeneratorCanNotSetPrivateSField.class);
+
+        Assert.assertFalse(result.wasSuccessful());
+        Assert.assertEquals(1, result.getRunCount());
+        Assert.assertEquals(0, result.getIgnoreCount());
+        Assert.assertEquals(1, result.getFailureCount());
+
+        Failure failure = result.getFailures().get(0);
+        Assert.assertEquals("java.lang.RuntimeException: Could not set parameter due to it is not public or it is final",
+                            failure.getMessage());
+    }
+
 }
