@@ -1,4 +1,4 @@
-package com.xceptance.xrunner.testdata.apackage;
+package com.xceptance.neodymium.tests.testdata.apackage;
 
 import org.junit.Assert;
 import org.junit.Test;

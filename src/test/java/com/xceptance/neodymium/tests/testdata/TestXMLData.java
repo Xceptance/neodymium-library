@@ -1,4 +1,4 @@
-package com.xceptance.xrunner.testdata;
+package com.xceptance.neodymium.tests.testdata;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,7 +9,7 @@ import com.xceptance.neodymium.util.Context;
 import com.xceptance.neodymium.util.DataUtils;
 
 @RunWith(NeodymiumRunner.class)
-public class TestCSVData
+public class TestXMLData
 {
     @Test
     public void testAmountOfAvailableData()
@@ -18,7 +18,7 @@ public class TestCSVData
     }
 
     @Test
-    public void testCSV()
+    public void testXML()
     {
         Assert.assertEquals("The field1 should be available.", "name", DataUtils.asString("field1"));
         Assert.assertEquals("The field2 should be available.", "1234", DataUtils.asString("field2"));
