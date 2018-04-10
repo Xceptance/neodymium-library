@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.testclasses.data.pkg.csv;
+package com.xceptance.neodymium.testclasses.data.pkg.xml;
 
 import java.util.Map;
 
@@ -10,13 +10,14 @@ import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.util.Context;
 
 @RunWith(NeodymiumRunner.class)
-public class CanReadPackageCSV
+public class CanReadPackageDataXML
 {
     @Test
     public void test()
     {
         Map<String, String> data = Context.get().data;
-        Assert.assertEquals("CSV Value1", data.get("pkgParam1"));
-        Assert.assertEquals("CSV Value2", data.get("pkgParam2"));
+        Assert.assertEquals(2, data.size());
+        Assert.assertEquals("XML Value1", data.get("pkgParam1"));
+        Assert.assertEquals("XML Value2", data.get("pkgParam2"));
     }
 }
