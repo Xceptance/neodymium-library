@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<datafile>
-    <dataset>
-        <data key="field1">name</data>
-        <data key="field2">1234</data>
-        <data key="field3">12.3</data>
-        <data key="field4">ßäüö</data>
-    </dataset>
-</datafile>
