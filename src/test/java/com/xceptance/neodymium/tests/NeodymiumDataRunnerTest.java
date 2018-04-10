@@ -5,6 +5,9 @@ import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
+import com.xceptance.neodymium.testclasses.data.inheritance.child.PackageTestDataInheritance;
+import com.xceptance.neodymium.testclasses.data.inheritance.child.grandchild.GrandChildPackageTestDataInheritance;
+import com.xceptance.neodymium.testclasses.data.inheritance.child.grandchild.set.DataSetOverridesPackageData;
 import com.xceptance.neodymium.testclasses.data.pkg.csv.CanReadPackageDataCSV;
 import com.xceptance.neodymium.testclasses.data.pkg.json.CanReadPackageDataJson;
 import com.xceptance.neodymium.testclasses.data.pkg.properties.CanReadPackageDataProperties;
@@ -80,6 +83,27 @@ public class NeodymiumDataRunnerTest extends NeodymiumTest
     public void testCanReadDataSetXML()
     {
         Result result = JUnitCore.runClasses(CanReadDataSetXML.class);
+        checkPass(result, 1, 0, 0);
+    }
+
+    @Test
+    public void testPackageTestDataInheritance()
+    {
+        Result result = JUnitCore.runClasses(PackageTestDataInheritance.class);
+        checkPass(result, 1, 0, 0);
+    }
+
+    @Test
+    public void testGrandChildPackageTestDataInheritance()
+    {
+        Result result = JUnitCore.runClasses(GrandChildPackageTestDataInheritance.class);
+        checkPass(result, 1, 0, 0);
+    }
+
+    @Test
+    public void testDataSetOverridesPackageData()
+    {
+        Result result = JUnitCore.runClasses(DataSetOverridesPackageData.class);
         checkPass(result, 1, 0, 0);
     }
 }
