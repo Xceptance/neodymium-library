@@ -1,7 +1,13 @@
 package com.xceptance.neodymium.tests;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.junit.Assert;
+import org.junit.runner.Description;
 import org.junit.runner.Result;
+
+import com.xceptance.neodymium.NeodymiumRunner;
 
 public abstract class NeodymiumTest
 {
@@ -29,5 +35,25 @@ public abstract class NeodymiumTest
                           String expectedFailureMessage)
     {
         check(result, false, expectedRunCount, expectedIgnoreCount, expectedFailCount, expectedFailureMessage);
+    }
+
+    public void checkDescription(Description testDescription, String[] expectedTestDescription)
+    {
+        ArrayList<Description> testChildren = testDescription.getChildren();
+        String[] actualDescription = new String[testChildren.size()];
+
+        for (int i = 0; i < testChildren.size(); i++)
+        {
+            actualDescription[i] = testChildren.get(i).getMethodName();
+        }
+        Arrays.sort(actualDescription);
+        Arrays.sort(expectedTestDescription);
+
+        Assert.assertArrayEquals(expectedTestDescription, actualDescription);
+    }
+
+    public void checkDescription(Class<?> clazz, String[] expectedTestDescription) throws Throwable
+    {
+        checkDescription(new NeodymiumRunner(clazz, null).getDescription(), expectedTestDescription);
     }
 }
