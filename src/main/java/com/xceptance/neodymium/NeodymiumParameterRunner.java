@@ -103,7 +103,7 @@ public class NeodymiumParameterRunner extends BlockJUnit4ClassRunnerWithParamete
         Class<?> valueType;
         if (value == null)
         {
-            valueType = Null.class;
+            valueType = Void.class;
         }
         else
         {
