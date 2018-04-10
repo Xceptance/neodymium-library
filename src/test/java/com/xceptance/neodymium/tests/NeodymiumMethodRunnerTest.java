@@ -1,10 +1,8 @@
 package com.xceptance.neodymium.tests;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
-import org.junit.runner.notification.Failure;
 
 import com.xceptance.neodymium.testclasses.method.ConstructorThrowsCheckedException;
 import com.xceptance.neodymium.testclasses.method.ConstructorThrowsError;
@@ -13,21 +11,14 @@ import com.xceptance.neodymium.testclasses.method.IgnoredClass;
 import com.xceptance.neodymium.testclasses.method.NoTestMethods;
 import com.xceptance.neodymium.testclasses.method.TestAndIgnoreAnnotation;
 
-public class NeodymiumMethodRunnerTest
+public class NeodymiumMethodRunnerTest extends NeodymiumTest
 {
     @Test
     public void testNoTestMethod()
     {
         // test there is nothing when no test method was found
         Result result = JUnitCore.runClasses(NoTestMethods.class);
-
-        Assert.assertFalse(result.wasSuccessful());
-        Assert.assertEquals(1, result.getRunCount());
-        Assert.assertEquals(1, result.getFailureCount());
-        Assert.assertEquals(0, result.getIgnoreCount());
-
-        Failure failure = result.getFailures().get(0);
-        Assert.assertEquals("No runnable methods", failure.getMessage());
+        checkFail(result, 1, 0, 1, "No runnable methods");
     }
 
     @Test
@@ -35,11 +26,7 @@ public class NeodymiumMethodRunnerTest
     {
         // test that NeodymiumRunner handles @Test and @Ignore correctly
         Result result = JUnitCore.runClasses(TestAndIgnoreAnnotation.class);
-
-        Assert.assertTrue(result.wasSuccessful());
-        Assert.assertEquals(1, result.getRunCount());
-        Assert.assertEquals(0, result.getFailureCount());
-        Assert.assertEquals(1, result.getIgnoreCount());
+        checkPass(result, 1, 1, 0);
     }
 
     @Test
@@ -47,11 +34,7 @@ public class NeodymiumMethodRunnerTest
     {
         // no method should be invoked in an ignored class
         Result result = JUnitCore.runClasses(IgnoredClass.class);
-
-        Assert.assertTrue(result.wasSuccessful());
-        Assert.assertEquals(0, result.getRunCount());
-        Assert.assertEquals(0, result.getFailureCount());
-        Assert.assertEquals(1, result.getIgnoreCount());
+        checkPass(result, 0, 1, 0);
     }
 
     @Test
@@ -59,11 +42,7 @@ public class NeodymiumMethodRunnerTest
     {
         // test that a failing method fails the test
         Result result = JUnitCore.runClasses(FailingMethod.class);
-
-        Assert.assertFalse(result.wasSuccessful());
-        Assert.assertEquals(1, result.getFailureCount());
-        Assert.assertEquals(1, result.getRunCount());
-        Assert.assertEquals(0, result.getIgnoreCount());
+        checkFail(result, 1, 0, 1, null);
     }
 
     @Test
@@ -71,29 +50,15 @@ public class NeodymiumMethodRunnerTest
     {
         // test that the test fails if the constructor throws an exception
         Result result = JUnitCore.runClasses(ConstructorThrowsCheckedException.class);
-
-        Assert.assertFalse(result.wasSuccessful());
-        Assert.assertEquals(1, result.getFailureCount());
-        Assert.assertEquals(0, result.getRunCount());
-        Assert.assertEquals(0, result.getIgnoreCount());
-
-        Failure failure = result.getFailures().get(0);
-        Assert.assertEquals("java.lang.reflect.InvocationTargetException", failure.getMessage());
+        checkFail(result, 0, 0, 1, "java.lang.reflect.InvocationTargetException");
     }
 
     @Test
-    public void ConstructorThrowsError()
+    public void testConstructorThrowsError()
     {
         // test that the test fails if the constructor throws an error
         Result result = JUnitCore.runClasses(ConstructorThrowsError.class);
-
-        Assert.assertFalse(result.wasSuccessful());
-        Assert.assertEquals(1, result.getFailureCount());
-        Assert.assertEquals(0, result.getRunCount());
-        Assert.assertEquals(0, result.getIgnoreCount());
-
-        Failure failure = result.getFailures().get(0);
-        Assert.assertEquals("java.lang.reflect.InvocationTargetException", failure.getMessage());
+        checkFail(result, 0, 0, 1, "java.lang.reflect.InvocationTargetException");
     }
 
 }
