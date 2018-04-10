@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.multibrowser;
+package com.xceptance.neodymium;
 
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
@@ -22,6 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codeborne.selenide.WebDriverRunner;
+import com.xceptance.neodymium.multibrowser.Browser;
+import com.xceptance.neodymium.multibrowser.BrowserRunnerHelper;
+import com.xceptance.neodymium.multibrowser.WebDriverCache;
 import com.xceptance.neodymium.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.multibrowser.configuration.DriverServerPath;
 import com.xceptance.neodymium.multibrowser.configuration.MultibrowserConfiguration;
@@ -35,9 +38,9 @@ import com.xceptance.neodymium.util.Context;
  * @author m.kaufmann
  * @see Browser
  */
-public class BrowserRunner extends ParentRunner<Runner>
+public class NeodmiumBrowserRunner extends ParentRunner<Runner>
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BrowserRunner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NeodmiumBrowserRunner.class);
 
     /**
      * The JUnit children of this runner.
@@ -106,13 +109,13 @@ public class BrowserRunner extends ParentRunner<Runner>
         setUpTest();
     }
 
-    private BrowserRunner(Class<?> testCaseClass, BrowserConfiguration browserConfig) throws InitializationError
+    private NeodmiumBrowserRunner(Class<?> testCaseClass, BrowserConfiguration browserConfig) throws InitializationError
     {
         super(testCaseClass);
         this.browserConfig = browserConfig;
     }
 
-    public BrowserRunner(final Class<?> testCaseClass) throws Throwable
+    public NeodmiumBrowserRunner(final Class<?> testCaseClass) throws Throwable
     {
         super(testCaseClass);
 
@@ -192,7 +195,7 @@ public class BrowserRunner extends ParentRunner<Runner>
                     }
 
                     // create the JUnit children
-                    browser.add(new BrowserRunner(testCaseClass, foundBrowserConfiguration));
+                    browser.add(new NeodmiumBrowserRunner(testCaseClass, foundBrowserConfiguration));
                 }
             }
         }

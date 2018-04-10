@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 
 import com.xceptance.neodymium.NeodymiumDataRunner.NeodymiumDataRunnerRunner;
 import com.xceptance.neodymium.multibrowser.Browser;
-import com.xceptance.neodymium.multibrowser.BrowserRunner;
 
 /**
  * This class executes {@link JUnit4} test classes (aka JUnit Runner) and adds several features to test execution e.g.
@@ -108,7 +107,7 @@ public class NeodymiumRunner extends Runner implements Filterable
         if (browser != null)
         {
             LOGGER.debug("Found browser annotation");
-            runners.add(new BrowserRunner(testKlass));
+            runners.add(new NeodmiumBrowserRunner(testKlass));
         }
 
         // scan for JUnit Parameters
@@ -441,7 +440,7 @@ public class NeodymiumRunner extends Runner implements Filterable
                     throw new RuntimeException(e);
                 }
 
-                BrowserRunner browserRunner = null;
+                NeodmiumBrowserRunner browserRunner = null;
                 notifier.fireTestStarted(description);
                 Failure testFailure = null;
 
@@ -449,10 +448,10 @@ public class NeodymiumRunner extends Runner implements Filterable
                 {
                     Runner runner = runners.get(r);
 
-                    if (runner instanceof BrowserRunner)
+                    if (runner instanceof NeodmiumBrowserRunner)
                     {
                         // remember browser runner to close the web driver after test
-                        browserRunner = (BrowserRunner) runner;
+                        browserRunner = (NeodmiumBrowserRunner) runner;
                     }
 
                     methodExecutionContext.setRunBeforeClass(firstIteration);

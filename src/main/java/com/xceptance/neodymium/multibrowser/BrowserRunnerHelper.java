@@ -133,7 +133,7 @@ public final class BrowserRunnerHelper
      * @param driver
      *            {@link WebDriver} instance of the configured {@link BrowserConfiguration}
      */
-    protected static void setBrowserWindowSize(final BrowserConfiguration config, final WebDriver driver)
+    public static void setBrowserWindowSize(final BrowserConfiguration config, final WebDriver driver)
     {
         WebDriverProperties webDriverProperties = MultibrowserConfiguration.getInstance().getWebDriverProperties();
 
@@ -203,9 +203,10 @@ public final class BrowserRunnerHelper
      *            {@link BrowserConfiguration} that describes the descired browser instance
      * @return {@link WebDriver} the instance of the browser described in {@link BrowserConfiguration}
      * @throws MalformedURLException
-     *             if <a href="https://github.com/Xceptance/neodymium-library/wiki/Selenium-grid">Selenium grid</a> is used
+     *             if <a href="https://github.com/Xceptance/neodymium-library/wiki/Selenium-grid">Selenium grid</a> is
+     *             used
      */
-    protected static WebDriver createWebdriver(final BrowserConfiguration config) throws MalformedURLException
+    public static WebDriver createWebdriver(final BrowserConfiguration config) throws MalformedURLException
     {
         final DesiredCapabilities capabilities = config.getCapabilities();
 
@@ -240,10 +241,14 @@ public final class BrowserRunnerHelper
                 final ChromeOptions options = new ChromeOptions();
 
                 // This is a workaround for a changed Selenium behavior
-                // Since device emulation is not part of the "standard" it now has to be considered as experimental option.
-                // The capability class already sorts the different configurations in different maps (one for capabilities and one for
-                // experimental capabilities). The experimental options are held internal within a map of the capability map and
-                // are accessible with key "goog:chromeOptions" (constant ChromeOptions.CAPABILITY). So all we have to do is to copy the
+                // Since device emulation is not part of the "standard" it now has to be considered as experimental
+                // option.
+                // The capability class already sorts the different configurations in different maps (one for
+                // capabilities and one for
+                // experimental capabilities). The experimental options are held internal within a map of the capability
+                // map and
+                // are accessible with key "goog:chromeOptions" (constant ChromeOptions.CAPABILITY). So all we have to
+                // do is to copy the
                 // keys and values of that special map and set it as experimental option inside ChromeOptions.
                 Map<String, String> experimentalOptions = null;
                 try
