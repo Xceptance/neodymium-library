@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.xceptance</groupId>
     <artifactId>neodymium-library</artifactId>
@@ -39,6 +39,16 @@
     </distributionManagement>
 
     <build>
+        <resources>
+            <resource>
+                <!-- copy all none java files from src/test/java to target/test-classes -->
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+                <directory>${project.build.testSourceDirectory}</directory>
+                <targetPath>${project.build.testOutputDirectory}</targetPath>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
