@@ -9,12 +9,14 @@ import com.xceptance.neodymium.testclasses.multiplication.dataset.OneDataSetOneM
 import com.xceptance.neodymium.testclasses.multiplication.dataset.OneDataSetTwoMethods;
 import com.xceptance.neodymium.testclasses.multiplication.dataset.TwoDataSetsOneMethod;
 import com.xceptance.neodymium.testclasses.multiplication.dataset.TwoDataSetsTwoMethods;
+import com.xceptance.neodymium.testclasses.multiplication.pkgdata.PackageDataDoNotAffectMethodMultiplication;
 
 public class MultiplicationTest extends NeodymiumTest
 {
     @Test
     public void testTwoMethods() throws Throwable
     {
+        // two test methods, no data
         String[] expected = new String[]
             {
                 "first", "second"
@@ -25,6 +27,7 @@ public class MultiplicationTest extends NeodymiumTest
     @Test
     public void testTwoMethodsAndOneIgnored() throws Throwable
     {
+        // two test methods and one ignored, no data
         String[] expected = new String[]
             {
                 "first", "second"
@@ -35,6 +38,7 @@ public class MultiplicationTest extends NeodymiumTest
     @Test
     public void testTwoMethodsOneIgnored() throws Throwable
     {
+        // two methods one of them is ignored, no data
         String[] expected = new String[]
             {
                 "first", "second"
@@ -43,8 +47,21 @@ public class MultiplicationTest extends NeodymiumTest
     }
 
     @Test
+    public void testPackageDataDoNotAffectMethodMultiplication() throws Throwable
+    {
+        // two methods, package test data do not affect multiplication
+        String[] expected = new String[]
+            {
+                "first", "second"
+            };
+        checkDescription(PackageDataDoNotAffectMethodMultiplication.class, expected);
+
+    }
+
+    @Test
     public void testOneDataSetOneMethod() throws Throwable
     {
+        // one test method, one data set
         String[] expected = new String[]
             {
                 "first :: Data set 1 / 1"
@@ -55,6 +72,7 @@ public class MultiplicationTest extends NeodymiumTest
     @Test
     public void testOneDataSetTwoMethods() throws Throwable
     {
+        // two test methods, one data set
         String[] expected = new String[]
             {
                 "first :: Data set 1 / 1", //
@@ -66,6 +84,7 @@ public class MultiplicationTest extends NeodymiumTest
     @Test
     public void testTwoDataSetsOneMethod() throws Throwable
     {
+        // one test method but two data sets
         String[] expected = new String[]
             {
                 "first :: Data set 1 / 2", //
@@ -78,6 +97,7 @@ public class MultiplicationTest extends NeodymiumTest
     @Test
     public void testTwoDataSetsTwoMethods() throws Throwable
     {
+        // two methods, two data sets
         String[] expected = new String[]
             {
                 "first :: Data set 1 / 2", //
@@ -86,7 +106,6 @@ public class MultiplicationTest extends NeodymiumTest
                 "second :: Data set 2 / 2", //
             };
         checkDescription(TwoDataSetsTwoMethods.class, expected);
-
     }
 
 }

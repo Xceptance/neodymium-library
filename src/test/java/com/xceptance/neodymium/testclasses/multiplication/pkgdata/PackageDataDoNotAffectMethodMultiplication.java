@@ -18,10 +18,4 @@ public class PackageDataDoNotAffectMethodMultiplication
     {
 
     }
-
-    @Test
-    public void third()
-    {
-
-    }
 }
