@@ -7,8 +7,11 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class BeforeAndAfter
 {
     public static List<String> TRACE = new LinkedList<>();
@@ -41,5 +44,11 @@ public class BeforeAndAfter
     public void first()
     {
         TRACE.add("first");
+    }
+
+    @Test
+    public void second()
+    {
+        TRACE.add("second");
     }
 }

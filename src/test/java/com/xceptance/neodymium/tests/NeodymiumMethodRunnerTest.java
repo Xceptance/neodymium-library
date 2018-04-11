@@ -68,12 +68,15 @@ public class NeodymiumMethodRunnerTest extends NeodymiumTest
     {
         // test @Before, @After, @BeforeClass, @AfterClass
         Result result = JUnitCore.runClasses(BeforeAndAfter.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 2, 0, 0);
         String[] expected = new String[]
             {
                 "beforeClass", //
                 "beforeMethod", //
                 "first", //
+                "afterMethod", //
+                "beforeMethod", //
+                "second", //
                 "afterMethod", //
                 "afterClass"
             };
