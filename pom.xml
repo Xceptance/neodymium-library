@@ -12,7 +12,7 @@
 		<maven.compiler.target.version>1.8</maven.compiler.target.version>
 		<surefire.version>2.21.0</surefire.version>
 		<allure.version>2.6.0</allure.version>
-		<cucumber.version>2.3.1</cucumber.version>
+		<cucumber.version>2.4.0</cucumber.version>
 		<log4j.version>2.9.1</log4j.version>
 	</properties>
 
@@ -48,7 +48,6 @@
 				<configuration>
 					<source>${maven.compiler.source.version}</source>
 					<target>${maven.compiler.target.version}</target>
-					<compilerArgument>-Xlint:deprecation</compilerArgument>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -111,8 +110,6 @@
 	</reporting>
 
 	<dependencies>
-
-
 		<dependency>
 			<groupId>org.aeonbits.owner</groupId>
 			<artifactId>owner</artifactId>
@@ -133,6 +130,11 @@
 			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-java8</artifactId>
 			<version>${cucumber.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.0</version>
 		</dependency>
 
 		<dependency>
@@ -194,12 +196,6 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>${log4j.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-			<version>2.3.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
