@@ -1,7 +1,6 @@
 package com.xceptance.neodymium.tests;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -16,7 +15,6 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import com.google.common.base.Joiner;
 import com.xceptance.neodymium.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.testclasses.browser.EmptyBrowser;
@@ -69,28 +67,6 @@ public class NeodymiumBrowserRunnerTest extends NeodymiumTest
         Assert.assertEquals(null, testProfile.getTestEnvironment());
         DesiredCapabilities testCapabilities = testProfile.getCapabilities();
         Assert.assertEquals("chrome", testCapabilities.getBrowserName());
-    }
-
-    /**
-     * Helper method to write a {@link Map} to an file
-     * 
-     * @param map
-     * @param file
-     */
-    public void writeMapToPropertiesFile(Map<String, String> map, File file)
-    {
-        try
-        {
-            String join = Joiner.on("\r\n").withKeyValueSeparator("=").join(map);
-
-            FileOutputStream outputStream = new FileOutputStream(file);
-            outputStream.write(join.getBytes());
-            outputStream.close();
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException(e);
-        }
     }
 
     @AfterClass
