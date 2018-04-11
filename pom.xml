@@ -95,6 +95,17 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<additionalOptions>-html5</additionalOptions>
+				</configuration>
+				<!-- remove pin of commons-lang3 when upgraded to 3.1.0 -->
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>commons-lang3</artifactId>
+						<version>3.7</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
