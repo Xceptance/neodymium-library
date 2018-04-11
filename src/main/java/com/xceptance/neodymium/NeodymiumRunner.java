@@ -107,7 +107,7 @@ public class NeodymiumRunner extends Runner implements Filterable
         if (browser != null)
         {
             LOGGER.debug("Found browser annotation");
-            runners.add(new NeodmiumBrowserRunner(testKlass));
+            runners.add(new NeodymiumBrowserRunner(testKlass));
         }
 
         // scan for JUnit Parameters
@@ -440,7 +440,7 @@ public class NeodymiumRunner extends Runner implements Filterable
                     throw new RuntimeException(e);
                 }
 
-                NeodmiumBrowserRunner browserRunner = null;
+                NeodymiumBrowserRunner browserRunner = null;
                 notifier.fireTestStarted(description);
                 Failure testFailure = null;
 
@@ -448,10 +448,10 @@ public class NeodymiumRunner extends Runner implements Filterable
                 {
                     Runner runner = runners.get(r);
 
-                    if (runner instanceof NeodmiumBrowserRunner)
+                    if (runner instanceof NeodymiumBrowserRunner)
                     {
                         // remember browser runner to close the web driver after test
-                        browserRunner = (NeodmiumBrowserRunner) runner;
+                        browserRunner = (NeodymiumBrowserRunner) runner;
                     }
 
                     methodExecutionContext.setRunBeforeClass(firstIteration);

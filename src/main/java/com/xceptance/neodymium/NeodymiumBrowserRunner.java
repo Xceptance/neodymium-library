@@ -38,9 +38,9 @@ import com.xceptance.neodymium.util.Context;
  * @author m.kaufmann
  * @see Browser
  */
-public class NeodmiumBrowserRunner extends ParentRunner<Runner>
+public class NeodymiumBrowserRunner extends ParentRunner<Runner>
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(NeodmiumBrowserRunner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumBrowserRunner.class);
 
     /**
      * The JUnit children of this runner.
@@ -109,13 +109,13 @@ public class NeodmiumBrowserRunner extends ParentRunner<Runner>
         setUpTest();
     }
 
-    private NeodmiumBrowserRunner(Class<?> testCaseClass, BrowserConfiguration browserConfig) throws InitializationError
+    private NeodymiumBrowserRunner(Class<?> testCaseClass, BrowserConfiguration browserConfig) throws InitializationError
     {
         super(testCaseClass);
         this.browserConfig = browserConfig;
     }
 
-    public NeodmiumBrowserRunner(final Class<?> testCaseClass) throws Throwable
+    public NeodymiumBrowserRunner(final Class<?> testCaseClass) throws Throwable
     {
         super(testCaseClass);
 
@@ -195,7 +195,7 @@ public class NeodmiumBrowserRunner extends ParentRunner<Runner>
                     }
 
                     // create the JUnit children
-                    browser.add(new NeodmiumBrowserRunner(testCaseClass, foundBrowserConfiguration));
+                    browser.add(new NeodymiumBrowserRunner(testCaseClass, foundBrowserConfiguration));
                 }
             }
         }
