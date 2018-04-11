@@ -13,6 +13,14 @@ import com.xceptance.neodymium.testclasses.multiplication.parameter.OneParameter
 import com.xceptance.neodymium.testclasses.multiplication.parameter.OneParameterSetTwoMethods;
 import com.xceptance.neodymium.testclasses.multiplication.parameter.TwoParameterSetsOneMethod;
 import com.xceptance.neodymium.testclasses.multiplication.parameter.TwoParameterSetsTwoMethods;
+import com.xceptance.neodymium.testclasses.multiplication.parameteranddataset.OneDataSetOneParameterSetOneMethod;
+import com.xceptance.neodymium.testclasses.multiplication.parameteranddataset.OneDataSetOneParameterSetTwoMethods;
+import com.xceptance.neodymium.testclasses.multiplication.parameteranddataset.OneDataSetTwoParameterSetsOneMethod;
+import com.xceptance.neodymium.testclasses.multiplication.parameteranddataset.OneDataSetTwoParameterSetsTwoMethods;
+import com.xceptance.neodymium.testclasses.multiplication.parameteranddataset.TwoDataSetsOneParameterSetOneMethod;
+import com.xceptance.neodymium.testclasses.multiplication.parameteranddataset.TwoDataSetsOneParameterSetTwoMethods;
+import com.xceptance.neodymium.testclasses.multiplication.parameteranddataset.TwoDataSetsTwoParameterSetsOneMethod;
+import com.xceptance.neodymium.testclasses.multiplication.parameteranddataset.TwoDataSetsTwoParameterSetsTwoMethods;
 import com.xceptance.neodymium.testclasses.multiplication.pkgdata.PackageDataDoNotAffectMethodMultiplication;
 
 public class MultiplicationTest extends NeodymiumTest
@@ -171,6 +179,109 @@ public class MultiplicationTest extends NeodymiumTest
                 "second :: [1]"
             };
         checkDescription(TwoParameterSetsTwoMethods.class, expected);
+    }
+
+    ////////////////////////////////////////
+    // Methods and parameter and data sets//
+    ////////////////////////////////////////
+
+    @Test
+    public void testOneDataSetOneParameterSetOneMethod() throws Throwable
+    {
+        String[] expected = new String[]
+            {
+                "first :: Data set 1 / 1 :: [0]" //
+            };
+        checkDescription(OneDataSetOneParameterSetOneMethod.class, expected);
+    }
+
+    @Test
+    public void testOneDataSetOneParameterSetTwoMethods() throws Throwable
+    {
+        String[] expected = new String[]
+            {
+                "first :: Data set 1 / 1 :: [0]", //
+                "second :: Data set 1 / 1 :: [0]"
+            };
+        checkDescription(OneDataSetOneParameterSetTwoMethods.class, expected);
+    }
+
+    @Test
+    public void testOneDataSetTwoParameterSetsOneMethod() throws Throwable
+    {
+        String[] expected = new String[]
+            {
+                "first :: Data set 1 / 1 :: [0]", //
+                "first :: Data set 1 / 1 :: [1]"
+            };
+        checkDescription(OneDataSetTwoParameterSetsOneMethod.class, expected);
+    }
+
+    @Test
+    public void testOneDataSetTwoParameterSetsTwoMethods() throws Throwable
+    {
+        String[] expected = new String[]
+            {
+                "first :: Data set 1 / 1 :: [0]", //
+                "first :: Data set 1 / 1 :: [1]", //
+                "second :: Data set 1 / 1 :: [0]", //
+                "second :: Data set 1 / 1 :: [1]"
+            };
+        checkDescription(OneDataSetTwoParameterSetsTwoMethods.class, expected);
+    }
+
+    @Test
+    public void testTwoDataSetsOneParameterSetOneMethod() throws Throwable
+    {
+        String[] expected = new String[]
+            {
+                "first :: Data set 1 / 2 :: [0]", //
+                "first :: Data set 2 / 2 :: [0]"
+            };
+        checkDescription(TwoDataSetsOneParameterSetOneMethod.class, expected);
+    }
+
+    @Test
+    public void testTwoDataSetsOneParameterSetTwoMethods() throws Throwable
+    {
+        String[] expected = new String[]
+            {
+                "first :: Data set 1 / 2 :: [0]", //
+                "first :: Data set 2 / 2 :: [0]", //
+                "second :: Data set 1 / 2 :: [0]", //
+                "second :: Data set 2 / 2 :: [0]"
+            };
+        checkDescription(TwoDataSetsOneParameterSetTwoMethods.class, expected);
+    }
+
+    @Test
+    public void testTwoDataSetsTwoParameterSetsOneMethod() throws Throwable
+    {
+        String[] expected = new String[]
+            {
+                "first :: Data set 1 / 2 :: [0]", //
+                "first :: Data set 1 / 2 :: [1]", //
+                "first :: Data set 2 / 2 :: [0]", //
+                "first :: Data set 2 / 2 :: [1]"
+            };
+        checkDescription(TwoDataSetsTwoParameterSetsOneMethod.class, expected);
+    }
+
+    @Test
+    public void testTwoDataSetsTwoParameterSetsTwoMethods() throws Throwable
+    {
+        String[] expected = new String[]
+            {
+                "first :: Data set 1 / 2 :: [0]", //
+                "first :: Data set 1 / 2 :: [1]", //
+                "first :: Data set 2 / 2 :: [0]", //
+                "first :: Data set 2 / 2 :: [1]", //
+                "second :: Data set 1 / 2 :: [0]", //
+                "second :: Data set 1 / 2 :: [1]", //
+                "second :: Data set 2 / 2 :: [0]", //
+                "second :: Data set 2 / 2 :: [1]"
+            };
+        checkDescription(TwoDataSetsTwoParameterSetsTwoMethods.class, expected);
     }
 
 }
