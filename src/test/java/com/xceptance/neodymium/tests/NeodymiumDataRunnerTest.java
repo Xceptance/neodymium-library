@@ -1,6 +1,7 @@
 package com.xceptance.neodymium.tests;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
@@ -78,7 +79,12 @@ public class NeodymiumDataRunnerTest extends NeodymiumTest
         checkPass(result, 1, 0, 0);
     }
 
+    /**
+     * This test is ignored because property files are a fairly bad data set storage. We first need to decide what a
+     * propper <key> layout would be. Maybe property files will be not supported for data sets but yaml instead.
+     */
     @Test
+    @Ignore
     public void testCanReadDataSetProperties()
     {
         // test data set properties is read
