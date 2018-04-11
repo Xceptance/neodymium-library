@@ -12,21 +12,22 @@ import org.junit.runners.Parameterized.Parameters;
 import com.xceptance.neodymium.NeodymiumRunner;
 
 @RunWith(NeodymiumRunner.class)
-public class GeneratorToFewElements
+public class GeneratorTooMuchElements
 {
     @Parameters
-    public static Iterable<Integer> createData()
+    public static List<Integer[]> createData()
     {
-        List<Integer> list = new ArrayList<>(1);
-        list.add(new Integer(5));
-        return list;
+        List<Integer[]> iterations = new ArrayList<>(1);
+        iterations.add(new Integer[]
+            {
+                5, 6
+            });
+
+        return iterations;
     }
 
     @Parameter
     public Integer testInt;
-
-    @Parameter(1)
-    public Integer testInt2;
 
     @Test
     public void test()

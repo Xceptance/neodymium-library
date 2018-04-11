@@ -12,8 +12,8 @@ import com.xceptance.neodymium.testclasses.parameter.GeneratorCanNotSetPrivateFi
 import com.xceptance.neodymium.testclasses.parameter.GeneratorCanSetStaticField;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorIterableReturnOne;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorObjectReturn;
-import com.xceptance.neodymium.testclasses.parameter.GeneratorToFewElements;
-import com.xceptance.neodymium.testclasses.parameter.GeneratorToMuchElements;
+import com.xceptance.neodymium.testclasses.parameter.GeneratorTooFewElements;
+import com.xceptance.neodymium.testclasses.parameter.GeneratorTooMuchElements;
 import com.xceptance.neodymium.testclasses.parameter.GeneratorVoidReturn;
 import com.xceptance.neodymium.testclasses.parameter.NonStaticGeneratorVoidReturn;
 import com.xceptance.neodymium.testclasses.parameter.ParameterFieldButNoGenerator;
@@ -61,18 +61,18 @@ public class NeodymiumParameterRunnerTest extends NeodymiumTest
     }
 
     @Test
-    public void testGeneratorToFewElements()
+    public void testGeneratorTooFewElements()
     {
         // one test iteration with two parameter fields, but just one data set
-        Result result = JUnitCore.runClasses(GeneratorToFewElements.class);
+        Result result = JUnitCore.runClasses(GeneratorTooFewElements.class);
         checkFail(result, 1, 0, 1, "java.lang.Exception: Number of parameters (1) and fields (2) annotated with @Parameter must match!");
     }
 
     @Test
-    public void testGeneratorToMuchElements()
+    public void testGeneratorTooMuchElements()
     {
         // one test iteration with one data field, but two data sets
-        Result result = JUnitCore.runClasses(GeneratorToMuchElements.class);
+        Result result = JUnitCore.runClasses(GeneratorTooMuchElements.class);
         checkFail(result, 1, 0, 1, "java.lang.Exception: Number of parameters (2) and fields (1) annotated with @Parameter must match!");
     }
 
