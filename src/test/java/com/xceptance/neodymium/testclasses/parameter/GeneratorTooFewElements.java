@@ -18,7 +18,7 @@ public class GeneratorTooFewElements
     public static Iterable<Integer> createData()
     {
         List<Integer> list = new ArrayList<>(1);
-        list.add(new Integer(5));
+        list.add(Integer.valueOf(5));
         return list;
     }
 

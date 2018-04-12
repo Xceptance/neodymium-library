@@ -28,6 +28,7 @@ import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.CommandInfo;
@@ -115,7 +116,7 @@ public final class BrowserRunnerHelper
             clientBuilder.setProxy(new HttpHost(proxyConfig.getHost(), Integer.valueOf(proxyConfig.getPort())));
         final CloseableHttpClient httpClient = clientBuilder.build();
 
-        final Map<String, CommandInfo> additionalCommands = new HashMap<String, CommandInfo>();   // just a dummy
+        final Map<String, CommandInfo> additionalCommands = new HashMap<String, CommandInfo>(); // just a dummy
 
         // this command executor will do the credential magic for us. both proxy and target site credentials
         return new HttpCommandExecutor(additionalCommands, gridUrl, new ProxyHttpClient(httpClient));
@@ -288,7 +289,9 @@ public final class BrowserRunnerHelper
             }
             else if (internetExplorerBrowsers.contains(browserName))
             {
-                return new InternetExplorerDriver(capabilities);
+                InternetExplorerOptions options = new InternetExplorerOptions();
+                options.merge(capabilities);
+                return new InternetExplorerDriver(options);
             }
         }
         else
