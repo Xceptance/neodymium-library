@@ -1,6 +1,7 @@
 package com.xceptance.neodymium.tests;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
@@ -24,6 +26,28 @@ public class NeodymiumBrowserRunnerTest extends NeodymiumTest
 {
     // holds files that will be deleted in @After method
     static List<File> tempFiles = new LinkedList<>();
+
+    private static MultibrowserConfiguration browserConfig;
+
+    @BeforeClass
+    public static void beforeClass() throws IOException
+    {
+        Map<String, String> properties = new HashMap<>();
+
+        properties.put("browserprofile.chrome.name", "Google Chrome");
+        properties.put("browserprofile.chrome.browser", "chrome");
+        properties.put("browserprofile.chrome.testEnvironment", "local");
+
+        properties.put("browserprofile.firefox.name", "Mozilla Firefox");
+        properties.put("browserprofile.firefox.browser", "firefox");
+
+        File tempConfigFile = File.createTempFile("browser", "", new File("./config/"));
+        tempFiles.add(tempConfigFile);
+        writeMapToPropertiesFile(properties, tempConfigFile);
+
+        browserConfig = MultibrowserConfiguration.getInstance(tempConfigFile.getPath());
+
+    }
 
     @Test
     public void testEmptyBrowserTag()
@@ -46,27 +70,31 @@ public class NeodymiumBrowserRunnerTest extends NeodymiumTest
     {
         // define one chrome browser then validate the parsed multi-browser configuration
         // TODO: we need more of this tests...
-        Map<String, String> properties = new HashMap<>();
-        properties.put("browserprofile.test.name", "a test browser");
-        properties.put("browserprofile.test.browser", "chrome");
-        properties.put("browserprofile.test.browserResolution", "1024x768");
+        Map<String, BrowserConfiguration> browserProfiles = browserConfig.getBrowserProfiles();
+        // Assert.assertEquals(1, browserProfiles.size());
 
-        File tempConfigFile = File.createTempFile("browser", "", new File("./config/"));
-        tempFiles.add(tempConfigFile);
-        writeMapToPropertiesFile(properties, tempConfigFile);
+        checkChrome(browserProfiles.get("chrome"));
+        checkFirefox(browserProfiles.get("firefox"));
+    }
 
-        MultibrowserConfiguration multibrowserConfiguration = MultibrowserConfiguration.getInstance(tempConfigFile.getPath());
-        Map<String, BrowserConfiguration> browserProfiles = multibrowserConfiguration.getBrowserProfiles();
-        Assert.assertEquals(1, browserProfiles.size());
-        BrowserConfiguration testProfile = browserProfiles.get("test");
-        Assert.assertNotNull(testProfile);
-        Assert.assertEquals("test", testProfile.getConfigTag());
-        Assert.assertEquals(1024, testProfile.getBrowserWidth());
-        Assert.assertEquals(768, testProfile.getBrowserHeight());
-        Assert.assertEquals("a test browser", testProfile.getName());
-        Assert.assertEquals(null, testProfile.getTestEnvironment());
-        DesiredCapabilities testCapabilities = testProfile.getCapabilities();
+    public void checkChrome(BrowserConfiguration config)
+    {
+        Assert.assertNotNull(config);
+        Assert.assertEquals("chrome", config.getConfigTag());
+        Assert.assertEquals("Google Chrome", config.getName());
+        Assert.assertEquals("local", config.getTestEnvironment());
+        DesiredCapabilities testCapabilities = config.getCapabilities();
         Assert.assertEquals("chrome", testCapabilities.getBrowserName());
+    }
+
+    public void checkFirefox(BrowserConfiguration config)
+    {
+        Assert.assertNotNull(config);
+        Assert.assertEquals("firefox", config.getConfigTag());
+        Assert.assertEquals("Mozilla Firefox", config.getName());
+        Assert.assertEquals(null, config.getTestEnvironment());
+        DesiredCapabilities testCapabilities = config.getCapabilities();
+        Assert.assertEquals("firefox", testCapabilities.getBrowserName());
     }
 
     @AfterClass
