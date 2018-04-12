@@ -25,8 +25,7 @@ public class NeodymiumDataRunner extends ParentRunner<Runner>
 
     private List<Runner> children;
 
-    public NeodymiumDataRunner(TestClass testClass, MethodExecutionContext methodExecutionContext)
-        throws InitializationError, NoSuchFieldException
+    public NeodymiumDataRunner(TestClass testClass, MethodExecutionContext methodExecutionContext) throws InitializationError
     {
         super(testClass.getJavaClass());
         List<Map<String, String>> dataSets;
