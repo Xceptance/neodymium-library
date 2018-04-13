@@ -5,18 +5,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
@@ -36,8 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xceptance.neodymium.NeodymiumDataRunner.NeodymiumDataRunnerRunner;
-import com.xceptance.neodymium.groups.DefaultGroup;
-import com.xceptance.neodymium.module.order.DefaultVectorRunOrder;
+import com.xceptance.neodymium.module.order.MethodOnlyRunOrder;
 import com.xceptance.neodymium.module.order.VectorRunOrder;
 import com.xceptance.neodymium.module.vector.RunnerVector;
 import com.xceptance.neodymium.multibrowser.Browser;
@@ -100,8 +94,8 @@ public class NeodymiumRunner extends Runner implements Filterable
     {
         LOGGER.debug(testKlass.getCanonicalName());
 
-        // VectorRunOrder defaultVectorRunOrder = new MethodOnlyRunOrder(); // new DefaultVectorRunOrder();
-        VectorRunOrder defaultVectorRunOrder = new DefaultVectorRunOrder();
+        VectorRunOrder defaultVectorRunOrder = new MethodOnlyRunOrder(); // new DefaultVectorRunOrder();
+        // VectorRunOrder defaultVectorRunOrder = new DefaultVectorRunOrder();
         List<RunnerVector> vectorRunOrder = defaultVectorRunOrder.getVectorRunOrder();
         testClass = new TestClass(testKlass);
 
@@ -110,7 +104,10 @@ public class NeodymiumRunner extends Runner implements Filterable
 
         for (RunnerVector runVector : vectorRunOrder)
         {
-            runVector.init(testClass, methodExecutionContext);
+            if (runVector.init(testClass, methodExecutionContext))
+            {
+                vectors.add(runVector.getRunnerList());
+            }
         }
 
         testRunner = buildTestRunnerLists(vectors);
@@ -189,97 +186,99 @@ public class NeodymiumRunner extends Runner implements Filterable
         // testDescription = createTestDescription();
     }
 
-    private List<List<Runner>> regroupTests(List<List<Runner>> testRunner, List<Class<?>> groupsToExecute, boolean matchAny)
-    {
-        Map<FrameworkMethod, Set<Class<?>>> testMethodsWithTestGroups = getTestMethodsWithCategories();
-
-        List<List<Runner>> groupedRunner = new LinkedList<>();
-
-        for (List<Runner> runners : testRunner)
-        {
-            FrameworkMethod method = null;
-            // the last runner in the list should always be an NeodymiumMethodRunner
-            // get this method
-            Runner runner = runners.get(runners.size() - 1);
-            if (runner instanceof NeodymiumMethodRunner)
-            {
-                method = ((NeodymiumMethodRunner) runner).getMethod();
-            }
-            else
-            {
-                throw new RuntimeException("This shouldn't happen");
-            }
-
-            if (testCategoryMatch(testMethodsWithTestGroups.get(method), groupsToExecute, matchAny))
-            {
-                groupedRunner.add(runners);
-            }
-        }
-
-        return groupedRunner;
-    }
-
-    private boolean testCategoryMatch(Set<Class<?>> annotatedGroups, List<Class<?>> groupsToExecute, boolean matchAny)
-    {
-        // if not matchAny then it's matchAll
-        boolean match;
-        if (matchAny)
-        {
-            match = false;
-        }
-        else
-        {
-            match = true;
-        }
-        for (Class<?> annotatedGroup : annotatedGroups)
-        {
-            boolean executionGroupsContainsAnnotatedGroup = groupsToExecute.contains(annotatedGroup);
-            if (matchAny)
-            {
-                match |= executionGroupsContainsAnnotatedGroup;
-            }
-            else
-            {
-                match &= executionGroupsContainsAnnotatedGroup;
-            }
-        }
-
-        return match;
-    }
-
-    private Map<FrameworkMethod, Set<Class<?>>> getTestMethodsWithCategories()
-    {
-        Map<FrameworkMethod, Set<Class<?>>> testMethods = new HashMap<>();
-
-        Category classCategory = testClass.getAnnotation(Category.class);
-        List<Class<?>> classCategories = new ArrayList<>();
-        if (classCategory != null)
-        {
-            classCategories = Arrays.asList(classCategory.value());
-        }
-
-        // method grouping belongs only to test methods so check that first
-        for (FrameworkMethod annotatedMethod : testClass.getAnnotatedMethods(Test.class))
-        {
-            Category categoryAnnotation = annotatedMethod.getAnnotation(Category.class);
-
-            Set<Class<?>> categories = new HashSet<>();
-            if (categoryAnnotation != null)
-            {
-                categories.addAll(Arrays.asList(categoryAnnotation.value()));
-            }
-
-            // add categories from class to every method
-            categories.addAll(classCategories);
-            // ensure that DefaultGroup is set for all methods that makes it easier afterwards
-            categories.add(DefaultGroup.class);
-            categories.remove(null);
-
-            testMethods.put(annotatedMethod, categories);
-        }
-
-        return testMethods;
-    }
+    // private List<List<Runner>> regroupTests(List<List<Runner>> testRunner, List<Class<?>> groupsToExecute, boolean
+    // matchAny)
+    // {
+    // Map<FrameworkMethod, Set<Class<?>>> testMethodsWithTestGroups = getTestMethodsWithCategories();
+    //
+    // List<List<Runner>> groupedRunner = new LinkedList<>();
+    //
+    // for (List<Runner> runners : testRunner)
+    // {
+    // FrameworkMethod method = null;
+    // // the last runner in the list should always be an NeodymiumMethodRunner
+    // // get this method
+    // Runner runner = runners.get(runners.size() - 1);
+    // if (runner instanceof NeodymiumMethodRunner)
+    // {
+    // method = ((NeodymiumMethodRunner) runner).getMethod();
+    // }
+    // else
+    // {
+    // throw new RuntimeException("This shouldn't happen");
+    // }
+    //
+    // if (testCategoryMatch(testMethodsWithTestGroups.get(method), groupsToExecute, matchAny))
+    // {
+    // groupedRunner.add(runners);
+    // }
+    // }
+    //
+    // return groupedRunner;
+    // }
+    //
+    // private boolean testCategoryMatch(Set<Class<?>> annotatedGroups, List<Class<?>> groupsToExecute, boolean
+    // matchAny)
+    // {
+    // // if not matchAny then it's matchAll
+    // boolean match;
+    // if (matchAny)
+    // {
+    // match = false;
+    // }
+    // else
+    // {
+    // match = true;
+    // }
+    // for (Class<?> annotatedGroup : annotatedGroups)
+    // {
+    // boolean executionGroupsContainsAnnotatedGroup = groupsToExecute.contains(annotatedGroup);
+    // if (matchAny)
+    // {
+    // match |= executionGroupsContainsAnnotatedGroup;
+    // }
+    // else
+    // {
+    // match &= executionGroupsContainsAnnotatedGroup;
+    // }
+    // }
+    //
+    // return match;
+    // }
+    //
+    // private Map<FrameworkMethod, Set<Class<?>>> getTestMethodsWithCategories()
+    // {
+    // Map<FrameworkMethod, Set<Class<?>>> testMethods = new HashMap<>();
+    //
+    // Category classCategory = testClass.getAnnotation(Category.class);
+    // List<Class<?>> classCategories = new ArrayList<>();
+    // if (classCategory != null)
+    // {
+    // classCategories = Arrays.asList(classCategory.value());
+    // }
+    //
+    // // method grouping belongs only to test methods so check that first
+    // for (FrameworkMethod annotatedMethod : testClass.getAnnotatedMethods(Test.class))
+    // {
+    // Category categoryAnnotation = annotatedMethod.getAnnotation(Category.class);
+    //
+    // Set<Class<?>> categories = new HashSet<>();
+    // if (categoryAnnotation != null)
+    // {
+    // categories.addAll(Arrays.asList(categoryAnnotation.value()));
+    // }
+    //
+    // // add categories from class to every method
+    // categories.addAll(classCategories);
+    // // ensure that DefaultGroup is set for all methods that makes it easier afterwards
+    // categories.add(DefaultGroup.class);
+    // categories.remove(null);
+    //
+    // testMethods.put(annotatedMethod, categories);
+    // }
+    //
+    // return testMethods;
+    // }
 
     private void setFinalStatic(Field field, Object newValue) throws Exception
     {
