@@ -12,7 +12,12 @@ public abstract class RunnerVector
 {
     protected List<Runner> runner = new LinkedList<>();
 
-    public boolean init(TestClass testKlass, MethodExecutionContext methodExecutionContext)
+    public boolean shouldRun(TestClass testKlass)
+    {
+        throw new RuntimeException("Not implemented yet!");
+    }
+
+    public void createRunners(MethodExecutionContext methodExecutionContext)
     {
         throw new RuntimeException("Not implemented yet!");
     }

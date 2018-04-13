@@ -20,24 +20,27 @@ public class MethodVector extends RunnerVector
 
     private List<FrameworkMethod> methodsToRun = new LinkedList<>();
 
+    private TestClass testKlass;
+
     @Override
-    public boolean init(TestClass testKlass, MethodExecutionContext methodExecutionContext)
+    public boolean shouldRun(TestClass testKlass)
     {
+        this.testKlass = testKlass;
         // if the class is annotated to be ignored then all methods should be ignored too
         Ignore ignoreAnnotation = testKlass.getAnnotation(Ignore.class);
 
         if (ignoreAnnotation != null)
             return false;
 
-        List<FrameworkMethod> testAnnotatedMethods = testKlass.getAnnotatedMethods(Test.class);
-        for (FrameworkMethod testAnnotatedMethod : testAnnotatedMethods)
+        List<FrameworkMethod> methods = testKlass.getAnnotatedMethods(Test.class);
+        for (FrameworkMethod method : methods)
         {
             // check if method is ignored
-            Ignore methodIgnoreAnnotation = testAnnotatedMethod.getAnnotation(Ignore.class);
-            if (methodIgnoreAnnotation == null)
+            Ignore ignore = method.getAnnotation(Ignore.class);
+            if (ignore == null)
             {
-                // no ignore annoation, add them to the list
-                methodsToRun.add(testAnnotatedMethod);
+                // no ignore annoation, add method to the list
+                methodsToRun.add(method);
             }
         }
 
@@ -48,23 +51,28 @@ public class MethodVector extends RunnerVector
         }
         else
         {
-            // create actual method runner that will later call the methods to test
             LOGGER.debug(MessageFormat.format("Found {0} methods to run", methodsToRun.size()));
-            for (FrameworkMethod method : methodsToRun)
-            {
-                LOGGER.trace(MessageFormat.format("{0}::{1}", testKlass.getJavaClass().getCanonicalName(), method.getName()));
-                try
-                {
-                    runner.add(new NeodymiumMethodRunner(testKlass.getJavaClass(), method, methodExecutionContext));
-                }
-                catch (Exception e)
-                {
-                    // TODO: decide to extend the function definition to throw exceptions or just catch and rethrow them as unchekced
-                    // exception
-                    throw new RuntimeException(e);
-                }
-            }
             return true;
+        }
+    }
+
+    @Override
+    public void createRunners(MethodExecutionContext methodExecutionContext)
+    {
+        // create actual method runners that will later call the methods to test
+        for (FrameworkMethod method : methodsToRun)
+        {
+            LOGGER.trace(MessageFormat.format("{0}::{1}", testKlass.getJavaClass().getCanonicalName(), method.getName()));
+            try
+            {
+                runner.add(new NeodymiumMethodRunner(testKlass.getJavaClass(), method, methodExecutionContext));
+            }
+            catch (Exception e)
+            {
+                // TODO: decide to extend the function definition to throw exceptions or just catch and rethrow them as
+                // unchecked exception
+                throw new RuntimeException(e);
+            }
         }
     }
 }

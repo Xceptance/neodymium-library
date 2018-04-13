@@ -103,13 +103,15 @@ public class NeodymiumRunner extends Runner implements Filterable
 
         for (RunnerVector runVector : vectorRunOrder)
         {
-            if (runVector.init(testClass, methodExecutionContext))
+            if (runVector.shouldRun(testClass))
             {
+                runVector.createRunners(methodExecutionContext);
                 vectors.add(runVector.getRunnerList());
             }
         }
 
         testRunner = buildTestRunnerLists(vectors);
+        testDescription = createTestDescription();
 
         // List<List<Runner>> vectors = new LinkedList<>();
         // List<Runner> runners = new LinkedList<>();
