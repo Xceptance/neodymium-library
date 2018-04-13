@@ -82,6 +82,34 @@ public class SelenidePlus
     }
 
     /**
+     * Returns an supplier that will return all results if any. It will return elements that are found by parentSelector
+     * and have a no result for subElementSelector. It does NOT return the subelements, it is meant to be a workaround
+     * for poor CSS where the parent is only recognizable by looking at its children, but we don't need the children.
+     * Important, this is meant to be lazy so don't call get() when you setup a field or so, only when you really need
+     * the element. It reselects all the time!
+     *
+     * @param parentSelector
+     *            The selector that is used to find subElementSelector
+     * @param subElementSelector
+     *            The selector that shall not be contained by the parentSelector
+     * @return an supplier that will return the result later
+     */
+    public static Supplier<ElementsCollection> parentsWithoutSubElement(final By parentSelector, final By subElementSelector)
+    {
+        return new Supplier<ElementsCollection>()
+        {
+            @Override
+            public ElementsCollection get()
+            {
+                List<SelenideElement> list = $$(parentSelector).stream().filter(e -> {
+                    return !e.$(subElementSelector).exists();
+                }).collect(Collectors.toList());
+                return new ElementsCollection(new WebElementsCollectionWrapper(list));
+            };
+        };
+    }
+
+    /**
      * Re-execute the entire code when a stale element exception comes up
      *
      * @param code

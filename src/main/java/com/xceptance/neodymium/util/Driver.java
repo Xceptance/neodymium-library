@@ -12,12 +12,18 @@ import com.xceptance.neodymium.multibrowser.configuration.WebDriverProperties;
 
 public class Driver
 {
+    private static final String BROWSER_PROFILE_FILE = "./config/browser.properties";
+
     public static void setUp(final String browserProfileName)
     {
         // try to find appropriate web driver in cache before creating a new instance
         WebDriver driver = null;
 
-        if (MultibrowserConfiguration.getInstance().getWebDriverProperties().reuseWebDriver())
+        MultibrowserConfiguration multibrowserConfiguration = MultibrowserConfiguration.getInstance();
+        if (multibrowserConfiguration == null)
+            multibrowserConfiguration = MultibrowserConfiguration.getInstance(BROWSER_PROFILE_FILE);
+
+        if (multibrowserConfiguration.getWebDriverProperties().reuseWebDriver())
         {
             driver = WebDriverCache.instance.getRemoveWebDriver(browserProfileName);
         }

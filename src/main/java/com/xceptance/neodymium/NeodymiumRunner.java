@@ -35,7 +35,6 @@ import com.xceptance.neodymium.module.order.MethodOnlyRunOrder;
 import com.xceptance.neodymium.module.order.VectorRunOrder;
 import com.xceptance.neodymium.module.vector.RunnerVector;
 import com.xceptance.neodymium.multibrowser.Browser;
-import com.xceptance.neodymium.multibrowser.BrowserRunner;
 
 /**
  * This class executes {@link JUnit4} test classes (aka JUnit Runner) and adds several features to test execution e.g.
@@ -457,7 +456,7 @@ public class NeodymiumRunner extends Runner implements Filterable
                     throw new RuntimeException(e);
                 }
 
-                BrowserRunner browserRunner = null;
+                NeodymiumBrowserRunner browserRunner = null;
                 notifier.fireTestStarted(description);
                 Failure testFailure = null;
 
@@ -465,10 +464,10 @@ public class NeodymiumRunner extends Runner implements Filterable
                 {
                     Runner runner = runners.get(r);
 
-                    if (runner instanceof BrowserRunner)
+                    if (runner instanceof NeodymiumBrowserRunner)
                     {
                         // remember browser runner to close the web driver after test
-                        browserRunner = (BrowserRunner) runner;
+                        browserRunner = (NeodymiumBrowserRunner) runner;
                     }
 
                     methodExecutionContext.setRunBeforeClass(firstIteration);
