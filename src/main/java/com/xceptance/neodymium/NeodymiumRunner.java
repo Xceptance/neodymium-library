@@ -5,17 +5,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -39,14 +34,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xceptance.neodymium.NeodymiumDataRunner.NeodymiumDataRunnerRunner;
-import com.xceptance.neodymium.groups.DefaultGroup;
 import com.xceptance.neodymium.multibrowser.Browser;
-import com.xceptance.neodymium.multibrowser.BrowserRunner;
 
 /**
  * This class executes {@link JUnit4} test classes (aka JUnit Runner) and adds several features to test execution e.g.
- * multi browser ({@link Browser}) and test data ({@link TestData}). Vanilla JUnit parameterized tests are supported as
- * well but only with parameter injection (as described here: <a href=
+ * multi {@link Browser browser} and
+ * <a href="https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider">test data</a>. Vanilla JUnit
+ * parameterized tests are supported as well but only with parameter injection (as described here: <a href=
  * "https://github.com/junit-team/junit4/wiki/parameterized-tests#using-parameter-for-field-injection-instead-of-constructor">Using @Parameter
  * for Field injection instead of Constructor</a>). In order to run a {@link JUnit4} test with this runner the class or
  * its super-class has to be annotated with {@link RunWith}
@@ -112,7 +106,7 @@ public class NeodymiumRunner extends Runner implements Filterable
         if (browser != null)
         {
             LOGGER.debug("Found browser annotation");
-            runners.add(new BrowserRunner(testKlass));
+            runners.add(new NeodymiumBrowserRunner(testKlass));
         }
 
         // scan for JUnit Parameters
@@ -133,15 +127,6 @@ public class NeodymiumRunner extends Runner implements Filterable
         {
             // no test data found, proceed
         }
-        catch (NoSuchFieldException e)
-        {
-            // test data was found
-            // if the message is empty then no field was defined (annotated) and we drop the exception
-            // if the message is not empty then a correct annotated field was found but
-            // its either not a map or not public
-            if (StringUtils.isNotBlank(e.getMessage()))
-                throw e;
-        }
 
         // collect children of ParentRunner sub classes
         doMagic(runners, vectors);
@@ -156,6 +141,7 @@ public class NeodymiumRunner extends Runner implements Filterable
         else
         {
             LOGGER.debug("No test methods found");
+            throw new Exception("No runnable methods");
         }
 
         for (FrameworkMethod method : annotatedMethods)
@@ -173,97 +159,99 @@ public class NeodymiumRunner extends Runner implements Filterable
         testDescription = createTestDescription();
     }
 
-    private List<List<Runner>> regroupTests(List<List<Runner>> testRunner, List<Class<?>> groupsToExecute, boolean matchAny)
-    {
-        Map<FrameworkMethod, Set<Class<?>>> testMethodsWithTestGroups = getTestMethodsWithCategories();
-
-        List<List<Runner>> groupedRunner = new LinkedList<>();
-
-        for (List<Runner> runners : testRunner)
-        {
-            FrameworkMethod method = null;
-            // the last runner in the list should always be an XCMethodRunner
-            // get this method
-            Runner runner = runners.get(runners.size() - 1);
-            if (runner instanceof NeodymiumMethodRunner)
-            {
-                method = ((NeodymiumMethodRunner) runner).getMethod();
-            }
-            else
-            {
-                throw new RuntimeException("This shouldn't happen");
-            }
-
-            if (testCategoryMatch(testMethodsWithTestGroups.get(method), groupsToExecute, matchAny))
-            {
-                groupedRunner.add(runners);
-            }
-        }
-
-        return groupedRunner;
-    }
-
-    private boolean testCategoryMatch(Set<Class<?>> annotatedGroups, List<Class<?>> groupsToExecute, boolean matchAny)
-    {
-        // if not matchAny then it's matchAll
-        boolean match;
-        if (matchAny)
-        {
-            match = false;
-        }
-        else
-        {
-            match = true;
-        }
-        for (Class<?> annotatedGroup : annotatedGroups)
-        {
-            boolean executionGroupsContainsAnnotatedGroup = groupsToExecute.contains(annotatedGroup);
-            if (matchAny)
-            {
-                match |= executionGroupsContainsAnnotatedGroup;
-            }
-            else
-            {
-                match &= executionGroupsContainsAnnotatedGroup;
-            }
-        }
-
-        return match;
-    }
-
-    private Map<FrameworkMethod, Set<Class<?>>> getTestMethodsWithCategories()
-    {
-        Map<FrameworkMethod, Set<Class<?>>> testMethods = new HashMap<>();
-
-        Category classCategory = testClass.getAnnotation(Category.class);
-        List<Class<?>> classCategories = new ArrayList<>();
-        if (classCategory != null)
-        {
-            classCategories = Arrays.asList(classCategory.value());
-        }
-
-        // method grouping belongs only to test methods so check that first
-        for (FrameworkMethod annotatedMethod : testClass.getAnnotatedMethods(Test.class))
-        {
-            Category categoryAnnotation = annotatedMethod.getAnnotation(Category.class);
-
-            Set<Class<?>> categories = new HashSet<>();
-            if (categoryAnnotation != null)
-            {
-                categories.addAll(Arrays.asList(categoryAnnotation.value()));
-            }
-
-            // add categories from class to every method
-            categories.addAll(classCategories);
-            // ensure that DefaultGroup is set for all methods that makes it easier afterwards
-            categories.add(DefaultGroup.class);
-            categories.remove(null);
-
-            testMethods.put(annotatedMethod, categories);
-        }
-
-        return testMethods;
-    }
+    // private List<List<Runner>> regroupTests(List<List<Runner>> testRunner, List<Class<?>> groupsToExecute, boolean
+    // matchAny)
+    // {
+    // Map<FrameworkMethod, Set<Class<?>>> testMethodsWithTestGroups = getTestMethodsWithCategories();
+    //
+    // List<List<Runner>> groupedRunner = new LinkedList<>();
+    //
+    // for (List<Runner> runners : testRunner)
+    // {
+    // FrameworkMethod method = null;
+    // // the last runner in the list should always be an NeodymiumMethodRunner
+    // // get this method
+    // Runner runner = runners.get(runners.size() - 1);
+    // if (runner instanceof NeodymiumMethodRunner)
+    // {
+    // method = ((NeodymiumMethodRunner) runner).getMethod();
+    // }
+    // else
+    // {
+    // throw new RuntimeException("This shouldn't happen");
+    // }
+    //
+    // if (testCategoryMatch(testMethodsWithTestGroups.get(method), groupsToExecute, matchAny))
+    // {
+    // groupedRunner.add(runners);
+    // }
+    // }
+    //
+    // return groupedRunner;
+    // }
+    //
+    // private boolean testCategoryMatch(Set<Class<?>> annotatedGroups, List<Class<?>> groupsToExecute, boolean
+    // matchAny)
+    // {
+    // // if not matchAny then it's matchAll
+    // boolean match;
+    // if (matchAny)
+    // {
+    // match = false;
+    // }
+    // else
+    // {
+    // match = true;
+    // }
+    // for (Class<?> annotatedGroup : annotatedGroups)
+    // {
+    // boolean executionGroupsContainsAnnotatedGroup = groupsToExecute.contains(annotatedGroup);
+    // if (matchAny)
+    // {
+    // match |= executionGroupsContainsAnnotatedGroup;
+    // }
+    // else
+    // {
+    // match &= executionGroupsContainsAnnotatedGroup;
+    // }
+    // }
+    //
+    // return match;
+    // }
+    //
+    // private Map<FrameworkMethod, Set<Class<?>>> getTestMethodsWithCategories()
+    // {
+    // Map<FrameworkMethod, Set<Class<?>>> testMethods = new HashMap<>();
+    //
+    // Category classCategory = testClass.getAnnotation(Category.class);
+    // List<Class<?>> classCategories = new ArrayList<>();
+    // if (classCategory != null)
+    // {
+    // classCategories = Arrays.asList(classCategory.value());
+    // }
+    //
+    // // method grouping belongs only to test methods so check that first
+    // for (FrameworkMethod annotatedMethod : testClass.getAnnotatedMethods(Test.class))
+    // {
+    // Category categoryAnnotation = annotatedMethod.getAnnotation(Category.class);
+    //
+    // Set<Class<?>> categories = new HashSet<>();
+    // if (categoryAnnotation != null)
+    // {
+    // categories.addAll(Arrays.asList(categoryAnnotation.value()));
+    // }
+    //
+    // // add categories from class to every method
+    // categories.addAll(classCategories);
+    // // ensure that DefaultGroup is set for all methods that makes it easier afterwards
+    // categories.add(DefaultGroup.class);
+    // categories.remove(null);
+    //
+    // testMethods.put(annotatedMethod, categories);
+    // }
+    //
+    // return testMethods;
+    // }
 
     private void setFinalStatic(Field field, Object newValue) throws Exception
     {
@@ -442,7 +430,7 @@ public class NeodymiumRunner extends Runner implements Filterable
                     throw new RuntimeException(e);
                 }
 
-                BrowserRunner browserRunner = null;
+                NeodymiumBrowserRunner browserRunner = null;
                 notifier.fireTestStarted(description);
                 Failure testFailure = null;
 
@@ -450,10 +438,10 @@ public class NeodymiumRunner extends Runner implements Filterable
                 {
                     Runner runner = runners.get(r);
 
-                    if (runner instanceof BrowserRunner)
+                    if (runner instanceof NeodymiumBrowserRunner)
                     {
                         // remember browser runner to close the web driver after test
-                        browserRunner = (BrowserRunner) runner;
+                        browserRunner = (NeodymiumBrowserRunner) runner;
                     }
 
                     methodExecutionContext.setRunBeforeClass(firstIteration);

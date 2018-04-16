@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
@@ -27,6 +28,7 @@ import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.CommandInfo;
@@ -67,8 +69,17 @@ public final class BrowserRunnerHelper
     /**
      * Returns an {@link URL} to a Selenium grid (e.g. SauceLabs) that contains basic authentication for access
      * 
+     * @param proxyConfig
+     *            {@link ProxyConfiguration} that is used to connect to gridUrl
+     * @param gridUrl
+     *            The {@link URL} to the grid
+     * @param gridUsername
+     *            The username that should be used to accesd the grid
+     * @param gridPassword
+     *            The password that should be used to get access to the grid
      * @return {@link URL} to Selenium grid augmented with credentials
      * @throws MalformedURLException
+     *             if the given gridUrl is invalid
      */
     protected static HttpCommandExecutor createGridExecutor(final ProxyConfiguration proxyConfig, final URL gridUrl,
                                                             final String gridUsername, final String gridPassword)
@@ -105,7 +116,7 @@ public final class BrowserRunnerHelper
             clientBuilder.setProxy(new HttpHost(proxyConfig.getHost(), Integer.valueOf(proxyConfig.getPort())));
         final CloseableHttpClient httpClient = clientBuilder.build();
 
-        final Map<String, CommandInfo> additionalCommands = new HashMap<String, CommandInfo>();   // just a dummy
+        final Map<String, CommandInfo> additionalCommands = new HashMap<String, CommandInfo>(); // just a dummy
 
         // this command executor will do the credential magic for us. both proxy and target site credentials
         return new HttpCommandExecutor(additionalCommands, gridUrl, new ProxyHttpClient(httpClient));
@@ -115,13 +126,15 @@ public final class BrowserRunnerHelper
     /**
      * Sets the browser window size
      * <p>
-     * Reads the default size from xlt properties and applies them to the browser window as long as its no device-emulation
-     * test. In case of device-emulation the emulated device specifies the size of the browser window.
+     * Reads the default size from browser properties and applies them to the browser window as long as its no
+     * device-emulation test. In case of device-emulation the emulated device specifies the size of the browser window.
      *
      * @param config
+     *            {@link BrowserConfiguration} that describes the requested browser properties
      * @param driver
+     *            {@link WebDriver} instance of the configured {@link BrowserConfiguration}
      */
-    protected static void setBrowserWindowSize(final BrowserConfiguration config, final WebDriver driver)
+    public static void setBrowserWindowSize(final BrowserConfiguration config, final WebDriver driver)
     {
         WebDriverProperties webDriverProperties = MultibrowserConfiguration.getInstance().getWebDriverProperties();
 
@@ -133,7 +146,7 @@ public final class BrowserRunnerHelper
         final int configuredBrowserHeight = config.getBrowserHeight();
 
         Dimension browserSize = null;
-        // first check if the configured browserprofile has a defined size, else use the xlt default browser size
+        // first check if the configured browser profile has a defined size, else use the default browser size
         if (configuredBrowserWidth > 0 && configuredBrowserHeight > 0)
         {
             browserSize = new Dimension(configuredBrowserWidth, configuredBrowserHeight);
@@ -186,13 +199,15 @@ public final class BrowserRunnerHelper
 
     /**
      * Instantiate the {@link WebDriver} according to the configuration read from {@link Browser} annotations.
-     *
+     * 
      * @param config
-     * @param proxyConfig
-     * @return
+     *            {@link BrowserConfiguration} that describes the descired browser instance
+     * @return {@link WebDriver} the instance of the browser described in {@link BrowserConfiguration}
      * @throws MalformedURLException
+     *             if <a href="https://github.com/Xceptance/neodymium-library/wiki/Selenium-grid">Selenium grid</a> is
+     *             used
      */
-    protected static WebDriver createWebdriver(final BrowserConfiguration config) throws MalformedURLException
+    public static WebDriver createWebdriver(final BrowserConfiguration config) throws MalformedURLException
     {
         final DesiredCapabilities capabilities = config.getCapabilities();
 
@@ -224,13 +239,45 @@ public final class BrowserRunnerHelper
             {
                 // do we have a custom path?
                 final String pathToBrowser = driverServerPath.getChromeBrowserPath();
+                final ChromeOptions options = new ChromeOptions();
+
+                // This is a workaround for a changed Selenium behavior
+                // Since device emulation is not part of the "standard" it now has to be considered as experimental
+                // option.
+                // The capability class already sorts the different configurations in different maps (one for
+                // capabilities and one for
+                // experimental capabilities). The experimental options are held internal within a map of the capability
+                // map and
+                // are accessible with key "goog:chromeOptions" (constant ChromeOptions.CAPABILITY). So all we have to
+                // do is to copy the
+                // keys and values of that special map and set it as experimental option inside ChromeOptions.
+                Map<String, String> experimentalOptions = null;
+                try
+                {
+                    experimentalOptions = (Map<String, String>) capabilities.getCapability(ChromeOptions.CAPABILITY);
+                    if (experimentalOptions != null)
+                    {
+                        for (Entry<String, String> entry : experimentalOptions.entrySet())
+                        {
+                            options.setExperimentalOption(entry.getKey(), entry.getValue());
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    // unsure which case this can cover since only the type conversion can fail
+                    // lets throw it as unchecked exception
+                    // in case that makes no sense at all then just suppress it
+                    throw new RuntimeException(e);
+                }
+
+                options.merge(capabilities);
                 if (StringUtils.isNotBlank(pathToBrowser))
                 {
-                    final ChromeOptions options = new ChromeOptions();
                     options.setBinary(pathToBrowser);
-                    capabilities.setCapability(ChromeOptions.CAPABILITY, options);
                 }
-                return new ChromeDriver(capabilities);
+
+                return new ChromeDriver(options);
             }
             else if (firefoxBrowsers.contains(browserName))
             {
@@ -242,7 +289,9 @@ public final class BrowserRunnerHelper
             }
             else if (internetExplorerBrowsers.contains(browserName))
             {
-                return new InternetExplorerDriver(capabilities);
+                InternetExplorerOptions options = new InternetExplorerOptions();
+                options.merge(capabilities);
+                return new InternetExplorerDriver(options);
             }
         }
         else

@@ -45,6 +45,7 @@ public final class TestDataUtils
      * @throws FileNotFoundException
      *             if an explicitly configured data set file cannot be found
      * @throws IOException
+     *             if an I/O error occurred
      */
     public static List<Map<String, String>> getDataSets(final Class<?> testClass) throws FileNotFoundException, IOException
     {
@@ -55,9 +56,9 @@ public final class TestDataUtils
         final String slashedName = dottedName.replace('.', '/');
 
         String[] filetype = new String[]
-        {
-          ".csv", ".json", ".xml"
-        };
+            {
+                ".csv", ".json", ".xml"
+            };
         for (final String fileExtension : filetype)
         {
             fileNames.add(slashedName + fileExtension);
