@@ -1,5 +1,6 @@
 package com.xceptance.neodymium.module.vector;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import org.junit.runners.model.TestClass;
 
 import com.xceptance.neodymium.multibrowser.Browser;
 
-public class BrowserVectorBuilder implements VectorBuilder
+public class BrowserVectorBuilder implements RunVectorBuilder
 {
     private String[] browser;
 
@@ -31,23 +32,17 @@ public class BrowserVectorBuilder implements VectorBuilder
     }
 
     @Override
-    public List<Vector> buildRunVectors()
+    public List<RunVector> buildRunVectors()
     {
-        List<Vector> r = new LinkedList<>();
+        List<RunVector> r = new LinkedList<>();
+        int vectorHashCode = (browser == null) ? 0 : Arrays.hashCode(browser);
 
         // create a vector for every browser tag
         for (String browserTag : browser)
         {
-            r.add(new BrowserVector(browserTag));
+            r.add(new BrowserVector(browserTag, vectorHashCode));
         }
 
         return r;
     }
-
-    @Override
-    public int vectorHashCode()
-    {
-        return (browser == null) ? 0 : browser.hashCode();
-    }
-
 }

@@ -1,8 +1,15 @@
 package com.xceptance.neodymium;
 
+import java.lang.annotation.Annotation;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -10,6 +17,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runner.Runner;
@@ -17,6 +25,7 @@ import org.junit.runner.manipulation.Filter;
 import org.junit.runner.manipulation.Filterable;
 import org.junit.runner.manipulation.NoTestsRemainException;
 import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.JUnit4;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.RunnerBuilder;
@@ -24,9 +33,10 @@ import org.junit.runners.model.TestClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.xceptance.neodymium.NeodymiumDataRunner.NeodymiumDataRunnerRunner;
 import com.xceptance.neodymium.module.order.DefaultVectorRunOrder;
-import com.xceptance.neodymium.module.vector.Vector;
-import com.xceptance.neodymium.module.vector.VectorBuilder;
+import com.xceptance.neodymium.module.vector.RunVector;
+import com.xceptance.neodymium.module.vector.RunVectorBuilder;
 import com.xceptance.neodymium.multibrowser.Browser;
 
 /**
@@ -82,6 +92,8 @@ public class NeodymiumRunner extends Runner implements Filterable
 
     private List<FrameworkMethod> testMethods = new LinkedList<>();
 
+    private Map<FrameworkMethod, List<List<RunVector>>> orderedTestRunner;
+
     public NeodymiumRunner(Class<?> testKlass, RunnerBuilder rb) throws Throwable
     {
         LOGGER.debug(testKlass.getCanonicalName());
@@ -91,18 +103,23 @@ public class NeodymiumRunner extends Runner implements Filterable
         buildTestMethodList();
 
         // for now assume always default run order. we can change this by annotating the test later
-        List<Class<? extends VectorBuilder>> vectorRunOrder = new DefaultVectorRunOrder().getVectorRunOrder();
+        List<Class<? extends RunVectorBuilder>> vectorRunOrder = new DefaultVectorRunOrder().getVectorRunOrder();
 
-        for (Class<? extends VectorBuilder> vectorBuildClass : vectorRunOrder)
+        orderedTestRunner = new HashMap<>();
+        for (Class<? extends RunVectorBuilder> vectorBuildClass : vectorRunOrder)
         {
             for (FrameworkMethod method : testMethods)
             {
-                VectorBuilder vectorBuilder = createVectorBuilder(vectorBuildClass);
+                RunVectorBuilder vectorBuilder = createVectorBuilder(vectorBuildClass);
                 vectorBuilder.create(testClass, method);
-                vectorBuilder.vectorHashCode();
-                List<Vector> runVectors = vectorBuilder.buildRunVectors();
+                System.out.print(method.getName() + ": ");
+                orderedTestRunner.computeIfAbsent(method, (key) -> new LinkedList<>()).add(vectorBuilder.buildRunVectors());
             }
         }
+
+        anynameisfine(vectorRunOrder.size());
+
+        testDescription = createTestDescription();
 
         // VectorRunOrder defaultVectorRunOrder = new MethodOnlyRunOrder(); // new DefaultVectorRunOrder();
         // // VectorRunOrder defaultVectorRunOrder = new DefaultVectorRunOrder();
@@ -232,9 +249,9 @@ public class NeodymiumRunner extends Runner implements Filterable
         }
     }
 
-    private VectorBuilder createVectorBuilder(Class<? extends VectorBuilder> vectorBuilderClass)
+    private RunVectorBuilder createVectorBuilder(Class<? extends RunVectorBuilder> vectorBuilderClass)
     {
-        VectorBuilder vector;
+        RunVectorBuilder vector;
         try
         {
             vector = vectorBuilderClass.newInstance();
@@ -396,68 +413,106 @@ public class NeodymiumRunner extends Runner implements Filterable
     //
     // field.set(null, newValue);
     // }
-    // private Description createTestDescription()
-    // {
-    // Description description = Description.createSuiteDescription(testClass.getJavaClass());
-    //
-    // for (List<Runner> runners : testRunner)
-    // {
-    // List<String> displayNames = new LinkedList<>();
-    // for (Runner runner : runners)
-    // {
-    // Description runnerDescription = runner.getDescription();
-    // String displayName = "";
-    // if (runner instanceof NeodymiumParameterRunner)
-    // {
-    // displayName = ((NeodymiumParameterRunner) runner).getName();
-    // }
-    // else if (runner instanceof BlockJUnit4ClassRunner)
-    // {
-    // displayName = runner.getDescription().getDisplayName();
-    // }
-    // else if (runner instanceof NeodymiumDataRunnerRunner)
-    // {
-    // NeodymiumDataRunnerRunner dataRunner = (NeodymiumDataRunnerRunner) runner;
-    // if (dataRunner.hasDataSets())
-    // {
-    // displayName = runnerDescription.getDisplayName();
-    // }
-    // else
-    // {
-    // displayName = null;
-    // }
-    // }
-    // else
-    // {
-    // displayName = runnerDescription.getDisplayName();
-    // }
-    //
-    // if (displayName != null)
-    // displayNames.add(displayName);
-    // }
-    //
-    // // necessary to preserve JUnit view feature which lead you to the test method on double click the entry
-    // //
-    // https://github.com/eclipse/eclipse.jdt.ui/blob/0e4ddb8f4fd1d3c22748423acba36397e5f020e7/org.eclipse.jdt.junit/src/org/eclipse/jdt/internal/junit/ui/OpenTestAction.java#L108-L122
-    // Collections.reverse(displayNames);
-    //
-    // Set<Annotation> methodCategoryAnnotations = new HashSet<>();
-    // List<FrameworkMethod> annotatedMethods = testClass.getAnnotatedMethods();
-    // for (FrameworkMethod fm : annotatedMethods)
-    // {
-    // methodCategoryAnnotations.add(fm.getAnnotation(Category.class));
-    // }
-    // methodCategoryAnnotations.remove(null);
-    //
-    // Description childDescription = Description.createTestDescription(testClass.getJavaClass(), String.join(" :: ",
-    // displayNames),
-    // methodCategoryAnnotations.toArray(new Annotation[0]));
-    // description.addChild(childDescription);
-    // }
-    //
-    // return description;
-    // }
-    //
+
+    private void anynameisfine(int size)
+    {
+        List<List<RunVector>> buckets = new ArrayList<>(size);
+        for (int i = 0; i < size; i++)
+        {
+            buckets.add(new ArrayList<>());
+        }
+
+        for (FrameworkMethod method : testMethods)
+        {
+            List<List<RunVector>> list = orderedTestRunner.get(method);
+            for (int i = 0; i < list.size(); i++)
+            {
+
+            }
+        }
+    }
+
+    private Description createTestDescription()
+    {
+        Description description = Description.createSuiteDescription(testClass.getJavaClass());
+
+        for (FrameworkMethod method : testMethods)
+        {
+            List<List<RunVector>> orderedRunVectors = orderedTestRunner.get(method);
+            for (List<RunVector> runVectors : orderedRunVectors)
+            {
+                for (RunVector runVector : runVectors)
+                {
+                    Description childDescription = Description.createTestDescription(testClass.getJavaClass(), runVector.getTestName());
+                    description.addChild(childDescription);
+                }
+            }
+
+        }
+
+        return description;
+    }
+
+    private Description createTestDescription_old()
+    {
+        Description description = Description.createSuiteDescription(testClass.getJavaClass());
+
+        for (List<Runner> runners : testRunner)
+        {
+            List<String> displayNames = new LinkedList<>();
+            for (Runner runner : runners)
+            {
+                Description runnerDescription = runner.getDescription();
+                String displayName = "";
+                if (runner instanceof NeodymiumParameterRunner)
+                {
+                    displayName = ((NeodymiumParameterRunner) runner).getName();
+                }
+                else if (runner instanceof BlockJUnit4ClassRunner)
+                {
+                    displayName = runner.getDescription().getDisplayName();
+                }
+                else if (runner instanceof NeodymiumDataRunnerRunner)
+                {
+                    NeodymiumDataRunnerRunner dataRunner = (NeodymiumDataRunnerRunner) runner;
+                    if (dataRunner.hasDataSets())
+                    {
+                        displayName = runnerDescription.getDisplayName();
+                    }
+                    else
+                    {
+                        displayName = null;
+                    }
+                }
+                else
+                {
+                    displayName = runnerDescription.getDisplayName();
+                }
+
+                if (displayName != null)
+                    displayNames.add(displayName);
+            }
+
+            // necessary to preserve JUnit view feature which lead you to the test method on double click the entry
+            // https://github.com/eclipse/eclipse.jdt.ui/blob/0e4ddb8f4fd1d3c22748423acba36397e5f020e7/org.eclipse.jdt.junit/src/org/eclipse/jdt/internal/junit/ui/OpenTestAction.java#L108-L122
+            Collections.reverse(displayNames);
+
+            Set<Annotation> methodCategoryAnnotations = new HashSet<>();
+            List<FrameworkMethod> annotatedMethods = testClass.getAnnotatedMethods();
+            for (FrameworkMethod fm : annotatedMethods)
+            {
+                methodCategoryAnnotations.add(fm.getAnnotation(Category.class));
+            }
+            methodCategoryAnnotations.remove(null);
+
+            Description childDescription = Description.createTestDescription(testClass.getJavaClass(), String.join(" :: ", displayNames),
+                                                                             methodCategoryAnnotations.toArray(new Annotation[0]));
+            description.addChild(childDescription);
+        }
+
+        return description;
+    }
+
     // private List<List<Runner>> buildTestRunnerLists(List<List<Runner>> vectors)
     // {
     //

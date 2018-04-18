@@ -1,8 +1,12 @@
 package com.xceptance.neodymium.module.vector;
 
-public interface Vector
+public interface RunVector
 {
     public void beforeMethod();
 
     public void afterMethod();
+
+    public String getTestName();
+
+    public int vectorHashCode();
 }
