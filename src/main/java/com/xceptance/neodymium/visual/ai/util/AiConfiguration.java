@@ -11,15 +11,12 @@ public interface AiConfiguration extends Config
 {
 
     @Key("neodymium.ai.enabled")
+    @DefaultValue("true")
     public boolean enabled();
 
     @Key("neodymium.ai.ID")
     @DefaultValue("all")
     public String id();
-
-    @Key("neodymium.ai.resultDirectory")
-    @DefaultValue("results/ai")
-    public String resultDirectory();
 
     @Key("neodymium.ai.TESTCASE_BOUND")
     @DefaultValue("true")

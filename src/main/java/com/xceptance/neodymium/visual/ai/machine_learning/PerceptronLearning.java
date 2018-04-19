@@ -47,8 +47,14 @@ import java.util.ArrayList;
  * 
  * @author Diego Catalano edited by Thomas Volkmann
  */
-public class PerceptronLearning implements ISupervisedLearning
+public class PerceptronLearning implements IUnSupervisedLearning
 {
+    // network to teach
+    private ActivationNetwork network;
+
+    // learning rate
+    private double learningRate = 0.1;
+
     /**
      * Get Learning rate. Range[0, 1].
      * 
@@ -82,7 +88,7 @@ public class PerceptronLearning implements ISupervisedLearning
     }
 
     @Override
-    public double Run(ArrayList<Integer> input)
+    public double run(ArrayList<Integer> input)
     {
         // get the only layer of the network
         Layer layer = network.layer;
@@ -122,24 +128,4 @@ public class PerceptronLearning implements ISupervisedLearning
         }
         return error / misclassified;
     }
-
-    // old version do not use !
-    @Override
-    public double RunEpoch(ArrayList<ArrayList<Integer>> input, ArrayList<ArrayList<Double>> output)
-    {
-        double error = 0.0;
-        // run learning procedure for all samples
-        for (int i = 0, n = input.size(); i < n; i++)
-        {
-            error += Run(input.get(i));
-        }
-        // return summary error
-        return error;
-    }
-
-    // network to teach
-    private ActivationNetwork network;
-
-    // learning rate
-    private double learningRate = 0.1;
 }

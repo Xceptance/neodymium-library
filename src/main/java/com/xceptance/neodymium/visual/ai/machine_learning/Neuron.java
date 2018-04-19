@@ -79,6 +79,11 @@ public class Neuron implements Serializable
     protected static FloatRange range = new FloatRange(0.0f, 1.0f);
 
     /**
+     * Auto generated serial number.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * Get the range.
      * 
      * @return range FloatRagne value
@@ -145,24 +150,33 @@ public class Neuron implements Serializable
      */
     public Neuron()
     {
-        double d = range.length();
-        // weight = r.nextDouble( ) * d + range.getMin();
-        weight = 0.5;
+        this(false);
+    }
+
+    // TODO implement and use property for random learning
+    public Neuron(boolean randomWeight)
+    {
+        randomize(randomWeight);
     }
 
     /**
      * Randomize neuron. Initialize neuron's weights with random values within the range specified by Range.
      */
-    public void Randomize()
+    public void randomize()
     {
-        double d = range.length();
-        // weight = r.nextDouble( ) * d + range.getMin();
-        weight = 0.5;
+        this.randomize(false);
     }
 
-    /**
-     * Auto generated serial number.
-     */
-    private static final long serialVersionUID = 1L;
-
+    public void randomize(boolean randomWeight)
+    {
+        if (randomWeight)
+        {
+            double d = range.length();
+            weight = r.nextDouble() * d + range.getMin();
+        }
+        else
+        {
+            weight = 0.5;
+        }
+    }
 }

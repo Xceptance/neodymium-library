@@ -372,8 +372,6 @@ public abstract class Network implements Serializable
      * 
      * @param fileName
      *            File name to save network into.
-     * @param averMetric
-     *            average metric to save
      */
     public void Save(String fileName)
     {

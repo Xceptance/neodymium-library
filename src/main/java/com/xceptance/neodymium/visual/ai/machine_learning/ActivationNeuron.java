@@ -123,9 +123,9 @@ public class ActivationNeuron extends Neuron
     }
 
     @Override
-    public void Randomize()
+    public void randomize()
     {
-        super.Randomize();
+        super.randomize();
         this.threshold = r.nextDouble() * (range.length()) + range.getMin();
     }
 

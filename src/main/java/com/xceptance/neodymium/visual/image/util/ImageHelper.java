@@ -801,10 +801,14 @@ public class ImageHelper
     /**
      * Colors a certain pixel using getComplementaryColor. Works directly on imgOut.
      * 
+     * @param image
+     *            the original image for which certain pixels should be marked
      * @param x
      *            the x coordinate of the pixel to color
      * @param y
      *            the y coordinate of the pixel to color
+     * @param c
+     *            the color
      */
     protected static void colorPixel(final BufferedImage image, final int x, final int y, final Color c)
     {
@@ -855,6 +859,8 @@ public class ImageHelper
      *            the width of the partial image
      * @param subImageHeight
      *            the height of the partial image
+     * @param c
+     *            the color
      */
     protected static void drawBorders(final BufferedImage image, final int currentX, final int currentY, final int width,
                                       final int height, final int subImageWidth, final int subImageHeight, final Color c)

@@ -40,11 +40,11 @@ package com.xceptance.neodymium.visual.ai.machine_learning;
 import java.util.ArrayList;
 
 /**
- * Supervised learning interface.
+ * Unsupervised learning interface.
  * 
- * @author Diego Catalano edited by Thomas Volkmann
+ * @author Thomas Volkmann
  */
-public interface ISupervisedLearning
+public interface IUnSupervisedLearning
 {
     /**
      * Runs learning iteration.
@@ -53,19 +53,6 @@ public interface ISupervisedLearning
      *            Input vector.
      * @return Returns learning error.
      */
-    double Run(ArrayList<Integer> input);
+    double run(ArrayList<Integer> input);
 
-    /**
-     * Runs learning epoch. Epoch = In training a neural net, the term epoch is used to describe a complete pass through
-     * all of the training patterns. The weights in the neural net may be updated after each pattern is presented to the
-     * net, or they may be updated just once at the end of the epoch. Frequently used as a measure of speed of learning
-     * - as in "training was complete after x epochs".
-     * 
-     * @param input
-     *            Array of input vectors.
-     * @param output
-     *            Array of output vectors.
-     * @return Returns sum of learning errors.
-     */
-    double RunEpoch(ArrayList<ArrayList<Integer>> input, ArrayList<ArrayList<Double>> output);
 }

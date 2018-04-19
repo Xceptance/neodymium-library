@@ -388,6 +388,8 @@ public class Helper
      * 
      * @param filename
      *            String full path name
+     * @param name
+     *            String name
      * @return BufferedImage
      */
     public static FastBitmap loadImageScaled_FastBitmap(String filename, String name)
@@ -454,10 +456,6 @@ public class Helper
      * 
      * @param path
      *            String full path name to the folder
-     * @param heigth
-     *            int value for scaling
-     * @param width
-     *            int value for scaling
      * @return ArrayList all found {@link FastBitmap} in the folder
      */
     public static ArrayList<FastBitmap> loadAllImagesScaled_FastBitmap(String path)

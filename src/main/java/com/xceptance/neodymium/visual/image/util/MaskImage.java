@@ -25,7 +25,7 @@ public class MaskImage
      * @param referenceImage
      *            The reference image for the mask training
      * @param maskImage
-     *            The mask image, @Nullable -> Creates a blank mask image with the dimensions of the reference image
+     *            The mask image, @Nullable: Creates a blank mask image with the dimensions of the reference image
      */
     public MaskImage(final BufferedImage referenceImage, @Nullable final BufferedImage maskImage)
     {

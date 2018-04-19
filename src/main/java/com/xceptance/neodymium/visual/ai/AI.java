@@ -41,9 +41,9 @@ import com.xceptance.neodymium.visual.ai.machine_learning.ActivationNetwork;
 import com.xceptance.neodymium.visual.ai.machine_learning.BipolarSigmoidFunction;
 import com.xceptance.neodymium.visual.ai.machine_learning.PerceptronLearning;
 import com.xceptance.neodymium.visual.ai.pre_processing.ImageTransformation;
+import com.xceptance.neodymium.visual.ai.util.AiConfiguration;
 import com.xceptance.neodymium.visual.ai.util.Constants;
 import com.xceptance.neodymium.visual.ai.util.Helper;
-import com.xceptance.neodymium.visual.ai.util.AiConfiguration;
 
 /**
  * Module for the visual assertion of changes in a browser page. The module is called in an action and takes a
@@ -60,17 +60,19 @@ public class AI
     private static ThreadLocal<Integer> indexCounter = new ThreadLocal<>();
 
     // subdirectories
-    private final String RESULT_DIRECTORY_TRAINING = "training";
+    private final static String RESULT_DIRECTORY_TRAINING = "training";
 
-    private final String RESULT_DIRECTORY_TRAINING_LEARN = "used for training";
+    private final static String RESULT_DIRECTORY_TRAINING_LEARN = "learn";
 
-    private final String RESULT_DIRECTORY_TRAINING_VALIDATE = "used for validation";
+    private final static String RESULT_DIRECTORY_TRAINING_VALIDATE = "validate";
 
-    private final String RESULT_DIRECTORY_NETWORKS = "networks";
+    private final static String RESULT_DIRECTORY_RECOGNITION = "recognition";
 
-    private final String RESULT_DIRECTORY_UNRECOGNIZED = "unrecognized";
+    private final static String RESULT_DIRECTORY_UNRECOGNIZED = "unrecognized";
 
-    private final String RESULT_DIRECTORY_RECOGNIZED = "recognized";
+    private final static String RESULT_DIRECTORY_RECOGNIZED = "recognized";
+
+    private final static String RESULT_DIRECTORY_NETWORKS = "networks";
 
     public void execute(final WebDriver webdriver, String testCaseName, String actionName)
     {
@@ -90,7 +92,8 @@ public class AI
         // Identification of the current environment for this test
         final String id = props.id();
         // Parent directory of the visual assertion results
-        final String resultDirectory = props.resultDirectory();
+        final String aiPersistentDirectory = "data/ai";
+        final String aiTargetDirectory = "target/ai";
 
         // Wait time for the page to load completely
         final int waitTime = props.waitingTime();
@@ -144,9 +147,8 @@ public class AI
         // --------------------------------------------------------------------------------
 
         // Generate the child directories for the current environment in the parent result folder
-        final File targetDirectory = new File(new File(new File(resultDirectory, id), currentTestCaseName), browserName);
-
-        targetDirectory.mkdirs();
+        final File aiTrainingDirectoryFolder = new File(new File(new File(new File(aiPersistentDirectory, RESULT_DIRECTORY_TRAINING), id), currentTestCaseName), browserName);
+        aiTrainingDirectoryFolder.mkdirs();
 
         // Retrieve current index counter for the image file names, only used internal
         Integer index = indexCounter.get();
@@ -171,12 +173,13 @@ public class AI
         else
         {
             // if the argument is not null, take the destination from the script and change everything according
-            screenshotName = Helper.checkFolderForMatch(targetDirectory + File.separator + RESULT_DIRECTORY_TRAINING, currentActionName) + currentActionName;
+            screenshotName = Helper.checkFolderForMatch(aiTrainingDirectoryFolder + "", currentActionName)
+                             + currentActionName;
 
         }
 
         // Directory for the training images
-        final File trainingDirectory = new File(new File(targetDirectory, RESULT_DIRECTORY_TRAINING), screenshotName);
+        final File trainingDirectory = new File(aiTrainingDirectoryFolder, screenshotName);
         final File trainingDirectory_uft = new File(trainingDirectory, RESULT_DIRECTORY_TRAINING_LEARN);
         final File trainingDirectory_val = new File(trainingDirectory, RESULT_DIRECTORY_TRAINING_VALIDATE);
 
@@ -185,7 +188,7 @@ public class AI
         final File trainingScreenShotFile = new File(trainingDirectory_uft, exactScreenshotName);
 
         // Directory of the network file
-        final File networkDirectoryPath = new File(targetDirectory, RESULT_DIRECTORY_NETWORKS);
+        final File networkDirectoryPath = new File(aiPersistentDirectory, RESULT_DIRECTORY_NETWORKS);
         networkDirectoryPath.mkdirs();
         // Path of the network file
         final File networkFile = new File(networkDirectoryPath, screenshotName);
@@ -236,9 +239,7 @@ public class AI
                 trainingDirectory.mkdirs();
                 trainingDirectory_uft.mkdir();
                 trainingDirectory_val.mkdir();
-                imgList.addAll(an.scanFolderForChanges(
-                                                       trainingScreenShotFile.getParent(),
-                                                       exactScreenshotName));
+                imgList.addAll(an.scanFolderForChanges(trainingScreenShotFile.getParent(), exactScreenshotName));
             }
             // transform the new screenshot
             im = new ImageTransformation(imgList, an.getAverageMetric(), Constants.NETWORK_MODE);
@@ -262,9 +263,7 @@ public class AI
             Constants.IMAGE_WIDTH = screenshot.getWidth();
             Constants.IMAGE_HEIGHT = screenshot.getHeight();
 
-            imgList.addAll(an.scanFolderForChanges(
-                                                   trainingScreenShotFile.getParent(),
-                                                   exactScreenshotName));
+            imgList.addAll(an.scanFolderForChanges(trainingScreenShotFile.getParent(), exactScreenshotName));
 
             // load all images from the directory
             im = new ImageTransformation(imgList);
@@ -284,7 +283,7 @@ public class AI
         {
             for (PatternHelper pattern : patternList)
             {
-                pl.Run(pattern.getPatternList());
+                pl.run(pattern.getPatternList());
             }
         }
 
@@ -310,10 +309,12 @@ public class AI
         }
 
         // Save the screenshot
+        final File aiRecognitionDirectoryFolder = new File(new File(new File(new File(aiTargetDirectory, RESULT_DIRECTORY_RECOGNITION), id), currentTestCaseName), browserName);
+        aiRecognitionDirectoryFolder.mkdirs();
         if (Constants.INTENDED_PERCENTAGE_MATCH > result && !Constants.NETWORK_MODE && !selfTest)
         {
             // Directory for the unrecognized images of the current test run
-            final File unrecognizedInstanceDirectory = new File(new File(targetDirectory, RESULT_DIRECTORY_UNRECOGNIZED), screenshotName);
+            final File unrecognizedInstanceDirectory = new File(new File(aiRecognitionDirectoryFolder, RESULT_DIRECTORY_UNRECOGNIZED), screenshotName);
             // Path of the unrecognized image file
             final File unrecognizedImageFile = new File(unrecognizedInstanceDirectory, exactScreenshotName);
             unrecognizedImageFile.mkdirs();
@@ -322,7 +323,7 @@ public class AI
         }
         else if (Constants.INTENDED_PERCENTAGE_MATCH < result && !Constants.NETWORK_MODE && !selfTest)
         {
-            final File recognizedInstanceDirectory = new File(new File(targetDirectory, RESULT_DIRECTORY_RECOGNIZED), screenshotName);
+            final File recognizedInstanceDirectory = new File(new File(aiRecognitionDirectoryFolder, RESULT_DIRECTORY_RECOGNIZED), screenshotName);
             final File recognizedImageFile = new File(recognizedInstanceDirectory, exactScreenshotName);
             recognizedInstanceDirectory.mkdirs();
             Helper.saveImage(screenshot.toBufferedImage(), recognizedImageFile);
