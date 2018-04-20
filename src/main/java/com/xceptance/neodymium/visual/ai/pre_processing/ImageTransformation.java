@@ -296,8 +296,6 @@ public class ImageTransformation
     {
         int groupSize = 0;
         double boundingBoxSize = 0.0;
-        double distanceMin = 0.0;
-        double distanceMax = 0.0;
         double histoRedMean = 1.0;
         double histoGreenMean = 1.0;
         double histoBlueMean = 1.0;
@@ -326,8 +324,6 @@ public class ImageTransformation
                 Metric met = mc.metricList.get(ind);
                 groupSize = met.getGroupSize();
                 boundingBoxSize = met.getBoundingBoxDistance();
-                distanceMin = met.getMinDistanceToZero();
-                distanceMax = met.getMaxDistanceToZero();
                 centerOfGravity.Add(met.getCenterOfGravity());
 
                 if (Constants.USE_COLOR_FOR_COMPARISON)
@@ -371,8 +367,6 @@ public class ImageTransformation
             }
             groupSize = 0;
             boundingBoxSize = 0.0;
-            distanceMin = 0.0;
-            distanceMax = 0.0;
             centerOfGravity.x = 0;
             centerOfGravity.y = 0;
             histoRedMean = 1.0;

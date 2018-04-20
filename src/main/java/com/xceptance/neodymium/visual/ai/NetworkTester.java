@@ -68,14 +68,10 @@ public class NetworkTester
                 im = new ImageTransformation(imgList, an.getAverageMetric(), false);
                 patternList = im.computeAverageMetric();
 
-                int index = 0;
                 for (PatternHelper pattern : patternList)
                 {
                     System.out.println("Recognized value of image " + pattern.getTagName() + " = " + an.checkForRecognitionAsString(pattern.getPatternList())
                                        + " %");
-                    // Highlighter hLight = new Highlighter(imgList.get(index), an.getAverageMetric(), pattern);
-                    // Helper.saveImage(hLight.getMarkedImage(), new File(args[0] + index));
-                    ++index;
                 }
             }
         }

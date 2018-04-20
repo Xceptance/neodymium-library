@@ -37,7 +37,7 @@ public class Constants
     // still learn (use several images which where already seen)
     public static Double INTENDED_PERCENTAGE_MATCH = 0.80;
 
-    // Color will also be used for image comparison, not recommended for websides with many images
+    // Color will also be used for image comparison, not recommended for websites with many images
     // or consequently changing content
     public static boolean USE_COLOR_FOR_COMPARISON = false;
 

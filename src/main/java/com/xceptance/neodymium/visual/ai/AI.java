@@ -223,13 +223,7 @@ public class AI
             an = (ActivationNetwork) an.Load(networkFile.getPath());
             an.setConstants();
             screenshot = new FastBitmap(takeScreenshot(webdriver), exactScreenshotName, Constants.USE_ORIGINAL_SIZE);
-
-            // TODO Has this to be handled in a different way?
-            // webdriver cannot take the screenshot -> RETURN
-            if (screenshot == null)
-            {
-                System.exit(-1);
-            }
+            Assert.assertNotNull("Screenshot couldn't be taken by the WebDriver", screenshot);
 
             // if the network is not done with training check the training folder for changes
             // if there are changes, all unknwon images get loaded
@@ -251,18 +245,12 @@ public class AI
             trainingDirectory_uft.mkdir();
             trainingDirectory_val.mkdir();
             screenshot = new FastBitmap(takeScreenshot(webdriver), exactScreenshotName, Constants.USE_ORIGINAL_SIZE);
-
-            imgList.add(screenshot);
-            // TODO Has this to be handled in a different way?
-            // webdriver cannot take the screenshot -> RETURN
-            if (screenshot == null)
-            {
-                System.exit(-1);
-            }
+            Assert.assertNotNull("Screenshot couldn't be taken by the WebDriver", screenshot);
 
             Constants.IMAGE_WIDTH = screenshot.getWidth();
             Constants.IMAGE_HEIGHT = screenshot.getHeight();
 
+            imgList.add(screenshot);
             imgList.addAll(an.scanFolderForChanges(trainingScreenShotFile.getParent(), exactScreenshotName));
 
             // load all images from the directory
