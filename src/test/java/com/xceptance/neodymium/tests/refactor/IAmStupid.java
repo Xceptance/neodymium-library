@@ -39,4 +39,35 @@ public class IAmStupid
     {
 
     }
+
+    @Test
+    @Browser(
+        {
+            "C", "A"
+        })
+    public void test5_CA() throws Exception
+    {
+
+    }
+
+    @Test
+    @Browser("")
+    public void test6_NONE() throws Exception
+    {
+
+    }
+
+    @Test
+    @Browser({})
+    public void test7_EMPTY() throws Exception
+    {
+
+    }
+
+    @Test
+    @Browser("C")
+    public void test8_C() throws Exception
+    {
+
+    }
 }

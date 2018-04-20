@@ -1,7 +1,84 @@
 package com.xceptance.neodymium.module.vector;
 
-public class MethodVector
+import java.util.List;
+
+import org.junit.runners.model.FrameworkMethod;
+
+public class MethodVector implements RunVector
 {
+
+    private int vectorHashCode;
+
+    private FrameworkMethod testMethod;
+
+    private List<FrameworkMethod> beforeMethodMethods;
+
+    private List<FrameworkMethod> afterMethodMethods;
+
+    public MethodVector(FrameworkMethod testMethod, List<FrameworkMethod> beforeMethodMethods, List<FrameworkMethod> afterMethodMethods,
+                        int hashCode)
+    {
+        this.testMethod = testMethod;
+        this.beforeMethodMethods = beforeMethodMethods;
+        this.afterMethodMethods = afterMethodMethods;
+        this.vectorHashCode = hashCode;
+    }
+
+    @Override
+    public void beforeMethod()
+    {
+        // run befores
+        for (FrameworkMethod beforeMethod : beforeMethodMethods)
+        {
+            try
+            {
+                beforeMethod.invokeExplosively(null);
+            }
+            catch (Throwable e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+
+        // run the actual test methods
+        try
+        {
+            testMethod.invokeExplosively(null);
+        }
+        catch (Throwable e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void afterMethod()
+    {
+        // run afters
+        for (FrameworkMethod afterMethod : afterMethodMethods)
+        {
+            try
+            {
+                afterMethod.invokeExplosively(null);
+            }
+            catch (Throwable e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Override
+    public String getTestName()
+    {
+        return testMethod.getName();
+    }
+
+    @Override
+    public int vectorHashCode()
+    {
+        return vectorHashCode;
+    }
 
     // private static final Logger LOGGER = LoggerFactory.getLogger(MethodVector.class);
     //

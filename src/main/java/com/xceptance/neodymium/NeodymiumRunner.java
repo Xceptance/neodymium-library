@@ -2,7 +2,6 @@ package com.xceptance.neodymium;
 
 import java.lang.annotation.Annotation;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,6 +36,7 @@ import com.xceptance.neodymium.NeodymiumDataRunner.NeodymiumDataRunnerRunner;
 import com.xceptance.neodymium.module.order.DefaultVectorRunOrder;
 import com.xceptance.neodymium.module.vector.RunVector;
 import com.xceptance.neodymium.module.vector.RunVectorBuilder;
+import com.xceptance.neodymium.module.vector.RunVectorNode;
 import com.xceptance.neodymium.multibrowser.Browser;
 
 /**
@@ -112,14 +112,24 @@ public class NeodymiumRunner extends Runner implements Filterable
             {
                 RunVectorBuilder vectorBuilder = createVectorBuilder(vectorBuildClass);
                 vectorBuilder.create(testClass, method);
-                System.out.print(method.getName() + ": ");
                 orderedTestRunner.computeIfAbsent(method, (key) -> new LinkedList<>()).add(vectorBuilder.buildRunVectors());
             }
         }
 
-        anynameisfine(vectorRunOrder.size());
+        RunVectorNode runNode = null;
+        for (List<List<RunVector>> list : orderedTestRunner.values())
+        {
+            if (runNode == null)
+            {
+                runNode = new RunVectorNode(list);
+            }
+            else
+            {
+                runNode.add(list);
+            }
+        }
 
-        testDescription = createTestDescription();
+        testDescription = createTestDescription(runNode, null);
 
         // VectorRunOrder defaultVectorRunOrder = new MethodOnlyRunOrder(); // new DefaultVectorRunOrder();
         // // VectorRunOrder defaultVectorRunOrder = new DefaultVectorRunOrder();
@@ -414,40 +424,42 @@ public class NeodymiumRunner extends Runner implements Filterable
     // field.set(null, newValue);
     // }
 
-    private void anynameisfine(int size)
+    private Description createTestDescription(RunVectorNode runNode, Description parentDescription)
     {
-        List<List<RunVector>> buckets = new ArrayList<>(size);
-        for (int i = 0; i < size; i++)
+        Description description = null;
+        if (parentDescription == null)
         {
-            buckets.add(new ArrayList<>());
-        }
+            // there is no parent so we build it as parent
+            description = Description.createSuiteDescription(testClass.getJavaClass());
 
-        for (FrameworkMethod method : testMethods)
-        {
-            List<List<RunVector>> list = orderedTestRunner.get(method);
-            for (int i = 0; i < list.size(); i++)
+            for (RunVectorNode child : runNode.childNodes)
             {
-
+                description.addChild(createTestDescription(child, description));
             }
         }
-    }
-
-    private Description createTestDescription()
-    {
-        Description description = Description.createSuiteDescription(testClass.getJavaClass());
-
-        for (FrameworkMethod method : testMethods)
+        else
         {
-            List<List<RunVector>> orderedRunVectors = orderedTestRunner.get(method);
-            for (List<RunVector> runVectors : orderedRunVectors)
+            for (RunVector runVector : runNode.runVectors)
             {
-                for (RunVector runVector : runVectors)
+                Description childDescription;
+                if (!runNode.childNodes.isEmpty())
                 {
-                    Description childDescription = Description.createTestDescription(testClass.getJavaClass(), runVector.getTestName());
-                    description.addChild(childDescription);
+                    // if the child has childs too, then we need to create a suite description
+                    childDescription = Description.createSuiteDescription(runVector.getTestName());
+                    for (RunVectorNode childNode : runNode.childNodes)
+                    {
+                        childDescription.addChild(createTestDescription(childNode, childDescription));
+                    }
+
+                    return childDescription;
+                }
+                else
+                {
+                    // we have no childs so we are finally a test description
+                    return Description.createTestDescription(testClass.getJavaClass().getName(), runVector.getTestName(),
+                                                             runVector.getTestName());
                 }
             }
-
         }
 
         return description;
