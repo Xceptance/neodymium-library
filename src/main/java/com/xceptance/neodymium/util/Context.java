@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.util.WeakHashMap;
 
 import org.aeonbits.owner.ConfigFactory;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 
 import com.codeborne.selenide.Selenide;
@@ -115,27 +116,39 @@ public class Context
     }
 
     /**
-     * Current window height
-     *
-     * @return current height of the window, not viewport height!
+     * Current window width and height
+     * 
+     * @return {@link Dimension} object containing width and height of current window
      */
-    public int getWindowHeight()
+    public Dimension getWindowSize()
     {
-        return driver.manage().window().getSize().getHeight();
+        return driver.manage().window().getSize();
     }
 
     /**
-     * Current window width
-     *
-     * @return current width of the window, not viewport width!
+     * Current viewport width and height
+     * 
+     * @return {@link Dimension} object containing width and height of current viewport
      */
-    public int getWindowWidth()
+    public Dimension getViewportSize()
     {
-        Long width = Selenide.executeJavaScript("return document.body.clientWidth");
-        return width.intValue();
+        Long width = Selenide.executeJavaScript("return window.innerWidth");
+        Long height = Selenide.executeJavaScript("return window.innerHeight");
 
-        // this code doesn't work for chrome device emulation since it returns the whole window width
-        // return driver.manage().window().getSize().getWidth();
+        return new Dimension(width.intValue(), height.intValue());
+    }
+
+    /**
+     * Current page width and height
+     * 
+     * @return {@link Dimension} object containing width and height of current page
+     */
+    public Dimension getPageSize()
+    {
+        Long width = Selenide.executeJavaScript("return document.documentElement.clientWidth");
+        Long height = Selenide.executeJavaScript("return document.documentElement.clientHeight");
+
+        return new Dimension(width.intValue(), height.intValue());
     }
 
     /**
@@ -145,7 +158,7 @@ public class Context
      */
     public boolean isMobile()
     {
-        return getWindowWidth() < configuration.mediumDeviceBreakpoint();
+        return getViewportSize().getWidth() < configuration.mediumDeviceBreakpoint();
     }
 
     /**
@@ -156,7 +169,8 @@ public class Context
      */
     public boolean isTablet()
     {
-        return getWindowWidth() >= configuration.mediumDeviceBreakpoint() && getWindowWidth() < configuration.largeDeviceBreakpoint();
+        return getViewportSize().getWidth() >= configuration.mediumDeviceBreakpoint() &&
+               getViewportSize().getWidth() < configuration.largeDeviceBreakpoint();
     }
 
     /**
@@ -167,7 +181,8 @@ public class Context
      */
     public boolean isSmallDesktop()
     {
-        return getWindowWidth() >= configuration.largeDeviceBreakpoint() && getWindowWidth() < configuration.xlargeDeviceBreakpoint();
+        return getViewportSize().getWidth() >= configuration.largeDeviceBreakpoint() &&
+               getViewportSize().getWidth() < configuration.xlargeDeviceBreakpoint();
     }
 
     /**
@@ -178,7 +193,7 @@ public class Context
      */
     public boolean isLargeDesktop()
     {
-        return getWindowWidth() >= configuration.xlargeDeviceBreakpoint();
+        return getViewportSize().getWidth() >= configuration.xlargeDeviceBreakpoint();
     }
 
     /**
@@ -189,7 +204,7 @@ public class Context
      */
     public boolean isDesktop()
     {
-        return getWindowWidth() >= configuration.largeDeviceBreakpoint();
+        return getViewportSize().getWidth() >= configuration.largeDeviceBreakpoint();
     }
 
     /**

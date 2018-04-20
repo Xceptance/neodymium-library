@@ -5,7 +5,7 @@ import org.aeonbits.owner.Config.Sources;
 
 @Sources(
     {
-        "file:./config/browser.properties"
+        "file:${configurationFile}"
     })
 public interface DriverServerPath extends Config
 {
