@@ -11,7 +11,7 @@ import com.xceptance.neodymium.multibrowser.Browser;
 
 public class BrowserVectorBuilder implements RunVectorBuilder
 {
-    private String[] browser;
+    private String[] browser = new String[0];
 
     @Override
     public void create(TestClass testClass, FrameworkMethod frameworkMethod)
