@@ -97,9 +97,6 @@
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<additionalOptions>-html5</additionalOptions>
-				</configuration>
 				<!-- remove pin of commons-lang3 when upgraded to 3.1.0 -->
 				<dependencies>
 					<dependency>
