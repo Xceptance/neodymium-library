@@ -291,6 +291,7 @@ public class NeodymiumRunner extends Runner implements Filterable
                 // if a node has childs then it is handled as embedded suite
                 Description suiteDescription = Description.createSuiteDescription(testName);
                 parentDescription.addChild(suiteDescription);
+
                 // add childs to that suite that also can be suites
                 for (RunVectorNode childNode : runNode.childNodes)
                 {
@@ -305,6 +306,8 @@ public class NeodymiumRunner extends Runner implements Filterable
                 // build unique test name
                 StringBuilder sb = new StringBuilder(250);
 
+                // necessary to preserve JUnit view feature which lead you to the test method on double click the entry
+                // https://github.com/eclipse/eclipse.jdt.ui/blob/0e4ddb8f4fd1d3c22748423acba36397e5f020e7/org.eclipse.jdt.junit/src/org/eclipse/jdt/internal/junit/ui/OpenTestAction.java#L108-L122
                 for (int i = clonedExecutionRunner.getTestExecutionRunner().size() - 1; i >= 0; i--)
                 {
                     RunVector tempRunVector = clonedExecutionRunner.getTestExecutionRunner().get(i);
