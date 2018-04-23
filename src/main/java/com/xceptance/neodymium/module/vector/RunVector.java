@@ -9,4 +9,6 @@ public interface RunVector
     public String getTestName();
 
     public int vectorHashCode();
+
+    public void setTestClassInstance(Object testClassInstance);
 }

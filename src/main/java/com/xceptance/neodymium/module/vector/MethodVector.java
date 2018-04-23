@@ -15,6 +15,8 @@ public class MethodVector implements RunVector
 
     private List<FrameworkMethod> afterMethodMethods;
 
+    private Object testClassInstance;
+
     public MethodVector(FrameworkMethod testMethod, List<FrameworkMethod> beforeMethodMethods, List<FrameworkMethod> afterMethodMethods,
                         int hashCode)
     {
@@ -32,7 +34,7 @@ public class MethodVector implements RunVector
         {
             try
             {
-                beforeMethod.invokeExplosively(null);
+                beforeMethod.invokeExplosively(testClassInstance);
             }
             catch (Throwable e)
             {
@@ -43,7 +45,7 @@ public class MethodVector implements RunVector
         // run the actual test methods
         try
         {
-            testMethod.invokeExplosively(null);
+            testMethod.invokeExplosively(testClassInstance);
         }
         catch (Throwable e)
         {
@@ -78,6 +80,12 @@ public class MethodVector implements RunVector
     public int vectorHashCode()
     {
         return vectorHashCode;
+    }
+
+    @Override
+    public void setTestClassInstance(Object testClassInstance)
+    {
+        this.testClassInstance = testClassInstance;
     }
 
     // private static final Logger LOGGER = LoggerFactory.getLogger(MethodVector.class);

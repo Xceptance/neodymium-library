@@ -85,4 +85,10 @@ public class BrowserVector implements RunVector
         }
         return true;
     }
+
+    @Override
+    public void setTestClassInstance(Object testClassInstance)
+    {
+        // we dont need this for browsers
+    }
 }
