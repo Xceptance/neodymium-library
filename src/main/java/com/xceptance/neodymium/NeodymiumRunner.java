@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xceptance.neodymium.module.order.DefaultVectorRunOrder;
+import com.xceptance.neodymium.module.vector.ExecutionRunner;
 import com.xceptance.neodymium.module.vector.RunVector;
 import com.xceptance.neodymium.module.vector.RunVectorBuilder;
 import com.xceptance.neodymium.module.vector.RunVectorNode;
@@ -83,6 +84,8 @@ public class NeodymiumRunner extends Runner implements Filterable
 
     private Map<FrameworkMethod, List<List<RunVector>>> orderedTestRunner;
 
+    private List<ExecutionRunner> executionRunners;
+
     public NeodymiumRunner(Class<?> testKlass, RunnerBuilder rb) throws Throwable
     {
         LOGGER.debug(testKlass.getCanonicalName());
@@ -121,9 +124,10 @@ public class NeodymiumRunner extends Runner implements Filterable
         }
 
         testDescription = Description.createSuiteDescription(testClass.getJavaClass());
+        executionRunners = new LinkedList<>();
         for (RunVectorNode childNode : runNode.childNodes)
         {
-            createChildTestDescription(childNode, testDescription);
+            createChildTestDescription(childNode, testDescription, executionRunners, null);
         }
 
         // VectorRunOrder defaultVectorRunOrder = new MethodOnlyRunOrder(); // new DefaultVectorRunOrder();
@@ -269,25 +273,38 @@ public class NeodymiumRunner extends Runner implements Filterable
         return vector;
     }
 
-    private void createChildTestDescription(RunVectorNode runNode, Description parentDescription)
+    private void createChildTestDescription(RunVectorNode runNode, Description parentDescription, List<ExecutionRunner> executionRunners,
+                                            ExecutionRunner currentExecutionRunner)
     {
         boolean nodeHasChilds = (runNode.childNodes.size() == 0) ? false : true;
+        if (currentExecutionRunner == null)
+        {
+            currentExecutionRunner = new ExecutionRunner();
+        }
         for (RunVector runVector : runNode.runVectors)
         {
+            ExecutionRunner clonedExecutionRunner = currentExecutionRunner.clone();
+            clonedExecutionRunner.addTestExecutionRunner(runVector);
+            String testName = runVector.getTestName();
             if (nodeHasChilds)
             {
-                Description suiteDescription = Description.createSuiteDescription(runVector.getTestName());
+                // if a node has childs then it is handled as embedded suite
+                Description suiteDescription = Description.createSuiteDescription(testName);
                 parentDescription.addChild(suiteDescription);
+                // add childs to that suite that also can be suites
                 for (RunVectorNode childNode : runNode.childNodes)
                 {
-                    createChildTestDescription(childNode, suiteDescription);
+                    createChildTestDescription(childNode, suiteDescription, executionRunners, clonedExecutionRunner);
                 }
             }
             else
             {
-                Description testDescription = Description.createTestDescription(testClass.getJavaClass().getName(), runVector.getTestName(),
-                                                                                runVector.getTestName());
-                parentDescription.addChild(testDescription);
+                // finally the real test functions
+                String className = testClass.getJavaClass().getName();
+                Description leafTestDescription = Description.createTestDescription(className, testName, testName);
+                parentDescription.addChild(leafTestDescription);
+                clonedExecutionRunner.setTestDescription(leafTestDescription);
+                executionRunners.add(clonedExecutionRunner);
             }
         }
     }
@@ -319,17 +336,38 @@ public class NeodymiumRunner extends Runner implements Filterable
         {
             throw new RuntimeException(e);
         }
-        //
-        // {
-        // // run before method methods
-        // invokeMethods(testInstance, beforeMethodMethods);
-        //
-        // // TODO: run the test methods
-        //
-        // // run after method methods
-        // invokeMethods(testInstance, afterMethodMethods);
-        // }
-        //
+
+        for (ExecutionRunner executionRunner : executionRunners)
+        {
+            Description currentTestDescription = executionRunner.getTestDescription();
+            notifier.fireTestStarted(currentTestDescription);
+
+            for (int i = 0; i < executionRunner.getTestExecutionRunner().size(); i++)
+            {
+                RunVector runVector = executionRunner.getTestExecutionRunner().get(i);
+                runVector.setTestClassInstance(testClassInstance);
+                runVector.beforeMethod();
+            }
+
+            for (int i = executionRunner.getTestExecutionRunner().size() - 1; i >= 0; i--)
+            {
+                RunVector runVector = executionRunner.getTestExecutionRunner().get(i);
+                runVector.afterMethod();
+            }
+
+            notifier.fireTestFinished(currentTestDescription);
+            //
+            // {
+            // // run before method methods
+            // invokeMethods(testInstance, beforeMethodMethods);
+            //
+            // // TODO: run the test methods
+            //
+            // // run after method methods
+            // invokeMethods(testInstance, afterMethodMethods);
+            // }
+            //
+        }
         // run after class methods
         try
         {
@@ -339,6 +377,7 @@ public class NeodymiumRunner extends Runner implements Filterable
         {
             throw new RuntimeException(e);
         }
+
     }
 
     private void invokeMethods(Object testInstance, List<FrameworkMethod> methods) throws Throwable
