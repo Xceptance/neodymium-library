@@ -12,7 +12,6 @@ public class BrowserVector implements RunVector
     {
         this.browserTag = browserTag;
         this.vectorHashCode = vectorHashCode;
-        System.out.println(MessageFormat.format("{0} {1} {2}", vectorHashCode, hashCode(), browserTag));
     }
 
     @Override
@@ -24,13 +23,11 @@ public class BrowserVector implements RunVector
     @Override
     public void beforeMethod()
     {
-        System.out.println("Setup web driver");
     }
 
     @Override
     public void afterMethod()
     {
-        System.out.println("Teardown web driver");
     }
 
     /*
