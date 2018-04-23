@@ -129,7 +129,11 @@ public class NeodymiumRunner extends Runner implements Filterable
             }
         }
 
-        testDescription = createTestDescription(runNode, null);
+        testDescription = Description.createSuiteDescription(testClass.getJavaClass());
+        for (RunVectorNode childNode : runNode.childNodes)
+        {
+            createTestDescription(childNode, testDescription);
+        }
 
         // VectorRunOrder defaultVectorRunOrder = new MethodOnlyRunOrder(); // new DefaultVectorRunOrder();
         // // VectorRunOrder defaultVectorRunOrder = new DefaultVectorRunOrder();
@@ -424,45 +428,27 @@ public class NeodymiumRunner extends Runner implements Filterable
     // field.set(null, newValue);
     // }
 
-    private Description createTestDescription(RunVectorNode runNode, Description parentDescription)
+    private void createTestDescription(RunVectorNode runNode, Description parentDescription)
     {
-        Description description = null;
-        if (parentDescription == null)
+        boolean hasChilds = (runNode.childNodes.size() == 0) ? false : true;
+        for (RunVector runVector : runNode.runVectors)
         {
-            // there is no parent so we build it as parent
-            description = Description.createSuiteDescription(testClass.getJavaClass());
-
-            for (RunVectorNode child : runNode.childNodes)
+            if (hasChilds)
             {
-                description.addChild(createTestDescription(child, description));
-            }
-        }
-        else
-        {
-            for (RunVector runVector : runNode.runVectors)
-            {
-                Description childDescription;
-                if (!runNode.childNodes.isEmpty())
+                Description suiteDescription = Description.createSuiteDescription(runVector.getTestName());
+                parentDescription.addChild(suiteDescription);
+                for (RunVectorNode childNode : runNode.childNodes)
                 {
-                    // if the child has childs too, then we need to create a suite description
-                    childDescription = Description.createSuiteDescription(runVector.getTestName());
-                    for (RunVectorNode childNode : runNode.childNodes)
-                    {
-                        childDescription.addChild(createTestDescription(childNode, childDescription));
-                    }
-
-                    return childDescription;
-                }
-                else
-                {
-                    // we have no childs so we are finally a test description
-                    return Description.createTestDescription(testClass.getJavaClass().getName(), runVector.getTestName(),
-                                                             runVector.getTestName());
+                    createTestDescription(childNode, suiteDescription);
                 }
             }
+            else
+            {
+                Description testDescription = Description.createTestDescription(testClass.getJavaClass().getName(), runVector.getTestName(),
+                                                                                runVector.getTestName());
+                parentDescription.addChild(testDescription);
+            }
         }
-
-        return description;
     }
 
     private Description createTestDescription_old()
