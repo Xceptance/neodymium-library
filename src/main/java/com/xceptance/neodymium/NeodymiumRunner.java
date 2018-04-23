@@ -301,6 +301,20 @@ public class NeodymiumRunner extends Runner implements Filterable
             {
                 // finally the real test functions
                 String className = testClass.getJavaClass().getName();
+
+                // build unique test name
+                StringBuilder sb = new StringBuilder(250);
+
+                for (int i = clonedExecutionRunner.getTestExecutionRunner().size() - 1; i >= 0; i--)
+                {
+                    RunVector tempRunVector = clonedExecutionRunner.getTestExecutionRunner().get(i);
+
+                    sb.append(tempRunVector.getTestName());
+                    if (i > 0)
+                        sb.append(" :: ");
+                }
+                testName = sb.toString();
+
                 Description leafTestDescription = Description.createTestDescription(className, testName, testName);
                 parentDescription.addChild(leafTestDescription);
                 clonedExecutionRunner.setTestDescription(leafTestDescription);
@@ -342,6 +356,7 @@ public class NeodymiumRunner extends Runner implements Filterable
             Description currentTestDescription = executionRunner.getTestDescription();
             notifier.fireTestStarted(currentTestDescription);
 
+            // loop forward through all execution runners for this method
             for (int i = 0; i < executionRunner.getTestExecutionRunner().size(); i++)
             {
                 RunVector runVector = executionRunner.getTestExecutionRunner().get(i);
@@ -349,6 +364,7 @@ public class NeodymiumRunner extends Runner implements Filterable
                 runVector.beforeMethod();
             }
 
+            // now loop backward
             for (int i = executionRunner.getTestExecutionRunner().size() - 1; i >= 0; i--)
             {
                 RunVector runVector = executionRunner.getTestExecutionRunner().get(i);
