@@ -30,47 +30,37 @@ public class RunVectorNode
         if (newRunVectors == null)
             throw new NullPointerException("Parameter mustn't be null");
 
-        if (newRunVectors.get(0).size() == 0)
+        RunVector runVector = newRunVectors.get(0).get(0);
+        if (runVectorBuilder != null && runVector.vectorHashCode() == vectorHashCode &&
+            runVector.getClass().getTypeName().equals(runVectorBuilder.getTypeName()))
         {
-            // we ignore empty vectors and proceed
-            List<List<RunVector>> remaining = new LinkedList<>();
-            remaining.addAll(newRunVectors.subList(1, newRunVectors.size()));
-            add(remaining);
+            runVectors = newRunVectors.get(0);
+            if (newRunVectors.size() > 1)
+            {
+                List<List<RunVector>> remaining = new LinkedList<>();
+                remaining.addAll(newRunVectors.subList(1, newRunVectors.size()));
+                add(remaining);
+            }
         }
         else
         {
-            RunVector runVector = newRunVectors.get(0).get(0);
-            if (runVectorBuilder != null && runVector.vectorHashCode() == vectorHashCode &&
-                runVector.getClass().getTypeName().equals(runVectorBuilder.getTypeName()))
+            // check if there is a child that matches the vector hash code and vector builder
+            // if there is one we add it to its childs
+            // if not we create a new child
+
+            boolean foundChildVector = false;
+            for (RunVectorNode childNode : childNodes)
             {
-                runVectors = newRunVectors.get(0);
-                if (newRunVectors.size() > 1)
+                if (childNode.vectorHashCode == runVector.vectorHashCode() &&
+                    runVector.getClass().getTypeName().equals(childNode.runVectorBuilder.getTypeName()))
                 {
-                    List<List<RunVector>> remaining = new LinkedList<>();
-                    remaining.addAll(newRunVectors.subList(1, newRunVectors.size()));
-                    add(remaining);
+                    foundChildVector = true;
+                    childNode.add(newRunVectors);
                 }
             }
-            else
-            {
-                // check if there is a child that matches the vector hash code and vector builder
-                // if there is one we add it to its childs
-                // if not we create a new child
 
-                boolean foundChildVector = false;
-                for (RunVectorNode childNode : childNodes)
-                {
-                    if (childNode.vectorHashCode == runVector.vectorHashCode() &&
-                        runVector.getClass().getTypeName().equals(childNode.runVectorBuilder.getTypeName()))
-                    {
-                        foundChildVector = true;
-                        childNode.add(newRunVectors);
-                    }
-                }
-
-                if (!foundChildVector)
-                    childNodes.add(new RunVectorNode(newRunVectors, runVector));
-            }
+            if (!foundChildVector)
+                childNodes.add(new RunVectorNode(newRunVectors, runVector));
         }
     }
 }

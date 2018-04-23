@@ -1,22 +1,15 @@
 package com.xceptance.neodymium;
 
-import java.lang.annotation.Annotation;
 import java.text.MessageFormat;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runner.Runner;
@@ -24,7 +17,6 @@ import org.junit.runner.manipulation.Filter;
 import org.junit.runner.manipulation.Filterable;
 import org.junit.runner.manipulation.NoTestsRemainException;
 import org.junit.runner.notification.RunNotifier;
-import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.JUnit4;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.RunnerBuilder;
@@ -32,7 +24,6 @@ import org.junit.runners.model.TestClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xceptance.neodymium.NeodymiumDataRunner.NeodymiumDataRunnerRunner;
 import com.xceptance.neodymium.module.order.DefaultVectorRunOrder;
 import com.xceptance.neodymium.module.vector.RunVector;
 import com.xceptance.neodymium.module.vector.RunVectorBuilder;
@@ -90,17 +81,15 @@ public class NeodymiumRunner extends Runner implements Filterable
 
     private Description testDescription;
 
-    private List<FrameworkMethod> testMethods = new LinkedList<>();
-
     private Map<FrameworkMethod, List<List<RunVector>>> orderedTestRunner;
 
     public NeodymiumRunner(Class<?> testKlass, RunnerBuilder rb) throws Throwable
     {
         LOGGER.debug(testKlass.getCanonicalName());
-
         // create JUnit class util
         testClass = new TestClass(testKlass);
-        buildTestMethodList();
+        List<FrameworkMethod> testMethods = new LinkedList<>();
+        buildTestMethodList(testMethods);
 
         // for now assume always default run order. we can change this by annotating the test later
         List<Class<? extends RunVectorBuilder>> vectorRunOrder = new DefaultVectorRunOrder().getVectorRunOrder();
@@ -112,7 +101,9 @@ public class NeodymiumRunner extends Runner implements Filterable
             {
                 RunVectorBuilder vectorBuilder = createVectorBuilder(vectorBuildClass);
                 vectorBuilder.create(testClass, method);
-                orderedTestRunner.computeIfAbsent(method, (key) -> new LinkedList<>()).add(vectorBuilder.buildRunVectors());
+                List<RunVector> buildRunVectors = vectorBuilder.buildRunVectors();
+                if (buildRunVectors.size() > 0)
+                    orderedTestRunner.computeIfAbsent(method, (key) -> new LinkedList<>()).add(buildRunVectors);
             }
         }
 
@@ -132,7 +123,7 @@ public class NeodymiumRunner extends Runner implements Filterable
         testDescription = Description.createSuiteDescription(testClass.getJavaClass());
         for (RunVectorNode childNode : runNode.childNodes)
         {
-            createTestDescription(childNode, testDescription);
+            createChildTestDescription(childNode, testDescription);
         }
 
         // VectorRunOrder defaultVectorRunOrder = new MethodOnlyRunOrder(); // new DefaultVectorRunOrder();
@@ -233,7 +224,7 @@ public class NeodymiumRunner extends Runner implements Filterable
         // testDescription = createTestDescription();
     }
 
-    private void buildTestMethodList()
+    private void buildTestMethodList(List<FrameworkMethod> testMethods)
     {
         // if the class is annotated to be ignored then all methods should be ignored too
         Ignore ignoreAnnotation = testClass.getAnnotation(Ignore.class);
@@ -278,28 +269,56 @@ public class NeodymiumRunner extends Runner implements Filterable
         return vector;
     }
 
+    private void createChildTestDescription(RunVectorNode runNode, Description parentDescription)
+    {
+        boolean nodeHasChilds = (runNode.childNodes.size() == 0) ? false : true;
+        for (RunVector runVector : runNode.runVectors)
+        {
+            if (nodeHasChilds)
+            {
+                Description suiteDescription = Description.createSuiteDescription(runVector.getTestName());
+                parentDescription.addChild(suiteDescription);
+                for (RunVectorNode childNode : runNode.childNodes)
+                {
+                    createChildTestDescription(childNode, suiteDescription);
+                }
+            }
+            else
+            {
+                Description testDescription = Description.createTestDescription(testClass.getJavaClass().getName(), runVector.getTestName(),
+                                                                                runVector.getTestName());
+                parentDescription.addChild(testDescription);
+            }
+        }
+    }
+
     @Override
     public void run(RunNotifier notifier)
     {
-        // since before/after class/method invocation is JUnit default we just hardcode that
+        // since before/after class invocation is JUnit default we just hardcode that
         List<FrameworkMethod> beforeClassMethods = testClass.getAnnotatedMethods(BeforeClass.class);
         List<FrameworkMethod> afterClassMethods = testClass.getAnnotatedMethods(AfterClass.class);
-        List<FrameworkMethod> beforeMethodMethods = testClass.getAnnotatedMethods(Before.class);
-        List<FrameworkMethod> afterMethodMethods = testClass.getAnnotatedMethods(After.class);
 
-        Object testInstance = new Object();
+        Object testClassInstance = new Object();
 
         try
         {
-            testInstance = testClass.getOnlyConstructor().newInstance();
+            testClassInstance = testClass.getOnlyConstructor().newInstance();
         }
         catch (Exception e)
         {
             throw new RuntimeException(e);
         }
 
-        // // run before class methods
-        // invokeMethods(testInstance, beforeClassMethods);
+        // run before class methods
+        try
+        {
+            invokeMethods(testClassInstance, beforeClassMethods);
+        }
+        catch (Throwable e)
+        {
+            throw new RuntimeException(e);
+        }
         //
         // {
         // // run before method methods
@@ -311,8 +330,15 @@ public class NeodymiumRunner extends Runner implements Filterable
         // invokeMethods(testInstance, afterMethodMethods);
         // }
         //
-        // // run after class methods
-        // invokeMethods(testInstance, afterClassMethods);
+        // run after class methods
+        try
+        {
+            invokeMethods(testClassInstance, afterClassMethods);
+        }
+        catch (Throwable e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     private void invokeMethods(Object testInstance, List<FrameworkMethod> methods) throws Throwable
@@ -427,90 +453,67 @@ public class NeodymiumRunner extends Runner implements Filterable
     //
     // field.set(null, newValue);
     // }
-
-    private void createTestDescription(RunVectorNode runNode, Description parentDescription)
-    {
-        boolean hasChilds = (runNode.childNodes.size() == 0) ? false : true;
-        for (RunVector runVector : runNode.runVectors)
-        {
-            if (hasChilds)
-            {
-                Description suiteDescription = Description.createSuiteDescription(runVector.getTestName());
-                parentDescription.addChild(suiteDescription);
-                for (RunVectorNode childNode : runNode.childNodes)
-                {
-                    createTestDescription(childNode, suiteDescription);
-                }
-            }
-            else
-            {
-                Description testDescription = Description.createTestDescription(testClass.getJavaClass().getName(), runVector.getTestName(),
-                                                                                runVector.getTestName());
-                parentDescription.addChild(testDescription);
-            }
-        }
-    }
-
-    private Description createTestDescription_old()
-    {
-        Description description = Description.createSuiteDescription(testClass.getJavaClass());
-
-        for (List<Runner> runners : testRunner)
-        {
-            List<String> displayNames = new LinkedList<>();
-            for (Runner runner : runners)
-            {
-                Description runnerDescription = runner.getDescription();
-                String displayName = "";
-                if (runner instanceof NeodymiumParameterRunner)
-                {
-                    displayName = ((NeodymiumParameterRunner) runner).getName();
-                }
-                else if (runner instanceof BlockJUnit4ClassRunner)
-                {
-                    displayName = runner.getDescription().getDisplayName();
-                }
-                else if (runner instanceof NeodymiumDataRunnerRunner)
-                {
-                    NeodymiumDataRunnerRunner dataRunner = (NeodymiumDataRunnerRunner) runner;
-                    if (dataRunner.hasDataSets())
-                    {
-                        displayName = runnerDescription.getDisplayName();
-                    }
-                    else
-                    {
-                        displayName = null;
-                    }
-                }
-                else
-                {
-                    displayName = runnerDescription.getDisplayName();
-                }
-
-                if (displayName != null)
-                    displayNames.add(displayName);
-            }
-
-            // necessary to preserve JUnit view feature which lead you to the test method on double click the entry
-            // https://github.com/eclipse/eclipse.jdt.ui/blob/0e4ddb8f4fd1d3c22748423acba36397e5f020e7/org.eclipse.jdt.junit/src/org/eclipse/jdt/internal/junit/ui/OpenTestAction.java#L108-L122
-            Collections.reverse(displayNames);
-
-            Set<Annotation> methodCategoryAnnotations = new HashSet<>();
-            List<FrameworkMethod> annotatedMethods = testClass.getAnnotatedMethods();
-            for (FrameworkMethod fm : annotatedMethods)
-            {
-                methodCategoryAnnotations.add(fm.getAnnotation(Category.class));
-            }
-            methodCategoryAnnotations.remove(null);
-
-            Description childDescription = Description.createTestDescription(testClass.getJavaClass(), String.join(" :: ", displayNames),
-                                                                             methodCategoryAnnotations.toArray(new Annotation[0]));
-            description.addChild(childDescription);
-        }
-
-        return description;
-    }
-
+    // private Description createTestDescription_old()
+    // {
+    // Description description = Description.createSuiteDescription(testClass.getJavaClass());
+    //
+    // for (List<Runner> runners : testRunner)
+    // {
+    // List<String> displayNames = new LinkedList<>();
+    // for (Runner runner : runners)
+    // {
+    // Description runnerDescription = runner.getDescription();
+    // String displayName = "";
+    // if (runner instanceof NeodymiumParameterRunner)
+    // {
+    // displayName = ((NeodymiumParameterRunner) runner).getName();
+    // }
+    // else if (runner instanceof BlockJUnit4ClassRunner)
+    // {
+    // displayName = runner.getDescription().getDisplayName();
+    // }
+    // else if (runner instanceof NeodymiumDataRunnerRunner)
+    // {
+    // NeodymiumDataRunnerRunner dataRunner = (NeodymiumDataRunnerRunner) runner;
+    // if (dataRunner.hasDataSets())
+    // {
+    // displayName = runnerDescription.getDisplayName();
+    // }
+    // else
+    // {
+    // displayName = null;
+    // }
+    // }
+    // else
+    // {
+    // displayName = runnerDescription.getDisplayName();
+    // }
+    //
+    // if (displayName != null)
+    // displayNames.add(displayName);
+    // }
+    //
+    // // necessary to preserve JUnit view feature which lead you to the test method on double click the entry
+    // //
+    // https://github.com/eclipse/eclipse.jdt.ui/blob/0e4ddb8f4fd1d3c22748423acba36397e5f020e7/org.eclipse.jdt.junit/src/org/eclipse/jdt/internal/junit/ui/OpenTestAction.java#L108-L122
+    // Collections.reverse(displayNames);
+    //
+    // Set<Annotation> methodCategoryAnnotations = new HashSet<>();
+    // List<FrameworkMethod> annotatedMethods = testClass.getAnnotatedMethods();
+    // for (FrameworkMethod fm : annotatedMethods)
+    // {
+    // methodCategoryAnnotations.add(fm.getAnnotation(Category.class));
+    // }
+    // methodCategoryAnnotations.remove(null);
+    //
+    // Description childDescription = Description.createTestDescription(testClass.getJavaClass(), String.join(" :: ",
+    // displayNames),
+    // methodCategoryAnnotations.toArray(new Annotation[0]));
+    // description.addChild(childDescription);
+    // }
+    //
+    // return description;
+    // }
     // private List<List<Runner>> buildTestRunnerLists(List<List<Runner>> vectors)
     // {
     //
