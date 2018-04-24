@@ -51,13 +51,6 @@ public class IAmStupid
     }
 
     @Test
-    @Browser("")
-    public void test6_NONE() throws Exception
-    {
-
-    }
-
-    @Test
     @Browser({})
     public void test7_EMPTY() throws Exception
     {
