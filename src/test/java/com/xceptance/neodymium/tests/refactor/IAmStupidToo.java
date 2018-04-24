@@ -14,7 +14,6 @@ import com.xceptance.neodymium.multibrowser.Browser;
     })
 public class IAmStupidToo
 {
-
     @Test
     @Browser({})
     public void test7_EMPTY() throws Exception
