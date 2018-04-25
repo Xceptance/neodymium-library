@@ -16,6 +16,7 @@ import org.junit.runner.Runner;
 import org.junit.runner.manipulation.Filter;
 import org.junit.runner.manipulation.Filterable;
 import org.junit.runner.manipulation.NoTestsRemainException;
+import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.JUnit4;
 import org.junit.runners.model.FrameworkMethod;
@@ -92,7 +93,13 @@ public class NeodymiumRunner extends Runner implements Filterable
         // create JUnit class util
         testClass = new TestClass(testKlass);
         List<FrameworkMethod> testMethods = new LinkedList<>();
-        buildTestMethodList(testMethods);
+        // buildTestMethodList(testMethods);
+        testMethods = testClass.getAnnotatedMethods(Test.class);
+
+        if (testMethods.isEmpty())
+        {
+            throw new Exception("No runnable methods");
+        }
 
         // for now assume always default run order. we can change this by annotating the test later
         List<Class<? extends RunVectorBuilder>> vectorRunOrder = new DefaultVectorRunOrder().getVectorRunOrder();
@@ -124,10 +131,14 @@ public class NeodymiumRunner extends Runner implements Filterable
         }
 
         testDescription = Description.createSuiteDescription(testClass.getJavaClass());
-        executionRunners = new LinkedList<>();
-        for (RunVectorNode childNode : runNode.childNodes)
+
+        if (runNode != null)
         {
-            createChildTestDescription(childNode, testDescription, executionRunners, null);
+            executionRunners = new LinkedList<>();
+            for (RunVectorNode childNode : runNode.childNodes)
+            {
+                createChildTestDescription(childNode, testDescription, executionRunners, null);
+            }
         }
 
         // VectorRunOrder defaultVectorRunOrder = new MethodOnlyRunOrder(); // new DefaultVectorRunOrder();
@@ -364,7 +375,14 @@ public class NeodymiumRunner extends Runner implements Filterable
             {
                 RunVector runVector = executionRunner.getTestExecutionRunner().get(i);
                 runVector.setTestClassInstance(testClassInstance);
-                runVector.beforeMethod();
+                try
+                {
+                    runVector.beforeMethod();
+                }
+                catch (Exception e)
+                {
+                    notifier.fireTestFailure(new Failure(currentTestDescription, e));
+                }
             }
 
             // now loop backward
