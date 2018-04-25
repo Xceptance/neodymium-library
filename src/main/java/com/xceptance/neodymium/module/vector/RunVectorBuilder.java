@@ -7,7 +7,7 @@ import org.junit.runners.model.TestClass;
 
 public interface RunVectorBuilder
 {
-    public void create(TestClass testClass, FrameworkMethod frameworkMethod);
+    public void create(TestClass testClass, FrameworkMethod frameworkMethod) throws Throwable;
 
-    public List<RunVector> buildRunVectors();
+    public List<RunVector> buildRunVectors() throws Throwable;
 }

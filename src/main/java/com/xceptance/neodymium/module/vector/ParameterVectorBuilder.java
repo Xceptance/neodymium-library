@@ -22,7 +22,7 @@ public class ParameterVectorBuilder implements RunVectorBuilder
     private Iterable<Object> parameter = null;
 
     @Override
-    public void create(TestClass testClass, FrameworkMethod frameworkMethod)
+    public void create(TestClass testClass, FrameworkMethod frameworkMethod) throws Exception
     {
         List<FrameworkMethod> parametersMethods = testClass.getAnnotatedMethods(Parameters.class);
 
@@ -55,6 +55,11 @@ public class ParameterVectorBuilder implements RunVectorBuilder
                     throw new RuntimeException(e);
                 }
             }
+        }
+
+        if (!parametersMethods.isEmpty() && parameter == null)
+        {
+            throw new Exception("No public static parameters method on class");
         }
 
         parameterFrameworkFields = testClass.getAnnotatedFields(Parameter.class);
