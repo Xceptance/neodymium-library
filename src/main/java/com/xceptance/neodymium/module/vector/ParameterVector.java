@@ -18,10 +18,13 @@ public class ParameterVector implements RunVector
 
     private List<FrameworkField> parameterFrameworkFields;
 
-    public ParameterVector(List<FrameworkField> parameterFrameworkFields, Object[] parameter)
+    private int parameterSetIndex;
+
+    public ParameterVector(List<FrameworkField> parameterFrameworkFields, Object[] parameter, int parameterSetIndex)
     {
         this.parameterFrameworkFields = parameterFrameworkFields;
         this.parameter = parameter;
+        this.parameterSetIndex = parameterSetIndex;
     }
 
     @Override
@@ -46,8 +49,7 @@ public class ParameterVector implements RunVector
     @Override
     public String getTestName()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return "[" + parameterSetIndex + "]";
     }
 
     @Override

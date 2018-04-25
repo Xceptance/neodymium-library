@@ -74,6 +74,7 @@ public class ParameterVectorBuilder implements RunVectorBuilder
 
         if (parameter != null)
         {
+            int parameterSetCounter = 0;
             for (Object para : parameter)
             {
                 Object[] p;
@@ -89,7 +90,8 @@ public class ParameterVectorBuilder implements RunVectorBuilder
                         };
                 }
 
-                r.add(new ParameterVector(parameterFrameworkFields, p));
+                r.add(new ParameterVector(parameterFrameworkFields, p, parameterSetCounter));
+                parameterSetCounter++;
             }
         }
 
