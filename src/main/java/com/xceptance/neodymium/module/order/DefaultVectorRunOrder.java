@@ -13,7 +13,5 @@ public class DefaultVectorRunOrder extends VectorRunOrder
         vectorRunOrder.add(TestdataVectorBuilder.class);
         vectorRunOrder.add(ParameterVectorBuilder.class);
         vectorRunOrder.add(MethodVectorBuilder.class);
-        // vectorRunOrder.add(new TestdataVector());
-        // vectorRunOrder.add(new ParameterVector());
     }
 }
