@@ -52,9 +52,9 @@ public class NeodymiumBrowserRunnerTest extends NeodymiumTest
     @Test
     public void testEmptyBrowserTag()
     {
-        // an empty @Browser({}) annotation shouldn't raise an error and shouldn't invoke a method
+        // an empty @Browser({}) annotation shouldn't raise an error
         Result result = JUnitCore.runClasses(NoBrowserTag.class);
-        checkPass(result, 0, 0, 0);
+        checkPass(result, 1, 0, 0);
     }
 
     @Test
