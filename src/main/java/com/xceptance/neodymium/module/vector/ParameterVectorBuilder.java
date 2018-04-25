@@ -59,7 +59,7 @@ public class ParameterVectorBuilder implements RunVectorBuilder
 
         if (!parametersMethods.isEmpty() && parameter == null)
         {
-            throw new Exception("No public static parameters method on class");
+            throw new Exception("No public static parameters method on class " + testClass.getJavaClass().getCanonicalName());
         }
 
         parameterFrameworkFields = testClass.getAnnotatedFields(Parameter.class);
