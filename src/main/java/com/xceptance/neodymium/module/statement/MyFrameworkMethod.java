@@ -45,7 +45,7 @@ public class MyFrameworkMethod extends FrameworkMethod
         {
             StatementBuilder statementBuilder = builder.get(i);
             nameBuilder.append(" :: ");
-            nameBuilder.append(statementBuilder.getTestName());
+            nameBuilder.append(statementBuilder.getTestName(data.get(i)));
         }
 
         return nameBuilder.toString();

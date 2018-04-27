@@ -12,5 +12,5 @@ public abstract class StatementBuilder extends Statement
 
     public abstract StatementBuilder createStatement(Statement next, Object parameter);
 
-    public abstract String getTestName();
+    public abstract String getTestName(Object data);
 }

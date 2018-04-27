@@ -65,9 +65,9 @@ public class BrowserStatement extends StatementBuilder
     }
 
     @Override
-    public String getTestName()
+    public String getTestName(Object data)
     {
-        return MessageFormat.format("[Browser {0}]", browserTag);
+        return MessageFormat.format("[Browser {0}]", (String) data);
     }
 
 }
