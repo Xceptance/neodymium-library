@@ -1,7 +1,6 @@
 package com.xceptance.neodymium;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,20 @@ public class NeodymiumStatementRunner2 extends BlockJUnit4ClassRunner
     @Override
     protected Statement methodBlock(FrameworkMethod method)
     {
-        return methodStatements.get(method);
+        Statement methodStatement = super.methodBlock(method);
+
+        if (method instanceof MyFrameworkMethod)
+        {
+            MyFrameworkMethod m = (MyFrameworkMethod) method;
+            for (int i = m.getBuilder().size() - 1; i >= 0; i--)
+            {
+                StatementBuilder statementBuilder = m.getBuilder().get(i);
+                Object data = m.getData().get(i);
+                methodStatement = statementBuilder.createStatement(methodStatement, data);
+            }
+        }
+
+        return methodStatement;
 
     }
 
@@ -67,27 +79,6 @@ public class NeodymiumStatementRunner2 extends BlockJUnit4ClassRunner
             }
             testMethods.addAll(buildCrossProduct(testAnnotatedMethod.getMethod(), builderList, builderDataList));
         }
-
-        // build final statement
-        methodStatements = new HashMap<>();
-        for (FrameworkMethod method : testMethods)
-        {
-            Statement methodStatement = super.methodBlock(method);
-
-            if (method instanceof MyFrameworkMethod)
-            {
-                MyFrameworkMethod m = (MyFrameworkMethod) method;
-                for (int i = m.getBuilder().size() - 1; i >= 0; i--)
-                {
-                    StatementBuilder statementBuilder = m.getBuilder().get(i);
-                    Object data = m.getData().get(i);
-                    methodStatement = statementBuilder.createStatement(methodStatement, data);
-                }
-            }
-
-            methodStatements.put((MyFrameworkMethod) method, methodStatement);
-        }
-
         computedTestMethods = testMethods;
 
         return testMethods;
