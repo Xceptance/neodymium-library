@@ -1,10 +1,8 @@
-package com.xceptance.neodymium.module.order;
+package com.xceptance.neodymium.module.statement;
 
 import java.util.List;
 
 import org.junit.runners.model.FrameworkMethod;
-
-import com.xceptance.neodymium.module.statement.StatementBuilder;
 
 public class StatementData
 {

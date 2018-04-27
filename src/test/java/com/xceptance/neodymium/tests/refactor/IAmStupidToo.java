@@ -43,10 +43,6 @@ public class IAmStupidToo
     }
 
     @Test
-    @Browser(
-        {
-            "C", "D"
-        })
     public void test7_EMPTY() throws Exception
     {
         System.out.println("bla");

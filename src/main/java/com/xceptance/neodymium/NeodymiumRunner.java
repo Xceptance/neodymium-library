@@ -1,7 +1,6 @@
 package com.xceptance.neodymium;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,6 @@ import org.junit.runners.model.TestClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xceptance.neodymium.module.order.DefaultVectorRunOrder;
 import com.xceptance.neodymium.module.vector.ExecutionRunner;
 import com.xceptance.neodymium.module.vector.RunVector;
 import com.xceptance.neodymium.module.vector.RunVectorBuilder;
@@ -102,44 +100,44 @@ public class NeodymiumRunner extends Runner implements Filterable
         }
 
         // for now assume always default run order. we can change this by annotating the test later
-        List<Class<? extends RunVectorBuilder>> vectorRunOrder = new DefaultVectorRunOrder().getVectorRunOrder();
+        // List<Class<? extends RunVectorBuilder>> vectorRunOrder = new DefaultVectorRunOrder().getVectorRunOrder();
 
-        orderedTestRunner = new HashMap<>();
-        for (Class<? extends RunVectorBuilder> vectorBuildClass : vectorRunOrder)
-        {
-            for (FrameworkMethod method : testMethods)
-            {
-                RunVectorBuilder vectorBuilder = createVectorBuilder(vectorBuildClass);
-                vectorBuilder.create(testClass, method);
-                List<RunVector> buildRunVectors = vectorBuilder.buildRunVectors();
-                if (buildRunVectors.size() > 0)
-                    orderedTestRunner.computeIfAbsent(method, (key) -> new LinkedList<>()).add(buildRunVectors);
-            }
-        }
-
-        RunVectorNode runNode = null;
-        for (List<List<RunVector>> list : orderedTestRunner.values())
-        {
-            if (runNode == null)
-            {
-                runNode = new RunVectorNode(list);
-            }
-            else
-            {
-                runNode.add(list);
-            }
-        }
+        // orderedTestRunner = new HashMap<>();
+        // for (Class<? extends RunVectorBuilder> vectorBuildClass : vectorRunOrder)
+        // {
+        // for (FrameworkMethod method : testMethods)
+        // {
+        // RunVectorBuilder vectorBuilder = createVectorBuilder(vectorBuildClass);
+        // vectorBuilder.create(testClass, method);
+        // List<RunVector> buildRunVectors = vectorBuilder.buildRunVectors();
+        // if (buildRunVectors.size() > 0)
+        // orderedTestRunner.computeIfAbsent(method, (key) -> new LinkedList<>()).add(buildRunVectors);
+        // }
+        // }
+        //
+        // RunVectorNode runNode = null;
+        // for (List<List<RunVector>> list : orderedTestRunner.values())
+        // {
+        // if (runNode == null)
+        // {
+        // runNode = new RunVectorNode(list);
+        // }
+        // else
+        // {
+        // runNode.add(list);
+        // }
+        // }
 
         testDescription = Description.createSuiteDescription(testClass.getJavaClass());
 
-        if (runNode != null)
-        {
-            executionRunners = new LinkedList<>();
-            for (RunVectorNode childNode : runNode.childNodes)
-            {
-                createChildTestDescription(childNode, testDescription, executionRunners, null);
-            }
-        }
+        // if (runNode != null)
+        // {
+        // executionRunners = new LinkedList<>();
+        // for (RunVectorNode childNode : runNode.childNodes)
+        // {
+        // createChildTestDescription(childNode, testDescription, executionRunners, null);
+        // }
+        // }
 
         // VectorRunOrder defaultVectorRunOrder = new MethodOnlyRunOrder(); // new DefaultVectorRunOrder();
         // // VectorRunOrder defaultVectorRunOrder = new DefaultVectorRunOrder();
@@ -393,17 +391,6 @@ public class NeodymiumRunner extends Runner implements Filterable
             }
 
             notifier.fireTestFinished(currentTestDescription);
-            //
-            // {
-            // // run before method methods
-            // invokeMethods(testInstance, beforeMethodMethods);
-            //
-            // // TODO: run the test methods
-            //
-            // // run after method methods
-            // invokeMethods(testInstance, afterMethodMethods);
-            // }
-            //
         }
         // run after class methods
         try
