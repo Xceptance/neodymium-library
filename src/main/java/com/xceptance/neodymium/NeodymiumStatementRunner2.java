@@ -69,9 +69,19 @@ public class NeodymiumStatementRunner2 extends BlockJUnit4ClassRunner
                 // results in a list of parameters for this statement for method multiplication
                 // e.g. for @Browser({"A", "B"}) the data list will contain "A" and "B"
                 StatementBuilder builder = (StatementBuilder) createClassInstance(statementClass);
-                List<Object> iterationData = builder.createIterationData(getTestClass(), testAnnotatedMethod);
 
-                if (!iterationData.isEmpty())
+                List<Object> iterationData = null;
+                try
+                {
+                    iterationData = builder.createIterationData(getTestClass(), testAnnotatedMethod);
+                }
+                catch (Throwable e)
+                {
+                    throw new RuntimeException(e);
+                }
+
+                // new InitializationError(error)
+                if (iterationData != null && !iterationData.isEmpty())
                 {
                     builderList.add(builder);
                     builderDataList.add(iterationData);

@@ -8,7 +8,7 @@ import org.junit.runners.model.TestClass;
 
 public abstract class StatementBuilder extends Statement
 {
-    public abstract List<Object> createIterationData(TestClass testClass, FrameworkMethod method);
+    public abstract List<Object> createIterationData(TestClass testClass, FrameworkMethod method) throws Throwable;
 
     public abstract StatementBuilder createStatement(Statement next, Object parameter);
 
