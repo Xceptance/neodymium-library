@@ -31,6 +31,10 @@ public class ParameterStatement extends StatementBuilder
         this.statementData = parameter;
     }
 
+    public ParameterStatement()
+    {
+    }
+
     @Override
     public void evaluate() throws Throwable
     {
