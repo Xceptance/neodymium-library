@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
@@ -57,7 +56,7 @@ public class NeodymiumStatementRunner2 extends BlockJUnit4ClassRunner
         List<FrameworkMethod> testMethods = new LinkedList<>();
 
         List<Class<? extends StatementBuilder>> statementRunOrder = new DefaultStatementRunOrder().getRunOrder();
-        for (FrameworkMethod testAnnotatedMethod : getTestClass().getAnnotatedMethods(Test.class))
+        for (FrameworkMethod testAnnotatedMethod : super.computeTestMethods())
         {
             List<StatementBuilder> builderList = new LinkedList<>();
             List<List<Object>> builderDataList = new LinkedList<>();
