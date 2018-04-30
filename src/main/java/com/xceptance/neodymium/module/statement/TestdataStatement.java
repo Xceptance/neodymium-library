@@ -20,7 +20,6 @@ import com.xceptance.neodymium.util.Context;
 
 public class TestdataStatement extends StatementBuilder
 {
-
     public static Logger LOGGER = LoggerFactory.getLogger(TestdataStatement.class);
 
     private Statement next;
