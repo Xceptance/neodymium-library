@@ -62,7 +62,7 @@ public class NeodymiumBrowserRunnerTest extends NeodymiumTest
     {
         // an empty browser tag (@Browser({""})) should raise an error
         Result result = JUnitCore.runClasses(EmptyBrowser.class);
-        checkFail(result, 1, 0, 1, "Can not find browser configuration with tag: ");
+        checkFail(result, 1, 0, 1, "java.lang.IllegalArgumentException: Can not find browser configuration with tag: ");
     }
 
     @Test
