@@ -15,9 +15,9 @@ import com.xceptance.neodymium.module.EnhancedMethod;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.order.DefaultStatementRunOrder;
 
-public class NeodymiumStatementRunner2 extends BlockJUnit4ClassRunner
+public class NeodymiumRunner extends BlockJUnit4ClassRunner
 {
-    public NeodymiumStatementRunner2(Class<?> klass) throws InitializationError
+    public NeodymiumRunner(Class<?> klass) throws InitializationError
     {
         super(klass);
     }

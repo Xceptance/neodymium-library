@@ -44,7 +44,7 @@ public class NeodymiumMethodRunnerTest extends NeodymiumTest
     {
         // test that a failing method fails the test
         Result result = JUnitCore.runClasses(FailingMethod.class);
-        checkFail(result, 1, 0, 1, null);
+        checkFail(result, 1, 0, 1, "java.lang.AssertionError");
     }
 
     @Test

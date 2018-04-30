@@ -17,8 +17,8 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import com.xceptance.neodymium.multibrowser.configuration.BrowserConfiguration;
-import com.xceptance.neodymium.multibrowser.configuration.MultibrowserConfiguration;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.testclasses.browser.EmptyBrowser;
 import com.xceptance.neodymium.testclasses.browser.NoBrowserTag;
 

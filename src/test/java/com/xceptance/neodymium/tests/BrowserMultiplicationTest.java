@@ -11,7 +11,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.xceptance.neodymium.multibrowser.configuration.MultibrowserConfiguration;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.testclasses.multiplication.browser.OneBrowserOneMethod;
 import com.xceptance.neodymium.testclasses.multiplication.browser.OneBrowserTwoMethods;
 import com.xceptance.neodymium.testclasses.multiplication.browser.TwoBrowserOneMethod;
