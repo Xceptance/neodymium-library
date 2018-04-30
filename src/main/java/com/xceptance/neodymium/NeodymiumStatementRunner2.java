@@ -43,7 +43,6 @@ public class NeodymiumStatementRunner2 extends BlockJUnit4ClassRunner
         }
 
         return methodStatement;
-
     }
 
     @Override
@@ -104,29 +103,37 @@ public class NeodymiumStatementRunner2 extends BlockJUnit4ClassRunner
                                             int currentIndex, List<FrameworkMethod> resultingMethods,
                                             MyFrameworkMethod actualFrameworkMethod)
     {
-        StatementBuilder builder = builderList.get(currentIndex);
-        List<Object> builderData = builderDataList.get(currentIndex);
-
-        for (Object data : builderData)
+        if (builderList.isEmpty())
         {
-            MyFrameworkMethod newMethod = new MyFrameworkMethod(method);
-            if (actualFrameworkMethod != null)
-            {
-                newMethod.getBuilder().addAll(actualFrameworkMethod.getBuilder());
-                newMethod.getData().addAll(actualFrameworkMethod.getData());
-            }
-            newMethod.getBuilder().add(builder);
-            newMethod.getData().add(data);
+            // if there is no enclosing statement involved we handle it as single method call
+            // resultingMethods.add(new MyFrameworkMethod(method));
+            resultingMethods.add(new FrameworkMethod(method));
+        }
+        else
+        {
+            StatementBuilder builder = builderList.get(currentIndex);
+            List<Object> builderData = builderDataList.get(currentIndex);
 
-            if (currentIndex < builderList.size() - 1)
+            for (Object data : builderData)
             {
-                recursiveBuildCrossProduct(method, builderList, builderDataList, currentIndex + 1, resultingMethods, newMethod);
-            }
-            else
-            {
-                resultingMethods.add(newMethod);
-            }
+                MyFrameworkMethod newMethod = new MyFrameworkMethod(method);
+                if (actualFrameworkMethod != null)
+                {
+                    newMethod.getBuilder().addAll(actualFrameworkMethod.getBuilder());
+                    newMethod.getData().addAll(actualFrameworkMethod.getData());
+                }
+                newMethod.getBuilder().add(builder);
+                newMethod.getData().add(data);
 
+                if (currentIndex < builderList.size() - 1)
+                {
+                    recursiveBuildCrossProduct(method, builderList, builderDataList, currentIndex + 1, resultingMethods, newMethod);
+                }
+                else
+                {
+                    resultingMethods.add(newMethod);
+                }
+            }
         }
     }
 
