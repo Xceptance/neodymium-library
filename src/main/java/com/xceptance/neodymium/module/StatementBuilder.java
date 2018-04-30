@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.module.statement;
+package com.xceptance.neodymium.module;
 
 import java.util.List;
 

@@ -11,9 +11,9 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
+import com.xceptance.neodymium.module.EnhancedMethod;
+import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.order.DefaultStatementRunOrder;
-import com.xceptance.neodymium.module.statement.MyFrameworkMethod;
-import com.xceptance.neodymium.module.statement.StatementBuilder;
 
 public class NeodymiumStatementRunner2 extends BlockJUnit4ClassRunner
 {
@@ -22,7 +22,7 @@ public class NeodymiumStatementRunner2 extends BlockJUnit4ClassRunner
         super(klass);
     }
 
-    Map<MyFrameworkMethod, Statement> methodStatements;
+    Map<EnhancedMethod, Statement> methodStatements;
 
     List<FrameworkMethod> computedTestMethods;
 
@@ -31,9 +31,9 @@ public class NeodymiumStatementRunner2 extends BlockJUnit4ClassRunner
     {
         Statement methodStatement = super.methodBlock(method);
 
-        if (method instanceof MyFrameworkMethod)
+        if (method instanceof EnhancedMethod)
         {
-            MyFrameworkMethod m = (MyFrameworkMethod) method;
+            EnhancedMethod m = (EnhancedMethod) method;
             for (int i = m.getBuilder().size() - 1; i >= 0; i--)
             {
                 StatementBuilder statementBuilder = m.getBuilder().get(i);
@@ -101,7 +101,7 @@ public class NeodymiumStatementRunner2 extends BlockJUnit4ClassRunner
 
     private void recursiveBuildCrossProduct(Method method, List<StatementBuilder> builderList, List<List<Object>> builderDataList,
                                             int currentIndex, List<FrameworkMethod> resultingMethods,
-                                            MyFrameworkMethod actualFrameworkMethod)
+                                            EnhancedMethod actualFrameworkMethod)
     {
         if (builderList.isEmpty())
         {
@@ -116,7 +116,7 @@ public class NeodymiumStatementRunner2 extends BlockJUnit4ClassRunner
 
             for (Object data : builderData)
             {
-                MyFrameworkMethod newMethod = new MyFrameworkMethod(method);
+                EnhancedMethod newMethod = new EnhancedMethod(method);
                 if (actualFrameworkMethod != null)
                 {
                     newMethod.getBuilder().addAll(actualFrameworkMethod.getBuilder());
@@ -162,9 +162,9 @@ public class NeodymiumStatementRunner2 extends BlockJUnit4ClassRunner
     @Override
     protected String testName(FrameworkMethod method)
     {
-        if (method instanceof MyFrameworkMethod)
+        if (method instanceof EnhancedMethod)
         {
-            return ((MyFrameworkMethod) method).getTestName();
+            return ((EnhancedMethod) method).getTestName();
         }
         else
         {

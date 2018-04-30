@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.multibrowser;
+package com.xceptance.neodymium.module.statement.browser.multibrowser;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -36,12 +36,12 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import com.xceptance.neodymium.multibrowser.configuration.BrowserConfiguration;
-import com.xceptance.neodymium.multibrowser.configuration.DriverServerPath;
-import com.xceptance.neodymium.multibrowser.configuration.MultibrowserConfiguration;
-import com.xceptance.neodymium.multibrowser.configuration.ProxyConfiguration;
-import com.xceptance.neodymium.multibrowser.configuration.TestEnvironment;
-import com.xceptance.neodymium.multibrowser.configuration.WebDriverProperties;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.DriverServerPath;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.ProxyConfiguration;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.TestEnvironment;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.WebDriverProperties;
 
 public final class BrowserRunnerHelper
 {

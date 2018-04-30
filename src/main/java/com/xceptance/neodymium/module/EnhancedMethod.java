@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.module.statement;
+package com.xceptance.neodymium.module;
 
 import java.lang.reflect.Method;
 import java.util.LinkedList;
@@ -6,13 +6,13 @@ import java.util.List;
 
 import org.junit.runners.model.FrameworkMethod;
 
-public class MyFrameworkMethod extends FrameworkMethod
+public class EnhancedMethod extends FrameworkMethod
 {
     private List<Object> data = new LinkedList<>();
 
     private List<StatementBuilder> builder = new LinkedList<>();
 
-    public MyFrameworkMethod(Method method)
+    public EnhancedMethod(Method method)
     {
         super(method);
     }

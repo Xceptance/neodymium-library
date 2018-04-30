@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.multibrowser;
+package com.xceptance.neodymium.module.statement.browser.multibrowser;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;

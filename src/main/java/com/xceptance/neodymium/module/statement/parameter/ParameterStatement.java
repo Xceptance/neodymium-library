@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.module.statement;
+package com.xceptance.neodymium.module.statement.parameter;
 
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
@@ -14,6 +14,8 @@ import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.xceptance.neodymium.module.StatementBuilder;
 
 public class ParameterStatement extends StatementBuilder
 {

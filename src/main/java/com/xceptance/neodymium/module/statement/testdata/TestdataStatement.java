@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.module.statement;
+package com.xceptance.neodymium.module.statement.testdata;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,6 +15,7 @@ import org.junit.runners.model.TestClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.testdata.TestDataUtils;
 import com.xceptance.neodymium.util.Context;
 

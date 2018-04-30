@@ -3,7 +3,7 @@ package com.xceptance.neodymium.module.order;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.xceptance.neodymium.module.statement.StatementBuilder;
+import com.xceptance.neodymium.module.StatementBuilder;
 
 public class StatementRunOrder
 {

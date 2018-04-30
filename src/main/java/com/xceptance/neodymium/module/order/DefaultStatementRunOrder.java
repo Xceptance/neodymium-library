@@ -1,8 +1,8 @@
 package com.xceptance.neodymium.module.order;
 
-import com.xceptance.neodymium.module.statement.BrowserStatement;
-import com.xceptance.neodymium.module.statement.ParameterStatement;
-import com.xceptance.neodymium.module.statement.TestdataStatement;
+import com.xceptance.neodymium.module.statement.browser.BrowserStatement;
+import com.xceptance.neodymium.module.statement.parameter.ParameterStatement;
+import com.xceptance.neodymium.module.statement.testdata.TestdataStatement;
 
 public class DefaultStatementRunOrder extends StatementRunOrder
 {

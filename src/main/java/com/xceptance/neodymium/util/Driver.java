@@ -5,10 +5,10 @@ import java.net.MalformedURLException;
 import org.openqa.selenium.WebDriver;
 
 import com.codeborne.selenide.WebDriverRunner;
-import com.xceptance.neodymium.multibrowser.WebDriverCache;
-import com.xceptance.neodymium.multibrowser.WebDriverFactory;
-import com.xceptance.neodymium.multibrowser.configuration.MultibrowserConfiguration;
-import com.xceptance.neodymium.multibrowser.configuration.WebDriverProperties;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverFactory;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.WebDriverProperties;
 
 public class Driver
 {

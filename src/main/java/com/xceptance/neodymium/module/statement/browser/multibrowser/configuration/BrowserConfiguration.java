@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.multibrowser.configuration;
+package com.xceptance.neodymium.module.statement.browser.multibrowser.configuration;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
 

@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.multibrowser;
+package com.xceptance.neodymium.module.statement.browser.multibrowser;
 
 import java.net.MalformedURLException;
 import java.util.Map;
@@ -7,10 +7,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import com.xceptance.neodymium.multibrowser.configuration.BrowserConfiguration;
-import com.xceptance.neodymium.multibrowser.configuration.DriverServerPath;
-import com.xceptance.neodymium.multibrowser.configuration.MultibrowserConfiguration;
-import com.xceptance.neodymium.multibrowser.configuration.WebDriverProperties;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.DriverServerPath;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.WebDriverProperties;
 
 public class WebDriverFactory
 {

@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.module.statement;
+package com.xceptance.neodymium.module.statement.browser;
 
 import java.net.MalformedURLException;
 import java.text.MessageFormat;
@@ -20,13 +20,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codeborne.selenide.WebDriverRunner;
-import com.xceptance.neodymium.multibrowser.Browser;
-import com.xceptance.neodymium.multibrowser.BrowserRunnerHelper;
-import com.xceptance.neodymium.multibrowser.WebDriverCache;
-import com.xceptance.neodymium.multibrowser.configuration.BrowserConfiguration;
-import com.xceptance.neodymium.multibrowser.configuration.DriverServerPath;
-import com.xceptance.neodymium.multibrowser.configuration.MultibrowserConfiguration;
-import com.xceptance.neodymium.multibrowser.configuration.WebDriverProperties;
+import com.xceptance.neodymium.module.StatementBuilder;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.BrowserRunnerHelper;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.DriverServerPath;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.WebDriverProperties;
 import com.xceptance.neodymium.util.Context;
 
 public class BrowserStatement extends StatementBuilder
