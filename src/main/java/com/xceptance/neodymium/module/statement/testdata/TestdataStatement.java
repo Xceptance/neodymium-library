@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xceptance.neodymium.module.StatementBuilder;
-import com.xceptance.neodymium.testdata.TestDataUtils;
+import com.xceptance.neodymium.module.statement.testdata.util.TestDataUtils;
 import com.xceptance.neodymium.util.Context;
 
 public class TestdataStatement extends StatementBuilder

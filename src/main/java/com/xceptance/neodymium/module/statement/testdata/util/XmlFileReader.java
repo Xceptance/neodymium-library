@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.testdata;
+package com.xceptance.neodymium.module.statement.testdata.util;
 
 import java.io.File;
 import java.io.FileInputStream;
