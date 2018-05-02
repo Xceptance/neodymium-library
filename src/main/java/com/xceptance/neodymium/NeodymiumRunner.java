@@ -194,14 +194,12 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     @Override
     protected Description describeChild(FrameworkMethod method)
     {
-        // cache child descriptions
+        // cache child descriptions because they will (or should?) never change
         Description childDescription = childDescriptions.computeIfAbsent(method, (m) -> {
             return describeChildWithMode(method);
         });
 
         return childDescription;
-
-        // return describeChildWithMode(method);
     }
 
     private Description describeChildWithMode(FrameworkMethod method)
@@ -213,8 +211,6 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         {
             case flat:
                 return Description.createTestDescription(className, testName, testName);
-            // return Description.createTestDescription(getTestClass().getJavaClass(), testName(method),
-            // method.getAnnotations());
 
             case hierarchical:
                 if (method instanceof EnhancedMethod)
