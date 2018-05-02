@@ -117,7 +117,8 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                 // ask each statement builder if this method should be processed
                 // results in a list of parameters for this statement for method multiplication
                 // e.g. for @Browser({"A", "B"}) the data list will contain "A" and "B"
-                StatementBuilder builder = (StatementBuilder) createStatementBuilderInstance(statementClass);
+
+                StatementBuilder builder = StatementBuilder.instantiate(statementClass);
 
                 List<Object> iterationData = null;
                 try
@@ -189,22 +190,6 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                     resultingMethods.add(newMethod);
                 }
             }
-        }
-    }
-
-    private Object createStatementBuilderInstance(Class<? extends StatementBuilder> clazz)
-    {
-        try
-        {
-            return clazz.newInstance();
-        }
-        catch (InstantiationException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
-        {
-            throw new RuntimeException(e);
         }
     }
 
