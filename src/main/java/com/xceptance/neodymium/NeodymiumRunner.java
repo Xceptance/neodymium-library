@@ -162,7 +162,6 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         if (builderList.isEmpty())
         {
             // if there is no enclosing statement involved we handle it as single method call
-            // resultingMethods.add(new MyFrameworkMethod(method));
             resultingMethods.add(new FrameworkMethod(method));
         }
         else
