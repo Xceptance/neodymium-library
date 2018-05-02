@@ -35,11 +35,11 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
     private DescriptionMode descriptionMode = DescriptionMode.flat;
 
-    Map<EnhancedMethod, Statement> methodStatements;
+    private Map<EnhancedMethod, Statement> methodStatements;
 
-    List<FrameworkMethod> computedTestMethods;
+    private List<FrameworkMethod> computedTestMethods;
 
-    Map<FrameworkMethod, Description> childDescriptions = new HashMap<>();
+    private Map<FrameworkMethod, Description> childDescriptions = new HashMap<>();
 
     private Description globalTestDescription = null;
 
