@@ -50,4 +50,63 @@ public class EnhancedMethod extends FrameworkMethod
 
         return nameBuilder.toString();
     }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((builder == null) ? 0 : builder.hashCode());
+        result = prime * result + ((data == null) ? 0 : data.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+        {
+            return true;
+        }
+        if (!super.equals(obj))
+        {
+            return false;
+        }
+        if (!(obj instanceof EnhancedMethod))
+        {
+            return false;
+        }
+        EnhancedMethod other = (EnhancedMethod) obj;
+        if (builder == null)
+        {
+            if (other.builder != null)
+            {
+                return false;
+            }
+        }
+        else if (!builder.equals(other.builder))
+        {
+            return false;
+        }
+        if (data == null)
+        {
+            if (other.data != null)
+            {
+                return false;
+            }
+        }
+        else if (!data.equals(other.data))
+        {
+            return false;
+        }
+        return true;
+    }
 }
