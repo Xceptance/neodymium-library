@@ -1,10 +1,14 @@
 package com.xceptance.neodymium;
 
 import java.lang.reflect.Method;
+import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.junit.runner.Description;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
@@ -22,9 +26,24 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         super(klass);
     }
 
+    private enum DescriptionMode
+    {
+     flat,
+     hierarchical,
+     extrawurst
+    };
+
+    private DescriptionMode descriptionMode = DescriptionMode.flat;
+
     Map<EnhancedMethod, Statement> methodStatements;
 
     List<FrameworkMethod> computedTestMethods;
+
+    Map<FrameworkMethod, Description> childDescriptions = new HashMap<>();
+
+    private Description globalTestDescription = null;
+
+    private Object testClassInstance;
 
     @Override
     protected Statement methodBlock(FrameworkMethod method)
@@ -38,11 +57,18 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
             {
                 StatementBuilder statementBuilder = m.getBuilder().get(i);
                 Object data = m.getData().get(i);
-                methodStatement = statementBuilder.createStatement(methodStatement, data);
+                methodStatement = statementBuilder.createStatement(testClassInstance, methodStatement, data);
             }
         }
 
         return methodStatement;
+    }
+
+    @Override
+    protected Object createTest() throws Exception
+    {
+        this.testClassInstance = super.createTest();
+        return testClassInstance;
     }
 
     @Override
@@ -87,9 +113,9 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
             }
             testMethods.addAll(buildCrossProduct(testAnnotatedMethod.getMethod(), builderList, builderDataList));
         }
-        computedTestMethods = testMethods;
+         computedTestMethods = Collections.unmodifiableList(testMethods);
 
-        return testMethods;
+        return computedTestMethods;
     }
 
     private List<FrameworkMethod> buildCrossProduct(Method method, List<StatementBuilder> builderList, List<List<Object>> builderDataList)
@@ -100,8 +126,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     }
 
     private void recursiveBuildCrossProduct(Method method, List<StatementBuilder> builderList, List<List<Object>> builderDataList,
-                                            int currentIndex, List<FrameworkMethod> resultingMethods,
-                                            EnhancedMethod actualFrameworkMethod)
+                                            int currentIndex, List<FrameworkMethod> resultingMethods, EnhancedMethod actualFrameworkMethod)
     {
         if (builderList.isEmpty())
         {
@@ -156,7 +181,122 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     @Override
     protected Description describeChild(FrameworkMethod method)
     {
+        // cache child descriptions
+
+        Description childDescription = childDescriptions.computeIfAbsent(method, (m) -> {
+            return describeChildWithMode(method);
+        });
+
+        System.out.println(MessageFormat.format("Method {0}; Description {1} {2}", method.getName(), childDescription,
+                                                childDescription.hashCode()));
+
+        return childDescription;
+    }
+
+    private Description describeChildWithMode(FrameworkMethod method)
+    {
+        switch (descriptionMode)
+        {
+            case flat:
         return Description.createTestDescription(getTestClass().getJavaClass(), testName(method), method.getAnnotations());
+
+            case hierarchical:
+                if (method instanceof EnhancedMethod)
+                {
+                    return describeEnhancedMethod((EnhancedMethod) method);
+                }
+                else
+                {
+                    return Description.createTestDescription(getTestClass().getJavaClass().getName(), method.getName(), testName(method));
+                }
+
+            case extrawurst:
+                throw new NotImplementedException("extrawurst");
+        }
+        return null;
+    }
+
+    private Description describeEnhancedMethod(EnhancedMethod method)
+    {
+        Description childDescription = null;
+        for (int i = 0; i < method.getBuilder().size(); i++)
+        {
+            StatementBuilder statementBuilder = method.getBuilder().get(i);
+            String testName = statementBuilder.getTestName(method.getData().get(i));
+
+            if (childDescription == null)
+            {
+                childDescription = Description.createSuiteDescription(testName, method.getTestName());
+            }
+            else
+            {
+                childDescription.addChild(Description.createSuiteDescription(testName, method.getTestName()));
+            }
+        }
+        childDescription.addChild(Description.createTestDescription(getTestClass().getJavaClass().getName(), method.getName(),
+                                                                    method.getTestName()));
+
+        return childDescription;
+    }
+
+    @Override
+    public Description getDescription()
+    {
+        if (globalTestDescription == null)
+        {
+            switch (descriptionMode)
+            {
+                case flat:
+                    globalTestDescription = getFlatTestDescription();
+                    break;
+
+                case hierarchical:
+                    globalTestDescription = getHierarchicalDescription();
+                    break;
+
+                case extrawurst:
+                    throw new NotImplementedException("extrawurst");
+            }
+        }
+        return globalTestDescription;
+    }
+
+    private Description getFlatTestDescription()
+    {
+        Class<?> testClass = getTestClass().getJavaClass();
+        Description suiteDescription = Description.createSuiteDescription(testClass);
+
+        for (FrameworkMethod method : computeTestMethods())
+        {
+            if (method instanceof EnhancedMethod)
+            {
+                EnhancedMethod em = (EnhancedMethod) method;
+                suiteDescription.addChild(Description.createTestDescription(testClass, em.getTestName()));
+            }
+            else if (method instanceof FrameworkMethod)
+            {
+                suiteDescription.addChild(Description.createTestDescription(testClass, method.getName()));
+            }
+
+        }
+
+        return suiteDescription;
+    }
+
+    private Description getHierarchicalDescription()
+    {
+        Class<?> testClass = getTestClass().getJavaClass();
+        Description suiteDescription = Description.createSuiteDescription(testClass);
+
+        List<FrameworkMethod> computeTestMethods = computeTestMethods();
+
+        for (FrameworkMethod method : computeTestMethods)
+        {
+            suiteDescription.addChild(describeChild(method));
+        }
+
+        return suiteDescription;
+
     }
 
     @Override
