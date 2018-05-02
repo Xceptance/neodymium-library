@@ -27,10 +27,11 @@ public class ParameterStatement extends StatementBuilder
 
     private TestClass testClass;
 
-    public ParameterStatement(Statement next, ParameterStatementData parameter)
+    public ParameterStatement(Statement next, ParameterStatementData parameter, TestClass testClass)
     {
         this.next = next;
         this.statementData = parameter;
+        this.testClass = testClass;
     }
 
     public ParameterStatement()
@@ -204,7 +205,7 @@ public class ParameterStatement extends StatementBuilder
     @Override
     public StatementBuilder createStatement(Statement next, Object parameter)
     {
-        return new ParameterStatement(next, (ParameterStatementData) parameter);
+        return new ParameterStatement(next, (ParameterStatementData) parameter, testClass);
     }
 
     @Override
