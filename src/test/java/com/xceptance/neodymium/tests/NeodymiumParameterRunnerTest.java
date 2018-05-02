@@ -33,7 +33,8 @@ public class NeodymiumParameterRunnerTest extends NeodymiumTest
     {
         // test a non static generator
         Result result = JUnitCore.runClasses(NonStaticGeneratorVoidReturn.class);
-        checkFail(result, 1, 0, 1, "No public static parameters method on class " + NonStaticGeneratorVoidReturn.class.getCanonicalName());
+        checkFail(result, 1, 0, 1, "java.lang.Exception: No public static parameters method on class " +
+                                   NonStaticGeneratorVoidReturn.class.getCanonicalName());
     }
 
     @Test
@@ -41,7 +42,8 @@ public class NeodymiumParameterRunnerTest extends NeodymiumTest
     {
         // test generator void return type
         Result result = JUnitCore.runClasses(GeneratorVoidReturn.class);
-        checkFail(result, 1, 0, 1, GeneratorVoidReturn.class.getCanonicalName() + ".createData() must return an Iterable of arrays.");
+        checkFail(result, 1, 0, 1, "java.lang.RuntimeException: java.lang.Exception: " + GeneratorVoidReturn.class.getCanonicalName() +
+                                   ".createData() must return an Iterable of arrays.");
     }
 
     @Test
@@ -49,7 +51,8 @@ public class NeodymiumParameterRunnerTest extends NeodymiumTest
     {
         // test generator returning object is not accidently castet to correct type
         Result result = JUnitCore.runClasses(GeneratorObjectReturn.class);
-        checkFail(result, 1, 0, 1, GeneratorObjectReturn.class.getCanonicalName() + ".createData() must return an Iterable of arrays.");
+        checkFail(result, 1, 0, 1, "java.lang.RuntimeException: java.lang.Exception: " + GeneratorObjectReturn.class.getCanonicalName() +
+                                   ".createData() must return an Iterable of arrays.");
     }
 
     @Test
@@ -65,7 +68,7 @@ public class NeodymiumParameterRunnerTest extends NeodymiumTest
     {
         // one test iteration with two parameter fields, but just one data set
         Result result = JUnitCore.runClasses(GeneratorTooFewElements.class);
-        checkFail(result, 1, 0, 1, "java.lang.Exception: Number of parameters (1) and fields (2) annotated with @Parameter must match!");
+        checkFail(result, 1, 0, 1, "Number of parameters (1) and fields (2) annotated with @Parameter must match!");
     }
 
     @Test
@@ -73,7 +76,7 @@ public class NeodymiumParameterRunnerTest extends NeodymiumTest
     {
         // one test iteration with one data field, but two data sets
         Result result = JUnitCore.runClasses(GeneratorTooMuchElements.class);
-        checkFail(result, 1, 0, 1, "java.lang.Exception: Number of parameters (2) and fields (1) annotated with @Parameter must match!");
+        checkFail(result, 1, 0, 1, "Number of parameters (2) and fields (1) annotated with @Parameter must match!");
     }
 
     @Test
@@ -90,7 +93,7 @@ public class NeodymiumParameterRunnerTest extends NeodymiumTest
         // test that auto type conversion from string to an arbitrary type fails
         Result result = JUnitCore.runClasses(GeneratorAutoTypeConversionCanNotHandleArbitraryTypes.class);
         checkFail(result, 1, 0, 1,
-                  "java.lang.RuntimeException: Could not set parameter of type class java.lang.String to field \"browser\" of type class com.xceptance.neodymium.multibrowser.configuration.BrowserConfiguration. Value: a string can not be parsed to an arbitrary type");
+                  "Could not set parameter of type class java.lang.String to field \"browser\" of type class com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration. Value: a string can not be parsed to an arbitrary type");
     }
 
     @Test
@@ -106,7 +109,7 @@ public class NeodymiumParameterRunnerTest extends NeodymiumTest
     {
         // test that a final field can not be set
         Result result = JUnitCore.runClasses(GeneratorCanNotSetFinalField.class);
-        checkFail(result, 1, 0, 1, "java.lang.RuntimeException: Could not set parameter due to it is not public or it is final");
+        checkFail(result, 1, 0, 1, "Could not set parameter due to it is not public or it is final");
     }
 
     @Test
@@ -114,7 +117,7 @@ public class NeodymiumParameterRunnerTest extends NeodymiumTest
     {
         // test that a private field can not be set
         Result result = JUnitCore.runClasses(GeneratorCanNotSetPrivateField.class);
-        checkFail(result, 1, 0, 1, "java.lang.RuntimeException: Could not set parameter due to it is not public or it is final");
+        checkFail(result, 1, 0, 1, "Could not set parameter due to it is not public or it is final");
     }
 
     @Test
@@ -122,7 +125,6 @@ public class NeodymiumParameterRunnerTest extends NeodymiumTest
     {
         // test that auto type conversion from string fails if string content can not match
         Result result = JUnitCore.runClasses(GeneratorAutoTypeConversionFailsOnWrongInputData.class);
-        checkFail(result, 1, 0, 1,
-                  "java.lang.RuntimeException: An error occured during conversion of input string \"true\" to type double for field \"aDouble\"");
+        checkFail(result, 1, 0, 1, "An error occured during conversion of input string \"true\" to type double for field \"aDouble\"");
     }
 }
