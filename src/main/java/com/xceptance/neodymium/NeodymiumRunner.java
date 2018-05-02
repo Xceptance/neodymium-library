@@ -97,13 +97,17 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         if (computedTestMethods != null)
             return computedTestMethods;
 
+        // That list will contain all methods that need to be run for the class
         List<FrameworkMethod> testMethods = new LinkedList<>();
 
+        // Statement run order defines the order of our own statements that will surround the default JUnit statement
+        // from methodBlock
         List<Class<? extends StatementBuilder>> statementRunOrder = new DefaultStatementRunOrder().getRunOrder();
 
         // super.computeTestMethods will return all methods that are annotated with @Test
         for (FrameworkMethod testAnnotatedMethod : super.computeTestMethods())
         {
+            // these lists contain all the builders and data that will be responsible for a partiuclar method
             List<StatementBuilder> builderList = new LinkedList<>();
             List<List<Object>> builderDataList = new LinkedList<>();
 
@@ -138,8 +142,8 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
             testMethods.addAll(buildCrossProduct(testAnnotatedMethod.getMethod(), builderList, builderDataList));
         }
 
-        // this list is now final for this execution so make it unmodifiable
-         computedTestMethods = Collections.unmodifiableList(testMethods);
+        // this list is now final for class execution so make it unmodifiable
+        computedTestMethods = Collections.unmodifiableList(testMethods);
 
         return computedTestMethods;
     }
