@@ -48,7 +48,15 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     @Override
     protected Statement methodBlock(FrameworkMethod method)
     {
+        // This will build a default JUnit statement which runs excactly one of the test methods including before/after
+        // methods. This call will also create the test class instance in which this method will be invoked.
         Statement methodStatement = super.methodBlock(method);
+        // We need this particular test class instance for our own statements but we can not access it from here.
+        // We can get the instance by having createTest overridden, see implementation of createTest in this class as
+        // well as in BlockJUnit4ClassRunner. It doesn't include error handling like in super.methodBlock, but at least
+        // we can get the same instance
+
+        // At this point our createTest implementation was called and we have the testClassInstance
 
         if (method instanceof EnhancedMethod)
         {
@@ -67,6 +75,11 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     @Override
     protected Object createTest() throws Exception
     {
+        // Very important code which will be called from super's methodBlock function (see our methodBlock)
+        // The super's call creates the instance of the class to test which will be a new one for each method.
+        // Since we need this particular instance for our own statements we need to save it for us.
+        // Keep in mind that this method will be called for every method that will be returned from computeTestMethods.
+        // So there is not the one and only test class instance. Its one instance per method.
         this.testClassInstance = super.createTest();
         return testClassInstance;
     }
@@ -74,13 +87,21 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     @Override
     protected List<FrameworkMethod> computeTestMethods()
     {
-        // since this method is called at least two times and is somewhat expensive, we cache the result
+        // Normally JUnit works with all methods that are annotated with @Test, see super's implementation
+        // But we override this function in order to do all the fancy stuff, like method multiplication and so on.
+        // So we basically start with the list of test methods and add and rearrange new one's to this list and JUnit
+        // will take this list and call us for each entry to create a statement which actually does all the stuff.
+        // Each entry of this list causes a call to methodBlock().
+
+        // Since this method is called at least two times and is somewhat expensive, we cache the result
         if (computedTestMethods != null)
             return computedTestMethods;
 
         List<FrameworkMethod> testMethods = new LinkedList<>();
 
         List<Class<? extends StatementBuilder>> statementRunOrder = new DefaultStatementRunOrder().getRunOrder();
+
+        // super.computeTestMethods will return all methods that are annotated with @Test
         for (FrameworkMethod testAnnotatedMethod : super.computeTestMethods())
         {
             List<StatementBuilder> builderList = new LinkedList<>();
@@ -104,15 +125,20 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                     throw new RuntimeException(e);
                 }
 
-                // new InitializationError(error)
+                // Avoid empty entries in the list since its a hassle to deal with
                 if (iterationData != null && !iterationData.isEmpty())
                 {
+                    // we save both, the builder instance as well as the "data" to run with
                     builderList.add(builder);
                     builderDataList.add(iterationData);
                 }
             }
+
+            // This is the point where multiple test methods are computed for the current processed method.
             testMethods.addAll(buildCrossProduct(testAnnotatedMethod.getMethod(), builderList, builderDataList));
         }
+
+        // this list is now final for this execution so make it unmodifiable
          computedTestMethods = Collections.unmodifiableList(testMethods);
 
         return computedTestMethods;
@@ -198,7 +224,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         switch (descriptionMode)
         {
             case flat:
-        return Description.createTestDescription(getTestClass().getJavaClass(), testName(method), method.getAnnotations());
+                return Description.createTestDescription(getTestClass().getJavaClass(), testName(method), method.getAnnotations());
 
             case hierarchical:
                 if (method instanceof EnhancedMethod)
