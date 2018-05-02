@@ -1,7 +1,6 @@
 package com.xceptance.neodymium;
 
 import java.lang.reflect.Method;
-import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -196,23 +195,26 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     protected Description describeChild(FrameworkMethod method)
     {
         // cache child descriptions
-
         Description childDescription = childDescriptions.computeIfAbsent(method, (m) -> {
             return describeChildWithMode(method);
         });
 
-        System.out.println(MessageFormat.format("Method {0}; Description {1} {2}", method.getName(), childDescription,
-                                                childDescription.hashCode()));
-
         return childDescription;
+
+        // return describeChildWithMode(method);
     }
 
     private Description describeChildWithMode(FrameworkMethod method)
     {
+        Class<?> clazz = getTestClass().getJavaClass();
+        String className = clazz.getName();
+        String testName = testName(method);
         switch (descriptionMode)
         {
             case flat:
-                return Description.createTestDescription(getTestClass().getJavaClass(), testName(method), method.getAnnotations());
+                return Description.createTestDescription(className, testName, testName);
+            // return Description.createTestDescription(getTestClass().getJavaClass(), testName(method),
+            // method.getAnnotations());
 
             case hierarchical:
                 if (method instanceof EnhancedMethod)
@@ -221,7 +223,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                 }
                 else
                 {
-                    return Description.createTestDescription(getTestClass().getJavaClass().getName(), method.getName(), testName(method));
+                    return Description.createTestDescription(className, method.getName(), testName);
                 }
 
             case extrawurst:
@@ -277,21 +279,13 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
     private Description getFlatTestDescription()
     {
+        // create a suite description and a test description as childs for all te
         Class<?> testClass = getTestClass().getJavaClass();
         Description suiteDescription = Description.createSuiteDescription(testClass);
 
         for (FrameworkMethod method : computeTestMethods())
         {
-            if (method instanceof EnhancedMethod)
-            {
-                EnhancedMethod em = (EnhancedMethod) method;
-                suiteDescription.addChild(Description.createTestDescription(testClass, em.getTestName()));
-            }
-            else if (method instanceof FrameworkMethod)
-            {
-                suiteDescription.addChild(Description.createTestDescription(testClass, method.getName()));
-            }
-
+            suiteDescription.addChild(describeChild(method));
         }
 
         return suiteDescription;
