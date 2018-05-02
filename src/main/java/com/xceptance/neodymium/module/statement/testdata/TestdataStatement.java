@@ -110,7 +110,7 @@ public class TestdataStatement extends StatementBuilder
     }
 
     @Override
-    public StatementBuilder createStatement(Statement next, Object parameter)
+    public StatementBuilder createStatement(Object testClassInstance, Statement next, Object parameter)
     {
         return new TestdataStatement(next, (TestdataStatementData) parameter);
     }

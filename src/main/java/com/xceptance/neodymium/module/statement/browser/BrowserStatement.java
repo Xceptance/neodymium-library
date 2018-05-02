@@ -242,7 +242,7 @@ public class BrowserStatement extends StatementBuilder
     }
 
     @Override
-    public StatementBuilder createStatement(Statement next, Object parameter)
+    public StatementBuilder createStatement(Object testClassInstance, Statement next, Object parameter)
     {
         return new BrowserStatement(next, (String) parameter);
     }

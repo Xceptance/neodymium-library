@@ -25,13 +25,13 @@ public class ParameterStatement extends StatementBuilder
 
     private ParameterStatementData statementData;
 
-    private TestClass testClass;
+    private Object testClassInstance;
 
-    public ParameterStatement(Statement next, ParameterStatementData parameter, TestClass testClass)
+    public ParameterStatement(Statement next, ParameterStatementData parameter, Object testClassInstance)
     {
         this.next = next;
         this.statementData = parameter;
-        this.testClass = testClass;
+        this.testClassInstance = testClassInstance;
     }
 
     public ParameterStatement()
@@ -48,7 +48,6 @@ public class ParameterStatement extends StatementBuilder
     @Override
     public List<Object> createIterationData(TestClass testClass, FrameworkMethod method) throws Exception
     {
-        this.testClass = testClass;
         List<FrameworkMethod> parametersMethods = testClass.getAnnotatedMethods(Parameters.class);
         Iterable<Object> parameter = null;
 
@@ -189,7 +188,7 @@ public class ParameterStatement extends StatementBuilder
 
         try
         {
-            field.set(testClass.getJavaClass(), value);
+            field.set(testClassInstance, value);
         }
         catch (IllegalArgumentException e)
         {
@@ -203,9 +202,9 @@ public class ParameterStatement extends StatementBuilder
     }
 
     @Override
-    public StatementBuilder createStatement(Statement next, Object parameter)
+    public StatementBuilder createStatement(Object testClassInstance, Statement next, Object parameter)
     {
-        return new ParameterStatement(next, (ParameterStatementData) parameter, testClass);
+        return new ParameterStatement(next, (ParameterStatementData) parameter, testClassInstance);
     }
 
     @Override
