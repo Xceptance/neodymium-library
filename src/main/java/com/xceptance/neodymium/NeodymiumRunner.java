@@ -275,9 +275,8 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
     private Description getFlatTestDescription()
     {
-        // create a suite description and a test description as childs for all te
-        Class<?> testClass = getTestClass().getJavaClass();
-        Description suiteDescription = Description.createSuiteDescription(testClass);
+        // create a suite description and a test description as childs for all methods
+        Description suiteDescription = Description.createSuiteDescription(getTestClass().getJavaClass());
 
         for (FrameworkMethod method : computeTestMethods())
         {
@@ -289,12 +288,9 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
     private Description getHierarchicalDescription()
     {
-        Class<?> testClass = getTestClass().getJavaClass();
-        Description suiteDescription = Description.createSuiteDescription(testClass);
+        Description suiteDescription = Description.createSuiteDescription(getTestClass().getJavaClass());
 
-        List<FrameworkMethod> computeTestMethods = computeTestMethods();
-
-        for (FrameworkMethod method : computeTestMethods)
+        for (FrameworkMethod method : computeTestMethods())
         {
             suiteDescription.addChild(describeChild(method));
         }
