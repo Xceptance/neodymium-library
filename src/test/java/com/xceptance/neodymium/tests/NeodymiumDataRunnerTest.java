@@ -9,6 +9,11 @@ import org.junit.runner.Result;
 import com.xceptance.neodymium.testclasses.data.inheritance.child.PackageTestDataInheritance;
 import com.xceptance.neodymium.testclasses.data.inheritance.child.grandchild.GrandChildPackageTestDataInheritance;
 import com.xceptance.neodymium.testclasses.data.inheritance.child.grandchild.set.DataSetOverridesPackageData;
+import com.xceptance.neodymium.testclasses.data.override.ClassDefaultValueEmptyDataSets;
+import com.xceptance.neodymium.testclasses.data.override.ClassDefaultValueNoDataSets;
+import com.xceptance.neodymium.testclasses.data.override.ClassDefaultValueOneDataSet;
+import com.xceptance.neodymium.testclasses.data.override.ClassDefaultValueTwoDataSets;
+import com.xceptance.neodymium.testclasses.data.override.ClassExplicitDefaultValueTwoDataSets;
 import com.xceptance.neodymium.testclasses.data.pkg.csv.CanReadPackageDataCSV;
 import com.xceptance.neodymium.testclasses.data.pkg.json.CanReadPackageDataJson;
 import com.xceptance.neodymium.testclasses.data.pkg.properties.CanReadPackageDataProperties;
@@ -122,5 +127,66 @@ public class NeodymiumDataRunnerTest extends NeodymiumTest
         // test that data set overrides package test data
         Result result = JUnitCore.runClasses(DataSetOverridesPackageData.class);
         checkPass(result, 1, 0, 0);
+    }
+
+    ///////////////////////
+    // Testdata override //
+    ///////////////////////
+
+    // Class level override
+
+    @Test
+    public void testClassDefaultValueNoDataSets() throws Throwable
+    {
+        // No data set file and @Testdata() on class
+        String[] expected = new String[]
+            {
+                "test1"
+            };
+        checkDescription(ClassDefaultValueNoDataSets.class, expected);
+    }
+
+    @Test
+    public void testClassDefaultValueEmptyDataSets() throws Throwable
+    {
+        // Empty data sets (only one key but no value) and @Testdata() on class
+        String[] expected = new String[]
+            {
+                "test1"
+            };
+        checkDescription(ClassDefaultValueEmptyDataSets.class, expected);
+    }
+
+    @Test
+    public void testClassDefaultValueOneDataSet() throws Throwable
+    {
+        // One data set and @Testdata() on class
+        String[] expected = new String[]
+            {
+                "test1 :: Data set 1 / 1"
+            };
+        checkDescription(ClassDefaultValueOneDataSet.class, expected);
+    }
+
+    @Test
+    public void testClassDefaultValueTwoDataSets() throws Throwable
+    {
+        // Two data sets and @Testdata() on class
+        String[] expected = new String[]
+            {
+                "test1 :: Data set 1 / 2", "test1 :: Data set 2 / 2"
+            };
+        checkDescription(ClassDefaultValueTwoDataSets.class, expected);
+    }
+
+    @Test
+    public void testClassExplicitDefaultValueTwoDataSets() throws Throwable
+    {
+        // Two data sets and explicit @Testdata(-1) on class
+        String[] expected = new String[]
+            {
+                "test1 :: Data set 1 / 2", "test1 :: Data set 2 / 2"
+            };
+        checkDescription(ClassExplicitDefaultValueTwoDataSets.class, expected);
     }
 }

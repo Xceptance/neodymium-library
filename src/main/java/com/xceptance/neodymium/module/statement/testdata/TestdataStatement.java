@@ -2,6 +2,7 @@ package com.xceptance.neodymium.module.statement.testdata;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -105,8 +106,38 @@ public class TestdataStatement extends StatementBuilder
             // we couldn't find any data sets
         }
 
-        return iterations;
+        // check first the method an then the class for an Testdata annotation
+        // if there is any fixed dataset set then modidy iteration list
+        Testdata annotation = method.getAnnotation(Testdata.class);
+        if (annotation == null)
+        {
+            annotation = testClass.getAnnotation(Testdata.class);
+        }
+        if (annotation != null)
+        {
+            int fixedDataSetIndex = annotation.value();
+            // just ignore all values <= 0
+            if (fixedDataSetIndex > -1)
+            {
+                if (fixedDataSetIndex > iterations.size())
+                {
+                    String msg = MessageFormat.format("Method ''{0}'' is marked to be run only with data set index {1}, but there are only {2}",
+                                                      method.getName(), fixedDataSetIndex, iterations.size());
+                    throw new IllegalArgumentException(msg);
+                }
 
+                List<Object> fixedIteration = new LinkedList<>();
+                // we define 0 to equal to run without datasets
+                if (fixedDataSetIndex > 0)
+                {
+                    fixedIteration.add(iterations.get(fixedDataSetIndex - 1));
+                }
+
+                return fixedIteration;
+            }
+        }
+
+        return iterations;
     }
 
     @Override
