@@ -19,6 +19,7 @@ import com.xceptance.neodymium.testclasses.multiplication.browser.TwoBrowserOneM
 import com.xceptance.neodymium.testclasses.multiplication.browser.TwoBrowserTwoMethods;
 
 @Ignore
+// TODO: Currently ignored because we lack of providing a custom browser.properties for these tests.
 public class BrowserMultiplicationTest extends NeodymiumTest
 {
     private static File tempConfigFile;
