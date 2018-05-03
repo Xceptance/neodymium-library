@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.junit.runner.Description;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
@@ -29,12 +28,9 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     {
      flat,
      hierarchical,
-     extrawurst
     };
 
-    private DescriptionMode descriptionMode = DescriptionMode.flat;
-
-    private Map<EnhancedMethod, Statement> methodStatements;
+    private DescriptionMode descriptionMode = DescriptionMode.hierarchical;
 
     private List<FrameworkMethod> computedTestMethods;
 
@@ -221,34 +217,30 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                 {
                     return Description.createTestDescription(className, method.getName(), testName);
                 }
-
-            case extrawurst:
-                throw new NotImplementedException("extrawurst");
         }
         return null;
     }
 
     private Description describeEnhancedMethod(EnhancedMethod method)
     {
-        Description childDescription = null;
-        for (int i = 0; i < method.getBuilder().size(); i++)
+        return recursiveDescribe(globalTestDescription, method, 0);
+    }
+
+    private Description recursiveDescribe(Description methodDescription, EnhancedMethod method, int currentBuilderIndex)
+    {
+        if (currentBuilderIndex == method.getBuilder().size())
         {
-            StatementBuilder statementBuilder = method.getBuilder().get(i);
-            String testName = statementBuilder.getTestName(method.getData().get(i));
-
-            if (childDescription == null)
-            {
-                childDescription = Description.createSuiteDescription(testName, method.getTestName());
-            }
-            else
-            {
-                childDescription.addChild(Description.createSuiteDescription(testName, method.getTestName()));
-            }
+            // abort recursion
+            methodDescription.addChild(Description.createTestDescription(getTestClass().getJavaClass().getName(), method.getTestName(),
+                                                                         method.getTestName()));
+            return methodDescription;
         }
-        childDescription.addChild(Description.createTestDescription(getTestClass().getJavaClass().getName(), method.getName(),
-                                                                    method.getTestName()));
 
-        return childDescription;
+        StatementBuilder statementBuilder = method.getBuilder().get(currentBuilderIndex);
+        Object data = method.getData().get(currentBuilderIndex);
+        Description childDescription = Description.createSuiteDescription(statementBuilder.getTestName(data), method.getTestName());
+        methodDescription.addChild(childDescription);
+        return recursiveDescribe(childDescription, method, (currentBuilderIndex + 1));
     }
 
     @Override
@@ -265,9 +257,6 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                 case hierarchical:
                     globalTestDescription = getHierarchicalDescription();
                     break;
-
-                case extrawurst:
-                    throw new NotImplementedException("extrawurst");
             }
         }
         return globalTestDescription;
@@ -288,15 +277,14 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
     private Description getHierarchicalDescription()
     {
-        Description suiteDescription = Description.createSuiteDescription(getTestClass().getJavaClass());
+        globalTestDescription = Description.createSuiteDescription(getTestClass().getJavaClass());
 
         for (FrameworkMethod method : computeTestMethods())
         {
-            suiteDescription.addChild(describeChild(method));
+            describeChild(method);
         }
 
-        return suiteDescription;
-
+        return globalTestDescription;
     }
 
     @Override
