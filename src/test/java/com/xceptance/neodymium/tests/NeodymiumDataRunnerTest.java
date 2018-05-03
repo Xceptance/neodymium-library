@@ -14,6 +14,11 @@ import com.xceptance.neodymium.testclasses.data.override.classonly.ClassDefaultV
 import com.xceptance.neodymium.testclasses.data.override.classonly.ClassDefaultValueOneDataSet;
 import com.xceptance.neodymium.testclasses.data.override.classonly.ClassDefaultValueTwoDataSets;
 import com.xceptance.neodymium.testclasses.data.override.classonly.ClassExplicitDefaultValueTwoDataSets;
+import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodDefaultEmptyDataSets;
+import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodDefaultNoDataSets;
+import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodDefaultOneDataSet;
+import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodDefaultTwoDataSet;
+import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodExplicitDefaultTwoDataSets;
 import com.xceptance.neodymium.testclasses.data.pkg.csv.CanReadPackageDataCSV;
 import com.xceptance.neodymium.testclasses.data.pkg.json.CanReadPackageDataJson;
 import com.xceptance.neodymium.testclasses.data.pkg.properties.CanReadPackageDataProperties;
@@ -188,5 +193,62 @@ public class NeodymiumDataRunnerTest extends NeodymiumTest
                 "test1 :: Data set 1 / 2", "test1 :: Data set 2 / 2"
             };
         checkDescription(ClassExplicitDefaultValueTwoDataSets.class, expected);
+    }
+
+    // Method level override
+
+    @Test
+    public void testMethodDefaultEmptyDataSets() throws Throwable
+    {
+        // Empty data sets (only one key but no value) and @Testdata() on method
+        String[] expected = new String[]
+            {
+                "test1"
+            };
+        checkDescription(MethodDefaultEmptyDataSets.class, expected);
+    }
+
+    @Test
+    public void testMethodDefaultNoDataSets() throws Throwable
+    {
+        // No data set file and @Testdata on method
+        String[] expected = new String[]
+            {
+                "test1"
+            };
+        checkDescription(MethodDefaultNoDataSets.class, expected);
+    }
+
+    @Test
+    public void testMethodDefaultOneDataSet() throws Throwable
+    {
+        // One data set and @Testdata on method
+        String[] expected = new String[]
+            {
+                "test1 :: Data set 1 / 1"
+            };
+        checkDescription(MethodDefaultOneDataSet.class, expected);
+    }
+
+    @Test
+    public void testMethodDefaultTwoDataSet() throws Throwable
+    {
+        // Two data sets and @Testdata on method
+        String[] expected = new String[]
+            {
+                "test1 :: Data set 1 / 2", "test1 :: Data set 2 / 2"
+            };
+        checkDescription(MethodDefaultTwoDataSet.class, expected);
+    }
+
+    @Test
+    public void testMethodExplicitDefaultTwoDataSets() throws Throwable
+    {
+        // Two data sets and explicit @Testdata(-1) on method
+        String[] expected = new String[]
+            {
+                "test1 :: Data set 1 / 2", "test1 :: Data set 2 / 2"
+            };
+        checkDescription(MethodExplicitDefaultTwoDataSets.class, expected);
     }
 }
