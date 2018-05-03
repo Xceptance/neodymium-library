@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.testclasses.data.override;
+package com.xceptance.neodymium.testclasses.data.override.classonly;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
