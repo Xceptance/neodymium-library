@@ -58,7 +58,7 @@ public abstract class NeodymiumTest
 
     public void checkDescription(Class<?> clazz, String[] expectedTestDescription) throws Throwable
     {
-        checkDescription(new NeodymiumRunner(clazz, null).getDescription(), expectedTestDescription);
+        checkDescription(new NeodymiumRunner(clazz).getDescription(), expectedTestDescription);
     }
 
     /**

@@ -52,7 +52,7 @@ public class NeodymiumMethodRunnerTest extends NeodymiumTest
     {
         // test that the test fails if the constructor throws an exception
         Result result = JUnitCore.runClasses(ConstructorThrowsCheckedException.class);
-        checkFail(result, 0, 0, 1, "java.lang.reflect.InvocationTargetException");
+        checkFail(result, 1, 0, 1, "construction failed");
     }
 
     @Test
@@ -60,7 +60,7 @@ public class NeodymiumMethodRunnerTest extends NeodymiumTest
     {
         // test that the test fails if the constructor throws an error
         Result result = JUnitCore.runClasses(ConstructorThrowsError.class);
-        checkFail(result, 0, 0, 1, "java.lang.reflect.InvocationTargetException");
+        checkFail(result, 1, 0, 1, null);
     }
 
     @Test

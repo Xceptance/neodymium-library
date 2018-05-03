@@ -17,8 +17,8 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import com.xceptance.neodymium.multibrowser.configuration.BrowserConfiguration;
-import com.xceptance.neodymium.multibrowser.configuration.MultibrowserConfiguration;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.testclasses.browser.EmptyBrowser;
 import com.xceptance.neodymium.testclasses.browser.NoBrowserTag;
 
@@ -52,9 +52,9 @@ public class NeodymiumBrowserRunnerTest extends NeodymiumTest
     @Test
     public void testEmptyBrowserTag()
     {
-        // an empty @Browser({}) annotation shouldn't raise an error and shouldn't invoke a method
+        // an empty @Browser({}) annotation shouldn't raise an error
         Result result = JUnitCore.runClasses(NoBrowserTag.class);
-        checkPass(result, 0, 0, 0);
+        checkPass(result, 1, 0, 0);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class NeodymiumBrowserRunnerTest extends NeodymiumTest
     {
         // an empty browser tag (@Browser({""})) should raise an error
         Result result = JUnitCore.runClasses(EmptyBrowser.class);
-        checkFail(result, 1, 0, 1, "Can not find browser configuration with tag: ");
+        checkFail(result, 1, 0, 1, "java.lang.IllegalArgumentException: Can not find browser configuration with tag: ");
     }
 
     @Test

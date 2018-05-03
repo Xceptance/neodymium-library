@@ -72,7 +72,7 @@ public class MultiplicationTest extends NeodymiumTest
         // two methods, package test data do not affect multiplication
         String[] expected = new String[]
             {
-                "first", "second"
+                "first :: TestData", "second :: TestData"
             };
         checkDescription(PackageDataDoNotAffectMethodMultiplication.class, expected);
 

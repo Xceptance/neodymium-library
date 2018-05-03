@@ -9,7 +9,7 @@ import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.multibrowser.configuration.BrowserConfiguration;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 
 @RunWith(NeodymiumRunner.class)
 public class GeneratorAutoTypeConversionCanNotHandleArbitraryTypes
