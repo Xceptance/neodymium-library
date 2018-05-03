@@ -19,6 +19,11 @@ import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodDefaul
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodDefaultOneDataSet;
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodDefaultTwoDataSet;
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodExplicitDefaultTwoDataSets;
+import com.xceptance.neodymium.testclasses.data.override.mixed.ClassWithoutTwoMethodsOneForced;
+import com.xceptance.neodymium.testclasses.data.override.mixed.ForceOfNoneDataSets;
+import com.xceptance.neodymium.testclasses.data.override.mixed.OneDataSetTwoMethodsOneWithout;
+import com.xceptance.neodymium.testclasses.data.override.mixed.TwoDataSetsTwoMethodsOneForced;
+import com.xceptance.neodymium.testclasses.data.override.mixed.TwoDataSetsTwoMethodsOneWithout;
 import com.xceptance.neodymium.testclasses.data.pkg.csv.CanReadPackageDataCSV;
 import com.xceptance.neodymium.testclasses.data.pkg.json.CanReadPackageDataJson;
 import com.xceptance.neodymium.testclasses.data.pkg.properties.CanReadPackageDataProperties;
@@ -251,4 +256,59 @@ public class NeodymiumDataRunnerTest extends NeodymiumTest
             };
         checkDescription(MethodExplicitDefaultTwoDataSets.class, expected);
     }
+
+    // mixed tests
+
+    @Test
+    public void testOneDataSetTwoMethodsOneWithout() throws Throwable
+    {
+        // One data set, two methods, one method with @Testdata(0)
+        String[] expected = new String[]
+            {
+                "test1 :: Data set 1 / 1", "test2"
+            };
+        checkDescription(OneDataSetTwoMethodsOneWithout.class, expected);
+    }
+
+    @Test
+    public void testTwoDataSetsTwoMethodsOneWithout() throws Throwable
+    {
+        // One data set, two methods, one method with @Testdata(0)
+        String[] expected = new String[]
+            {
+                "test1 :: Data set 1 / 2", "test1 :: Data set 2 / 2", "test2"
+            };
+        checkDescription(TwoDataSetsTwoMethodsOneWithout.class, expected);
+    }
+
+    @Test
+    public void testTwoDataSetsTwoMethodsOneForced() throws Throwable
+    {
+        // One data set, two methods, one method with @Testdata(0)
+        String[] expected = new String[]
+            {
+                "test1 :: Data set 1 / 2", "test1 :: Data set 2 / 2", "test2 :: Data set 1 / 2"
+            };
+        checkDescription(TwoDataSetsTwoMethodsOneForced.class, expected);
+    }
+
+    @Test
+    public void testClassWithoutTwoMethodsOneForced() throws Throwable
+    {
+        // One data set, two methods, one method with @Testdata(0)
+        String[] expected = new String[]
+            {
+                "test1 :: Data set 1 / 1", "test2"
+            };
+        checkDescription(ClassWithoutTwoMethodsOneForced.class, expected);
+    }
+
+    @Test
+    public void testForceOfNoneDataSets() throws Exception
+    {
+        Result result = JUnitCore.runClasses(ForceOfNoneDataSets.class);
+        checkFail(result, 1, 0, 1,
+                  "java.lang.IllegalArgumentException: Method 'test1' is marked to be run only with data set index 2, but there are only 0");
+    }
+
 }
