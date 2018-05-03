@@ -16,6 +16,7 @@ import org.junit.runners.model.Statement;
 import com.xceptance.neodymium.module.EnhancedMethod;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.order.DefaultStatementRunOrder;
+import com.xceptance.neodymium.util.Context;
 
 public class NeodymiumRunner extends BlockJUnit4ClassRunner
 {
@@ -24,13 +25,11 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         super(klass);
     }
 
-    private enum DescriptionMode
+    public enum DescriptionMode
     {
      flat,
      hierarchical,
     };
-
-    private DescriptionMode descriptionMode = DescriptionMode.hierarchical;
 
     private List<FrameworkMethod> computedTestMethods;
 
@@ -203,7 +202,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         Class<?> clazz = getTestClass().getJavaClass();
         String className = clazz.getName();
         String testName = testName(method);
-        switch (descriptionMode)
+        switch (Context.get().configuration.junitViewMode())
         {
             case flat:
                 return Description.createTestDescription(className, testName, testName);
@@ -248,7 +247,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     {
         if (globalTestDescription == null)
         {
-            switch (descriptionMode)
+            switch (Context.get().configuration.junitViewMode())
             {
                 case flat:
                     globalTestDescription = getFlatTestDescription();

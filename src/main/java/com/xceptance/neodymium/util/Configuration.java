@@ -7,6 +7,8 @@ import org.aeonbits.owner.Config.LoadType;
 import org.aeonbits.owner.Config.Sources;
 import org.aeonbits.owner.Mutable;
 
+import com.xceptance.neodymium.NeodymiumRunner.DescriptionMode;
+
 @LoadPolicy(LoadType.MERGE)
 @Sources(
     {
@@ -126,4 +128,7 @@ public interface Configuration extends Mutable
     @DefaultValue("+-#$%%&.;,_")
     public String dataUtilsPasswordSpecialChars();
 
+    @Key("junit.viewmode")
+    @DefaultValue("flat")
+    public DescriptionMode junitViewMode();
 }
