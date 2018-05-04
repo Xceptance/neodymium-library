@@ -131,19 +131,16 @@ public class TestdataStatement extends StatementBuilder
         }
 
         List<DataSet> dataSetAnnotations = new LinkedList<>();
-        if (classSuppress == null)
-        {
-            // at this point neither the class nor the method could have data sets supressed
-            List<DataSet> classDataSetAnnotations = getClassDataSetAnnotations(testClass);
 
-            if (!methodDataSetAnnotations.isEmpty())
-            {
-                dataSetAnnotations = methodDataSetAnnotations;
-            }
-            else if (!classDataSetAnnotations.isEmpty())
-            {
-                dataSetAnnotations = classDataSetAnnotations;
-            }
+        // at this point neither the class nor the method could have data sets supressed
+        List<DataSet> classDataSetAnnotations = getClassDataSetAnnotations(testClass);
+        if (!methodDataSetAnnotations.isEmpty())
+        {
+            dataSetAnnotations = methodDataSetAnnotations;
+        }
+        else if (!classDataSetAnnotations.isEmpty())
+        {
+            dataSetAnnotations = classDataSetAnnotations;
         }
 
         if (dataSetAnnotations.isEmpty())
@@ -151,6 +148,8 @@ public class TestdataStatement extends StatementBuilder
             // so there is nothing to suppress and nothing to override. Go ahead with all data sets
             return iterations;
         }
+
+        // we've gathered some instructions to override
 
         List<Object> fixedIterations = new LinkedList<>();
         for (DataSet dataSet : dataSetAnnotations)
@@ -176,7 +175,8 @@ public class TestdataStatement extends StatementBuilder
                 }
                 if (!found)
                 {
-                    String msg = MessageFormat.format("Could not find data set with test id ''{0}''", dataSetId);
+                    String msg = MessageFormat.format("Method ''{0}'' is marked to be run with data set testId ''{1}'', but could not find that data set",
+                                                      method.getName(), dataSetId);
                     throw new IllegalArgumentException(msg);
                 }
             }
@@ -192,13 +192,13 @@ public class TestdataStatement extends StatementBuilder
                 {
                     if (dataSetIndex > iterations.size())
                     {
-                        String msg = MessageFormat.format("Method ''{0}'' is marked to be run only with data set index {1}, but there are only {2}",
+                        String msg = MessageFormat.format("Method ''{0}'' is marked to be run with data set index {1}, but there are only {2}",
                                                           method.getName(), dataSetIndex, iterations.size());
                         throw new IllegalArgumentException(msg);
                     }
                     else
                     {
-                        fixedIterations.add(iterations.get(dataSetIndex));
+                        fixedIterations.add(iterations.get(dataSetIndex - 1));
                     }
                 }
             }
