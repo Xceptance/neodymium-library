@@ -10,7 +10,7 @@ import com.xceptance.neodymium.module.statement.testdata.DataSet;
 public class MethodExplicitDefaultTwoDataSets
 {
     @Test
-    @DataSet(-1)
+    @DataSet(0)
     public void test1() throws Exception
     {
 
