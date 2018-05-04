@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.module.statement.testdata.DataSet;
+import com.xceptance.neodymium.module.statement.testdata.SuppressDataSets;
 
 @RunWith(NeodymiumRunner.class)
 public class TwoDataSetsTwoMethodsOneWithout
@@ -16,7 +16,7 @@ public class TwoDataSetsTwoMethodsOneWithout
     }
 
     @Test
-    @DataSet(0)
+    @SuppressDataSets
     public void test2() throws Exception
     {
 

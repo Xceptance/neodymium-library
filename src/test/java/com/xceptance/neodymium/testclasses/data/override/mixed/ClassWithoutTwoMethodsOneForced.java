@@ -5,9 +5,10 @@ import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.testdata.DataSet;
+import com.xceptance.neodymium.module.statement.testdata.SuppressDataSets;
 
 @RunWith(NeodymiumRunner.class)
-@DataSet(0)
+@SuppressDataSets
 public class ClassWithoutTwoMethodsOneForced
 {
     @Test
