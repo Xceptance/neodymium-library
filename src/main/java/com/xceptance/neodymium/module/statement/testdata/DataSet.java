@@ -3,6 +3,7 @@ package com.xceptance.neodymium.module.statement.testdata;
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -12,9 +13,7 @@ import java.lang.annotation.Target;
  * <p>
  * The <b>value</b> defines the index of the data set that has to be force used for the class/method.
  * <p>
- * Default is -1 which will not have any effect on execution.
- * <p>
- * A value of 0 indicates that no data sets at all shall be used.
+ * Default is 0 which will not have any effect on execution.
  * <p>
  * Any number above zero will enforce execution with only that data set. First data set would be equal to 1 and so on.
  * 
@@ -25,7 +24,10 @@ import java.lang.annotation.Target;
     {
         TYPE, METHOD
     })
-public @interface Testdata
+@Repeatable(DataSets.class)
+public @interface DataSet
 {
-    int value() default -1;
+    int value() default 0;
+
+    String id() default "";
 }
