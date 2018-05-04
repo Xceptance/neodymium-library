@@ -108,8 +108,57 @@ public class TestdataStatement extends StatementBuilder
         {
             // we couldn't find any data sets
         }
+        iterations = processOverrides(testClass, method, iterations);
+        iterations = processDuplicates(iterations);
 
-        return processOverrides(testClass, method, iterations);
+        return iterations;
+    }
+
+    private List<Object> processDuplicates(List<Object> iterations)
+    {
+        // since the user can decide to annotate the same data set several times to the same function we need to care
+        // about the duplicates. First of all we need to clone those objects, then we need to set a special index which
+        // will be later used to distinguish them in the run
+
+        // this map contains the counter for the new index
+        HashMap<Object, Integer> iterationIndexMap = new HashMap<>();
+        List<Object> fixedIterations = new LinkedList<>();
+
+        for (Object object : iterations)
+        {
+            if (!fixedIterations.contains(object))
+            {
+                // no duplicate, just add it
+                fixedIterations.add(object);
+            }
+            else
+            {
+                // now the funny part, we encountered an duplicated object
+
+                // always set the first occurance of an object to 1
+                TestdataStatementData existingObject = (TestdataStatementData) object;
+                existingObject.setIterationIndex(1);
+
+                // set the counter for this object to 1
+                iterationIndexMap.computeIfAbsent(object, (o) -> {
+                    return 1;
+                });
+
+                // increment the counter every time we visit with the same object
+                Integer newIndex = iterationIndexMap.computeIfPresent(object, (o, index) -> {
+                    return (index + 1);
+                });
+
+                // important: we clone that object
+                TestdataStatementData clonedObject = new TestdataStatementData((TestdataStatementData) object);
+                // set the "iteration" index to the new cloned object
+                clonedObject.setIterationIndex(newIndex);
+                // add it to the list
+                fixedIterations.add(clonedObject);
+            }
+        }
+
+        return fixedIterations;
     }
 
     private List<Object> processOverrides(TestClass testClass, FrameworkMethod method, List<Object> iterations)
@@ -273,6 +322,11 @@ public class TestdataStatement extends StatementBuilder
         {
             // only package data
             testname = "TestData";
+        }
+
+        if (parameter.getIterationIndex() > 0)
+        {
+            testname += MessageFormat.format(" (execution: {0})", parameter.getIterationIndex());
         }
 
         return testname;
