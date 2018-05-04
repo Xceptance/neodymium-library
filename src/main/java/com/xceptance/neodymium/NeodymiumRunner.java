@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.runner.Description;
+import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
@@ -141,6 +142,14 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         computedTestMethods = Collections.unmodifiableList(testMethods);
 
         return computedTestMethods;
+    }
+
+    @Override
+    protected void runChild(FrameworkMethod method, RunNotifier notifier)
+    {
+        // clear the context before next child run
+        Context.clearThreadContext();
+        super.runChild(method, notifier);
     }
 
     private List<FrameworkMethod> buildCrossProduct(Method method, List<StatementBuilder> builderList, List<List<Object>> builderDataList)
