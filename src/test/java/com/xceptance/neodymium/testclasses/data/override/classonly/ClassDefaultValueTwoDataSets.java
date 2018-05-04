@@ -4,10 +4,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.module.statement.testdata.Testdata;
+import com.xceptance.neodymium.module.statement.testdata.DataSet;
 
 @RunWith(NeodymiumRunner.class)
-@Testdata()
+@DataSet()
 public class ClassDefaultValueTwoDataSets
 {
     @Test
