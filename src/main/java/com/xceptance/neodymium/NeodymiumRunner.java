@@ -197,40 +197,50 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     @Override
     protected Description describeChild(FrameworkMethod method)
     {
-        // cache child descriptions because they will (or should?) never change
+        return describeChild(method, null);
+    }
+
+    private Description describeChild(FrameworkMethod method, Description parentDescription)
+    {
+        // cache child descriptions because they will never change and get requestet alot
         Description childDescription = childDescriptions.computeIfAbsent(method, (m) -> {
-            return describeChildWithMode(method);
+            return describeChildWithMode(m, parentDescription);
         });
 
         return childDescription;
     }
 
-    private Description describeChildWithMode(FrameworkMethod method)
+    private Description describeChildWithMode(FrameworkMethod method, Description parentDescription)
     {
         Class<?> clazz = getTestClass().getJavaClass();
         String className = clazz.getName();
         String testName = testName(method);
+        Description description = null;
         switch (Context.get().configuration.junitViewMode())
         {
             case flat:
-                return Description.createTestDescription(className, testName, testName);
+                description = Description.createTestDescription(className, testName, testName);
+                break;
 
             case hierarchical:
                 if (method instanceof EnhancedMethod)
                 {
-                    return describeEnhancedMethod((EnhancedMethod) method);
+                    description = describeEnhancedMethod((EnhancedMethod) method, parentDescription);
                 }
                 else
                 {
-                    return Description.createTestDescription(className, method.getName(), testName);
+                    description = Description.createTestDescription(className, method.getName(), testName);
                 }
+                break;
         }
-        return null;
+        if (parentDescription != null && description != null)
+            parentDescription.addChild(description);
+        return description;
     }
 
-    private Description describeEnhancedMethod(EnhancedMethod method)
+    private Description describeEnhancedMethod(EnhancedMethod method, Description parentDescription)
     {
-        return recursiveDescribe(globalTestDescription, method, 0);
+        return recursiveDescribe(parentDescription, method, 0);
     }
 
     private Description recursiveDescribe(Description methodDescription, EnhancedMethod method, int currentBuilderIndex)
@@ -255,43 +265,22 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     {
         if (globalTestDescription == null)
         {
-            switch (Context.get().configuration.junitViewMode())
-            {
-                case flat:
-                    globalTestDescription = getFlatTestDescription();
-                    break;
-
-                case hierarchical:
-                    globalTestDescription = getHierarchicalDescription();
-                    break;
-            }
+            globalTestDescription = getTestDescription();
         }
         return globalTestDescription;
     }
 
-    private Description getFlatTestDescription()
+    private Description getTestDescription()
     {
         // create a suite description and a test description as childs for all methods
         Description suiteDescription = Description.createSuiteDescription(getTestClass().getJavaClass());
 
         for (FrameworkMethod method : computeTestMethods())
         {
-            suiteDescription.addChild(describeChild(method));
+            describeChild(method, suiteDescription);
         }
 
         return suiteDescription;
-    }
-
-    private Description getHierarchicalDescription()
-    {
-        globalTestDescription = Description.createSuiteDescription(getTestClass().getJavaClass());
-
-        for (FrameworkMethod method : computeTestMethods())
-        {
-            describeChild(method);
-        }
-
-        return globalTestDescription;
     }
 
     @Override
