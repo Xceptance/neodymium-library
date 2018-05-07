@@ -48,8 +48,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         Statement methodStatement = super.methodBlock(method);
         // We need this particular test class instance for our own statements but we can not access it from here.
         // We can get the instance by having createTest overridden, see implementation of createTest in this class as
-        // well as in BlockJUnit4ClassRunner. It doesn't include error handling like in super.methodBlock, but at least
-        // we can get the same instance
+        // well as in BlockJUnit4ClassRunner.
 
         // At this point our createTest implementation was called and we have the testClassInstance
 
