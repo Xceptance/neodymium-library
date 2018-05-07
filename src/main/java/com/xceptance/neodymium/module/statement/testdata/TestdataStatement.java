@@ -326,7 +326,7 @@ public class TestdataStatement extends StatementBuilder
 
         if (parameter.getIterationIndex() > 0)
         {
-            testname += MessageFormat.format(" (execution: {0})", parameter.getIterationIndex());
+            testname += MessageFormat.format(", [execution: {0}]", parameter.getIterationIndex());
         }
 
         return testname;
