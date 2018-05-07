@@ -62,6 +62,14 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                 methodStatement = statementBuilder.createStatement(testClassInstance, methodStatement, data);
             }
         }
+        else if (method instanceof FrameworkMethod)
+        {
+            // This could happen if there are plain test methods in the class with no data sets or test data defined.
+            // Also the SuppressDataSets annotation can degrade a method to an FrameworkMethod even if there is some
+            // test data or data sets.
+
+            // It's fine, just make sure super.methodBlock is called with this method and return the resulting statement
+        }
 
         return methodStatement;
     }
