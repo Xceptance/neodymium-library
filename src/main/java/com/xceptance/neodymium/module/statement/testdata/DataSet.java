@@ -13,7 +13,9 @@ import java.lang.annotation.Target;
  * <p>
  * The <b>value</b> defines the index of the data set that has to be force used for the class/method.
  * <p>
- * Default is 0 which will not have any effect on execution.
+ * Default is 0 which will not have any effect on execution unless there is a {@link SuppressDataSets} annotation
+ * involved. In case a class is annotated with {@link SuppressDataSets} and a test method is annotated @DataSet()
+ * or @DataSet(0) then it will override suppression and enforce the method to run with <b>all</b> data sets
  * <p>
  * Any number above zero will enforce execution with only that data set. First data set would be equal to 1 and so on.
  * 
