@@ -19,6 +19,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
@@ -63,6 +64,10 @@ public class BrowserStatement extends StatementBuilder
     @Override
     public void evaluate() throws Throwable
     {
+        // set the default selenide timeouts
+        Configuration.timeout = Context.get().configuration.timeout();
+        Configuration.collectionsTimeout = Configuration.timeout * 2;
+
         boolean testFailed = false;
 
         LOGGER.debug("setup browser: " + browserTag);
