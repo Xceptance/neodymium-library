@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.runner.Description;
+import org.junit.runner.RunWith;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.JUnit4;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
@@ -18,8 +20,50 @@ import org.junit.runners.model.Statement;
 import com.xceptance.neodymium.module.EnhancedMethod;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.order.DefaultStatementRunOrder;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.util.Context;
 
+/**
+ * This class executes {@link JUnit4} test classes (aka JUnit Runner) and adds several features to test execution e.g.
+ * multi {@link Browser browser} and
+ * <a href="https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider">test data</a>. Vanilla JUnit
+ * parameterized tests are supported as well but only with parameter injection (as described here: <a href=
+ * "https://github.com/junit-team/junit4/wiki/parameterized-tests#using-parameter-for-field-injection-instead-of-constructor">Using @Parameter
+ * for Field injection instead of Constructor</a>). In order to run a {@link JUnit4} test with this runner the class or
+ * its super-class has to be annotated with {@link RunWith}
+ * <p>
+ * <b>Example</b>
+ * 
+ * <pre>
+ * &#64;RunWith(NeodymiumRunner.class)
+ * public class MyTests
+ * {
+ *     &#64;Test
+ *     public void testMethod()
+ *     {
+ *     }
+ * }
+ * </pre>
+ * 
+ * <b>Example</b>
+ * 
+ * <pre>
+ * public class MyTests extends BaseTestClass
+ * {
+ *     &#64;Test
+ *     public void testMethod()
+ *     {
+ *     }
+ * }
+ * 
+ * &#64;RunWith(NeodymiumRunner.class)
+ * public class BaseTestClass
+ * {
+ * }
+ * </pre>
+ * 
+ * @author m.kaufmann
+ */
 public class NeodymiumRunner extends BlockJUnit4ClassRunner
 {
     public NeodymiumRunner(Class<?> klass) throws InitializationError

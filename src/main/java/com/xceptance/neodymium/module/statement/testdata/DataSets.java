@@ -6,6 +6,11 @@ import static java.lang.annotation.RetentionPolicy.*;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+/**
+ * <b>Do not use this annotation</b>. This annoation is just the wrapper for repeated {@link DataSet} annotations.
+ * 
+ * @author m.kaufmann
+ */
 @Retention(RUNTIME)
 @Target(
     {

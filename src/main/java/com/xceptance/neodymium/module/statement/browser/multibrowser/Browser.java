@@ -7,8 +7,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotate a class with {@link Browser} and add as annotation value a list of test targets. These targets refer to
- * browser profiles (browsertag) that are configured in browser.properties located in config folder.
+ * Annotate a class or method with {@link Browser} and add as annotation value a list of test targets (browsertag).
+ * These browsertags refer to browser profiles that are configured in browser.properties located in config folder. See
+ * <a href="https://github.com/Xceptance/neodymium-library/wiki/Multi-browser-support">Multi-browser-support</a> for
+ * examples on the <a href="https://github.com/Xceptance/neodymium-library/wiki">github wiki</a>.
  * 
  * @author m.kaufmann
  */

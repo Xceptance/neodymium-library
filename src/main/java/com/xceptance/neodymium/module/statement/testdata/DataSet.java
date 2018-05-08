@@ -8,10 +8,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * This annotation can be used to limit override data set execution for an entire class or at the same time for a single
- * method.
+ * This annotation can be used to limit and override data set execution for an entire class or at the same time for a
+ * single method.
  * <p>
- * The <b>value</b> defines the index of the data set that has to be force used for the class/method.
+ * The <b>value</b> defines the index of the data set that has to be force used for the class or method.
  * <p>
  * Default is 0 which will not have any effect on execution unless there is a {@link SuppressDataSets} annotation
  * involved. In case a class is annotated with {@link SuppressDataSets} and a test method is annotated @DataSet()
