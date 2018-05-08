@@ -140,7 +140,7 @@ public class BrowserStatement extends StatementBuilder
         {
             // test failed and we want to leave the browser instance open
             // don't quit the webdriver, just remove references
-            // TODO: logging
+            LOGGER.debug("Keep browser open");
             Context.get().driver = null;
             Context.get().browserProfileName = null;
             return;
