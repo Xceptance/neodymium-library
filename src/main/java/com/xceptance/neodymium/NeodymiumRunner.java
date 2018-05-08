@@ -1,6 +1,7 @@
 package com.xceptance.neodymium;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -34,9 +35,9 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
     private List<FrameworkMethod> computedTestMethods;
 
-    private Map<FrameworkMethod, Description> childDescriptions = new HashMap<>();
+    private Map<FrameworkMethod, Description> childDescriptions;
 
-    private Description globalTestDescription = null;
+    private Description globalTestDescription;
 
     private Object testClassInstance;
 
@@ -148,7 +149,107 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         // this list is now final for class execution so make it unmodifiable
         computedTestMethods = Collections.unmodifiableList(testMethods);
 
+        // compute test descriptions
+        childDescriptions = new HashMap<>();
+        globalTestDescription = createTestDescriptions(computedTestMethods);
+
         return computedTestMethods;
+    }
+
+    public Description createTestDescriptions(List<FrameworkMethod> methods)
+    {
+        switch (Context.get().configuration.junitViewMode())
+        {
+            case hierarchical:
+                return createHierarchicalTestDescription(methods);
+
+            case flat:
+            default:
+                return createFlatTestDescription(methods);
+        }
+    }
+
+    private Description createHierarchicalTestDescription(List<FrameworkMethod> methods)
+    {
+        Description hierarchicalDescription = Description.createSuiteDescription(getTestClass().getJavaClass());
+
+        for (FrameworkMethod method : methods)
+        {
+            Description currentLevel = hierarchicalDescription;
+            if (method instanceof EnhancedMethod)
+            {
+                EnhancedMethod enhancedMethod = (EnhancedMethod) method;
+                List<StatementBuilder> statementBuilder = enhancedMethod.getBuilder();
+                List<Object> builderData = enhancedMethod.getData();
+
+                for (int i = 0; i < statementBuilder.size(); i++)
+                {
+                    StatementBuilder builder = statementBuilder.get(i);
+                    String testName = builder.getTestName(builderData.get(i));
+
+                    // check if hierarchical description has a child with that description
+                    ArrayList<Description> currentLevelChildren = currentLevel.getChildren();
+                    boolean found = false;
+                    for (Description currentLevelChild : currentLevelChildren)
+                    {
+                        if (testName.equals(currentLevelChild.getDisplayName()))
+                        {
+                            found = true;
+                            currentLevel = currentLevelChild;
+                            break;
+                        }
+                    }
+
+                    // create one if it's missing and set the new one as the current level, then dig deeper
+                    if (!found)
+                    {
+                        Description newChild = Description.createSuiteDescription(testName);
+                        currentLevel.addChild(newChild);
+                        currentLevel = newChild;
+                    }
+
+                }
+                // finally add the test method to lowest level
+                currentLevel.addChild(describeChild(method));
+            }
+            else
+            {
+                // it's just a default JUnit method, just add it as child
+                hierarchicalDescription.addChild(describeChild(method));
+            }
+        }
+
+        return hierarchicalDescription;
+    }
+
+    private Description createFlatTestDescription(List<FrameworkMethod> methods)
+    {
+        Description flatDescription = Description.createSuiteDescription(getTestClass().getJavaClass());
+
+        for (FrameworkMethod method : methods)
+        {
+            Description childDescription = describeChild(method);
+            flatDescription.addChild(childDescription);
+        }
+
+        return flatDescription;
+    }
+
+    @Override
+    protected Description describeChild(FrameworkMethod method)
+    {
+        return childDescriptions.computeIfAbsent(method, (m) -> {
+            String testName;
+            if (m instanceof EnhancedMethod)
+            {
+                testName = ((EnhancedMethod) m).getTestName();
+            }
+            else
+            {
+                testName = m.getName();
+            }
+            return Description.createTestDescription(getTestClass().getJavaClass(), testName);
+        });
     }
 
     @Override
@@ -203,92 +304,9 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     }
 
     @Override
-    protected Description describeChild(FrameworkMethod method)
-    {
-        return describeChild(method, null);
-    }
-
-    private Description describeChild(FrameworkMethod method, Description parentDescription)
-    {
-        // cache child descriptions because they will never change and get requestet alot
-        Description childDescription = childDescriptions.computeIfAbsent(method, (m) -> {
-            return describeChildWithMode(m, parentDescription);
-        });
-
-        return childDescription;
-    }
-
-    private Description describeChildWithMode(FrameworkMethod method, Description parentDescription)
-    {
-        Class<?> clazz = getTestClass().getJavaClass();
-        String className = clazz.getName();
-        String testName = testName(method);
-        Description description = null;
-        switch (Context.get().configuration.junitViewMode())
-        {
-            case flat:
-                description = Description.createTestDescription(className, testName, testName);
-                break;
-
-            case hierarchical:
-                if (method instanceof EnhancedMethod)
-                {
-                    description = describeEnhancedMethod((EnhancedMethod) method, parentDescription);
-                }
-                else
-                {
-                    description = Description.createTestDescription(className, method.getName(), testName);
-                }
-                break;
-        }
-        if (parentDescription != null && description != null)
-            parentDescription.addChild(description);
-        return description;
-    }
-
-    private Description describeEnhancedMethod(EnhancedMethod method, Description parentDescription)
-    {
-        return recursiveDescribe(parentDescription, method, 0);
-    }
-
-    private Description recursiveDescribe(Description methodDescription, EnhancedMethod method, int currentBuilderIndex)
-    {
-        if (currentBuilderIndex == method.getBuilder().size())
-        {
-            // abort recursion
-            methodDescription.addChild(Description.createTestDescription(getTestClass().getJavaClass().getName(), method.getTestName(),
-                                                                         method.getTestName()));
-            return methodDescription;
-        }
-
-        StatementBuilder statementBuilder = method.getBuilder().get(currentBuilderIndex);
-        Object data = method.getData().get(currentBuilderIndex);
-        Description childDescription = Description.createSuiteDescription(statementBuilder.getTestName(data), method.getTestName());
-        methodDescription.addChild(childDescription);
-        return recursiveDescribe(childDescription, method, (currentBuilderIndex + 1));
-    }
-
-    @Override
     public Description getDescription()
     {
-        if (globalTestDescription == null)
-        {
-            globalTestDescription = getTestDescription();
-        }
         return globalTestDescription;
-    }
-
-    private Description getTestDescription()
-    {
-        // create a suite description and a test description as childs for all methods
-        Description suiteDescription = Description.createSuiteDescription(getTestClass().getJavaClass());
-
-        for (FrameworkMethod method : computeTestMethods())
-        {
-            describeChild(method, suiteDescription);
-        }
-
-        return suiteDescription;
     }
 
     @Override
