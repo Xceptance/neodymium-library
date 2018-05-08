@@ -28,4 +28,8 @@ public interface WebDriverProperties extends Config
     @Key("neodymium.webDriver.keepBrowserOpen")
     @DefaultValue("false")
     public boolean keepBrowserOpen();
+
+    @Key("neodymium.webDriver.keepBrowserOpenOnFailure")
+    @DefaultValue("false")
+    public boolean keepBrowserOpenOnFailure();
 }

@@ -63,11 +63,23 @@ public class BrowserStatement extends StatementBuilder
     @Override
     public void evaluate() throws Throwable
     {
+        boolean testFailed = false;
+
         LOGGER.debug("setup browser: " + browserTag);
         setUpTest();
-        next.evaluate();
-        teardown();
-        LOGGER.debug("teardown browser: " + browserTag);
+        try
+        {
+            next.evaluate();
+        }
+        catch (Throwable t)
+        {
+            testFailed = true;
+        }
+        finally
+        {
+            teardown(testFailed);
+            LOGGER.debug("teardown browser: " + browserTag);
+        }
     }
 
     /**
@@ -120,9 +132,20 @@ public class BrowserStatement extends StatementBuilder
         }
     }
 
-    public void teardown()
+    public void teardown(boolean testFailed)
     {
         WebDriverProperties webDriverProperties = MultibrowserConfiguration.getInstance().getWebDriverProperties();
+
+        if (testFailed && webDriverProperties.keepBrowserOpenOnFailure())
+        {
+            // test failed and we want to leave the browser instance open
+            // don't quit the webdriver, just remove references
+            // TODO: logging
+            Context.get().driver = null;
+            Context.get().browserProfileName = null;
+            return;
+        }
+
         if (webDriverProperties.reuseWebDriver())
         {
             LOGGER.debug("Put browser into cache");
