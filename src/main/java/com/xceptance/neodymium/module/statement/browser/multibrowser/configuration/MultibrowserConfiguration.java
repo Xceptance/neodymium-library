@@ -166,14 +166,14 @@ public class MultibrowserConfiguration
      */
     public static MultibrowserConfiguration getInstance(String configFile)
     {
-        MultibrowserConfiguration configuration = CONFIGURATIONS.get(configFile);
+        return CONFIGURATIONS.computeIfAbsent(configFile, (file) -> {
+            return new MultibrowserConfiguration(file);
+        });
+    }
 
-        if (configuration == null)
-        {
-            configuration = new MultibrowserConfiguration(configFile);
-            CONFIGURATIONS.put(configFile, configuration);
-        }
-        return configuration;
+    public static void clearAllInstances()
+    {
+        CONFIGURATIONS.clear();
     }
 
     public DriverServerPath getDriverServerPath()
