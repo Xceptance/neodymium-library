@@ -272,8 +272,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
         for (FrameworkMethod method : methods)
         {
-            Description childDescription = describeChild(method);
-            flatDescription.addChild(childDescription);
+            flatDescription.addChild(describeChild(method));
         }
 
         return flatDescription;
