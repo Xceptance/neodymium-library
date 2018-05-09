@@ -47,7 +47,7 @@ public class BrowserStatement extends StatementBuilder
 
     private List<String> browserDefinitions = new LinkedList<>();
 
-    private static MultibrowserConfiguration multibrowserConfiguration = MultibrowserConfiguration.getInstance();
+    private MultibrowserConfiguration multibrowserConfiguration = MultibrowserConfiguration.getInstance();
 
     private WebDriver webdriver;
 
