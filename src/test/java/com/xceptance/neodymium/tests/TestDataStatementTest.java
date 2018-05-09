@@ -34,7 +34,7 @@ import com.xceptance.neodymium.testclasses.data.set.properties.CanReadDataSetPro
 import com.xceptance.neodymium.testclasses.data.set.xml.CanReadDataSetXML;
 import com.xceptance.neodymium.util.Context;
 
-public class NeodymiumDataRunnerTest extends NeodymiumTest
+public class TestDataStatementTest extends NeodymiumTest
 {
 
     @Before

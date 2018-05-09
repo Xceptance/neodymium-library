@@ -22,7 +22,7 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.configurati
 import com.xceptance.neodymium.testclasses.browser.EmptyBrowser;
 import com.xceptance.neodymium.testclasses.browser.NoBrowserTag;
 
-public class NeodymiumBrowserRunnerTest extends NeodymiumTest
+public class BrowserStatementTest extends NeodymiumTest
 {
     // holds files that will be deleted in @After method
     static List<File> tempFiles = new LinkedList<>();

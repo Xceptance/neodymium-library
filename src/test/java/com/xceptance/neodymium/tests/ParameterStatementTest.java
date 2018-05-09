@@ -18,7 +18,7 @@ import com.xceptance.neodymium.testclasses.parameter.GeneratorVoidReturn;
 import com.xceptance.neodymium.testclasses.parameter.NonStaticGeneratorVoidReturn;
 import com.xceptance.neodymium.testclasses.parameter.ParameterFieldButNoGenerator;
 
-public class NeodymiumParameterRunnerTest extends NeodymiumTest
+public class ParameterStatementTest extends NeodymiumTest
 {
     @Test
     public void testParameterFieldWithoutGenerator()
