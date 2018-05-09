@@ -32,6 +32,7 @@ public class BrowserMultiplicationTest extends NeodymiumTest
         writeMapToPropertiesFile(properties, tempConfigFile);
 
         // this line is important as we initialize the config from the temporary file we created above
+        MultibrowserConfiguration.clearAllInstances();
         MultibrowserConfiguration.getInstance(tempConfigFile.getPath());
     }
 
