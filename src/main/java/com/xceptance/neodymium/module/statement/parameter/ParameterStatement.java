@@ -45,6 +45,7 @@ public class ParameterStatement extends StatementBuilder
         next.evaluate();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<Object> createIterationData(TestClass testClass, FrameworkMethod method) throws Exception
     {

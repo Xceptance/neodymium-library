@@ -207,6 +207,7 @@ public final class BrowserRunnerHelper
      *             if <a href="https://github.com/Xceptance/neodymium-library/wiki/Selenium-grid">Selenium grid</a> is
      *             used
      */
+    @SuppressWarnings("unchecked")
     public static WebDriver createWebdriver(final BrowserConfiguration config) throws MalformedURLException
     {
         final DesiredCapabilities capabilities = config.getCapabilities();
