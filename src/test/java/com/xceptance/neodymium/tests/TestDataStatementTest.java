@@ -23,6 +23,7 @@ import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodMultip
 import com.xceptance.neodymium.testclasses.data.override.mixed.ClassWithoutTwoMethodsOneForced;
 import com.xceptance.neodymium.testclasses.data.override.mixed.ForceOfNoneDataSets;
 import com.xceptance.neodymium.testclasses.data.override.mixed.OneDataSetTwoMethodsOneWithout;
+import com.xceptance.neodymium.testclasses.data.override.mixed.OnlyImplicitOneDataSet;
 import com.xceptance.neodymium.testclasses.data.override.mixed.TwoDataSetsTwoMethodsOneForced;
 import com.xceptance.neodymium.testclasses.data.override.mixed.TwoDataSetsTwoMethodsOneWithout;
 import com.xceptance.neodymium.testclasses.data.pkg.csv.CanReadPackageDataCSV;
@@ -333,6 +334,16 @@ public class TestDataStatementTest extends NeodymiumTest
         Result result = JUnitCore.runClasses(ForceOfNoneDataSets.class);
         checkFail(result, 1, 0, 1,
                   "java.lang.IllegalArgumentException: Method 'test1' is marked to be run with data set index 2, but there are only 0");
+    }
+
+    @Test
+    public void testOnlyImplicitOneDataSet() throws Throwable
+    {
+        String[] expected = new String[]
+            {
+                "test1 :: Data set 1 / 1", //
+            };
+        checkDescription(OnlyImplicitOneDataSet.class, expected);
     }
 
 }
