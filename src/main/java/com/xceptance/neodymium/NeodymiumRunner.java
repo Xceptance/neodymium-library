@@ -74,7 +74,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     public enum DescriptionMode
     {
      flat,
-     hierarchical,
+     tree,
     };
 
     private List<FrameworkMethod> computedTestMethods;
@@ -204,7 +204,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     {
         switch (Context.get().configuration.junitViewMode())
         {
-            case hierarchical:
+            case tree:
                 return createHierarchicalTestDescription(methods);
 
             case flat:
