@@ -29,6 +29,8 @@ public class BrowserConfigurationMapper
 
     private static final String PAGE_LOAD_STRATEGY = "pageLoadStrategy";
 
+    private static final String HEADLESS = "headless";
+
     // appium specific propertys
     private static final String APPIUM_VERSION = "appiumVersion";
 
@@ -172,6 +174,11 @@ public class BrowserConfigurationMapper
         String pageLoadStrategy = o.get(PAGE_LOAD_STRATEGY);
         if (!StringUtils.isEmpty(pageLoadStrategy))
             capabilities.setCapability("pageLoadStrategy", pageLoadStrategy);
+
+        // headless
+        String headless = o.get(HEADLESS);
+        if (!StringUtils.isEmpty(headless))
+            r.setHeadless(Boolean.valueOf(headless));
 
         capabilities.setCapability("name", o.get("name"));
         r.setCapabilities(capabilities);

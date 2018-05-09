@@ -21,6 +21,8 @@ public class BrowserConfiguration
 
     private int browserHeight;
 
+    private boolean headless;
+
     public String getConfigTag()
     {
         return browserTag;
@@ -79,5 +81,15 @@ public class BrowserConfiguration
     protected void setBrowserHeight(int browserHeight)
     {
         this.browserHeight = browserHeight;
+    }
+
+    public boolean isHeadless()
+    {
+        return headless;
+    }
+
+    public void setHeadless(boolean headless)
+    {
+        this.headless = headless;
     }
 }

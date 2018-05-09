@@ -276,6 +276,10 @@ public final class BrowserRunnerHelper
                 {
                     options.setBinary(pathToBrowser);
                 }
+                if (config.isHeadless())
+                {
+                    options.addArguments("--headless");
+                }
 
                 return new ChromeDriver(options);
             }
@@ -284,6 +288,11 @@ public final class BrowserRunnerHelper
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 firefoxOptions.setBinary(createFirefoxBinary(driverServerPath.getFirefoxBrowserPath()));
                 firefoxOptions.merge(capabilities);
+
+                if (config.isHeadless())
+                {
+                    firefoxOptions.addArguments("-headless");
+                }
 
                 return new FirefoxDriver(firefoxOptions);
             }
