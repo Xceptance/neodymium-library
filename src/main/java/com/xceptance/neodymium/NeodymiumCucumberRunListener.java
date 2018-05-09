@@ -9,18 +9,20 @@ import org.junit.runner.notification.RunListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.logevents.SelenideLogger;
+import com.xceptance.neodymium.util.Context;
 
 import io.qameta.allure.Attachment;
 import io.qameta.allure.selenide.AllureSelenide;
 
-public class NeodymiumRunListener extends RunListener
+public class NeodymiumCucumberRunListener extends RunListener
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumRunListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumCucumberRunListener.class);
 
     private List<Failure> failures = new LinkedList<>();
 
-    public NeodymiumRunListener()
+    public NeodymiumCucumberRunListener()
     {
         SelenideLogger.addListener("allure-selenide", new AllureSelenide());
     }
@@ -28,6 +30,12 @@ public class NeodymiumRunListener extends RunListener
     @Override
     public void testStarted(Description description) throws Exception
     {
+        Context.clearThreadContext();
+
+        // set our default timeout
+        Configuration.timeout = Context.get().configuration.timeout();
+        Configuration.collectionsTimeout = Configuration.timeout * 2;
+
         LOGGER.debug("Test started: " + description.toString());
     }
 
