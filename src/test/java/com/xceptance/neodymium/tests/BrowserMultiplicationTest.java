@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -16,6 +17,7 @@ import com.xceptance.neodymium.testclasses.multiplication.browser.OneBrowserOneM
 import com.xceptance.neodymium.testclasses.multiplication.browser.OneBrowserTwoMethods;
 import com.xceptance.neodymium.testclasses.multiplication.browser.TwoBrowserOneMethod;
 import com.xceptance.neodymium.testclasses.multiplication.browser.TwoBrowserTwoMethods;
+import com.xceptance.neodymium.util.Context;
 
 public class BrowserMultiplicationTest extends NeodymiumTest
 {
@@ -34,6 +36,12 @@ public class BrowserMultiplicationTest extends NeodymiumTest
         // this line is important as we initialize the config from the temporary file we created above
         MultibrowserConfiguration.clearAllInstances();
         MultibrowserConfiguration.getInstance(tempConfigFile.getPath());
+    }
+
+    @Before
+    public void setJUnitViewModeFlat()
+    {
+        Context.get().configuration.setProperty("junit.viewmode", "flat");
     }
 
     @AfterClass

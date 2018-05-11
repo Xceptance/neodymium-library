@@ -1,5 +1,6 @@
 package com.xceptance.neodymium.tests;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
@@ -34,9 +35,16 @@ import com.xceptance.neodymium.testclasses.data.set.csv.CanReadDataSetCSV;
 import com.xceptance.neodymium.testclasses.data.set.json.CanReadDataSetJson;
 import com.xceptance.neodymium.testclasses.data.set.properties.CanReadDataSetProperties;
 import com.xceptance.neodymium.testclasses.data.set.xml.CanReadDataSetXML;
+import com.xceptance.neodymium.util.Context;
 
 public class TestDataStatementTest extends NeodymiumTest
 {
+    @Before
+    public void setJUnitViewModeFlat()
+    {
+        Context.get().configuration.setProperty("junit.viewmode", "flat");
+    }
+
     @Test
     public void testCanReadPackageDataCSV()
     {
