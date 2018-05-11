@@ -129,6 +129,6 @@ public interface Configuration extends Mutable
     public String dataUtilsPasswordSpecialChars();
 
     @Key("junit.viewmode")
-    @DefaultValue("flat")
+    @DefaultValue("tree")
     public DescriptionMode junitViewMode();
 }
