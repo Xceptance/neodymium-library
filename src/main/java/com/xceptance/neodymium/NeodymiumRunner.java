@@ -282,16 +282,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     protected Description describeChild(FrameworkMethod method)
     {
         return childDescriptions.computeIfAbsent(method, (m) -> {
-            String testName;
-            if (m instanceof EnhancedMethod)
-            {
-                testName = ((EnhancedMethod) m).getTestName();
-            }
-            else
-            {
-                testName = m.getName();
-            }
-            return Description.createTestDescription(getTestClass().getJavaClass(), testName);
+            return Description.createTestDescription(getTestClass().getJavaClass(), m.getName());
         });
     }
 
@@ -355,13 +346,6 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     @Override
     protected String testName(FrameworkMethod method)
     {
-        if (method instanceof EnhancedMethod)
-        {
-            return ((EnhancedMethod) method).getTestName();
-        }
-        else
-        {
-            return super.testName(method);
-        }
+        return method.getName();
     }
 }

@@ -37,7 +37,8 @@ public class EnhancedMethod extends FrameworkMethod
         this.builder = builder;
     }
 
-    public String getTestName()
+    @Override
+    public String getName()
     {
         StringBuilder nameBuilder = new StringBuilder(250);
         nameBuilder.append(super.getName());
