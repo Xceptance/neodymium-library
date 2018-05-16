@@ -79,11 +79,11 @@ public class BrowserStatement extends StatementBuilder
         catch (Throwable t)
         {
             testFailed = true;
+            throw t;
         }
         finally
         {
             teardown(testFailed);
-            LOGGER.debug("teardown browser: " + browserTag);
         }
     }
 
