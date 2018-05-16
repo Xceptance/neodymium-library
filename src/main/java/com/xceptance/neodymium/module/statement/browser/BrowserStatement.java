@@ -278,7 +278,7 @@ public class BrowserStatement extends StatementBuilder
     @Override
     public String getTestName(Object data)
     {
-        return MessageFormat.format("[Browser {0}]", (String) data);
+        return MessageFormat.format("Browser {0}", (String) data);
     }
 
 }

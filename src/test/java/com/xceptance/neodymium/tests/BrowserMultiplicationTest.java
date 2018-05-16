@@ -66,7 +66,7 @@ public class BrowserMultiplicationTest extends NeodymiumTest
     {
         String[] expected = new String[]
             {
-                "first :: [Browser first_browser]"
+                "first :: Browser first_browser"
             };
         checkDescription(OneBrowserOneMethod.class, expected);
     }
@@ -76,8 +76,8 @@ public class BrowserMultiplicationTest extends NeodymiumTest
     {
         String[] expected = new String[]
             {
-                "first :: [Browser first_browser]", //
-                "second :: [Browser first_browser]"
+                "first :: Browser first_browser", //
+                "second :: Browser first_browser"
             };
         checkDescription(OneBrowserTwoMethods.class, expected);
     }
@@ -87,8 +87,8 @@ public class BrowserMultiplicationTest extends NeodymiumTest
     {
         String[] expected = new String[]
             {
-                "first :: [Browser first_browser]", //
-                "first :: [Browser second_browser]"
+                "first :: Browser first_browser", //
+                "first :: Browser second_browser"
             };
         checkDescription(TwoBrowserOneMethod.class, expected);
     }
@@ -98,10 +98,10 @@ public class BrowserMultiplicationTest extends NeodymiumTest
     {
         String[] expected = new String[]
             {
-                "first :: [Browser first_browser]", //
-                "first :: [Browser second_browser]", //
-                "second :: [Browser first_browser]", //
-                "second :: [Browser second_browser]"
+                "first :: Browser first_browser", //
+                "first :: Browser second_browser", //
+                "second :: Browser first_browser", //
+                "second :: Browser second_browser"
             };
         checkDescription(TwoBrowserTwoMethods.class, expected);
     }
