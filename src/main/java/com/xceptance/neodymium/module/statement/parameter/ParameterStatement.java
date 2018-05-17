@@ -214,4 +214,10 @@ public class ParameterStatement extends StatementBuilder
         ParameterStatementData p = (ParameterStatementData) data;
         return "[" + p.getParameterIndex() + "]";
     }
+
+    @Override
+    public String getCategoryName(Object data)
+    {
+        return getTestName(data);
+    }
 }

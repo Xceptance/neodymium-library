@@ -14,6 +14,8 @@ public abstract class StatementBuilder extends Statement
 
     public abstract String getTestName(Object data);
 
+    public abstract String getCategoryName(Object data);
+
     public static <T extends StatementBuilder> T instantiate(Class<T> clazz)
     {
         try

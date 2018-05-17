@@ -302,6 +302,20 @@ public class TestdataStatement extends StatementBuilder
     @Override
     public String getTestName(Object data)
     {
+        String testname = getCategoryName(data);
+        TestdataStatementData parameter = (TestdataStatementData) data;
+
+        if (parameter.getIterationIndex() > 0)
+        {
+            testname += MessageFormat.format(", run #{0}", parameter.getIterationIndex());
+        }
+
+        return testname;
+    }
+
+    @Override
+    public String getCategoryName(Object data)
+    {
         TestdataStatementData parameter = (TestdataStatementData) data;
         Map<String, String> testData = new HashMap<>();
         testData.putAll(parameter.getPackageTestData());
@@ -323,13 +337,6 @@ public class TestdataStatement extends StatementBuilder
             // only package data
             testname = "TestData";
         }
-
-        if (parameter.getIterationIndex() > 0)
-        {
-            testname += MessageFormat.format(", run #{0}", parameter.getIterationIndex());
-        }
-
         return testname;
     }
-
 }

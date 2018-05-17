@@ -229,14 +229,14 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                 for (int i = 0; i < statementBuilder.size(); i++)
                 {
                     StatementBuilder builder = statementBuilder.get(i);
-                    String testName = builder.getTestName(builderData.get(i));
+                    String categoryName = builder.getCategoryName(builderData.get(i));
 
                     // check if hierarchical description has a child with that description
                     ArrayList<Description> currentLevelChildren = currentLevel.getChildren();
                     boolean found = false;
                     for (Description currentLevelChild : currentLevelChildren)
                     {
-                        if (testName.equals(currentLevelChild.getDisplayName()))
+                        if (categoryName.equals(currentLevelChild.getDisplayName()))
                         {
                             found = true;
                             currentLevel = currentLevelChild;
@@ -247,7 +247,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                     // create one if it's missing and set the new one as the current level, then dig deeper
                     if (!found)
                     {
-                        Description newChild = Description.createSuiteDescription(testName);
+                        Description newChild = Description.createSuiteDescription(categoryName);
                         currentLevel.addChild(newChild);
                         currentLevel = newChild;
                     }
