@@ -65,14 +65,12 @@ public abstract class StatementBuilder extends Statement
                     throw new RuntimeException(e);
                 }
             }
-            else
-            {
-                T anno = object.getAnnotation(annotationClass);
-                if (anno != null)
-                {
-                    annotations.add(anno);
-                }
-            }
+        }
+
+        T anno = object.getAnnotation(annotationClass);
+        if (anno != null)
+        {
+            annotations.add(anno);
         }
 
         return annotations;
