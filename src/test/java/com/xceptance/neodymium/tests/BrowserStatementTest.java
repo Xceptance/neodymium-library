@@ -28,6 +28,7 @@ import com.xceptance.neodymium.testclasses.browser.classonly.OneClassBrowserOneM
 import com.xceptance.neodymium.testclasses.browser.classonly.TwoClassBrowserOneMethod;
 import com.xceptance.neodymium.testclasses.browser.classonly.TwoSameClassBrowserOneMethod;
 import com.xceptance.neodymium.testclasses.browser.methodonly.MethodBrowserSuppressNoBrowserAnnotation;
+import com.xceptance.neodymium.testclasses.browser.methodonly.OneBrowserOneMethodBrowserSuppressed;
 import com.xceptance.neodymium.testclasses.browser.mixed.ClassAndMethodSameBrowserOneMethod;
 import com.xceptance.neodymium.util.Context;
 
@@ -154,6 +155,17 @@ public class BrowserStatementTest extends NeodymiumTest
                 "first"
             };
         checkDescription(MethodBrowserSuppressNoBrowserAnnotation.class, expected);
+    }
+
+    @Test
+    public void testOneBrowserOneMethodBrowserSuppressed() throws Throwable
+    {
+        // a browser definition on a method and a suppress browser
+        String[] expected = new String[]
+            {
+                "first"
+            };
+        checkDescription(OneBrowserOneMethodBrowserSuppressed.class, expected);
     }
 
     @Test
