@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
@@ -21,6 +22,8 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.configurati
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.testclasses.browser.EmptyBrowser;
 import com.xceptance.neodymium.testclasses.browser.NoBrowserTag;
+import com.xceptance.neodymium.testclasses.browser.TestBrowser;
+import com.xceptance.neodymium.util.Context;
 
 public class BrowserStatementTest extends NeodymiumTest
 {
@@ -28,6 +31,12 @@ public class BrowserStatementTest extends NeodymiumTest
     static List<File> tempFiles = new LinkedList<>();
 
     private static MultibrowserConfiguration browserConfig;
+
+    @Before
+    public void setJUnitViewModeFlat()
+    {
+        Context.get().configuration.setProperty("junit.viewmode", "flat");
+    }
 
     @BeforeClass
     public static void beforeClass() throws IOException
@@ -63,6 +72,17 @@ public class BrowserStatementTest extends NeodymiumTest
         // an empty browser tag (@Browser({""})) should raise an error
         Result result = JUnitCore.runClasses(EmptyBrowser.class);
         checkFail(result, 1, 0, 1, "java.lang.IllegalArgumentException: Can not find browser configuration with tag: ");
+    }
+
+    @Test
+    public void testTestBrowser() throws Throwable
+    {
+        //
+        String[] expected = new String[]
+            {
+                "first :: Browser chrome"
+            };
+        checkDescription(TestBrowser.class, expected);
     }
 
     @Test

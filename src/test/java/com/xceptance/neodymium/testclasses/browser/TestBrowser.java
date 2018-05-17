@@ -9,12 +9,12 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 @RunWith(NeodymiumRunner.class)
 @Browser(
     {
-        "test"
+        "chrome"
     })
 public class TestBrowser
 {
     @Test
-    public void test()
+    public void first()
     {
 
     }
