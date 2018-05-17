@@ -3,7 +3,6 @@ package com.xceptance.neodymium.module.statement.testdata;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -171,7 +170,7 @@ public class TestdataStatement extends StatementBuilder
         }
 
         SuppressDataSets classSuppress = testClass.getAnnotation(SuppressDataSets.class);
-        List<DataSet> methodDataSetAnnotations = getMethodDataSetAnnotations(method);
+        List<DataSet> methodDataSetAnnotations = getAnnotations(method.getMethod(), DataSet.class);
 
         if (methodDataSetAnnotations.isEmpty() && classSuppress != null)
         {
@@ -182,7 +181,7 @@ public class TestdataStatement extends StatementBuilder
         List<DataSet> dataSetAnnotations = new LinkedList<>();
 
         // at this point neither the class nor the method could have data sets supressed
-        List<DataSet> classDataSetAnnotations = getClassDataSetAnnotations(testClass);
+        List<DataSet> classDataSetAnnotations = getAnnotations(testClass.getJavaClass(), DataSet.class);
         if (!methodDataSetAnnotations.isEmpty())
         {
             dataSetAnnotations = methodDataSetAnnotations;
@@ -253,44 +252,6 @@ public class TestdataStatement extends StatementBuilder
             }
         }
         return fixedIterations;
-    }
-
-    private List<DataSet> getClassDataSetAnnotations(TestClass testClass)
-    {
-        List<DataSet> annotations = new LinkedList<>();
-
-        DataSets classDataSets = testClass.getAnnotation(DataSets.class);
-        if (classDataSets != null)
-        {
-            annotations.addAll(Arrays.asList(classDataSets.value()));
-        }
-
-        DataSet classDataSet = testClass.getAnnotation(DataSet.class);
-        if (classDataSet != null)
-        {
-            annotations.add(classDataSet);
-        }
-
-        return annotations;
-    }
-
-    private List<DataSet> getMethodDataSetAnnotations(FrameworkMethod method)
-    {
-        List<DataSet> annotations = new LinkedList<>();
-
-        DataSets classDataSets = method.getAnnotation(DataSets.class);
-        if (classDataSets != null)
-        {
-            annotations.addAll(Arrays.asList(classDataSets.value()));
-        }
-
-        DataSet classDataSet = method.getAnnotation(DataSet.class);
-        if (classDataSet != null)
-        {
-            annotations.add(classDataSet);
-        }
-
-        return annotations;
     }
 
     @Override
