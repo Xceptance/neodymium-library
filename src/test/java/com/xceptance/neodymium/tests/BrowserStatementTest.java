@@ -20,9 +20,12 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
-import com.xceptance.neodymium.testclasses.browser.EmptyBrowser;
-import com.xceptance.neodymium.testclasses.browser.NoBrowserTag;
-import com.xceptance.neodymium.testclasses.browser.TestBrowser;
+import com.xceptance.neodymium.testclasses.browser.classonly.ClassBrowserSuppressed;
+import com.xceptance.neodymium.testclasses.browser.classonly.EmptyBrowser;
+import com.xceptance.neodymium.testclasses.browser.classonly.NoBrowserTag;
+import com.xceptance.neodymium.testclasses.browser.classonly.OneClassBrowserOneMethod;
+import com.xceptance.neodymium.testclasses.browser.classonly.TwoClassBrowserOneMethod;
+import com.xceptance.neodymium.testclasses.browser.classonly.TwoSameClassBrowserOneMethod;
 import com.xceptance.neodymium.util.Context;
 
 public class BrowserStatementTest extends NeodymiumTest
@@ -77,12 +80,44 @@ public class BrowserStatementTest extends NeodymiumTest
     @Test
     public void testTestBrowser() throws Throwable
     {
-        //
+        // one test method and one browser annotated on class
         String[] expected = new String[]
             {
                 "first :: Browser chrome"
             };
-        checkDescription(TestBrowser.class, expected);
+        checkDescription(OneClassBrowserOneMethod.class, expected);
+    }
+
+    @Test
+    public void testClassBrowserSuppressed() throws Throwable
+    {
+        //
+        String[] expected = new String[]
+            {
+                "first"
+            };
+        checkDescription(ClassBrowserSuppressed.class, expected);
+    }
+
+    @Test
+    public void testTwoClassBrowserOneMethod() throws Throwable
+    {
+        String[] expected = new String[]
+            {
+                "first :: Browser chrome", "first :: Browser firefox"
+            };
+        checkDescription(TwoClassBrowserOneMethod.class, expected);
+    }
+
+    @Test
+    public void testTwoSameClassBrowserOneMethod() throws Throwable
+    {
+        // two browser annotated on class, both have same value
+        String[] expected = new String[]
+            {
+                "first :: Browser chrome"
+            };
+        checkDescription(TwoSameClassBrowserOneMethod.class, expected);
     }
 
     @Test
