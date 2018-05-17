@@ -207,8 +207,8 @@ public class TestDataStatementTest extends NeodymiumTest
         // One data set which is enforced on the class to perform two executions
         String[] expected = new String[]
             {
-                "test1 :: Data set 1 / 1, [execution: 1]", //
-                "test1 :: Data set 1 / 1, [execution: 2]"
+                "test1 :: Data set 1 / 1, run #1", //
+                "test1 :: Data set 1 / 1, run #2"
             };
         checkDescription(ClassMultipleSameDataSet.class, expected);
     }
@@ -278,8 +278,8 @@ public class TestDataStatementTest extends NeodymiumTest
         // One data set, one method, method enforced to run data set twice
         String[] expected = new String[]
             {
-                "test1 :: Data set 1 / 1, [execution: 1]", //
-                "test1 :: Data set 1 / 1, [execution: 2]"
+                "test1 :: Data set 1 / 1, run #1", //
+                "test1 :: Data set 1 / 1, run #2"
             };
         checkDescription(MethodMultipleSameDataSet.class, expected);
     }
