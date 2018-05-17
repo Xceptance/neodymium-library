@@ -201,9 +201,6 @@ public class BrowserStatement extends StatementBuilder
         List<SuppressBrowser> methodSuppressBrowserAnnotations = getAnnotations(method.getMethod(), SuppressBrowser.class);
         List<SuppressBrowser> classSuppressBrowserAnnotations = getAnnotations(testClass.getJavaClass(), SuppressBrowser.class);
 
-        // Browser methodBrowser = method.getAnnotation(Browser.class);
-        // Browser classBrowser = testClass.getAnnotation(Browser.class);
-
         if (!methodSuppressBrowserAnnotations.isEmpty())
         {
             // method is marked to suppress browser
@@ -222,8 +219,8 @@ public class BrowserStatement extends StatementBuilder
         // add all browser annotations from the method
         browserAnnotations.addAll(methodBrowserAnnotations);
 
-        // if the class doesn't have suppress then add them too
-        if (classSuppressBrowserAnnotations.isEmpty())
+        // if the class doesn't have suppress and method doesn't have any overrides then add them too
+        if (classSuppressBrowserAnnotations.isEmpty() && methodBrowserAnnotations.isEmpty())
         {
             browserAnnotations.addAll(classBrowserAnnotations);
         }
