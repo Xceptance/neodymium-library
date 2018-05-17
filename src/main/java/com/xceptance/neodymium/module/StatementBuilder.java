@@ -4,7 +4,6 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.Repeatable;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -56,9 +55,8 @@ public abstract class StatementBuilder extends Statement
             {
                 try
                 {
-                    List<Object> repeatedAnnotations = Arrays.asList(((Object[]) annotation.getClass().getMethod("value")
-                                                                                           .invoke(annotation)));
-                    annotations.addAll((Collection<? extends T>) repeatedAnnotations);
+                    List<T> repeatedAnnotations = Arrays.asList((T[]) annotation.getClass().getMethod("value").invoke(annotation));
+                    annotations.addAll(repeatedAnnotations);
                 }
                 catch (Exception e)
                 {
