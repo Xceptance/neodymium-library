@@ -21,11 +21,14 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.testclasses.browser.classonly.ClassBrowserSuppressed;
+import com.xceptance.neodymium.testclasses.browser.classonly.ClassBrowserSuppressedNoBrowserAnnotation;
 import com.xceptance.neodymium.testclasses.browser.classonly.EmptyBrowser;
 import com.xceptance.neodymium.testclasses.browser.classonly.NoBrowserTag;
 import com.xceptance.neodymium.testclasses.browser.classonly.OneClassBrowserOneMethod;
 import com.xceptance.neodymium.testclasses.browser.classonly.TwoClassBrowserOneMethod;
 import com.xceptance.neodymium.testclasses.browser.classonly.TwoSameClassBrowserOneMethod;
+import com.xceptance.neodymium.testclasses.browser.methodonly.MethodBrowserSuppressNoBrowserAnnotation;
+import com.xceptance.neodymium.testclasses.browser.mixed.ClassAndMethodSameBrowserOneMethod;
 import com.xceptance.neodymium.util.Context;
 
 public class BrowserStatementTest extends NeodymiumTest
@@ -118,6 +121,39 @@ public class BrowserStatementTest extends NeodymiumTest
                 "first :: Browser chrome"
             };
         checkDescription(TwoSameClassBrowserOneMethod.class, expected);
+    }
+
+    @Test
+    public void testClassAndMethodSameBrowserOneMethod() throws Throwable
+    {
+        // same browser annotated on class and method
+        String[] expected = new String[]
+            {
+                "first :: Browser chrome"
+            };
+        checkDescription(ClassAndMethodSameBrowserOneMethod.class, expected);
+    }
+
+    @Test
+    public void testClassBrowserSuppressedNoBrowserAnnotation() throws Throwable
+    {
+        // no browser definition but browser suppressed on class
+        String[] expected = new String[]
+            {
+                "first"
+            };
+        checkDescription(ClassBrowserSuppressedNoBrowserAnnotation.class, expected);
+    }
+
+    @Test
+    public void testName() throws Throwable
+    {
+        // no browser definition but browser suppressed on method
+        String[] expected = new String[]
+            {
+                "first"
+            };
+        checkDescription(MethodBrowserSuppressNoBrowserAnnotation.class, expected);
     }
 
     @Test
