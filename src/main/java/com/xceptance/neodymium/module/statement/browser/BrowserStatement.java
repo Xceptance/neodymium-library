@@ -24,6 +24,7 @@ import com.codeborne.selenide.WebDriverRunner;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.BrowserRunnerHelper;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.DriverServerPath;
@@ -195,16 +196,41 @@ public class BrowserStatement extends StatementBuilder
     {
         // get the @Browser annotation from the method to run as well as from the enclosing class
         // if it doesn't exist check the class for a @Browser annotation
-        Browser methodBrowser = method.getAnnotation(Browser.class);
-        Browser classBrowser = testClass.getAnnotation(Browser.class);
+        List<Browser> methodBrowserAnnotations = getAnnotations(method.getMethod(), Browser.class);
+        List<Browser> classBrowserAnnotations = getAnnotations(testClass.getJavaClass(), Browser.class);
+        List<SuppressBrowser> methodSuppressBrowserAnnotations = getAnnotations(method.getMethod(), SuppressBrowser.class);
+        List<SuppressBrowser> classSuppressBrowserAnnotations = getAnnotations(testClass.getJavaClass(), SuppressBrowser.class);
 
-        if (methodBrowser != null)
+        // Browser methodBrowser = method.getAnnotation(Browser.class);
+        // Browser classBrowser = testClass.getAnnotation(Browser.class);
+
+        if (!methodSuppressBrowserAnnotations.isEmpty())
         {
-            browser.addAll(Arrays.asList(methodBrowser.value()));
+            // method is marked to suppress browser
+            return new LinkedList<>();
         }
-        else if (classBrowser != null)
+
+        if (!classSuppressBrowserAnnotations.isEmpty() && methodBrowserAnnotations.isEmpty())
         {
-            browser.addAll(Arrays.asList(classBrowser.value()));
+            // class is marked to suppress browsers and there is no override on the method
+            return new LinkedList<>();
+        }
+
+        // so there might be a browser suppress on the class but there is at least one override on the method
+        List<Browser> browserAnnotations = new LinkedList<>();
+
+        // add all browser annotations from the method
+        browserAnnotations.addAll(methodBrowserAnnotations);
+
+        // if the class doesn't have suppress then add them too
+        if (classSuppressBrowserAnnotations.isEmpty())
+        {
+            browserAnnotations.addAll(classBrowserAnnotations);
+        }
+
+        for (Browser b : browserAnnotations)
+        {
+            browser.addAll(Arrays.asList(b.value()));
         }
 
         // that is like a dirty hack to provide testing ability
