@@ -61,8 +61,8 @@ public class BrowserStatementTest extends NeodymiumTest
         tempFiles.add(tempConfigFile);
         writeMapToPropertiesFile(properties, tempConfigFile);
 
+        MultibrowserConfiguration.clearAllInstances();
         browserConfig = MultibrowserConfiguration.getInstance(tempConfigFile.getPath());
-
     }
 
     @Test
