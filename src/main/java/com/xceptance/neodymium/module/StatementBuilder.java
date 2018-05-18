@@ -55,8 +55,7 @@ public abstract class StatementBuilder extends Statement
             {
                 try
                 {
-                    List<T> repeatedAnnotations = Arrays.asList((T[]) annotation.getClass().getMethod("value").invoke(annotation));
-                    annotations.addAll(repeatedAnnotations);
+                    annotations.addAll(Arrays.asList((T[]) annotation.getClass().getMethod("value").invoke(annotation)));
                 }
                 catch (Exception e)
                 {
