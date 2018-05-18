@@ -23,7 +23,6 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.configurati
 import com.xceptance.neodymium.testclasses.browser.classonly.ClassBrowserSuppressed;
 import com.xceptance.neodymium.testclasses.browser.classonly.ClassBrowserSuppressedNoBrowserAnnotation;
 import com.xceptance.neodymium.testclasses.browser.classonly.EmptyBrowser;
-import com.xceptance.neodymium.testclasses.browser.classonly.NoBrowserTag;
 import com.xceptance.neodymium.testclasses.browser.classonly.OneClassBrowserOneMethod;
 import com.xceptance.neodymium.testclasses.browser.classonly.TwoClassBrowserOneMethod;
 import com.xceptance.neodymium.testclasses.browser.classonly.TwoSameClassBrowserOneMethod;
@@ -63,14 +62,6 @@ public class BrowserStatementTest extends NeodymiumTest
 
         MultibrowserConfiguration.clearAllInstances();
         browserConfig = MultibrowserConfiguration.getInstance(tempConfigFile.getPath());
-    }
-
-    @Test
-    public void testEmptyBrowserTag()
-    {
-        // an empty @Browser({}) annotation shouldn't raise an error
-        Result result = JUnitCore.runClasses(NoBrowserTag.class);
-        checkPass(result, 1, 0, 0);
     }
 
     @Test

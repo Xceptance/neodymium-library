@@ -24,5 +24,5 @@ import java.lang.annotation.Target;
 @Repeatable(Browsers.class)
 public @interface Browser
 {
-    String[] value();
+    String value();
 }

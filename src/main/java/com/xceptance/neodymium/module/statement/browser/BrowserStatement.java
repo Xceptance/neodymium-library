@@ -229,7 +229,7 @@ public class BrowserStatement extends StatementBuilder
 
         for (Browser b : browserAnnotations)
         {
-            browser.addAll(Arrays.asList(b.value()));
+            browser.add(b.value());
         }
 
         // that is like a dirty hack to provide testing ability
