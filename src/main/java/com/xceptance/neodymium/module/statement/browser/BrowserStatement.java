@@ -140,15 +140,17 @@ public class BrowserStatement extends StatementBuilder
 
     public void teardown(boolean testFailed)
     {
-        WebDriverProperties webDriverProperties = MultibrowserConfiguration.getInstance().getWebDriverProperties();
+        WebDriverProperties webDriverProperties = multibrowserConfiguration.getWebDriverProperties();
+        Context context = Context.get();
+        BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(context.browserProfileName);
 
-        if (testFailed && webDriverProperties.keepBrowserOpenOnFailure())
+        if (testFailed && webDriverProperties.keepBrowserOpenOnFailure() && !browserConfiguration.isHeadless())
         {
             // test failed and we want to leave the browser instance open
             // don't quit the webdriver, just remove references
             LOGGER.debug("Keep browser open");
-            Context.get().driver = null;
-            Context.get().browserProfileName = null;
+            context.driver = null;
+            context.browserProfileName = null;
             return;
         }
 
@@ -165,8 +167,8 @@ public class BrowserStatement extends StatementBuilder
                 webdriver.quit();
             }
         }
-        Context.get().driver = null;
-        Context.get().browserProfileName = null;
+        context.driver = null;
+        context.browserProfileName = null;
     }
 
     public static void quitCachedBrowser()
