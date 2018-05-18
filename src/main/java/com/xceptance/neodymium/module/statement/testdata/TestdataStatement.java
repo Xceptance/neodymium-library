@@ -291,6 +291,11 @@ public class TestdataStatement extends StatementBuilder
             {
                 testDatasetIndetifier = "Data set";
             }
+
+            // replace paranthesis because https://bugs.eclipse.org/bugs/show_bug.cgi?id=102512
+            // "Any text in parentheses is assumed to be the name of the class in which the test is defined."
+            testDatasetIndetifier = testDatasetIndetifier.replaceAll("\\(", "[").replaceAll("\\)", "]");
+
             testname = String.format("%s %d / %d", testDatasetIndetifier, (parameter.getIndex() + 1), parameter.getSize());
         }
         else
