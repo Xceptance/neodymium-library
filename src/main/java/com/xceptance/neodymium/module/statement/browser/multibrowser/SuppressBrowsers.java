@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
     {
         TYPE, METHOD
     })
-public @interface SuppressBrowser
+public @interface SuppressBrowsers
 {
 
 }

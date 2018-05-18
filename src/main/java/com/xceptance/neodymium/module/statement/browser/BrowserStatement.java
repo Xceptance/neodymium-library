@@ -24,7 +24,7 @@ import com.codeborne.selenide.WebDriverRunner;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.BrowserRunnerHelper;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowser;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowsers;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.DriverServerPath;
@@ -200,8 +200,8 @@ public class BrowserStatement extends StatementBuilder
         // if it doesn't exist check the class for a @Browser annotation
         List<Browser> methodBrowserAnnotations = getAnnotations(method.getMethod(), Browser.class);
         List<Browser> classBrowserAnnotations = getAnnotations(testClass.getJavaClass(), Browser.class);
-        List<SuppressBrowser> methodSuppressBrowserAnnotations = getAnnotations(method.getMethod(), SuppressBrowser.class);
-        List<SuppressBrowser> classSuppressBrowserAnnotations = getAnnotations(testClass.getJavaClass(), SuppressBrowser.class);
+        List<SuppressBrowsers> methodSuppressBrowserAnnotations = getAnnotations(method.getMethod(), SuppressBrowsers.class);
+        List<SuppressBrowsers> classSuppressBrowserAnnotations = getAnnotations(testClass.getJavaClass(), SuppressBrowsers.class);
 
         if (!methodSuppressBrowserAnnotations.isEmpty())
         {
