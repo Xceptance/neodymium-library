@@ -204,12 +204,12 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     {
         switch (Context.get().configuration.junitViewMode())
         {
-            case tree:
-                return createHierarchicalTestDescription(methods);
-
             case flat:
-            default:
                 return createFlatTestDescription(methods);
+
+            case tree:
+            default:
+                return createHierarchicalTestDescription(methods);
         }
     }
 
