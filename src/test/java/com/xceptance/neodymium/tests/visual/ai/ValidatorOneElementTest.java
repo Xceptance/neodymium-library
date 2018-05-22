@@ -11,7 +11,7 @@ import org.junit.Test;
 import com.xceptance.neodymium.visual.ai.NetworkTester;
 import com.xceptance.neodymium.visual.ai.NetworkTrainer;
 
-public class ValidatorOneElement
+public class ValidatorOneElementTest
 {
     @BeforeClass
     public static void setup()

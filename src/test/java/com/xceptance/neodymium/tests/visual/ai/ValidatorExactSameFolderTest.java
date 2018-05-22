@@ -36,7 +36,7 @@ import com.xceptance.neodymium.visual.ai.image.PatternHelper;
  * 
  * @author tvolkmann
  */
-public class ValidatorExactSameFolder
+public class ValidatorExactSameFolderTest
 {
     @BeforeClass
     public static void setup()

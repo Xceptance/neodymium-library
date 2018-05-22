@@ -30,7 +30,7 @@ import com.xceptance.neodymium.visual.ai.NetworkTester;
 import com.xceptance.neodymium.visual.ai.NetworkTrainer;
 import com.xceptance.neodymium.visual.ai.image.PatternHelper;
 
-public class ValidatorOneImageContained
+public class ValidatorOneImageContainedTest
 {
     @BeforeClass
     public static void setup()
