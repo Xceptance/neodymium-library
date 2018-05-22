@@ -15,7 +15,7 @@
 // BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.xceptance.neodymium.visual.ai.test;
+package com.xceptance.neodymium.tests.visual.ai;
 
 import static org.junit.Assert.assertTrue;
 
@@ -36,21 +36,30 @@ import com.xceptance.neodymium.visual.ai.image.PatternHelper;
  * 
  * @author tvolkmann
  */
-public class Validator_ExactSameFolder
+public class ValidatorExactSameFolder
 {
     @BeforeClass
     public static void setup()
     {
         URL location = NetworkTrainer.class.getProtectionDomain().getCodeSource().getLocation();
-        File file = new File(location.getPath()).getParentFile();
+        File file = new File(location.getPath()).getParentFile().getParentFile();
 
-        // /xlt-visual-assert/config
-        String propertieFile = file.toString() + File.separator + "config" + File.separator + "ai.properties";
+        // /neodymium-library/config
+        String propertieFile = file.toString() + File.separator +
+                               "config" + File.separator +
+                               "ai.properties";
 
-        // /xlt-visual-assert/src/test/com/xceptance/xlt/ai
-        String testFolderPath = file.toString() + File.separator + "src" + File.separator +
-                                "test" + File.separator + "com" + File.separator + "xceptance" +
-                                File.separator + "xlt" + File.separator + "ai" + File.separator;
+        // /neodymium-library/src/test/java/com/xceptance/neodymium/tests/visual/ai
+        String testFolderPath = file.toString() + File.separator +
+                                "src" + File.separator +
+                                "test" + File.separator +
+                                "java" + File.separator +
+                                "com" + File.separator +
+                                "xceptance" + File.separator +
+                                "neodymium" + File.separator +
+                                "tests" + File.separator +
+                                "visual" + File.separator +
+                                "ai" + File.separator;
 
         // images for the Exact-Same-Folder (ESF) test
         String testFolderName = "Test_Images_ESF";

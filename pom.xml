@@ -67,7 +67,7 @@
 					<forkCount>4</forkCount>
 					<reuseForks>false</reuseForks>
 					<includes>
-						<include>com/xceptance/neodymium/tests/**</include>
+						<include>com/xceptance/neodymium/tests/**/*Test.java</include>
 					</includes>
 				</configuration>
 			</plugin>
