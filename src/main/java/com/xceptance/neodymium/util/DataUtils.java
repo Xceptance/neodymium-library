@@ -98,7 +98,7 @@ public class DataUtils
      *            Name of test data key
      * @param defaultValue
      *            a value that will be returned if the key was not found
-     * @return
+     * @return {@link String} if the key was found else defaultValue
      */
     public static String asString(String key, String defaultValue)
     {
@@ -133,7 +133,7 @@ public class DataUtils
      *            Name of test data key
      * @param defaultValue
      *            a value that will be returned if the key was not found
-     * @return
+     * @return {@link int} if the key was found else defaultValue
      */
     public static int asInt(String key, int defaultValue)
     {
@@ -168,7 +168,7 @@ public class DataUtils
      *            Name of test data key
      * @param defaultValue
      *            a value that will be returned if the key was not found
-     * @return
+     * @return {@link long} if the key was found else defaultValue
      */
     public static long asLong(String key, long defaultValue)
     {
@@ -203,7 +203,7 @@ public class DataUtils
      *            Name of test data key
      * @param defaultValue
      *            a value that will be returned if the key was not found
-     * @return
+     * @return {@link double} if the key was found else defaultValue
      */
     public static double asDouble(String key, double defaultValue)
     {
@@ -238,7 +238,7 @@ public class DataUtils
      *            Name of test data key
      * @param defaultValue
      *            a value that will be returned if the key was not found
-     * @return
+     * @return {@link float} if the key was found else defaultValue
      */
     public static float asFloat(String key, float defaultValue)
     {
@@ -273,7 +273,7 @@ public class DataUtils
      *            Name of test data key
      * @param defaultValue
      *            a value that will be returned if the key was not found
-     * @return
+     * @return {@link boolean} if the key was found else defaultValue
      */
     public static boolean asBool(String key, boolean defaultValue)
     {
