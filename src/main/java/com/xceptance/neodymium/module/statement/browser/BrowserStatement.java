@@ -132,6 +132,7 @@ public class BrowserStatement extends StatementBuilder
     public void setUpTest(String browserTag)
     {
         webdriver = null;
+        this.browserTag = browserTag;
         LOGGER.debug("Create browser for name: " + browserTag);
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(browserTag);
 
