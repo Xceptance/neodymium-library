@@ -54,6 +54,44 @@ public class BrowserStatement extends StatementBuilder
 
     public BrowserStatement()
     {
+        // that is like a dirty hack to provide testing ability
+        if (multibrowserConfiguration == null)
+            multibrowserConfiguration = MultibrowserConfiguration.getInstance(BROWSER_PROFILE_FILE);
+
+        DriverServerPath driverServerPath = multibrowserConfiguration.getDriverServerPath();
+        WebDriverProperties webDriverProperties = multibrowserConfiguration.getWebDriverProperties();
+
+        final String ieDriverPath = driverServerPath.getIeDriverPath();
+        final String chromeDriverPath = driverServerPath.getChromeDriverPath();
+        final String geckoDriverPath = driverServerPath.getFirefoxDriverPath();
+
+        // shall we run old school firefox?
+        final boolean firefoxLegacy = webDriverProperties.useFirefoxLegacy();
+        System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, Boolean.toString(!firefoxLegacy));
+
+        if (!StringUtils.isEmpty(ieDriverPath))
+        {
+            System.setProperty("webdriver.ie.driver", ieDriverPath);
+        }
+        if (!StringUtils.isEmpty(chromeDriverPath))
+        {
+            System.setProperty("webdriver.chrome.driver", chromeDriverPath);
+        }
+        if (!StringUtils.isEmpty(geckoDriverPath))
+        {
+            System.setProperty("webdriver.gecko.driver", geckoDriverPath);
+        }
+
+        // get test specific browser definitions (aka browser tag see browser.properties)
+        // could be one value or comma separated list of values
+        String browserDefinitionsProperty = System.getProperty(SYSTEM_PROPERTY_BROWSERDEFINITION, "");
+        browserDefinitionsProperty = browserDefinitionsProperty.replaceAll("\\s", "");
+
+        // parse test specific browser definitions
+        if (!StringUtils.isEmpty(browserDefinitionsProperty))
+        {
+            browserDefinitions.addAll(Arrays.asList(browserDefinitionsProperty.split(",")));
+        }
     }
 
     public BrowserStatement(Statement next, String parameter)
@@ -72,7 +110,7 @@ public class BrowserStatement extends StatementBuilder
         boolean testFailed = false;
 
         LOGGER.debug("setup browser: " + browserTag);
-        setUpTest();
+        setUpTest(browserTag);
         try
         {
             next.evaluate();
@@ -91,7 +129,7 @@ public class BrowserStatement extends StatementBuilder
     /**
      * Sets the test instance up.
      */
-    protected void setUpTest()
+    public void setUpTest(String browserTag)
     {
         webdriver = null;
         LOGGER.debug("Create browser for name: " + browserTag);
@@ -232,46 +270,7 @@ public class BrowserStatement extends StatementBuilder
             browser.add(b.value());
         }
 
-        // that is like a dirty hack to provide testing ability
-        if (multibrowserConfiguration == null)
-            multibrowserConfiguration = MultibrowserConfiguration.getInstance(BROWSER_PROFILE_FILE);
-
-        DriverServerPath driverServerPath = multibrowserConfiguration.getDriverServerPath();
-        WebDriverProperties webDriverProperties = multibrowserConfiguration.getWebDriverProperties();
-
-        final String ieDriverPath = driverServerPath.getIeDriverPath();
-        final String chromeDriverPath = driverServerPath.getChromeDriverPath();
-        final String geckoDriverPath = driverServerPath.getFirefoxDriverPath();
-
-        // shall we run old school firefox?
-        final boolean firefoxLegacy = webDriverProperties.useFirefoxLegacy();
-        System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, Boolean.toString(!firefoxLegacy));
-
-        if (!StringUtils.isEmpty(ieDriverPath))
-        {
-            System.setProperty("webdriver.ie.driver", ieDriverPath);
-        }
-        if (!StringUtils.isEmpty(chromeDriverPath))
-        {
-            System.setProperty("webdriver.chrome.driver", chromeDriverPath);
-        }
-        if (!StringUtils.isEmpty(geckoDriverPath))
-        {
-            System.setProperty("webdriver.gecko.driver", geckoDriverPath);
-        }
-
-        // get test specific browser definitions (aka browser tag see browser.properties)
-        // could be one value or comma separated list of values
-        String browserDefinitionsProperty = System.getProperty(SYSTEM_PROPERTY_BROWSERDEFINITION, "");
-        browserDefinitionsProperty = browserDefinitionsProperty.replaceAll("\\s", "");
-
-        // parse test specific browser definitions
-        if (!StringUtils.isEmpty(browserDefinitionsProperty))
-        {
-            browserDefinitions.addAll(Arrays.asList(browserDefinitionsProperty.split(",")));
-        }
         Map<String, BrowserConfiguration> parsedBrowserProperties = multibrowserConfiguration.getBrowserProfiles();
-
         List<Object> iterations = new LinkedList<>();
         for (String browserTag : browser)
         {

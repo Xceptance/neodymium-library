@@ -1,76 +1,29 @@
 package com.xceptance.neodymium.util;
 
-import java.net.MalformedURLException;
+import java.util.function.Supplier;
 
-import org.openqa.selenium.WebDriver;
-
-import com.codeborne.selenide.WebDriverRunner;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverFactory;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.WebDriverProperties;
+import com.xceptance.neodymium.module.statement.browser.BrowserStatement;
 
 public class Driver
 {
-    private static final String BROWSER_PROFILE_FILE = "./config/browser.properties";
+    private static ThreadLocal<BrowserStatement> browserStatement = ThreadLocal.withInitial(new Supplier<BrowserStatement>()
+    {
+        @Override
+        public BrowserStatement get()
+        {
+            return new BrowserStatement();
+        }
+
+    });
 
     public static void setUp(final String browserProfileName)
     {
-        // try to find appropriate web driver in cache before creating a new instance
-        WebDriver driver = null;
 
-        MultibrowserConfiguration multibrowserConfiguration = MultibrowserConfiguration.getInstance();
-        if (multibrowserConfiguration == null)
-            multibrowserConfiguration = MultibrowserConfiguration.getInstance(BROWSER_PROFILE_FILE);
-
-        if (multibrowserConfiguration.getWebDriverProperties().reuseWebDriver())
-        {
-            driver = WebDriverCache.instance.getRemoveWebDriver(browserProfileName);
-        }
-
-        // nothing in the cache or nothing set yet
-        if (driver == null)
-        {
-            try
-            {
-                driver = WebDriverFactory.create(browserProfileName);
-            }
-            catch (MalformedURLException e)
-            {
-                throw new RuntimeException(e);
-            }
-            WebDriverRunner.setWebDriver(driver);
-        }
-        else
-        {
-            // ok, clean reused driver
-            driver.manage().deleteAllCookies();
-        }
-
-        // clear Context for every browser instance
-        Context.clearThreadContext();
-
-        // keep in globally
-        Context.get().driver = driver;
-        Context.get().browserProfileName = browserProfileName;
+        browserStatement.get().setUpTest(browserProfileName);
     }
 
-    public static void tearDown()
+    public static void tearDown(boolean testFailed)
     {
-        WebDriverProperties webDriverProperties = MultibrowserConfiguration.getInstance().getWebDriverProperties();
-        if (webDriverProperties.reuseWebDriver())
-        {
-            WebDriverCache.instance.putWebDriver(Context.get().browserProfileName, Context.get().driver);
-        }
-        else
-        {
-            if (!webDriverProperties.keepBrowserOpen() && Context.get().driver != null)
-            {
-                Context.get().driver.quit();
-            }
-        }
-
-        Context.get().driver = null;
-        Context.get().browserProfileName = null;
+        browserStatement.get().teardown(testFailed);
     }
 }
