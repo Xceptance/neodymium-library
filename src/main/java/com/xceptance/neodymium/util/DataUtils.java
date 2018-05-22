@@ -92,6 +92,27 @@ public class DataUtils
     }
 
     /**
+     * Get a test data value as string or default value if it couldn't be found
+     * 
+     * @param key
+     *            Name of test data key
+     * @param defaultValue
+     *            a value that will be returned if the key was not found
+     * @return
+     */
+    public static String asString(String key, String defaultValue)
+    {
+        try
+        {
+            return asString(key);
+        }
+        catch (IllegalArgumentException e)
+        {
+            return defaultValue;
+        }
+    }
+
+    /**
      * Get a test data value as int
      * 
      * @param key
@@ -103,6 +124,27 @@ public class DataUtils
     public static int asInt(String key)
     {
         return Integer.valueOf(asString(key)).intValue();
+    }
+
+    /**
+     * Get a test data value as int or default value if it couldn't be found
+     * 
+     * @param key
+     *            Name of test data key
+     * @param defaultValue
+     *            a value that will be returned if the key was not found
+     * @return
+     */
+    public static int asInt(String key, int defaultValue)
+    {
+        try
+        {
+            return asInt(key);
+        }
+        catch (IllegalArgumentException e)
+        {
+            return defaultValue;
+        }
     }
 
     /**
@@ -120,6 +162,27 @@ public class DataUtils
     }
 
     /**
+     * Get a test data value as long or default value if it couldn't be found
+     * 
+     * @param key
+     *            Name of test data key
+     * @param defaultValue
+     *            a value that will be returned if the key was not found
+     * @return
+     */
+    public static long asLong(String key, long defaultValue)
+    {
+        try
+        {
+            return asLong(key);
+        }
+        catch (IllegalArgumentException e)
+        {
+            return defaultValue;
+        }
+    }
+
+    /**
      * Get a test data value as double
      * 
      * @param key
@@ -131,6 +194,27 @@ public class DataUtils
     public static double asDouble(String key)
     {
         return Double.valueOf(asString(key)).doubleValue();
+    }
+
+    /**
+     * Get a test data value as double or default value if it couldn't be found
+     * 
+     * @param key
+     *            Name of test data key
+     * @param defaultValue
+     *            a value that will be returned if the key was not found
+     * @return
+     */
+    public static double asDouble(String key, double defaultValue)
+    {
+        try
+        {
+            return asDouble(key);
+        }
+        catch (IllegalArgumentException e)
+        {
+            return defaultValue;
+        }
     }
 
     /**
@@ -148,6 +232,27 @@ public class DataUtils
     }
 
     /**
+     * Get a test data value as float or default value if it couldn't be found
+     * 
+     * @param key
+     *            Name of test data key
+     * @param defaultValue
+     *            a value that will be returned if the key was not found
+     * @return
+     */
+    public static float asFloat(String key, float defaultValue)
+    {
+        try
+        {
+            return asFloat(key);
+        }
+        catch (IllegalArgumentException e)
+        {
+            return defaultValue;
+        }
+    }
+
+    /**
      * Get a test data value as boolean
      * 
      * @param key
@@ -159,5 +264,26 @@ public class DataUtils
     public static boolean asBool(String key)
     {
         return Boolean.valueOf(asString(key)).booleanValue();
+    }
+
+    /**
+     * Get a test data value as boolean or default value if it couldn't be found
+     * 
+     * @param key
+     *            Name of test data key
+     * @param defaultValue
+     *            a value that will be returned if the key was not found
+     * @return
+     */
+    public static boolean asBool(String key, boolean defaultValue)
+    {
+        try
+        {
+            return asBool(key);
+        }
+        catch (IllegalArgumentException e)
+        {
+            return defaultValue;
+        }
     }
 }

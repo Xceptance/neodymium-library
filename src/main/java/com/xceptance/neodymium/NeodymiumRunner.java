@@ -163,7 +163,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
             {
                 // ask each statement builder if this method should be processed
                 // results in a list of parameters for this statement for method multiplication
-                // e.g. for @Browser({"A", "B"}) the data list will contain "A" and "B"
+                // e.g. for @Browser("A") the data list will contain "A"
 
                 StatementBuilder builder = StatementBuilder.instantiate(statementClass);
 

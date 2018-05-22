@@ -7,10 +7,8 @@ import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 
 @RunWith(NeodymiumRunner.class)
-@Browser(
-    {
-        "first_browser", "second_browser"
-    })
+@Browser("first_browser")
+@Browser("second_browser")
 public class TwoBrowserOneMethod
 {
     @Test

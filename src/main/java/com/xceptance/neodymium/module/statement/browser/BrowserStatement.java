@@ -24,7 +24,7 @@ import com.codeborne.selenide.WebDriverRunner;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.BrowserRunnerHelper;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowser;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowsers;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.DriverServerPath;
@@ -140,15 +140,17 @@ public class BrowserStatement extends StatementBuilder
 
     public void teardown(boolean testFailed)
     {
-        WebDriverProperties webDriverProperties = MultibrowserConfiguration.getInstance().getWebDriverProperties();
+        WebDriverProperties webDriverProperties = multibrowserConfiguration.getWebDriverProperties();
+        Context context = Context.get();
+        BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(context.browserProfileName);
 
-        if (testFailed && webDriverProperties.keepBrowserOpenOnFailure())
+        if (testFailed && webDriverProperties.keepBrowserOpenOnFailure() && !browserConfiguration.isHeadless())
         {
             // test failed and we want to leave the browser instance open
             // don't quit the webdriver, just remove references
             LOGGER.debug("Keep browser open");
-            Context.get().driver = null;
-            Context.get().browserProfileName = null;
+            context.driver = null;
+            context.browserProfileName = null;
             return;
         }
 
@@ -165,8 +167,8 @@ public class BrowserStatement extends StatementBuilder
                 webdriver.quit();
             }
         }
-        Context.get().driver = null;
-        Context.get().browserProfileName = null;
+        context.driver = null;
+        context.browserProfileName = null;
     }
 
     public static void quitCachedBrowser()
@@ -198,8 +200,8 @@ public class BrowserStatement extends StatementBuilder
         // if it doesn't exist check the class for a @Browser annotation
         List<Browser> methodBrowserAnnotations = getAnnotations(method.getMethod(), Browser.class);
         List<Browser> classBrowserAnnotations = getAnnotations(testClass.getJavaClass(), Browser.class);
-        List<SuppressBrowser> methodSuppressBrowserAnnotations = getAnnotations(method.getMethod(), SuppressBrowser.class);
-        List<SuppressBrowser> classSuppressBrowserAnnotations = getAnnotations(testClass.getJavaClass(), SuppressBrowser.class);
+        List<SuppressBrowsers> methodSuppressBrowserAnnotations = getAnnotations(method.getMethod(), SuppressBrowsers.class);
+        List<SuppressBrowsers> classSuppressBrowserAnnotations = getAnnotations(testClass.getJavaClass(), SuppressBrowsers.class);
 
         if (!methodSuppressBrowserAnnotations.isEmpty())
         {
@@ -227,7 +229,7 @@ public class BrowserStatement extends StatementBuilder
 
         for (Browser b : browserAnnotations)
         {
-            browser.addAll(Arrays.asList(b.value()));
+            browser.add(b.value());
         }
 
         // that is like a dirty hack to provide testing ability

@@ -7,10 +7,7 @@ import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 
 @RunWith(NeodymiumRunner.class)
-@Browser(
-    {
-        "chrome"
-    })
+@Browser("chrome")
 public class OneClassBrowserOneMethod
 {
     @Test
