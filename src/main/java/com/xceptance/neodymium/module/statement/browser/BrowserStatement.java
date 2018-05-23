@@ -238,7 +238,7 @@ public class BrowserStatement extends StatementBuilder
         // get the @Browser annotation from the method to run as well as from the enclosing class
         // if it doesn't exist check the class for a @Browser annotation
         List<Browser> methodBrowserAnnotations = getAnnotations(method.getMethod(), Browser.class);
-        List<Browser> classBrowserAnnotations = getAnnotations(testClass.getJavaClass(), Browser.class);
+        List<Browser> classBrowserAnnotations = findClassBrowserAnnotation(testClass.getJavaClass());
         List<SuppressBrowsers> methodSuppressBrowserAnnotations = getAnnotations(method.getMethod(), SuppressBrowsers.class);
         List<SuppressBrowsers> classSuppressBrowserAnnotations = getAnnotations(testClass.getJavaClass(), SuppressBrowsers.class);
 
@@ -292,6 +292,30 @@ public class BrowserStatement extends StatementBuilder
         }
 
         return iterations;
+    }
+
+    public List<Browser> findClassBrowserAnnotation(Class<?> clazz)
+    {
+        // this function is used to find the first (!) @Browser annotation on class level in the hierarchy
+        // furthermore its not the first but also the first that doesn't have @SuppressBrowsers annotated
+
+        if (clazz == null)
+            return new LinkedList<>();
+
+        // check class for browser annotation
+        // if class has browser annotation and no suppress browsers its fine, else take the super class and check again
+        List<Browser> browserAnnotations = getDeclaredAnnotations(clazz, Browser.class);
+        List<SuppressBrowsers> suppressBrowsersAnnotations = getDeclaredAnnotations(clazz, SuppressBrowsers.class);
+
+        if (!suppressBrowsersAnnotations.isEmpty() || browserAnnotations.isEmpty())
+        {
+            return findClassBrowserAnnotation(clazz.getSuperclass());
+        }
+        else
+        {
+            return browserAnnotations;
+        }
+
     }
 
     @Override

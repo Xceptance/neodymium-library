@@ -47,27 +47,61 @@ public abstract class StatementBuilder extends Statement
 
         // check if the annotation is repeatable
         Repeatable repeatingAnnotation = annotationClass.getAnnotation(Repeatable.class);
-        if (repeatingAnnotation != null)
-        {
-            Annotation annotation = object.getAnnotation(repeatingAnnotation.value());
+        Annotation annotation = (repeatingAnnotation == null) ? null : object.getAnnotation(repeatingAnnotation.value());
 
-            if (annotation != null)
+        if (annotation != null)
+        {
+            try
             {
-                try
-                {
-                    annotations.addAll(Arrays.asList((T[]) annotation.getClass().getMethod("value").invoke(annotation)));
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException(e);
-                }
+                annotations.addAll(Arrays.asList((T[]) annotation.getClass().getMethod("value").invoke(annotation)));
+            }
+            catch (Exception e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+        else
+        {
+            T anno = object.getAnnotation(annotationClass);
+            if (anno != null)
+            {
+                annotations.add(anno);
             }
         }
 
-        T anno = object.getAnnotation(annotationClass);
-        if (anno != null)
+        return annotations;
+    }
+
+    public static <T extends Annotation> List<T> getDeclaredAnnotations(AnnotatedElement object, Class<T> annotationClass)
+    {
+        List<T> annotations = new LinkedList<>();
+        if (object == null || annotationClass == null)
         {
-            annotations.add(anno);
+            return annotations;
+        }
+
+        // check if the annotation is repeatable
+        Repeatable repeatingAnnotation = annotationClass.getAnnotation(Repeatable.class);
+        Annotation annotation = (repeatingAnnotation == null) ? null : object.getDeclaredAnnotation(repeatingAnnotation.value());
+
+        if (annotation != null)
+        {
+            try
+            {
+                annotations.addAll(Arrays.asList((T[]) annotation.getClass().getMethod("value").invoke(annotation)));
+            }
+            catch (Exception e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+        else
+        {
+            T anno = object.getDeclaredAnnotation(annotationClass);
+            if (anno != null)
+            {
+                annotations.add(anno);
+            }
         }
 
         return annotations;
