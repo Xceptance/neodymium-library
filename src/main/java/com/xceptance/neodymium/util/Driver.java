@@ -4,6 +4,8 @@ import java.util.function.Supplier;
 
 import com.xceptance.neodymium.module.statement.browser.BrowserStatement;
 
+import cucumber.api.Scenario;
+
 public class Driver
 {
     private static ThreadLocal<BrowserStatement> browserStatement = ThreadLocal.withInitial(new Supplier<BrowserStatement>()
@@ -22,8 +24,20 @@ public class Driver
         browserStatement.get().setUpTest(browserProfileName);
     }
 
-    public static void tearDown(boolean testFailed)
+    /**
+     * @param scenario
+     *            Scenario is a Cucumber API class that can be gathered in hooks via dependency injection
+     * 
+     *            <pre>
+     *            &#64;cucumber.api.java.After(order = 100)
+     *            public void tearDown(Scenario scenario)
+     *            {
+     *                Driver.tearDown(scenario);
+     *            }
+     *            </pre>
+     **/
+    public static void tearDown(Scenario scenario)
     {
-        browserStatement.get().teardown(testFailed);
+        browserStatement.get().teardown(scenario.isFailed());
     }
 }
