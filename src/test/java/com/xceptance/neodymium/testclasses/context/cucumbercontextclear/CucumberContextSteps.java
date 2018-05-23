@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.testclasses.context.cucumber;
+package com.xceptance.neodymium.testclasses.context.cucumbercontextclear;
 
 import org.junit.Assert;
 
