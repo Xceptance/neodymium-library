@@ -9,7 +9,6 @@ import org.junit.runner.notification.RunListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import com.xceptance.neodymium.util.Context;
 
@@ -31,11 +30,6 @@ public class NeodymiumCucumberRunListener extends RunListener
     public void testStarted(Description description) throws Exception
     {
         Context.clearThreadContext();
-
-        // set our default timeout
-        Configuration.timeout = Context.get().configuration.timeout();
-        Configuration.collectionsTimeout = Configuration.timeout * 2;
-
         LOGGER.debug("Test started: " + description.toString());
     }
 

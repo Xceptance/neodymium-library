@@ -103,10 +103,6 @@ public class BrowserStatement extends StatementBuilder
     @Override
     public void evaluate() throws Throwable
     {
-        // set the default selenide timeouts
-        Configuration.timeout = Context.get().configuration.timeout();
-        Configuration.collectionsTimeout = Configuration.timeout * 2;
-
         boolean testFailed = false;
 
         LOGGER.debug("setup browser: " + browserTag);
@@ -169,6 +165,10 @@ public class BrowserStatement extends StatementBuilder
             WebDriverRunner.setWebDriver(webdriver);
             Context.get().driver = webdriver;
             Context.get().browserProfileName = browserConfiguration.getConfigTag();
+
+            // set our default timeout
+            Configuration.timeout = Context.get().configuration.timeout();
+            Configuration.collectionsTimeout = Configuration.timeout * 2;
         }
         else
         {
