@@ -13,7 +13,7 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 public class DefaultSelenideTimeoutCheck
 {
     @Test
-    public void first() throws Exception
+    public void testDefaultSelenideTimeout() throws Exception
     {
         Assert.assertEquals(3000, Configuration.timeout);
         Assert.assertEquals(6000, Configuration.collectionsTimeout);
