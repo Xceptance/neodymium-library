@@ -19,8 +19,6 @@ package com.xceptance.neodymium.tests.visual.ai;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 
 import org.junit.BeforeClass;
@@ -36,47 +34,29 @@ import com.xceptance.neodymium.visual.ai.image.PatternHelper;
  * 
  * @author tvolkmann
  */
-public class ValidatorExactSameFolderTest
+public class ValidatorExactSameFolderTest extends AbstractVisualAssertTest
 {
+    private final static String testFolderName = "Test_Images_ESF";
+
     @BeforeClass
     public static void setup()
     {
-        URL location = NetworkTrainer.class.getProtectionDomain().getCodeSource().getLocation();
-        File file = new File(location.getPath()).getParentFile().getParentFile();
-
-        // /neodymium-library/config
-        String propertieFile = file.toString() + File.separator +
-                               "config" + File.separator +
-                               "ai.properties";
-
-        // /neodymium-library/src/test/java/com/xceptance/neodymium/tests/visual/ai
-        String testFolderPath = file.toString() + File.separator +
-                                "src" + File.separator +
-                                "test" + File.separator +
-                                "java" + File.separator +
-                                "com" + File.separator +
-                                "xceptance" + File.separator +
-                                "neodymium" + File.separator +
-                                "tests" + File.separator +
-                                "visual" + File.separator +
-                                "ai" + File.separator;
-
         // images for the Exact-Same-Folder (ESF) test
-        String testFolderName = "Test_Images_ESF";
-        String completteFolderName = testFolderPath + testFolderName;
+        String completeFolderName = testFolderPath + testFolderName;
 
         String[] argTR =
         {
-          completteFolderName,
+          completeFolderName,
           testFolderPath,
-          propertieFile,
+          propertiesFilePath,
           testFolderName
         };
 
+        networkPath = completeFolderName + ".network";
         String[] argTE =
         {
-          completteFolderName + ".network",
-          completteFolderName
+          networkPath,
+          completeFolderName
         };
 
         NetworkTrainer.main(argTR);
