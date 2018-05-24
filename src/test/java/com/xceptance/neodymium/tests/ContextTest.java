@@ -56,7 +56,7 @@ public class ContextTest extends NeodymiumTest
     public void testDefaultSelenideTimeoutCheck() throws Exception
     {
         Result result = JUnitCore.runClasses(DefaultSelenideTimeoutCheck.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 2, 0, 0);
     }
 
 }
