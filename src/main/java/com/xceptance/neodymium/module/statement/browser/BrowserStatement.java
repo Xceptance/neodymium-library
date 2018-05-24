@@ -200,10 +200,11 @@ public class BrowserStatement extends StatementBuilder
         }
         else
         {
-            if (!webDriverProperties.keepBrowserOpen() && webdriver != null)
+            if (browserConfiguration.isHeadless() || !webDriverProperties.keepBrowserOpen())
             {
                 LOGGER.debug("Teardown browser");
-                webdriver.quit();
+                if (webdriver != null)
+                    webdriver.quit();
             }
         }
         context.driver = null;
