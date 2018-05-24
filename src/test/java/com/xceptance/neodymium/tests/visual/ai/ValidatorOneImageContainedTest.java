@@ -19,8 +19,6 @@ package com.xceptance.neodymium.tests.visual.ai;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 
 import org.junit.BeforeClass;
@@ -28,50 +26,38 @@ import org.junit.Test;
 
 import com.xceptance.neodymium.visual.ai.NetworkTester;
 import com.xceptance.neodymium.visual.ai.NetworkTrainer;
+import com.xceptance.neodymium.visual.ai.image.AverageMetric;
+import com.xceptance.neodymium.visual.ai.image.ImageStatistics;
+import com.xceptance.neodymium.visual.ai.image.Metric;
+import com.xceptance.neodymium.visual.ai.image.MetricCurator;
 import com.xceptance.neodymium.visual.ai.image.PatternHelper;
 
-public class ValidatorOneImageContainedTest
+public class ValidatorOneImageContainedTest extends AbstractVisualAssertTest
 {
+
+    private final static String testFolderName = "Test_Images_OIC";
+
+    private final static String testFolderNameValidation = "Test_Images_OICV";
+
     @BeforeClass
     public static void setup()
     {
-        URL location = NetworkTrainer.class.getProtectionDomain().getCodeSource().getLocation();
-        File file = new File(location.getPath()).getParentFile().getParentFile();
-
-        // /neodymium-library/config
-        String propertieFile = file.toString() + File.separator +
-                               "config" + File.separator +
-                               "ai.properties";
-
-        // /neodymium-library/src/test/java/com/xceptance/neodymium/tests/visual/ai
-        String testFolderPath = file.toString() + File.separator +
-                                "src" + File.separator +
-                                "test" + File.separator +
-                                "java" + File.separator +
-                                "com" + File.separator +
-                                "xceptance" + File.separator +
-                                "neodymium" + File.separator +
-                                "tests" + File.separator +
-                                "visual" + File.separator +
-                                "ai" + File.separator;
-
         // images for the Exact-Same-Folder (ESF) test
-        String testFolderName = "Test_Images_OIC";
-        String testFolderNameValidation = "Test_Images_OICV";
-        String completteFolderName = testFolderPath + testFolderName;
+        String completeFolderName = testFolderPath + testFolderName;
         String completeFolderNameValidation = testFolderPath + testFolderNameValidation;
 
         String[] argTR =
         {
-          completteFolderName,
+          completeFolderName,
           testFolderPath,
-          propertieFile,
+          propertiesFilePath,
           testFolderName
         };
 
+        networkPath = completeFolderName + ".network";
         String[] argTE =
         {
-          completteFolderName + ".network",
+          networkPath,
           completeFolderNameValidation
         };
 
@@ -94,49 +80,27 @@ public class ValidatorOneImageContainedTest
     {
         for (int index = 0; index < NetworkTrainer.im.getCurator().size(); ++index)
         {
-            if (NetworkTrainer.im.getCurator().get(index).getMetricCurator().getTagName()
-                                 .equals(NetworkTester.im.getCurator().get(0).getMetricCurator().getTagName()))
+            MetricCurator trainerMetricCurator = NetworkTrainer.im.getCurator().get(index).getMetricCurator();
+            MetricCurator testerMetricListCurator = NetworkTester.im.getCurator().get(0).getMetricCurator();
+
+            if (trainerMetricCurator.getTagName().equals(testerMetricListCurator.getTagName()))
             {
-                assertTrue(NetworkTrainer.im.getCurator().get(index)
-                                            .getMetricCurator().metricList.size() == NetworkTester.im.getCurator().get(0).getMetricCurator().metricList.size());
-                for (int ind = 0; ind < NetworkTrainer.im.getCurator().get(index).getMetricCurator().metricList.size(); ++ind)
+                assertTrue(trainerMetricCurator.metricList.size() == testerMetricListCurator.metricList.size());
+                for (int ind = 0; ind < trainerMetricCurator.metricList.size(); ++ind)
                 {
-                    assertTrue(NetworkTrainer.im.getCurator().get(index)
-                                                .getMetricCurator().metricList.get(ind)
-                                                                              .getGroupSize() == NetworkTester.im.getCurator().get(0)
-                                                                                                                 .getMetricCurator().metricList.get(ind)
-                                                                                                                                               .getGroupSize());
-                    assertTrue(NetworkTrainer.im.getCurator().get(index)
-                                                .getMetricCurator().metricList.get(ind)
-                                                                              .getBoundingBoxDistance() == NetworkTester.im.getCurator().get(0)
-                                                                                                                           .getMetricCurator().metricList.get(ind)
-                                                                                                                                                         .getBoundingBoxDistance());
-                    if (NetworkTrainer.im.getCurator().get(index).getMetricCurator().metricList.get(ind).getImageStatistic() != null)
+                    Metric trainerMetric = trainerMetricCurator.metricList.get(ind);
+                    Metric testerMetric = testerMetricListCurator.metricList.get(ind);
+
+                    assertTrue(trainerMetric.getGroupSize() == testerMetric.getGroupSize());
+                    assertTrue(trainerMetric.getBoundingBoxDistance() == testerMetric.getBoundingBoxDistance());
+
+                    ImageStatistics trainerImageStatistic = trainerMetric.getImageStatistic();
+                    if (trainerImageStatistic != null)
                     {
-                        assertTrue(NetworkTrainer.im.getCurator().get(index)
-                                                    .getMetricCurator().metricList.get(ind).getImageStatistic()
-                                                                                  .getHistogramBlue()
-                                                                                  .getMean() == NetworkTester.im.getCurator().get(0)
-                                                                                                                .getMetricCurator().metricList.get(ind)
-                                                                                                                                              .getImageStatistic()
-                                                                                                                                              .getHistogramBlue()
-                                                                                                                                              .getMean());
-                        assertTrue(NetworkTrainer.im.getCurator().get(index)
-                                                    .getMetricCurator().metricList.get(ind).getImageStatistic()
-                                                                                  .getHistogramRed()
-                                                                                  .getMean() == NetworkTester.im.getCurator().get(0)
-                                                                                                                .getMetricCurator().metricList.get(ind)
-                                                                                                                                              .getImageStatistic()
-                                                                                                                                              .getHistogramRed()
-                                                                                                                                              .getMean());
-                        assertTrue(NetworkTrainer.im.getCurator().get(index)
-                                                    .getMetricCurator().metricList.get(ind).getImageStatistic()
-                                                                                  .getHistogramGreen()
-                                                                                  .getMean() == NetworkTester.im.getCurator().get(0)
-                                                                                                                .getMetricCurator().metricList.get(ind)
-                                                                                                                                              .getImageStatistic()
-                                                                                                                                              .getHistogramGreen()
-                                                                                                                                              .getMean());
+                        ImageStatistics testerImageStatistic = testerMetric.getImageStatistic();
+                        assertTrue(trainerImageStatistic.getHistogramBlue().getMean() == testerImageStatistic.getHistogramBlue().getMean());
+                        assertTrue(trainerImageStatistic.getHistogramRed().getMean() == testerImageStatistic.getHistogramRed().getMean());
+                        assertTrue(trainerImageStatistic.getHistogramGreen().getMean() == testerImageStatistic.getHistogramGreen().getMean());
                     }
                 }
             }
@@ -153,16 +117,14 @@ public class ValidatorOneImageContainedTest
 
         for (int index = 0; index < size; ++index)
         {
-            assertTrue(NetworkTrainer.an.getAverageMetric().get(index).getAverageGroupSize() == NetworkTester.an.getAverageMetric().get(index)
-                                                                                                                .getAverageGroupSize());
-            assertTrue(NetworkTrainer.an.getAverageMetric().get(index).getAverageBoundingBoxSize() == NetworkTester.an.getAverageMetric().get(index)
-                                                                                                                      .getAverageBoundingBoxSize());
-            assertTrue(NetworkTrainer.an.getAverageMetric().get(index).getAverageHistogramRedMean() == NetworkTester.an.getAverageMetric().get(index)
-                                                                                                                       .getAverageHistogramRedMean());
-            assertTrue(NetworkTrainer.an.getAverageMetric().get(index).getAverageHistogramGreenMean() == NetworkTester.an.getAverageMetric().get(index)
-                                                                                                                         .getAverageHistogramGreenMean());
-            assertTrue(NetworkTrainer.an.getAverageMetric().get(index).getAverageHistogramBlueMean() == NetworkTester.an.getAverageMetric().get(index)
-                                                                                                                        .getAverageHistogramBlueMean());
+            AverageMetric trainerMetric = NetworkTrainer.an.getAverageMetric().get(index);
+            AverageMetric testerMetric = NetworkTester.an.getAverageMetric().get(index);
+
+            assertTrue(trainerMetric.getAverageGroupSize() == testerMetric.getAverageGroupSize());
+            assertTrue(trainerMetric.getAverageBoundingBoxSize() == testerMetric.getAverageBoundingBoxSize());
+            assertTrue(trainerMetric.getAverageHistogramRedMean() == testerMetric.getAverageHistogramRedMean());
+            assertTrue(trainerMetric.getAverageHistogramGreenMean() == testerMetric.getAverageHistogramGreenMean());
+            assertTrue(trainerMetric.getAverageHistogramBlueMean() == testerMetric.getAverageHistogramBlueMean());
         }
     }
 
@@ -178,18 +140,17 @@ public class ValidatorOneImageContainedTest
     @Test
     public void PatternCalculatedResult()
     {
-        ArrayList<PatternHelper> patternListTrainer = NetworkTrainer.im.updateInternalPattern(NetworkTrainer.im.getAverageMetric(),
-                                                                                              NetworkTrainer.im.getCurator());
-        ArrayList<PatternHelper> patternListTester = NetworkTester.im.updateInternalPattern(NetworkTester.im.getAverageMetric(), NetworkTester.im.getCurator());
+        ArrayList<PatternHelper> pattHelpTrainer = NetworkTrainer.im.updateInternalPattern(NetworkTrainer.im.getAverageMetric(),
+                                                                                           NetworkTrainer.im.getCurator());
+        ArrayList<PatternHelper> pattHelpTester = NetworkTester.im.updateInternalPattern(NetworkTester.im.getAverageMetric(), NetworkTester.im.getCurator());
         int recognized = 0;
 
-        for (int index = 0; index < patternListTrainer.size(); ++index)
+        for (int index = 0; index < pattHelpTrainer.size(); ++index)
         {
-            System.out.println(NetworkTester.an.checkForRecognitionAsString(patternListTrainer.get(index).getPatternList()) + " "
-                               + NetworkTester.an.checkForRecognitionAsString(patternListTester.get(0).getPatternList()));
-            if (NetworkTester.an.checkForRecognitionAsString(patternListTrainer.get(index).getPatternList()).equals(
-                                                                                                                    NetworkTester.an.checkForRecognitionAsString(patternListTester.get(0)
-                                                                                                                                                                                  .getPatternList())))
+            System.out.println(NetworkTrainer.an.checkForRecognitionAsString(pattHelpTrainer.get(index).getPatternList()) + " "
+                               + NetworkTester.an.checkForRecognitionAsString(pattHelpTester.get(0).getPatternList()));
+            if (NetworkTester.an.checkForRecognitionAsString(pattHelpTrainer.get(index).getPatternList())
+                                .equals(NetworkTester.an.checkForRecognitionAsString(pattHelpTester.get(0).getPatternList())))
             {
                 ++recognized;
             }
