@@ -49,7 +49,7 @@ public class ContextTest extends NeodymiumTest
     {
         // test that NeodymiumCucumberRunListener clears the context before each run
         Result result = JUnitCore.runClasses(CucumberContextGetsCleared.class);
-        checkPass(result, 2, 0, 0);
+        checkPass(result, 4, 0, 0);
     }
 
     @Test
