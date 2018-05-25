@@ -134,9 +134,9 @@ public class DataUtilsTests
         data.clear();
         data.put("nullValue", null);
         data.put("empty", "");
-        data.put("positiveValue", "3");
-        data.put("negativeValue", "-3");
-        data.put("zeroValue", "0");
+        data.put("positiveValue", "3.3f");
+        data.put("negativeValue", "-3.3");
+        data.put("zeroValue", ".0");
 
         // expect IllegalArgumentException
         expectIAE(() -> {
@@ -156,8 +156,8 @@ public class DataUtilsTests
             DataUtils.asFloat("empty");
         });
 
-        Assert.assertEquals(3, DataUtils.asFloat("positiveValue"), 0.000001);
-        Assert.assertEquals(-3, DataUtils.asFloat("negativeValue"), 0.000001);
+        Assert.assertEquals(3.3, DataUtils.asFloat("positiveValue"), 0.000001);
+        Assert.assertEquals(-3.3, DataUtils.asFloat("negativeValue"), 0.000001);
         Assert.assertEquals(0, DataUtils.asFloat("zeroValue"), 0.000001);
 
         Assert.assertEquals(3, DataUtils.asFloat(null, 3), 0.000001);
@@ -173,9 +173,9 @@ public class DataUtilsTests
         data.clear();
         data.put("nullValue", null);
         data.put("empty", "");
-        data.put("positiveValue", "3");
-        data.put("negativeValue", "-3");
-        data.put("zeroValue", "0");
+        data.put("positiveValue", "3.3d");
+        data.put("negativeValue", "-3.3");
+        data.put("zeroValue", ".0");
 
         // expect IllegalArgumentException
         expectIAE(() -> {
@@ -195,8 +195,8 @@ public class DataUtilsTests
             DataUtils.asDouble("empty");
         });
 
-        Assert.assertEquals(3, DataUtils.asDouble("positiveValue"), 0.000001);
-        Assert.assertEquals(-3, DataUtils.asDouble("negativeValue"), 0.000001);
+        Assert.assertEquals(3.3, DataUtils.asDouble("positiveValue"), 0.000001);
+        Assert.assertEquals(-3.3, DataUtils.asDouble("negativeValue"), 0.000001);
         Assert.assertEquals(0, DataUtils.asDouble("zeroValue"), 0.000001);
 
         Assert.assertEquals(3, DataUtils.asDouble(null, 3), 0.000001);
@@ -213,7 +213,7 @@ public class DataUtilsTests
         data.put("nullValue", null);
         data.put("empty", "");
         data.put("positiveValue", "true");
-        data.put("negativeValue", "false");
+        data.put("negativeValue", "FaLsE");
 
         // expect IllegalArgumentException
         expectIAE(() -> {

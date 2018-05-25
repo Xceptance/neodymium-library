@@ -123,7 +123,7 @@ public class DataUtils
      */
     public static int asInt(String key)
     {
-        return Integer.valueOf(asString(key)).intValue();
+        return Integer.parseInt(asString(key));
     }
 
     /**
@@ -158,7 +158,7 @@ public class DataUtils
      */
     public static long asLong(String key)
     {
-        return Long.valueOf(asString(key)).longValue();
+        return Long.parseLong(asString(key));
     }
 
     /**
@@ -193,7 +193,7 @@ public class DataUtils
      */
     public static double asDouble(String key)
     {
-        return Double.valueOf(asString(key)).doubleValue();
+        return Double.parseDouble(asString(key));
     }
 
     /**
@@ -228,7 +228,7 @@ public class DataUtils
      */
     public static float asFloat(String key)
     {
-        return Float.valueOf(asString(key)).floatValue();
+        return Float.parseFloat(asString(key));
     }
 
     /**
@@ -263,7 +263,7 @@ public class DataUtils
      */
     public static boolean asBool(String key)
     {
-        return Boolean.valueOf(asString(key)).booleanValue();
+        return Boolean.parseBoolean(asString(key));
     }
 
     /**
