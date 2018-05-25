@@ -124,6 +124,9 @@ public class BrowserStatement extends StatementBuilder
 
     /**
      * Sets the test instance up.
+     * 
+     * @param browserTag
+     *            name of the browser corresponding to the browser.properties
      */
     public void setUpTest(String browserTag)
     {
