@@ -2,10 +2,15 @@ package com.xceptance.neodymium.tests;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
@@ -15,6 +20,30 @@ import com.xceptance.neodymium.NeodymiumRunner;
 
 public abstract class NeodymiumTest
 {
+
+    // holds files that will be deleted in @After method
+    static List<File> tempFiles = new LinkedList<>();
+
+    @AfterClass
+    public static void cleanUp()
+    {
+        for (File f : tempFiles)
+        {
+            if (f.exists())
+            {
+                try
+                {
+                    Files.delete(f.toPath());
+                }
+                catch (Exception e)
+                {
+                    System.out.println(MessageFormat.format("couldn''t delete temporary file: ''{0}'' caused by {1}", f.getAbsolutePath(),
+                                                            e));
+                }
+            }
+        }
+    }
+
     public void check(Result result, boolean expectedSuccessful, int expectedRunCount, int expectedIgnoreCount, int expectedFailCount,
                       String expectedFailureMessage)
     {
@@ -58,7 +87,7 @@ public abstract class NeodymiumTest
 
     public void checkDescription(Class<?> clazz, String[] expectedTestDescription) throws Throwable
     {
-        checkDescription(new NeodymiumRunner(clazz, null).getDescription(), expectedTestDescription);
+        checkDescription(new NeodymiumRunner(clazz).getDescription(), expectedTestDescription);
     }
 
     /**

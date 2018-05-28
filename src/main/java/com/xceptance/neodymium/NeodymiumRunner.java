@@ -1,40 +1,27 @@
 package com.xceptance.neodymium;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
-import org.junit.runner.Runner;
-import org.junit.runner.manipulation.Filter;
-import org.junit.runner.manipulation.Filterable;
-import org.junit.runner.manipulation.NoTestsRemainException;
-import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.JUnit4;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.junit.runners.ParentRunner;
 import org.junit.runners.model.FrameworkMethod;
-import org.junit.runners.model.RunnerBuilder;
-import org.junit.runners.model.TestClass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.runners.model.InitializationError;
+import org.junit.runners.model.Statement;
 
-import com.xceptance.neodymium.NeodymiumDataRunner.NeodymiumDataRunnerRunner;
-import com.xceptance.neodymium.multibrowser.Browser;
+import com.xceptance.neodymium.module.EnhancedMethod;
+import com.xceptance.neodymium.module.StatementBuilder;
+import com.xceptance.neodymium.module.order.DefaultStatementRunOrder;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
+import com.xceptance.neodymium.util.Context;
 
 /**
  * This class executes {@link JUnit4} test classes (aka JUnit Runner) and adds several features to test execution e.g.
@@ -77,454 +64,288 @@ import com.xceptance.neodymium.multibrowser.Browser;
  * 
  * @author m.kaufmann
  */
-public class NeodymiumRunner extends Runner implements Filterable
+public class NeodymiumRunner extends BlockJUnit4ClassRunner
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumRunner.class);
-
-    List<List<Runner>> testRunner = new LinkedList<>();
-
-    private TestClass testClass;
-
-    private Description testDescription;
-
-    private MethodExecutionContext methodExecutionContext;
-
-    public NeodymiumRunner(Class<?> testKlass, RunnerBuilder rb) throws Throwable
+    public NeodymiumRunner(Class<?> klass) throws InitializationError
     {
-        LOGGER.debug(testKlass.getCanonicalName());
-        List<List<Runner>> vectors = new LinkedList<>();
-        testClass = new TestClass(testKlass);
-        List<Runner> runners = new LinkedList<>();
-        methodExecutionContext = new MethodExecutionContext();
-
-        // find test vectors
-        // scan for Browser and Parameters annotation
-        // later on we could add handler for any annotation that should influence test run
-
-        // lookup Browser annotation
-        Browser browser = testClass.getAnnotation(Browser.class);
-        if (browser != null)
-        {
-            LOGGER.debug("Found browser annotation");
-            runners.add(new NeodymiumBrowserRunner(testKlass));
-        }
-
-        // scan for JUnit Parameters
-        List<FrameworkMethod> parameterMethods = testClass.getAnnotatedMethods(Parameters.class);
-        if (parameterMethods.size() > 0)
-        {
-            LOGGER.debug("Found parameters annotation");
-            setFinalStatic(Parameterized.class.getDeclaredField("DEFAULT_FACTORY"),
-                           new NeodymiumParameterRunnerFactory(methodExecutionContext));
-            runners.add(new Parameterized(testKlass));
-        }
-
-        try
-        {
-            runners.add(new NeodymiumDataRunner(testClass, methodExecutionContext));
-        }
-        catch (IllegalArgumentException e)
-        {
-            // no test data found, proceed
-        }
-
-        // collect children of ParentRunner sub classes
-        doMagic(runners, vectors);
-
-        // create method runners that actually execute the methods annotated with @Test
-        List<Runner> methodVector = new LinkedList<>();
-        List<FrameworkMethod> annotatedMethods = testClass.getAnnotatedMethods(Test.class);
-        if (annotatedMethods.size() > 0)
-        {
-            LOGGER.debug("Found methods to run");
-        }
-        else
-        {
-            LOGGER.debug("No test methods found");
-            throw new Exception("No runnable methods");
-        }
-
-        for (FrameworkMethod method : annotatedMethods)
-        {
-            NeodymiumMethodRunner methodRunner = new NeodymiumMethodRunner(testKlass, method, methodExecutionContext);
-            LOGGER.debug("\t" + methodRunner.getDescription().getDisplayName());
-            methodVector.add(methodRunner);
-        }
-        vectors.add(methodVector);
-
-        testRunner = buildTestRunnerLists(vectors);
-
-        LOGGER.debug("Build " + testRunner.size() + " test runner");
-
-        testDescription = createTestDescription();
+        super(klass);
     }
 
-    // private List<List<Runner>> regroupTests(List<List<Runner>> testRunner, List<Class<?>> groupsToExecute, boolean
-    // matchAny)
-    // {
-    // Map<FrameworkMethod, Set<Class<?>>> testMethodsWithTestGroups = getTestMethodsWithCategories();
-    //
-    // List<List<Runner>> groupedRunner = new LinkedList<>();
-    //
-    // for (List<Runner> runners : testRunner)
-    // {
-    // FrameworkMethod method = null;
-    // // the last runner in the list should always be an NeodymiumMethodRunner
-    // // get this method
-    // Runner runner = runners.get(runners.size() - 1);
-    // if (runner instanceof NeodymiumMethodRunner)
-    // {
-    // method = ((NeodymiumMethodRunner) runner).getMethod();
-    // }
-    // else
-    // {
-    // throw new RuntimeException("This shouldn't happen");
-    // }
-    //
-    // if (testCategoryMatch(testMethodsWithTestGroups.get(method), groupsToExecute, matchAny))
-    // {
-    // groupedRunner.add(runners);
-    // }
-    // }
-    //
-    // return groupedRunner;
-    // }
-    //
-    // private boolean testCategoryMatch(Set<Class<?>> annotatedGroups, List<Class<?>> groupsToExecute, boolean
-    // matchAny)
-    // {
-    // // if not matchAny then it's matchAll
-    // boolean match;
-    // if (matchAny)
-    // {
-    // match = false;
-    // }
-    // else
-    // {
-    // match = true;
-    // }
-    // for (Class<?> annotatedGroup : annotatedGroups)
-    // {
-    // boolean executionGroupsContainsAnnotatedGroup = groupsToExecute.contains(annotatedGroup);
-    // if (matchAny)
-    // {
-    // match |= executionGroupsContainsAnnotatedGroup;
-    // }
-    // else
-    // {
-    // match &= executionGroupsContainsAnnotatedGroup;
-    // }
-    // }
-    //
-    // return match;
-    // }
-    //
-    // private Map<FrameworkMethod, Set<Class<?>>> getTestMethodsWithCategories()
-    // {
-    // Map<FrameworkMethod, Set<Class<?>>> testMethods = new HashMap<>();
-    //
-    // Category classCategory = testClass.getAnnotation(Category.class);
-    // List<Class<?>> classCategories = new ArrayList<>();
-    // if (classCategory != null)
-    // {
-    // classCategories = Arrays.asList(classCategory.value());
-    // }
-    //
-    // // method grouping belongs only to test methods so check that first
-    // for (FrameworkMethod annotatedMethod : testClass.getAnnotatedMethods(Test.class))
-    // {
-    // Category categoryAnnotation = annotatedMethod.getAnnotation(Category.class);
-    //
-    // Set<Class<?>> categories = new HashSet<>();
-    // if (categoryAnnotation != null)
-    // {
-    // categories.addAll(Arrays.asList(categoryAnnotation.value()));
-    // }
-    //
-    // // add categories from class to every method
-    // categories.addAll(classCategories);
-    // // ensure that DefaultGroup is set for all methods that makes it easier afterwards
-    // categories.add(DefaultGroup.class);
-    // categories.remove(null);
-    //
-    // testMethods.put(annotatedMethod, categories);
-    // }
-    //
-    // return testMethods;
-    // }
-
-    private void setFinalStatic(Field field, Object newValue) throws Exception
+    public enum DescriptionMode
     {
-        field.setAccessible(true);
+     flat,
+     tree,
+    };
 
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+    private List<FrameworkMethod> computedTestMethods;
 
-        field.set(null, newValue);
-    }
+    private Map<FrameworkMethod, Description> childDescriptions;
 
-    private Description createTestDescription()
+    private Description globalTestDescription;
+
+    private Object testClassInstance;
+
+    @Override
+    protected Statement methodBlock(FrameworkMethod method)
     {
-        Description description = Description.createSuiteDescription(testClass.getJavaClass());
+        // This will build a default JUnit statement which runs excactly one of the test methods including before/after
+        // methods. This call will also create the test class instance in which this method will be invoked.
+        Statement methodStatement = super.methodBlock(method);
+        // We need this particular test class instance for our own statements but we can not access it from here.
+        // We can get the instance by having createTest overridden, see implementation of createTest in this class as
+        // well as in BlockJUnit4ClassRunner.
 
-        for (List<Runner> runners : testRunner)
+        // At this point our createTest implementation was called and we have the testClassInstance
+
+        if (method instanceof EnhancedMethod)
         {
-            List<String> displayNames = new LinkedList<>();
-            for (Runner runner : runners)
+            EnhancedMethod m = (EnhancedMethod) method;
+            for (int i = m.getBuilder().size() - 1; i >= 0; i--)
             {
-                Description runnerDescription = runner.getDescription();
-                String displayName = "";
-                if (runner instanceof NeodymiumParameterRunner)
-                {
-                    displayName = ((NeodymiumParameterRunner) runner).getName();
-                }
-                else if (runner instanceof BlockJUnit4ClassRunner)
-                {
-                    displayName = runner.getDescription().getDisplayName();
-                }
-                else if (runner instanceof NeodymiumDataRunnerRunner)
-                {
-                    NeodymiumDataRunnerRunner dataRunner = (NeodymiumDataRunnerRunner) runner;
-                    if (dataRunner.hasDataSets())
-                    {
-                        displayName = runnerDescription.getDisplayName();
-                    }
-                    else
-                    {
-                        displayName = null;
-                    }
-                }
-                else
-                {
-                    displayName = runnerDescription.getDisplayName();
-                }
-
-                if (displayName != null)
-                    displayNames.add(displayName);
-            }
-
-            // necessary to preserve JUnit view feature which lead you to the test method on double click the entry
-            // https://github.com/eclipse/eclipse.jdt.ui/blob/0e4ddb8f4fd1d3c22748423acba36397e5f020e7/org.eclipse.jdt.junit/src/org/eclipse/jdt/internal/junit/ui/OpenTestAction.java#L108-L122
-            Collections.reverse(displayNames);
-
-            Set<Annotation> methodCategoryAnnotations = new HashSet<>();
-            List<FrameworkMethod> annotatedMethods = testClass.getAnnotatedMethods();
-            for (FrameworkMethod fm : annotatedMethods)
-            {
-                methodCategoryAnnotations.add(fm.getAnnotation(Category.class));
-            }
-            methodCategoryAnnotations.remove(null);
-
-            Description childDescription = Description.createTestDescription(testClass.getJavaClass(), String.join(" :: ", displayNames),
-                                                                             methodCategoryAnnotations.toArray(new Annotation[0]));
-            description.addChild(childDescription);
-        }
-
-        return description;
-    }
-
-    private List<List<Runner>> buildTestRunnerLists(List<List<Runner>> vectors)
-    {
-
-        List<List<Runner>> runner = new LinkedList<>();
-        runner.add(new LinkedList<>());
-
-        // iterate over all vectors to build the cross product . Last vector should only consist of
-        // method runners
-        for (int i = vectors.size() - 1; i >= 0; i--)
-        {
-            List<List<Runner>> newTestRunners = new LinkedList<>();
-            for (Runner r : vectors.get(i))
-            {
-                List<List<Runner>> testRunnerCopy = deepCopy(runner);
-                for (List<Runner> list : testRunnerCopy)
-                {
-                    list.add(0, r);
-                }
-                newTestRunners.addAll(testRunnerCopy);
-            }
-            // overwrite previous list of runners
-            runner = newTestRunners;
-        }
-
-        return runner;
-    }
-
-    private List<List<Runner>> deepCopy(List<List<Runner>> original)
-    {
-        List<List<Runner>> copy = new LinkedList<>();
-        for (List<Runner> entry : original)
-        {
-            copy.add(new LinkedList<>(entry));
-        }
-
-        return copy;
-    }
-
-    @SuppressWarnings("unchecked")
-    private void doMagic(List<Runner> runners, List<List<Runner>> vectors)
-        throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
-    {
-        // due to the mostly used protected modifier of getChildren method we have to do some magic here
-
-        for (Runner runner : runners)
-        {
-            if (runner instanceof ParentRunner<?>)
-            {
-                Method m = runner.getClass().getDeclaredMethod("getChildren");
-                if (m.getName().equals("getChildren"))
-                {
-                    if (!m.isAccessible())
-                    {
-                        m.setAccessible(true);
-                    }
-                    List<Runner> childs = (List<Runner>) m.invoke(runner);
-                    LOGGER.debug(runner.getClass().getSimpleName() + " added " + childs.size() + " childs");
-
-                    for (Runner r : childs)
-                    {
-                        LOGGER.debug("\t" + r.getDescription().getDisplayName());
-                    }
-
-                    vectors.add(childs);
-                }
-            }
-            else
-            {
-                LOGGER.debug(runner.getClass().getCanonicalName());
-                List<Runner> child = new LinkedList<>();
-                child.add(runner);
-                vectors.add(child);
+                StatementBuilder statementBuilder = m.getBuilder().get(i);
+                Object data = m.getData().get(i);
+                methodStatement = statementBuilder.createStatement(testClassInstance, methodStatement, data);
             }
         }
+        else if (method instanceof FrameworkMethod)
+        {
+            // This could happen if there are plain test methods in the class with no data sets or test data defined.
+            // Also the SuppressDataSets annotation can degrade a method to an FrameworkMethod even if there is some
+            // test data or data sets.
+
+            // It's fine, just make sure super.methodBlock is called with this method and return the resulting statement
+        }
+
+        return methodStatement;
     }
 
     @Override
-    public void run(RunNotifier notifier)
+    protected Object createTest() throws Exception
     {
-        LOGGER.debug("Run " + testRunner.size() + " tests");
-        for (int i = 0; i < testRunner.size(); i++)
+        // Very important code which will be called from super's methodBlock function (see our methodBlock)
+        // The super's call creates the instance of the class to test which will be a new one for each method.
+        // Since we need this particular instance for our own statements we need to save it for us.
+        // Keep in mind that this method will be called for every method that will be returned from computeTestMethods.
+        // So there is not the one and only test class instance. Its one instance per method.
+        this.testClassInstance = super.createTest();
+        return testClassInstance;
+    }
+
+    @Override
+    protected List<FrameworkMethod> computeTestMethods()
+    {
+        // Normally JUnit works with all methods that are annotated with @Test, see super's implementation
+        // But we override this function in order to do all the fancy stuff, like method multiplication and so on.
+        // So we basically start with the list of test methods and add and rearrange new one's to this list and JUnit
+        // will take this list and call us for each entry to create a statement which actually does all the stuff.
+        // Each entry of this list causes a call to methodBlock().
+
+        // Since this method is called at least two times and is somewhat expensive, we cache the result
+        if (computedTestMethods != null)
+            return computedTestMethods;
+
+        // That list will contain all methods that need to be run for the class
+        List<FrameworkMethod> testMethods = new LinkedList<>();
+
+        // Statement run order defines the order of our own statements that will surround the default JUnit statement
+        // from methodBlock
+        List<Class<? extends StatementBuilder>> statementRunOrder = new DefaultStatementRunOrder().getRunOrder();
+
+        // super.computeTestMethods will return all methods that are annotated with @Test
+        for (FrameworkMethod testAnnotatedMethod : super.computeTestMethods())
         {
-            LOGGER.debug("Run test " + (i + 1) + "/" + testRunner.size());
-            boolean firstIteration = (i == 0) ? true : false;
-            boolean lastIteration = (i == testRunner.size() - 1) ? true : false;
+            // these lists contain all the builders and data that will be responsible for a partiuclar method
+            List<StatementBuilder> builderList = new LinkedList<>();
+            List<List<Object>> builderDataList = new LinkedList<>();
 
-            List<Runner> runners = testRunner.get(i);
-            Description description = testDescription.getChildren().get(Math.min(i, Math.max(0, testDescription.getChildren().size() - 1)));
+            // iterate over statements defined in the order
+            for (Class<? extends StatementBuilder> statementClass : statementRunOrder)
+            {
+                // ask each statement builder if this method should be processed
+                // results in a list of parameters for this statement for method multiplication
+                // e.g. for @Browser("A") the data list will contain "A"
 
-            if (checkIgnored(runners))
-            {
-                LOGGER.debug("Test ignored");
-                notifier.fireTestIgnored(description);
-            }
-            else
-            {
-                Object classInstance;
+                StatementBuilder builder = StatementBuilder.instantiate(statementClass);
+
+                List<Object> iterationData = null;
                 try
                 {
-                    classInstance = testClass.getOnlyConstructor().newInstance();
+                    iterationData = builder.createIterationData(getTestClass(), testAnnotatedMethod);
                 }
-                catch (Exception e)
+                catch (Throwable e)
                 {
                     throw new RuntimeException(e);
                 }
 
-                NeodymiumBrowserRunner browserRunner = null;
-                notifier.fireTestStarted(description);
-                Failure testFailure = null;
-
-                for (int r = 0; r < runners.size(); r++)
+                // Avoid empty entries in the list since its a hassle to deal with
+                if (iterationData != null && !iterationData.isEmpty())
                 {
-                    Runner runner = runners.get(r);
-
-                    if (runner instanceof NeodymiumBrowserRunner)
-                    {
-                        // remember browser runner to close the web driver after test
-                        browserRunner = (NeodymiumBrowserRunner) runner;
-                    }
-
-                    methodExecutionContext.setRunBeforeClass(firstIteration);
-                    methodExecutionContext.setRunAfterClass(lastIteration);
-                    methodExecutionContext.setRunnerDescription(description);
-                    methodExecutionContext.setTestClassInstance(classInstance);
-
-                    LOGGER.debug("Execute runner " + runner.getClass().getSimpleName());
-                    try
-                    {
-                        runner.run(notifier);
-                    }
-                    catch (Throwable e)
-                    {
-                        LOGGER.debug("Test failed", e);
-                        // mark test as failed and try the next one
-                        testFailure = new Failure(description, e);
-                        notifier.fireTestFailure(testFailure);
-                        break;
-                    }
+                    // we save both, the builder instance as well as the "data" to run with
+                    builderList.add(builder);
+                    builderDataList.add(iterationData);
                 }
-                if (testFailure == null)
-                    LOGGER.debug("Test passed");
-
-                if (browserRunner != null)
-                {
-                    browserRunner.teardown();
-                }
-                notifier.fireTestFinished(description);
             }
+
+            // This is the point where multiple test methods are computed for the current processed method.
+            testMethods.addAll(buildCrossProduct(testAnnotatedMethod.getMethod(), builderList, builderDataList));
+        }
+
+        // this list is now final for class execution so make it unmodifiable
+        computedTestMethods = Collections.unmodifiableList(testMethods);
+
+        // compute test descriptions
+        childDescriptions = new HashMap<>();
+        globalTestDescription = createTestDescriptions(computedTestMethods);
+
+        return computedTestMethods;
+    }
+
+    public Description createTestDescriptions(List<FrameworkMethod> methods)
+    {
+        switch (Context.get().configuration.junitViewMode())
+        {
+            case flat:
+                return createFlatTestDescription(methods);
+
+            case tree:
+            default:
+                return createHierarchicalTestDescription(methods);
         }
     }
 
-    private boolean checkIgnored(List<Runner> runners)
+    private Description createHierarchicalTestDescription(List<FrameworkMethod> methods)
     {
-        for (Runner runner : runners)
+        Description hierarchicalDescription = Description.createSuiteDescription(getTestClass().getJavaClass());
+
+        for (FrameworkMethod method : methods)
         {
-            if (runner instanceof NeodymiumMethodRunner)
+            Description currentLevel = hierarchicalDescription;
+            if (method instanceof EnhancedMethod)
             {
-                NeodymiumMethodRunner methodRunner = (NeodymiumMethodRunner) runner;
-                return (methodRunner.getChildren().get(0).getAnnotation(Ignore.class) != null);
+                EnhancedMethod enhancedMethod = (EnhancedMethod) method;
+                List<StatementBuilder> statementBuilder = enhancedMethod.getBuilder();
+                List<Object> builderData = enhancedMethod.getData();
+
+                for (int i = 0; i < statementBuilder.size(); i++)
+                {
+                    StatementBuilder builder = statementBuilder.get(i);
+                    String categoryName = builder.getCategoryName(builderData.get(i));
+
+                    // check if hierarchical description has a child with that description
+                    ArrayList<Description> currentLevelChildren = currentLevel.getChildren();
+                    boolean found = false;
+                    for (Description currentLevelChild : currentLevelChildren)
+                    {
+                        if (categoryName.equals(currentLevelChild.getDisplayName()))
+                        {
+                            found = true;
+                            currentLevel = currentLevelChild;
+                            break;
+                        }
+                    }
+
+                    // create one if it's missing and set the new one as the current level, then dig deeper
+                    if (!found)
+                    {
+                        Description newChild = Description.createSuiteDescription(categoryName);
+                        currentLevel.addChild(newChild);
+                        currentLevel = newChild;
+                    }
+
+                }
+                // finally add the test method to lowest level
+                currentLevel.addChild(describeChild(method));
+            }
+            else
+            {
+                // it's just a default JUnit method, just add it as child
+                hierarchicalDescription.addChild(describeChild(method));
             }
         }
 
-        return false;
+        return hierarchicalDescription;
+    }
+
+    private Description createFlatTestDescription(List<FrameworkMethod> methods)
+    {
+        Description flatDescription = Description.createSuiteDescription(getTestClass().getJavaClass());
+
+        for (FrameworkMethod method : methods)
+        {
+            flatDescription.addChild(describeChild(method));
+        }
+
+        return flatDescription;
+    }
+
+    @Override
+    protected Description describeChild(FrameworkMethod method)
+    {
+        return childDescriptions.computeIfAbsent(method, (m) -> {
+            return Description.createTestDescription(getTestClass().getJavaClass(), m.getName());
+        });
+    }
+
+    @Override
+    protected void runChild(FrameworkMethod method, RunNotifier notifier)
+    {
+        // clear the context before next child run
+        Context.clearThreadContext();
+        super.runChild(method, notifier);
+    }
+
+    private List<FrameworkMethod> buildCrossProduct(Method method, List<StatementBuilder> builderList, List<List<Object>> builderDataList)
+    {
+        List<FrameworkMethod> resultingMethods = new LinkedList<>();
+        recursiveBuildCrossProduct(method, builderList, builderDataList, 0, resultingMethods, null);
+        return resultingMethods;
+    }
+
+    private void recursiveBuildCrossProduct(Method method, List<StatementBuilder> builderList, List<List<Object>> builderDataList,
+                                            int currentIndex, List<FrameworkMethod> resultingMethods, EnhancedMethod actualFrameworkMethod)
+    {
+        if (builderList.isEmpty())
+        {
+            // if there is no enclosing statement involved we handle it as single method call
+            resultingMethods.add(new FrameworkMethod(method));
+        }
+        else
+        {
+            StatementBuilder builder = builderList.get(currentIndex);
+            List<Object> builderData = builderDataList.get(currentIndex);
+
+            for (Object data : builderData)
+            {
+                EnhancedMethod newMethod = new EnhancedMethod(method);
+                if (actualFrameworkMethod != null)
+                {
+                    newMethod.getBuilder().addAll(actualFrameworkMethod.getBuilder());
+                    newMethod.getData().addAll(actualFrameworkMethod.getData());
+                }
+                newMethod.getBuilder().add(builder);
+                newMethod.getData().add(data);
+
+                if (currentIndex < builderList.size() - 1)
+                {
+                    recursiveBuildCrossProduct(method, builderList, builderDataList, currentIndex + 1, resultingMethods, newMethod);
+                }
+                else
+                {
+                    resultingMethods.add(newMethod);
+                }
+            }
+        }
     }
 
     @Override
     public Description getDescription()
     {
-        return testDescription;
+        return globalTestDescription;
     }
 
     @Override
-    public void filter(Filter filter) throws NoTestsRemainException
+    protected String testName(FrameworkMethod method)
     {
-        // this method will be called by surefire and gradle among others
-        // any include/exclude groups defined in maven or gradle build process result in an filter object
-        LOGGER.debug("Filter type: " + filter.getClass());
-        LOGGER.debug("Runner size before filter: " + testRunner.size());
-
-        List<List<Runner>> newTestRunner = new LinkedList<>();
-
-        for (List<Runner> runners : testRunner)
-        {
-            try
-            {
-                NeodymiumMethodRunner runner = (NeodymiumMethodRunner) runners.get(runners.size() - 1);
-                filter.apply(runner);
-                newTestRunner.add(runners);
-            }
-            catch (NoTestsRemainException e)
-            {
-                // doesn't matter
-            }
-        }
-
-        testRunner = newTestRunner;
-
-        // groupsToExecute.add(DefaultGroup.class);
-        // testRunner = regroupTests(testRunner, groupsToExecute, true);
-        testDescription = createTestDescription();
-
-        LOGGER.debug("Runner size after filter: " + testRunner.size());
+        return method.getName();
     }
 }

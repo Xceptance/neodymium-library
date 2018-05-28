@@ -92,6 +92,27 @@ public class DataUtils
     }
 
     /**
+     * Get a test data value as string or default value if it couldn't be found
+     * 
+     * @param key
+     *            Name of test data key
+     * @param defaultValue
+     *            a value that will be returned if the key was not found
+     * @return {@link String} if the key was found else defaultValue
+     */
+    public static String asString(String key, String defaultValue)
+    {
+        try
+        {
+            return asString(key);
+        }
+        catch (IllegalArgumentException e)
+        {
+            return defaultValue;
+        }
+    }
+
+    /**
      * Get a test data value as int
      * 
      * @param key
@@ -102,7 +123,28 @@ public class DataUtils
      */
     public static int asInt(String key)
     {
-        return Integer.valueOf(asString(key)).intValue();
+        return Integer.parseInt(asString(key));
+    }
+
+    /**
+     * Get a test data value as int or default value if it couldn't be found
+     * 
+     * @param key
+     *            Name of test data key
+     * @param defaultValue
+     *            a value that will be returned if the key was not found
+     * @return {@link int} if the key was found else defaultValue
+     */
+    public static int asInt(String key, int defaultValue)
+    {
+        try
+        {
+            return asInt(key);
+        }
+        catch (IllegalArgumentException e)
+        {
+            return defaultValue;
+        }
     }
 
     /**
@@ -116,7 +158,28 @@ public class DataUtils
      */
     public static long asLong(String key)
     {
-        return Long.valueOf(asString(key)).longValue();
+        return Long.parseLong(asString(key));
+    }
+
+    /**
+     * Get a test data value as long or default value if it couldn't be found
+     * 
+     * @param key
+     *            Name of test data key
+     * @param defaultValue
+     *            a value that will be returned if the key was not found
+     * @return {@link long} if the key was found else defaultValue
+     */
+    public static long asLong(String key, long defaultValue)
+    {
+        try
+        {
+            return asLong(key);
+        }
+        catch (IllegalArgumentException e)
+        {
+            return defaultValue;
+        }
     }
 
     /**
@@ -130,7 +193,28 @@ public class DataUtils
      */
     public static double asDouble(String key)
     {
-        return Double.valueOf(asString(key)).doubleValue();
+        return Double.parseDouble(asString(key));
+    }
+
+    /**
+     * Get a test data value as double or default value if it couldn't be found
+     * 
+     * @param key
+     *            Name of test data key
+     * @param defaultValue
+     *            a value that will be returned if the key was not found
+     * @return {@link double} if the key was found else defaultValue
+     */
+    public static double asDouble(String key, double defaultValue)
+    {
+        try
+        {
+            return asDouble(key);
+        }
+        catch (IllegalArgumentException e)
+        {
+            return defaultValue;
+        }
     }
 
     /**
@@ -144,7 +228,28 @@ public class DataUtils
      */
     public static float asFloat(String key)
     {
-        return Float.valueOf(asString(key)).floatValue();
+        return Float.parseFloat(asString(key));
+    }
+
+    /**
+     * Get a test data value as float or default value if it couldn't be found
+     * 
+     * @param key
+     *            Name of test data key
+     * @param defaultValue
+     *            a value that will be returned if the key was not found
+     * @return {@link float} if the key was found else defaultValue
+     */
+    public static float asFloat(String key, float defaultValue)
+    {
+        try
+        {
+            return asFloat(key);
+        }
+        catch (IllegalArgumentException e)
+        {
+            return defaultValue;
+        }
     }
 
     /**
@@ -158,6 +263,27 @@ public class DataUtils
      */
     public static boolean asBool(String key)
     {
-        return Boolean.valueOf(asString(key)).booleanValue();
+        return Boolean.parseBoolean(asString(key));
+    }
+
+    /**
+     * Get a test data value as boolean or default value if it couldn't be found
+     * 
+     * @param key
+     *            Name of test data key
+     * @param defaultValue
+     *            a value that will be returned if the key was not found
+     * @return {@link boolean} if the key was found else defaultValue
+     */
+    public static boolean asBool(String key, boolean defaultValue)
+    {
+        try
+        {
+            return asBool(key);
+        }
+        catch (IllegalArgumentException e)
+        {
+            return defaultValue;
+        }
     }
 }

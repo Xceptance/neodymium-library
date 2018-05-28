@@ -1,5 +1,6 @@
 package com.xceptance.neodymium.tests;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.xceptance.neodymium.testclasses.multiplication.TwoMethods;
@@ -22,9 +23,17 @@ import com.xceptance.neodymium.testclasses.multiplication.parameteranddataset.Tw
 import com.xceptance.neodymium.testclasses.multiplication.parameteranddataset.TwoDataSetsTwoParameterSetsOneMethod;
 import com.xceptance.neodymium.testclasses.multiplication.parameteranddataset.TwoDataSetsTwoParameterSetsTwoMethods;
 import com.xceptance.neodymium.testclasses.multiplication.pkgdata.PackageDataDoNotAffectMethodMultiplication;
+import com.xceptance.neodymium.util.Context;
 
 public class MultiplicationTest extends NeodymiumTest
 {
+
+    @Before
+    public void setJUnitViewModeFlat()
+    {
+        Context.get().configuration.setProperty("junit.viewmode", "flat");
+    }
+
     //////////////////
     // Methods only //
     //////////////////
@@ -72,7 +81,7 @@ public class MultiplicationTest extends NeodymiumTest
         // two methods, package test data do not affect multiplication
         String[] expected = new String[]
             {
-                "first", "second"
+                "first :: TestData", "second :: TestData"
             };
         checkDescription(PackageDataDoNotAffectMethodMultiplication.class, expected);
 

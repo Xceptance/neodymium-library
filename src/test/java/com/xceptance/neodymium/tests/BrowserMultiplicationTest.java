@@ -8,14 +8,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.xceptance.neodymium.multibrowser.configuration.MultibrowserConfiguration;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.testclasses.multiplication.browser.OneBrowserOneMethod;
 import com.xceptance.neodymium.testclasses.multiplication.browser.OneBrowserTwoMethods;
 import com.xceptance.neodymium.testclasses.multiplication.browser.TwoBrowserOneMethod;
 import com.xceptance.neodymium.testclasses.multiplication.browser.TwoBrowserTwoMethods;
+import com.xceptance.neodymium.util.Context;
 
 public class BrowserMultiplicationTest extends NeodymiumTest
 {
@@ -31,7 +33,15 @@ public class BrowserMultiplicationTest extends NeodymiumTest
         tempConfigFile = File.createTempFile("browser", "", new File("./config/"));
         writeMapToPropertiesFile(properties, tempConfigFile);
 
-        MultibrowserConfiguration multibrowserConfiguration = MultibrowserConfiguration.getInstance(tempConfigFile.getPath());
+        // this line is important as we initialize the config from the temporary file we created above
+        MultibrowserConfiguration.clearAllInstances();
+        MultibrowserConfiguration.getInstance(tempConfigFile.getPath());
+    }
+
+    @Before
+    public void setJUnitViewModeFlat()
+    {
+        Context.get().configuration.setProperty("junit.viewmode", "flat");
     }
 
     @AfterClass
@@ -56,7 +66,7 @@ public class BrowserMultiplicationTest extends NeodymiumTest
     {
         String[] expected = new String[]
             {
-                "first :: (first browser)"
+                "first :: Browser first_browser"
             };
         checkDescription(OneBrowserOneMethod.class, expected);
     }
@@ -66,8 +76,8 @@ public class BrowserMultiplicationTest extends NeodymiumTest
     {
         String[] expected = new String[]
             {
-                "first :: (first browser)", //
-                "second :: (first browser)"
+                "first :: Browser first_browser", //
+                "second :: Browser first_browser"
             };
         checkDescription(OneBrowserTwoMethods.class, expected);
     }
@@ -77,8 +87,8 @@ public class BrowserMultiplicationTest extends NeodymiumTest
     {
         String[] expected = new String[]
             {
-                "first :: (first browser)", //
-                "first :: (second browser)"
+                "first :: Browser first_browser", //
+                "first :: Browser second_browser"
             };
         checkDescription(TwoBrowserOneMethod.class, expected);
     }
@@ -88,10 +98,10 @@ public class BrowserMultiplicationTest extends NeodymiumTest
     {
         String[] expected = new String[]
             {
-                "first :: (first browser)", //
-                "first :: (second browser)", //
-                "second :: (first browser)", //
-                "second :: (second browser)"
+                "first :: Browser first_browser", //
+                "first :: Browser second_browser", //
+                "second :: Browser first_browser", //
+                "second :: Browser second_browser"
             };
         checkDescription(TwoBrowserTwoMethods.class, expected);
     }
