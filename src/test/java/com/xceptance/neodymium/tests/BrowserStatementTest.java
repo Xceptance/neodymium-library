@@ -44,6 +44,7 @@ public class BrowserStatementTest extends NeodymiumTest
         properties.put("browserprofile.chrome.name", "Google Chrome");
         properties.put("browserprofile.chrome.browser", "chrome");
         properties.put("browserprofile.chrome.testEnvironment", "local");
+        properties.put("browserprofile.chrome.acceptInsecureCertificates", "true");
 
         properties.put("browserprofile.firefox.name", "Mozilla Firefox");
         properties.put("browserprofile.firefox.browser", "firefox");
@@ -69,9 +70,9 @@ public class BrowserStatementTest extends NeodymiumTest
     {
         // one test method and one browser annotated on class
         String[] expected = new String[]
-            {
-                "first :: Browser chrome"
-            };
+        {
+          "first :: Browser chrome"
+        };
         checkDescription(OneClassBrowserOneMethod.class, expected);
     }
 
@@ -80,9 +81,9 @@ public class BrowserStatementTest extends NeodymiumTest
     {
         //
         String[] expected = new String[]
-            {
-                "first"
-            };
+        {
+          "first"
+        };
         checkDescription(ClassBrowserSuppressed.class, expected);
     }
 
@@ -90,9 +91,9 @@ public class BrowserStatementTest extends NeodymiumTest
     public void testTwoClassBrowserOneMethod() throws Throwable
     {
         String[] expected = new String[]
-            {
-                "first :: Browser chrome", "first :: Browser firefox"
-            };
+        {
+          "first :: Browser chrome", "first :: Browser firefox"
+        };
         checkDescription(TwoClassBrowserOneMethod.class, expected);
     }
 
@@ -101,9 +102,9 @@ public class BrowserStatementTest extends NeodymiumTest
     {
         // two browser annotated on class, both have same value
         String[] expected = new String[]
-            {
-                "first :: Browser chrome"
-            };
+        {
+          "first :: Browser chrome"
+        };
         checkDescription(TwoSameClassBrowserOneMethod.class, expected);
     }
 
@@ -112,9 +113,9 @@ public class BrowserStatementTest extends NeodymiumTest
     {
         // same browser annotated on class and method
         String[] expected = new String[]
-            {
-                "first :: Browser chrome"
-            };
+        {
+          "first :: Browser chrome"
+        };
         checkDescription(ClassAndMethodSameBrowserOneMethod.class, expected);
     }
 
@@ -123,9 +124,9 @@ public class BrowserStatementTest extends NeodymiumTest
     {
         // no browser definition but browser suppressed on class
         String[] expected = new String[]
-            {
-                "first"
-            };
+        {
+          "first"
+        };
         checkDescription(ClassBrowserSuppressedNoBrowserAnnotation.class, expected);
     }
 
@@ -134,9 +135,9 @@ public class BrowserStatementTest extends NeodymiumTest
     {
         // no browser definition but browser suppressed on method
         String[] expected = new String[]
-            {
-                "first"
-            };
+        {
+          "first"
+        };
         checkDescription(MethodBrowserSuppressNoBrowserAnnotation.class, expected);
     }
 
@@ -145,9 +146,9 @@ public class BrowserStatementTest extends NeodymiumTest
     {
         // a browser definition on a method and a suppress browser
         String[] expected = new String[]
-            {
-                "first"
-            };
+        {
+          "first"
+        };
         checkDescription(OneBrowserOneMethodBrowserSuppressed.class, expected);
     }
 
@@ -171,6 +172,7 @@ public class BrowserStatementTest extends NeodymiumTest
         Assert.assertEquals("local", config.getTestEnvironment());
         DesiredCapabilities testCapabilities = config.getCapabilities();
         Assert.assertEquals("chrome", testCapabilities.getBrowserName());
+        Assert.assertEquals(true, testCapabilities.acceptInsecureCerts());
     }
 
     public void checkFirefox(BrowserConfiguration config)

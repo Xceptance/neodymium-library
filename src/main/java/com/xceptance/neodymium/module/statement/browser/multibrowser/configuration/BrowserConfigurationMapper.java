@@ -29,6 +29,8 @@ public class BrowserConfigurationMapper
 
     private static final String PAGE_LOAD_STRATEGY = "pageLoadStrategy";
 
+    private static final String ACCEPT_INSECURE_CERTS = "acceptInsecureCertificates";
+
     private static final String HEADLESS = "headless";
 
     // appium specific propertys
@@ -174,6 +176,11 @@ public class BrowserConfigurationMapper
         String pageLoadStrategy = o.get(PAGE_LOAD_STRATEGY);
         if (!StringUtils.isEmpty(pageLoadStrategy))
             capabilities.setCapability("pageLoadStrategy", pageLoadStrategy);
+
+        // accept insecure certificates
+        String acceptInsecureCerts = o.get(ACCEPT_INSECURE_CERTS);
+        if (!StringUtils.isEmpty(acceptInsecureCerts))
+            capabilities.setAcceptInsecureCerts(Boolean.valueOf(acceptInsecureCerts));
 
         // headless
         String headless = o.get(HEADLESS);
