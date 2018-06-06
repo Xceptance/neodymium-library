@@ -15,6 +15,18 @@ divTag.style.zIndex = 10000;
 
 document.getElementsByTagName('body')[0].appendChild(divTag);
 divTag.innerHTML = '<span><input type="submit" value="next" /></span>'
-		+ '<span><input id="autoIntervalInput" type="text" value="1000" onChange="window.autoInterval=this.value"></span>'
-		+ '<span><input type="range" min="100" max="1000" value="50" class="slider" style="appearance: none;" onChange="document.getElementById(\'autoIntervalInput\').value = this.value"></span>';
-		
+		// + '<span><input type="text" value="1000"
+		// onChange="window.autoInterval=this.value"></span>'
+		+ '<span><label for="autoIntervalInput"></label></span>'
+		+ '<span><input id="autoIntervalInput" type="range" min="100" max="1000" value="50" class="slider" style="appearance: none;" onChange="document.getElementById(\'autoIntervalInput\').value = this.value"></span>';
+
+window.highlightElement = function(selector) {
+	console.log('highlight element: ' + selector);
+	var element = document.querySelector(selector);
+	if (element.offsetParent === null) {
+		console.log('element not visible');
+	} else {
+		element.scrollIntoView(false);
+		element.style.backgroundColor = 'red';
+	}
+}

@@ -1,5 +1,7 @@
 package com.xceptance.neodymium.tests;
 
+import static com.codeborne.selenide.Selenide.*;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -15,6 +17,10 @@ public class DriverJS
     public void test1() throws Exception
     {
         Selenide.open("https://blog.xceptance.com/");
-        Selenide.$("#text-3").exists();
+        // $x("//*[@id=\"text-3\"]").is(visible);
+        $(".entry-title").exists();
+        // $(".entry-title").exists();
+        // Selenide.$(".menu-toggle").exists();
+        // $("head > title").exists();
     }
 }
