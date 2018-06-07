@@ -165,7 +165,7 @@
 		<dependency>
 			<groupId>com.codeborne</groupId>
 			<artifactId>selenide</artifactId>
-			<version>4.10.01</version>
+			<version>4.12.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -208,4 +208,13 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<dependencyManagement>
+	    <dependencies>
+	        <dependency>
+	            <groupId>com.google.guava</groupId>
+	            <artifactId>guava</artifactId>
+	            <version>23.6-jre</version>
+	        </dependency>
+	    </dependencies>
+	</dependencyManagement>
 </project>
