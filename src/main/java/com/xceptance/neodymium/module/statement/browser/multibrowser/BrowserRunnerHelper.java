@@ -278,7 +278,9 @@ public final class BrowserRunnerHelper
                     options.setBinary(pathToBrowser);
                 }
                 options.setHeadless(config.isHeadless());
-                options.addArguments(config.getArguments());
+
+                if (!StringUtils.isEmpty(config.getArguments()))
+                    options.addArguments(config.getArguments());
 
                 return new ChromeDriver(options);
             }
@@ -288,7 +290,8 @@ public final class BrowserRunnerHelper
                 options.setBinary(createFirefoxBinary(driverServerPath.getFirefoxBrowserPath()));
                 options.merge(capabilities);
                 options.setHeadless(config.isHeadless());
-                options.addArguments(config.getArguments());
+                if (!StringUtils.isEmpty(config.getArguments()))
+                    options.addArguments(config.getArguments());
 
                 return new FirefoxDriver(options);
             }
@@ -296,7 +299,8 @@ public final class BrowserRunnerHelper
             {
                 InternetExplorerOptions options = new InternetExplorerOptions();
                 options.merge(capabilities);
-                options.addCommandSwitches(config.getArguments());
+                if (!StringUtils.isEmpty(config.getArguments()))
+                    options.addCommandSwitches(config.getArguments());
 
                 return new InternetExplorerDriver(options);
             }
