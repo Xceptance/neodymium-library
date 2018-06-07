@@ -33,6 +33,8 @@ public class BrowserConfigurationMapper
 
     private static final String HEADLESS = "headless";
 
+    private static final String ARGUMENTS = "arguments";
+
     // appium specific propertys
     private static final String APPIUM_VERSION = "appiumVersion";
 
@@ -186,6 +188,11 @@ public class BrowserConfigurationMapper
         String headless = o.get(HEADLESS);
         if (!StringUtils.isEmpty(headless))
             r.setHeadless(Boolean.valueOf(headless));
+
+        // additional browser arguments
+        String arguments = o.get(ARGUMENTS);
+        if (!StringUtils.isEmpty(arguments))
+            r.setArguments(arguments);
 
         capabilities.setCapability("name", o.get("name"));
         r.setCapabilities(capabilities);
