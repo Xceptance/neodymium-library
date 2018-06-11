@@ -44,9 +44,12 @@ public class BrowserStatementTest extends NeodymiumTest
         properties.put("browserprofile.chrome.name", "Google Chrome");
         properties.put("browserprofile.chrome.browser", "chrome");
         properties.put("browserprofile.chrome.testEnvironment", "local");
+        properties.put("browserprofile.chrome.acceptInsecureCertificates", "true");
+        properties.put("browserprofile.chrome.arguments", "--headless");
 
         properties.put("browserprofile.firefox.name", "Mozilla Firefox");
         properties.put("browserprofile.firefox.browser", "firefox");
+        properties.put("browserprofile.firefox.arguments", "-headless");
 
         File tempConfigFile = File.createTempFile("browser", "", new File("./config/"));
         tempFiles.add(tempConfigFile);
@@ -171,6 +174,8 @@ public class BrowserStatementTest extends NeodymiumTest
         Assert.assertEquals("local", config.getTestEnvironment());
         DesiredCapabilities testCapabilities = config.getCapabilities();
         Assert.assertEquals("chrome", testCapabilities.getBrowserName());
+        Assert.assertEquals(true, testCapabilities.acceptInsecureCerts());
+        Assert.assertEquals("--headless", config.getArguments());
     }
 
     public void checkFirefox(BrowserConfiguration config)
@@ -181,5 +186,6 @@ public class BrowserStatementTest extends NeodymiumTest
         Assert.assertEquals(null, config.getTestEnvironment());
         DesiredCapabilities testCapabilities = config.getCapabilities();
         Assert.assertEquals("firefox", testCapabilities.getBrowserName());
+        Assert.assertEquals("-headless", config.getArguments());
     }
 }

@@ -39,16 +39,6 @@
 	</distributionManagement>
 
 	<build>
-	    <resources>
-            <resource>
-                <!-- copy all none java files from src/test/java to target/test-classes -->
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-                <directory>${project.build.testSourceDirectory}</directory>
-                <targetPath>${project.build.testOutputDirectory}</targetPath>
-            </resource>
-        </resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -165,7 +155,7 @@
 		<dependency>
 			<groupId>com.codeborne</groupId>
 			<artifactId>selenide</artifactId>
-			<version>4.10.01</version>
+			<version>4.12.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -208,4 +198,13 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<dependencyManagement>
+	    <dependencies>
+	        <dependency>
+	            <groupId>com.google.guava</groupId>
+	            <artifactId>guava</artifactId>
+	            <version>23.6-jre</version>
+	        </dependency>
+	    </dependencies>
+	</dependencyManagement>
 </project>

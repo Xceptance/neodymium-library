@@ -23,6 +23,8 @@ public class BrowserConfiguration
 
     private boolean headless;
 
+    private String arguments;
+
     public String getConfigTag()
     {
         return browserTag;
@@ -91,5 +93,15 @@ public class BrowserConfiguration
     public void setHeadless(boolean headless)
     {
         this.headless = headless;
+    }
+
+    public String getArguments()
+    {
+        return arguments;
+    }
+
+    public void setArguments(String arguments)
+    {
+        this.arguments = arguments;
     }
 }
