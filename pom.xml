@@ -39,16 +39,6 @@
 	</distributionManagement>
 
 	<build>
-	    <resources>
-            <resource>
-                <!-- copy all none java files from src/test/java to target/test-classes -->
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-                <directory>${project.build.testSourceDirectory}</directory>
-                <targetPath>${project.build.testOutputDirectory}</targetPath>
-            </resource>
-        </resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
