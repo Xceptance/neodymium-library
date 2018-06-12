@@ -48,7 +48,7 @@ public class BrowserStatement extends StatementBuilder
 
     private List<String> browserDefinitions = new LinkedList<>();
 
-    private MultibrowserConfiguration multibrowserConfiguration = MultibrowserConfiguration.getInstance();
+    private static MultibrowserConfiguration multibrowserConfiguration = MultibrowserConfiguration.getInstance();
 
     private WebDriver webdriver;
 
@@ -338,5 +338,14 @@ public class BrowserStatement extends StatementBuilder
     public String getCategoryName(Object data)
     {
         return getTestName(data);
+    }
+
+    public static List<String> getBrowserTags()
+    {
+        // make a copy of all available browser tags
+        List<String> tags = new LinkedList<>();
+        tags.addAll(multibrowserConfiguration.getBrowserProfiles().keySet());
+
+        return tags;
     }
 }

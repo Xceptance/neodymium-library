@@ -1,5 +1,6 @@
 package com.xceptance.neodymium.util;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import com.xceptance.neodymium.module.statement.browser.BrowserStatement;
@@ -39,5 +40,10 @@ public class Driver
     public static void tearDown(Scenario scenario)
     {
         browserStatement.get().teardown(scenario.isFailed());
+    }
+
+    public static List<String> getBrowserTags()
+    {
+        return BrowserStatement.getBrowserTags();
     }
 }
