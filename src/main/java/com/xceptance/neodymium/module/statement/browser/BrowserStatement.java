@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
-import com.xceptance.neodymium.NeoWebDriverListener;
+import com.xceptance.neodymium.NeodymiumWebDriverListener;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.BrowserRunnerHelper;
@@ -153,7 +153,7 @@ public class BrowserStatement extends StatementBuilder
             {
                 LOGGER.debug("Create new browser instance");
                 webdriver = new EventFiringWebDriver(BrowserRunnerHelper.createWebdriver(browserConfiguration));
-                ((EventFiringWebDriver) webdriver).register(new NeoWebDriverListener());
+                ((EventFiringWebDriver) webdriver).register(new NeodymiumWebDriverListener());
             }
             else
             {
