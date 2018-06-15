@@ -25,7 +25,8 @@ public class Localization
     /**
      * Create our localization setup
      *
-     * @param file the file to load including path
+     * @param file
+     *            the file to load including path
      * @return a new localization object
      */
     public static Localization build(final String file)
@@ -34,23 +35,39 @@ public class Localization
     }
 
     /**
-     * Looks up the key in the localization setup starting full locale
-     * such as en_US first, fallback to language en, fallback to default,
-     * and finally break with an assertion to be on the safe side.
+     * Looks up the key in the localization setup starting full locale such as en_US first, fallback to language en,
+     * fallback to default, and finally break with an assertion to be on the safe side.
      *
-     * @param key the key to look for without the locale
+     * @param key
+     *            the key to look for without the locale
      * @return the found localization or &lt;localization is undefined&gt;
      */
     public String getText(final String key)
     {
+        if (properties == null)
+        {
+            // if properties is not set then the localization yaml file was not found or is empty / invalid
+            throw new RuntimeException("Localization file was not found or is invalid");
+        }
+
         final String localeString = Context.get().configuration.locale();
-        final Locale locale = LocaleUtils.toLocale(Context.get().configuration.locale());
+
+        Locale locale;
+        try
+        {
+            locale = LocaleUtils.toLocale(Context.get().configuration.locale());
+        }
+        catch (IllegalArgumentException e)
+        {
+            // the locale was not found
+            locale = null;
+        }
 
         // en_US
         String result = properties.getProperty(localeString + "." + key);
 
         // en
-        if (result == null)
+        if (result == null && locale != null)
         {
             result = properties.getProperty(locale.getLanguage() + "." + key);
         }
