@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.tests;
+package com.xceptance.neodymium.util;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
@@ -13,25 +13,23 @@ import org.openqa.selenium.WebElement;
 import com.codeborne.selenide.Selenide;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
-import com.xceptance.neodymium.util.Context;
-import com.xceptance.neodymium.util.HighlightAndWait;
 
 @RunWith(NeodymiumRunner.class)
 public class HighlightAndWaitTest
 {
     @Test
     @Browser("Chrome_1024x768")
-    public void test1() throws Exception
+    public void test() throws Exception
     {
         Context.get().configuration.setProperty("implicitWait", "1000");
         Selenide.open("https://blog.xceptance.com/");
-        HighlightAndWait._setUp();
+        HighlightAndWait.setUp();
 
         List<WebElement> list = $("body").findElements(By.cssSelector("#masthead"));
-        HighlightAndWait._highlightElements(list, Context.get().driver);
+        HighlightAndWait.highlightElements(list, Context.get().driver);
         $(".neo-highlight-box").shouldBe(visible);
 
-        HighlightAndWait._resetHighlight();
+        HighlightAndWait.resetHighlight();
         $(".neo-highlight-box").shouldNotBe(visible);
     }
 }

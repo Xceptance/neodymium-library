@@ -27,7 +27,7 @@ public class HighlightAndWait
     {
         if (Context.get().configuration.highlightSelectors())
         {
-            _setUp();
+            setUp();
         }
     }
 
@@ -36,13 +36,13 @@ public class HighlightAndWait
         if (Context.get().configuration.highlightSelectors())
         {
             List<WebElement> foundElements = driver.findElements(by);
-            _highlightElements(foundElements, driver);
+            highlightElements(foundElements, driver);
             implicitWait();
-            _resetHighlight();
+            resetHighlight();
         }
     }
 
-    public static void _setUp()
+    static void setUp()
     {
         if (injectJS.isEmpty())
         {
@@ -61,14 +61,14 @@ public class HighlightAndWait
         Selenide.executeJavaScript(injectJS);
     }
 
-    public static void _highlightElements(List<WebElement> elements, WebDriver driver)
+    static void highlightElements(List<WebElement> elements, WebDriver driver)
     {
         Selenide.executeJavaScript("window.NEO.highlightAllElements(arguments[0], document, " + Context.get().configuration.implicitWait() + ")",
                                    elements, driver.getWindowHandle());
 
     }
 
-    public static void _resetHighlight()
+    static void resetHighlight()
     {
         Selenide.executeJavaScript("window.NEO.resetHighlightElements(document)");
     }
