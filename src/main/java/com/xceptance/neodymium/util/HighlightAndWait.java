@@ -65,7 +65,6 @@ public class HighlightAndWait
     {
         Selenide.executeJavaScript("window.NEO.highlightAllElements(arguments[0], document, " + Context.get().configuration.implicitWait() + ")",
                                    elements, driver.getWindowHandle());
-
     }
 
     static void resetHighlight()
