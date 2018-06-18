@@ -59,6 +59,7 @@
 					<reuseForks>false</reuseForks>
 					<includes>
 						<include>com/xceptance/neodymium/tests/**/*Test.java</include>
+						<include>com/xceptance/neodymium/util/**/*Test.java</include>
 					</includes>
 				</configuration>
 			</plugin>
