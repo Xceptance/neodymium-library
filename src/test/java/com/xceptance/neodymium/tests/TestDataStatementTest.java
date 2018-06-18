@@ -34,6 +34,7 @@ import com.xceptance.neodymium.testclasses.data.pkg.xml.CanReadPackageDataXML;
 import com.xceptance.neodymium.testclasses.data.set.csv.CanReadDataSetCSV;
 import com.xceptance.neodymium.testclasses.data.set.json.CanReadDataSetJson;
 import com.xceptance.neodymium.testclasses.data.set.properties.CanReadDataSetProperties;
+import com.xceptance.neodymium.testclasses.data.set.testid.DuplicateTestId;
 import com.xceptance.neodymium.testclasses.data.set.xml.CanReadDataSetXML;
 import com.xceptance.neodymium.util.Context;
 
@@ -136,6 +137,14 @@ public class TestDataStatementTest extends NeodymiumTest
         // test that data set overrides package test data
         Result result = JUnitCore.runClasses(DataSetOverridesPackageData.class);
         checkPass(result, 1, 0, 0);
+    }
+
+    @Test
+    public void testDuplicateTestId() throws Exception
+    {
+        //
+        Result result = JUnitCore.runClasses(DuplicateTestId.class);
+        checkPass(result, 3, 0, 0);
     }
 
     ///////////////////////
