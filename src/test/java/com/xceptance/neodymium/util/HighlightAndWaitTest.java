@@ -47,7 +47,7 @@ public class HighlightAndWaitTest
     @Test
     public void testWaiting()
     {
-        final long waitingTime = 2000;
+        final long waitingTime = 2500;
         Context.get().configuration.setProperty("implicitWait", Long.toString(waitingTime));
         Context.get().configuration.setProperty("highlightSelectors", "true");
 
