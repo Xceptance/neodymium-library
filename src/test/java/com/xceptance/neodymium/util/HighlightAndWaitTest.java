@@ -27,29 +27,31 @@ public class HighlightAndWaitTest
     {
         Context.get().configuration.setProperty("implicitWait", "1000");
         Selenide.open("https://blog.xceptance.com/");
-        HighlightAndWait.setUp();
+        HighlightAndWait.injectJavaScript();
 
         final List<WebElement> list = $("body").findElements(By.cssSelector("#masthead"));
         HighlightAndWait.highlightElements(list, Context.get().driver);
         $(".neo-highlight-box").shouldBe(visible);
 
-        HighlightAndWait.resetHighlight();
+        HighlightAndWait.resetAllHighlight();
         $(".neo-highlight-box").shouldNot(exist);
 
         final List<WebElement> list2 = $("body").findElements(By.cssSelector("#content article"));
         HighlightAndWait.highlightElements(list2, Context.get().driver);
         $$(".neo-highlight-box").shouldHaveSize(10);
 
-        HighlightAndWait.resetHighlight();
+        HighlightAndWait.resetAllHighlight();
         $(".neo-highlight-box").shouldNot(exist);
     }
 
     @Test
     public void testWaiting()
     {
-        final long waitingTime = 2500;
+        final long waitingTime = 3000;
         Context.get().configuration.setProperty("implicitWait", Long.toString(waitingTime));
         Context.get().configuration.setProperty("highlightSelectors", "true");
+
+        final long estimatedPageLodingTime = 1000;
 
         long beforeAction = 0;
         long afterAction = 0;
@@ -59,7 +61,7 @@ public class HighlightAndWaitTest
         Selenide.open("https://blog.xceptance.com/");
         afterAction = new Date().getTime();
         Assert.assertTrue(waitingTime < afterAction - beforeAction);
-        Assert.assertTrue(afterAction - beforeAction < 2 * waitingTime);
+        Assert.assertTrue(afterAction - beforeAction < 2 * waitingTime + estimatedPageLodingTime);
 
         // one wait due to find
         beforeAction = new Date().getTime();
@@ -80,7 +82,7 @@ public class HighlightAndWaitTest
         $("#text-3 h1").click();
         afterAction = new Date().getTime();
         Assert.assertTrue(2 * waitingTime < afterAction - beforeAction);
-        Assert.assertTrue(afterAction - beforeAction < 3 * waitingTime);
+        Assert.assertTrue(afterAction - beforeAction < 3 * waitingTime + estimatedPageLodingTime);
 
         $("#masthead .search-toggle").click();
 
