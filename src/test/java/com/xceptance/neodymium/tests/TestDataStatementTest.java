@@ -35,6 +35,7 @@ import com.xceptance.neodymium.testclasses.data.set.csv.CanReadDataSetCSV;
 import com.xceptance.neodymium.testclasses.data.set.json.CanReadDataSetJson;
 import com.xceptance.neodymium.testclasses.data.set.properties.CanReadDataSetProperties;
 import com.xceptance.neodymium.testclasses.data.set.testid.DuplicateTestId;
+import com.xceptance.neodymium.testclasses.data.set.testid.SpecialCharacterTestId;
 import com.xceptance.neodymium.testclasses.data.set.xml.CanReadDataSetXML;
 import com.xceptance.neodymium.util.Context;
 
@@ -142,9 +143,18 @@ public class TestDataStatementTest extends NeodymiumTest
     @Test
     public void testDuplicateTestId() throws Exception
     {
-        //
+        // more than one entry with the same "testId"
         Result result = JUnitCore.runClasses(DuplicateTestId.class);
         checkPass(result, 6, 0, 0);
+    }
+
+    @Test
+    public void testSpecialCharacterTestId() throws Throwable
+    {
+        // special characters in testId
+        // parenthesis will be converted to to brackets
+        Result result = JUnitCore.runClasses(SpecialCharacterTestId.class);
+        checkPass(result, 7, 0, 0);
     }
 
     ///////////////////////
