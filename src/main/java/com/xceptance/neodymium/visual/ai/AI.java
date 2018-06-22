@@ -34,6 +34,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import com.xceptance.neodymium.visual.ai.image.FastBitmap;
 import com.xceptance.neodymium.visual.ai.image.PatternHelper;
@@ -367,9 +368,11 @@ public class AI
      */
     private String getBrowserName(final WebDriver webDriver)
     {
-        final Capabilities capabilities = ((RemoteWebDriver) webDriver).getCapabilities();
+        EventFiringWebDriver firingWebDriver = ((EventFiringWebDriver) webDriver);
+        final Capabilities capabilities = ((RemoteWebDriver) firingWebDriver.getWrappedDriver()).getCapabilities();
         final String browserName = capabilities.getBrowserName();
 
+        // final String browserName = Context.get().browserProfileName;
         return browserName == null ? "unknown" : browserName;
     }
 }
