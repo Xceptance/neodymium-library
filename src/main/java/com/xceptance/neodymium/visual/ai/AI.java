@@ -372,6 +372,7 @@ public class AI
         final Capabilities capabilities = ((RemoteWebDriver) firingWebDriver.getWrappedDriver()).getCapabilities();
         final String browserName = capabilities.getBrowserName();
 
+        // TODO: change to browserProfileName in a next dev step since resolution influences the detection anyway
         // final String browserName = Context.get().browserProfileName;
         return browserName == null ? "unknown" : browserName;
     }
