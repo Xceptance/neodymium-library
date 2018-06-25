@@ -12,7 +12,7 @@ if (!window.NEO) {
 
 		function getEffectiveStyle(element, style) {
 			var effectiveStyle = getStyle(element, style);
-			if ("inherit" === effectiveStyle && element.parentNode) {
+			if ('inherit' === effectiveStyle && element.parentNode) {
 				return getEffectiveStyle(element.parentNode, style);
 			}
 			return effectiveStyle;
@@ -68,8 +68,8 @@ if (!window.NEO) {
 		}
 
 		function isDisplayed(element) {
-			var display = getEffectiveStyle(element, "display");
-			if ("none" === display) {
+			var display = getEffectiveStyle(element, 'display');
+			if ('none' === display) {
 				return false;
 			}
 			element = getParentElement(element);
@@ -219,7 +219,7 @@ if (!window.NEO) {
 					return 'hidden';
 				}
 
-				// Check "underflow": if an element is to the left or above the
+				// Check 'underflow': if an element is to the left or above the
 				// container
 				var underflowsX = region.right < containerRect.left;
 				var underflowsY = region.bottom < containerRect.top;
@@ -250,7 +250,7 @@ if (!window.NEO) {
 							: 'scroll';
 				}
 
-				// Check "overflow": if an element is to the right or below a
+				// Check 'overflow': if an element is to the right or below a
 				// container
 				var overflowsX = region.left >= containerRect.left
 						+ containerRect.width;
@@ -377,19 +377,19 @@ if (!window.NEO) {
 			}
 
 			switch (el.nodeName.toUpperCase()) {
-			case "BODY":
+			case 'BODY':
 				return true;
-			case "META":
-			case "SCRIPT":
+			case 'META':
+			case 'SCRIPT':
 				return false;
 
-			case "INPUT":
-				if (el.getAttribute("type") === "hidden") {
+			case 'INPUT':
+				if (el.getAttribute('type') === 'hidden') {
 					return false;
 				}
 				break;
 
-			case "A":
+			case 'A':
 				if (el.childElementCount === 0) {
 					if (/^[ \f\n\r\t\v​\u1680​\u180e\u2000​\u2001\u2002​\u2003\u2004​\u2005\u2006​\u2008​\u2009\u200a​\u2028\u2029​\u205f​\u3000]*$/
 							.test(el.textContent)) {
@@ -398,24 +398,24 @@ if (!window.NEO) {
 				}
 				break;
 
-			case "OPTION":
-			case "OPTGROUP":
+			case 'OPTION':
+			case 'OPTGROUP':
 				while ((el = el.parentNode)) {
 					if (el.nodeType === 1
 							&& el.nodeName.toUpperCase() === 'SELECT') {
 						break;
 					}
 				}
-				return el && this(el);
-			case "BR":
+				return el && isVisible(el);
+			case 'BR':
 				el = getParentElement(el);
 
-				return el && this(el);
+				return el && isVisible(el);
 			default:
 				break;
 			}
 
-			if (/^hidden|collapsed$/.test(getEffectiveStyle(el, "visibility"))
+			if (/^hidden|collapsed$/.test(getEffectiveStyle(el, 'visibility'))
 					|| !isDisplayed(el) || !consumesSpace(el)) {
 				return false;
 			}
@@ -499,15 +499,15 @@ if (!window.NEO) {
 		 *            evenColor the color used for even highlight.
 		 */
 		switchHighlightStyle = function(baseDocument, oddFlag, oddColor, evenColor) {
-			[ "neo-highlight-box", "neo-outline-box" ].forEach(function(className) {
+			[ 'neo-highlight-box', 'neo-outline-box' ].forEach(function(className) {
 				var elements = baseDocument.getElementsByClassName(className);
 				for (var i = 0; i < elements.length; i++) {
-					var style = elements[i].getAttribute("style");
+					var style = elements[i].getAttribute('style');
 					if (oddFlag) {
-						elements[i].setAttribute("style", style.replace(
+						elements[i].setAttribute('style', style.replace(
 								evenColor, oddColor));
 					} else {
-						elements[i].setAttribute("style", style.replace(
+						elements[i].setAttribute('style', style.replace(
 								oddColor, evenColor));
 					}
 				}
@@ -532,16 +532,16 @@ if (!window.NEO) {
 			if (!element) {
 				return;
 			}
-
 			// hightlight owning SELECT element for OPTION or OPTGROUP elements
 			if (/^OPT(ION|GROUP)$/.test(element.nodeName.toUpperCase())) {
-				for (var p = element.parentNode; p;) {
-					if (p.nodeType === 1
-							&& p.nodeName.toUpperCase() === "SELECT") {
-						element = p;
-						break;
-					}
-				}
+//				for (var p = element.parentNode; p;) {
+//					if (p.nodeType === 1
+//							&& p.nodeName.toUpperCase() === 'SELECT') {
+//						element = p;
+//						break;
+//					}
+//				}
+				return;
 			}
 
 			if (index === 0) {
@@ -554,21 +554,21 @@ if (!window.NEO) {
 			// create absolute positioned div element and attach as last child
 			// of
 			// the body
-			var doc = element.ownerDocument, divNode = doc.createElement("div"), parentNode = doc.body, divStyle = "position:absolute; display:block; border-width:1px; border-style:solid; z-index: 9999; opacity: .75; "
-					+ "top: " + pos.y + "px; "
-					+ "left: " + pos.x + "px; "
-					+ "width: "	+ element.offsetWidth + "px; "
-					+ "height: " + element.offsetHeight	+ "px; "
-					+ "background-color: "	+ oddColor + "; " + "border-color: blue;";
+			var doc = element.ownerDocument, divNode = doc.createElement('div'), parentNode = doc.body, divStyle = 'position:absolute; display:block; border-width:1px; border-style:solid; z-index: 9999; opacity: .75; '
+					+ 'top: ' + pos.y + 'px; '
+					+ 'left: ' + pos.x + 'px; '
+					+ 'width: '	+ element.offsetWidth + 'px; '
+					+ 'height: ' + element.offsetHeight	+ 'px; '
+					+ 'background-color: '	+ oddColor + '; ' + 'border-color: blue;';
 
 			if (!!printIndex) {
-				divStyle += " font-size: 0.8em; padding-left: 2px; color: magenta; font-weight: bold;";
+				divStyle += ' font-size: 0.8em; padding-left: 2px; color: magenta; font-weight: bold;';
 				divNode.textContent = String(index + 1);
 			}
 
-			divNode.setAttribute("style", divStyle);
-			hash = hash ? " " + hash : "";
-			divNode.setAttribute("class", "neo-highlight-box" + hash);
+			divNode.setAttribute('style', divStyle);
+			hash = hash ? ' ' + hash : '';
+			divNode.setAttribute('class', 'neo-highlight-box' + hash);
 			parentNode.appendChild(divNode);
 		}
 
@@ -586,11 +586,11 @@ if (!window.NEO) {
 				return;
 			}
 
-			var origBG = getStyle(element, "background-color") || "", origOutline = getStyle(
-					element, "outline")
-					|| "";
-			if (origBG === "transparent") {
-				origBG = "";
+			var origBG = getStyle(element, 'background-color') || '', origOutline = getStyle(
+					element, 'outline')
+					|| '';
+			if (origBG === 'transparent') {
+				origBG = '';
 			}
 
 			element.style.backgroundColor = oddColor;
@@ -598,13 +598,13 @@ if (!window.NEO) {
 
 			element.__origBG = origBG;
 			element.__origOutline = origOutline;
-			element.__origClass = element.getAttribute("class");
+			element.__origClass = element.getAttribute('class');
 
-			var classAtt = element.__origClass || "";
+			var classAtt = element.__origClass || '';
 			if (classAtt.indexOf('neo-outline-box') < 0) {
-				classAtt += " neo-outline-box";
+				classAtt += ' neo-outline-box';
 			}
-			element.setAttribute("class", classAtt);
+			element.setAttribute('class', classAtt);
 		}
 
 		/**
@@ -623,13 +623,12 @@ if (!window.NEO) {
 		 * @return {Array} The highlight interval and clearing timeout.
 		 */
 		this.highlightAllElements = function(elements, baseDocument, duration, oddColor, evenColor) {
-			var _oddColor = oddColor ? oddColor	: "rgb(255, 255, 90)";
-			var _evenColor = evenColor ? evenColor : "rgb(255, 255, 210)";
+			var _oddColor = oddColor ? oddColor	: 'rgb(255, 255, 90)';
+			var _evenColor = evenColor ? evenColor : 'rgb(255, 255, 210)';
 
 			if (elements && elements.length > 0 && baseDocument) {
 				var blinking = duration > 260 ? 250 : duration - 10;
 				var moreThanOnce = elements.length > 1;
-
 				let hash = new Date().getTime();
 				if (blinking > 0) {
 					// now highlight the nodes
@@ -639,11 +638,12 @@ if (!window.NEO) {
 								.toUpperCase())) {
 							outline(elements[i], _oddColor);
 							isOneHighlighted = true;
-						} else if (isVisible(elements[i])) {
+						} else {
+							if (isVisible(elements[i])) {
 							highlightSingleElement(elements[i], i,
 									moreThanOnce, _oddColor, hash);
 							isOneHighlighted = true;
-						}
+						}}
 					}
 
 					if (isOneHighlighted) {
@@ -689,7 +689,7 @@ if (!window.NEO) {
 				window.clearTimeout(timeout);
 			}
 
-			let clazz = hash ? hash : "neo-highlight-box";
+			let clazz = hash ? hash : 'neo-highlight-box';
 			var highlightDivs = baseDocument.getElementsByClassName(clazz);
 
 			while (highlightDivs.length > 0) {
@@ -699,16 +699,16 @@ if (!window.NEO) {
 			}
 
 			var outlines = baseDocument
-					.getElementsByClassName("neo-outline-box");
+					.getElementsByClassName('neo-outline-box');
 			for (var i = 0; i < outlines.length; i++) {
 				var e = outlines[i], origClass = e.__origClass;
 
-				e.style.backgroundColor = e.__origBG || "";
-				e.style.outline = e.__origOutline || "";
+				e.style.backgroundColor = e.__origBG || '';
+				e.style.outline = e.__origOutline || '';
 				if (origClass) {
-					e.setAttribute("class", origClass);
+					e.setAttribute('class', origClass);
 				} else {
-					e.removeAttribute("class");
+					e.removeAttribute('class');
 				}
 				e.__origBG = e.__origOutline = e.__origClass = null;
 			}
