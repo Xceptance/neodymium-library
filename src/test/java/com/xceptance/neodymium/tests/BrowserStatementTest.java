@@ -54,11 +54,11 @@ public class BrowserStatementTest extends NeodymiumTest
 
         properties.put("browserprofile.multiFirefox.name", "Multi Argument Firefox");
         properties.put("browserprofile.multiFirefox.browser", "firefox");
-        properties.put("browserprofile.multiFirefox.arguments", "headless ; width=1024; height=768 ");
+        properties.put("browserprofile.multiFirefox.arguments", "-headless ; -width=1024; -height=768 ");
 
         properties.put("browserprofile.multiChrome.name", "Multi Argument Chrome");
         properties.put("browserprofile.multiChrome.browser", "chrome");
-        properties.put("browserprofile.multiChrome.arguments", " crash-test ; window-position=0,0 ;window-size='1024,768' ");
+        properties.put("browserprofile.multiChrome.arguments", " -crash-test ; -window-position=0,0 ;-window-size=1024,768 ");
 
         File tempConfigFile = File.createTempFile("browser", "", new File("./config/"));
         tempFiles.add(tempConfigFile);
@@ -199,9 +199,9 @@ public class BrowserStatementTest extends NeodymiumTest
         DesiredCapabilities testCapabilities = config.getCapabilities();
         Assert.assertEquals("chrome", testCapabilities.getBrowserName());
         LinkedList<String> list = new LinkedList<>();
-        list.add("crash-test");
-        list.add("window-position=0,0");
-        list.add("window-size='1024,768'");
+        list.add("-crash-test");
+        list.add("-window-position=0,0");
+        list.add("-window-size=1024,768");
         Assert.assertEquals(list, config.getArguments());
     }
 
@@ -226,9 +226,9 @@ public class BrowserStatementTest extends NeodymiumTest
         DesiredCapabilities testCapabilities = config.getCapabilities();
         Assert.assertEquals("firefox", testCapabilities.getBrowserName());
         LinkedList<String> list = new LinkedList<>();
-        list.add("headless");
-        list.add("width=1024");
-        list.add("height=768");
+        list.add("-headless");
+        list.add("-width=1024");
+        list.add("-height=768");
         Assert.assertEquals(list, config.getArguments());
     }
 }
