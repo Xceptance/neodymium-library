@@ -1,4 +1,4 @@
-if (!window.NEO) {
+if (!window.NEODYMIUM) {
 	function NeodymiumInteractor() {
 		function getStyle(element, style) {
 			var value;
@@ -499,7 +499,7 @@ if (!window.NEO) {
 		 *            evenColor the color used for even highlight.
 		 */
 		switchHighlightStyle = function(baseDocument, oddFlag, oddColor, evenColor) {
-			[ 'neo-highlight-box', 'neo-outline-box' ].forEach(function(className) {
+			[ 'neodymium-highlight-box', 'neodymium-outline-box' ].forEach(function(className) {
 				var elements = baseDocument.getElementsByClassName(className);
 				for (var i = 0; i < elements.length; i++) {
 					var style = elements[i].getAttribute('style');
@@ -568,7 +568,7 @@ if (!window.NEO) {
 
 			divNode.setAttribute('style', divStyle);
 			hash = hash ? ' ' + hash : '';
-			divNode.setAttribute('class', 'neo-highlight-box' + hash);
+			divNode.setAttribute('class', 'neodymium-highlight-box' + hash);
 			parentNode.appendChild(divNode);
 		}
 
@@ -601,8 +601,8 @@ if (!window.NEO) {
 			element.__origClass = element.getAttribute('class');
 
 			var classAtt = element.__origClass || '';
-			if (classAtt.indexOf('neo-outline-box') < 0) {
-				classAtt += ' neo-outline-box';
+			if (classAtt.indexOf('neodymium-outline-box') < 0) {
+				classAtt += ' neodymium-outline-box';
 			}
 			element.setAttribute('class', classAtt);
 		}
@@ -689,7 +689,7 @@ if (!window.NEO) {
 				window.clearTimeout(timeout);
 			}
 
-			let clazz = hash ? hash : 'neo-highlight-box';
+			let clazz = hash ? hash : 'neodymium-highlight-box';
 			var highlightDivs = baseDocument.getElementsByClassName(clazz);
 
 			while (highlightDivs.length > 0) {
@@ -699,7 +699,7 @@ if (!window.NEO) {
 			}
 
 			var outlines = baseDocument
-					.getElementsByClassName('neo-outline-box');
+					.getElementsByClassName('neodymium-outline-box');
 			for (var i = 0; i < outlines.length; i++) {
 				var e = outlines[i], origClass = e.__origClass;
 
@@ -715,5 +715,5 @@ if (!window.NEO) {
 		}
 	}
 
-	window.NEO = new NeodymiumInteractor();
+	window.NEODYMIUM = new NeodymiumInteractor();
 }

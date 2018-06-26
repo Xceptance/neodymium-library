@@ -63,14 +63,13 @@ public class HighlightAndWait
 
     static void injectJavaScript()
     {
-        // inject driver.js script and css
         Selenide.executeJavaScript(injectJS);
     }
 
     static void highlightElements(List<WebElement> elements, WebDriver driver)
     {
-        Selenide.executeJavaScript("if(window.NEO){"
-                                   + "window.NEO.highlightAllElements(arguments[0], document, "
+        Selenide.executeJavaScript("if(window.NEODYMIUM){"
+                                   + "window.NEODYMIUM.highlightAllElements(arguments[0], document, "
                                    + Context.get().configuration.implicitWait() + ");"
                                    + "}",
                                    elements, driver.getWindowHandle());
@@ -78,6 +77,6 @@ public class HighlightAndWait
 
     static void resetAllHighlight()
     {
-        Selenide.executeJavaScript("if(window.NEO){window.NEO.resetHighlightElements(document);}");
+        Selenide.executeJavaScript("if(window.NEODYMIUM){window.NEODYMIUM.resetHighlightElements(document);}");
     }
 }

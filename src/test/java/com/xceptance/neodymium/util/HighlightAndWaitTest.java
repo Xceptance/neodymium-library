@@ -31,17 +31,17 @@ public class HighlightAndWaitTest
 
         final List<WebElement> list = $("body").findElements(By.cssSelector("#masthead"));
         HighlightAndWait.highlightElements(list, Context.get().driver);
-        $(".neo-highlight-box").shouldBe(visible);
+        $(".neodymium-highlight-box").shouldBe(visible);
 
         HighlightAndWait.resetAllHighlight();
-        $(".neo-highlight-box").shouldNot(exist);
+        $(".neodymium-highlight-box").shouldNot(exist);
 
         final List<WebElement> list2 = $("body").findElements(By.cssSelector("#content article"));
         HighlightAndWait.highlightElements(list2, Context.get().driver);
-        $$(".neo-highlight-box").shouldHaveSize(10);
+        $$(".neodymium-highlight-box").shouldHaveSize(10);
 
         HighlightAndWait.resetAllHighlight();
-        $(".neo-highlight-box").shouldNot(exist);
+        $(".neodymium-highlight-box").shouldNot(exist);
     }
 
     @Test
