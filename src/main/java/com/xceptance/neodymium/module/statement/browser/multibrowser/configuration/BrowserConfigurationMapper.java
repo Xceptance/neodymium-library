@@ -1,6 +1,9 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser.configuration;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -192,7 +195,16 @@ public class BrowserConfigurationMapper
         // additional browser arguments
         String arguments = o.get(ARGUMENTS);
         if (!StringUtils.isEmpty(arguments))
-            r.setArguments(arguments);
+        {
+            List<String> args = new LinkedList<>();
+
+            // cut off trailing/leading whitespace because the browsers can't handle it
+            for (String arg : Arrays.asList(arguments.split(";")))
+            {
+                args.add(arg.trim());
+            }
+            r.setArguments(args);
+        }
 
         capabilities.setCapability("name", o.get("name"));
         r.setCapabilities(capabilities);
