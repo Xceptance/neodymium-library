@@ -197,9 +197,9 @@ public class BrowserConfigurationMapper
         {
             List<String> args = new LinkedList<>();
 
-            // cut off trailing/leading whitespace because the browsers can't handle it
             for (String arg : arguments.split(";"))
             {
+                // cut off trailing/leading whitespace because the browsers can't handle it
                 args.add(arg.trim());
             }
             r.setArguments(args);
