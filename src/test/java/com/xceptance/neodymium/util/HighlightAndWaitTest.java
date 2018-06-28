@@ -15,6 +15,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 
@@ -123,11 +124,18 @@ public class HighlightAndWaitTest
         Context.get().configuration.setProperty("implicitWait", "1000");
 
         Selenide.open("https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_select");
-        HighlightAndWait.injectJavaScript();
-
         Context.get().driver.switchTo().frame("iframeResult");
 
-        $("body > select").click();
-        $("body > select > option:nth-child(3)").click();
+        SelenideElement body = $("body");
+        body.click();
+
+        final List<WebElement> list = $("body").findElements(By.cssSelector("select"));
+
+        Context.get().configuration.setProperty("highlightSelectors", "false");
+        HighlightAndWait.highlightElements(list, Context.get().driver);
+        $(".neodymium-highlight-box").shouldBe(visible);
+
+        HighlightAndWait.resetAllHighlight();
+        $(".neodymium-highlight-box").shouldNot(exist);
     }
 }
