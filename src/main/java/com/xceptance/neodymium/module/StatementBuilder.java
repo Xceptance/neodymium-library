@@ -37,6 +37,7 @@ public abstract class StatementBuilder extends Statement
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static <T extends Annotation> List<T> getAnnotations(AnnotatedElement object, Class<T> annotationClass)
     {
         List<T> annotations = new LinkedList<>();
@@ -72,6 +73,7 @@ public abstract class StatementBuilder extends Statement
         return annotations;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T extends Annotation> List<T> getDeclaredAnnotations(AnnotatedElement object, Class<T> annotationClass)
     {
         List<T> annotations = new LinkedList<>();
