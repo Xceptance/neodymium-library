@@ -45,6 +45,20 @@ public class HighlightAndWaitTest
     }
 
     @Test
+    public void testHighlightingWithoutImplicitWaitTime()
+    {
+        Selenide.open("https://blog.xceptance.com/");
+        HighlightAndWait.injectJavaScript();
+
+        final List<WebElement> list = $("body").findElements(By.cssSelector("#masthead"));
+        HighlightAndWait.highlightElements(list, Context.get().driver);
+        $(".neodymium-highlight-box").shouldBe(visible);
+
+        HighlightAndWait.resetAllHighlight();
+        $(".neodymium-highlight-box").shouldNot(exist);
+    }
+
+    @Test
     public void testWaiting()
     {
         final long waitingTime = 3000;
@@ -100,5 +114,20 @@ public class HighlightAndWaitTest
         afterAction = new Date().getTime();
         Assert.assertTrue(2 * waitingTime < afterAction - beforeAction);
         Assert.assertTrue(afterAction - beforeAction < 3 * waitingTime);
+    }
+
+    @Test
+    public void testIFrames() throws Exception
+    {
+        Context.get().configuration.setProperty("highlightSelectors", "true");
+        Context.get().configuration.setProperty("implicitWait", "1000");
+
+        Selenide.open("https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_select");
+        HighlightAndWait.injectJavaScript();
+
+        Context.get().driver.switchTo().frame("iframeResult");
+
+        $("body > select").click();
+        $("body > select > option:nth-child(3)").click();
     }
 }

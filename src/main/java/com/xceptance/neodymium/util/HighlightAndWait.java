@@ -68,9 +68,14 @@ public class HighlightAndWait
 
     static void highlightElements(List<WebElement> elements, WebDriver driver)
     {
+        long highlightTime = Context.get().configuration.implicitWait();
+        if (highlightTime <= 0)
+        {
+            highlightTime = 75;
+        }
         Selenide.executeJavaScript("if(window.NEODYMIUM){"
                                    + "window.NEODYMIUM.highlightAllElements(arguments[0], document, "
-                                   + Context.get().configuration.implicitWait() + ");"
+                                   + highlightTime + ");"
                                    + "}",
                                    elements, driver.getWindowHandle());
     }
