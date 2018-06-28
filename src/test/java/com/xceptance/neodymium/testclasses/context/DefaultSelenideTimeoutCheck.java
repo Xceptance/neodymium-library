@@ -11,7 +11,7 @@ import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 
 @RunWith(NeodymiumRunner.class)
-@Browser("headless_chrome")
+@Browser("Chrome_headless")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DefaultSelenideTimeoutCheck
 {

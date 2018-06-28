@@ -1,5 +1,9 @@
 Feature: Set browser via test data fail
 
-  Scenario: Set browsers
-    Given "Chrome_Not_Found" is open
-     Then the browser "Chrome_Not_Found" is setup
+  Scenario Outline: Set browsers
+    Given "<browser>" is open
+     Then the browser "<browser>" is setup
+
+    Examples: 
+      | browser          |
+      | Chrome_Not_Found |
