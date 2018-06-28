@@ -342,4 +342,13 @@ public class BrowserStatement extends StatementBuilder
     {
         return getTestName(data);
     }
+
+    public List<String> getBrowserTags()
+    {
+        // make a copy of all available browser tags
+        List<String> tags = new LinkedList<>();
+        tags.addAll(multibrowserConfiguration.getBrowserProfiles().keySet());
+
+        return tags;
+    }
 }
