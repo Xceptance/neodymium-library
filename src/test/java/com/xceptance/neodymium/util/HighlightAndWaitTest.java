@@ -20,7 +20,7 @@ import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 
 @RunWith(NeodymiumRunner.class)
-@Browser("Chrome_1024x768")
+@Browser("Chrome_headless")
 public class HighlightAndWaitTest
 {
     @Test

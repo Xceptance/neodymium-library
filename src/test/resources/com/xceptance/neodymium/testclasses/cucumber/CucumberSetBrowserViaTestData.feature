@@ -6,4 +6,4 @@ Feature: Set browser via test data
 
     Examples: 
       | browser          |
-      | Chrome_1024x768  |
+      | Chrome_headless  |
