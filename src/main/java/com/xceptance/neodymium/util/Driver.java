@@ -1,6 +1,10 @@
 package com.xceptance.neodymium.util;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Supplier;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.xceptance.neodymium.module.statement.browser.BrowserStatement;
 
@@ -15,12 +19,23 @@ public class Driver
         {
             return new BrowserStatement();
         }
-
     });
 
     public static void setUp(final String browserProfileName)
     {
+        if (browserStatement.get().getBrowserTags().contains(browserProfileName))
+        {
+            browserStatement.get().setUpTest(browserProfileName);
+        }
+        else
+        {
+            throw new RuntimeException("Could not find any tag that matches a browser tag");
+        }
+    }
 
+    public static void setUpWithBrowserTag(Scenario scenario)
+    {
+        String browserProfileName = getFirstMatchingBrowserTag(scenario);
         browserStatement.get().setUpTest(browserProfileName);
     }
 
@@ -40,4 +55,37 @@ public class Driver
     {
         browserStatement.get().teardown(scenario.isFailed());
     }
+
+    static String getFirstMatchingBrowserTag(Scenario scenario)
+    {
+        Collection<String> scenarioTags = scenario.getSourceTagNames();
+        List<String> browserTags = browserStatement.get().getBrowserTags();
+
+        String firstBrowserTagFound = "";
+        for (String tag : scenarioTags)
+        {
+            String compareString = tag.substring(1);// substring to cut off leading '@'
+            if (browserTags.contains(compareString))
+            {
+                if (StringUtils.isEmpty(firstBrowserTagFound))
+                {
+                    firstBrowserTagFound = compareString;
+                }
+                else
+                {
+                    throw new RuntimeException("Found more than one matching browser tag");
+                }
+            }
+        }
+
+        if (StringUtils.isEmpty(firstBrowserTagFound))
+        {
+            throw new RuntimeException("Could not find any tag that matches a browser tag");
+        }
+        else
+        {
+            return firstBrowserTagFound;
+        }
+    }
+
 }
