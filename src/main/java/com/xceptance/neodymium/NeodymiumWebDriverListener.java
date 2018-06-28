@@ -13,32 +13,24 @@ public class NeodymiumWebDriverListener extends AbstractWebDriverEventListener
     public void afterNavigateTo(String url, WebDriver driver)
     {
         HighlightAndWait.implicitWait();
-        HighlightAndWait.injectHighlightingJs();
-    }
-
-    @Override
-    public void afterSwitchToWindow(String windowName, WebDriver driver)
-    {
-        HighlightAndWait.injectHighlightingJs();
     }
 
     @Override
     public void afterClickOn(WebElement element, WebDriver driver)
     {
         HighlightAndWait.implicitWait();
-        HighlightAndWait.injectHighlightingJs();
     }
 
     @Override
     public void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend)
     {
         HighlightAndWait.implicitWait();
-        HighlightAndWait.injectHighlightingJs();
     }
 
     @Override
     public void beforeFindBy(By by, WebElement element, WebDriver driver)
     {
+        HighlightAndWait.injectHighlightingJs();
         HighlightAndWait.highlightAllElements(by, driver);
     }
 }
