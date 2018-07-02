@@ -39,9 +39,30 @@ public class LocalizationTest extends NeodymiumTest
         bw.newLine();
         bw.write("en:");
         bw.newLine();
-        bw.write("  key1: en");
+        bw.write(" key1: en");
+        bw.newLine();
+        bw.write("fr_FR:");
+        bw.newLine();
+        bw.write(" key1: fr_FR");
         bw.newLine();
         bw.close();
+    }
+
+    @Test
+    public void testDefault() throws Exception
+    {
+        Context.get().configuration.setProperty("locale", "default");
+        String key = "key1";
+        Assert.assertEquals("default", Context.localizedText(key));
+    }
+
+    @Test
+    public void testUnsetLocale() throws Exception
+    {
+        // set locale null and check locale fallback to "default"
+        Context.get().configuration.setProperty("locale", null);
+        String key = "key1";
+        Assert.assertEquals("default", Context.localizedText(key));
     }
 
     @Test
@@ -53,20 +74,20 @@ public class LocalizationTest extends NeodymiumTest
     }
 
     @Test
-    public void testDefault() throws Exception
-    {
-        // set locale null and check locale fallback to "default"
-        Context.get().configuration.setProperty("locale", null);
-        String key = "key1";
-        Assert.assertEquals("default", Context.localizedText(key));
-    }
-
-    @Test
     public void testLanguageFallback() throws Exception
     {
         // we do not have a locale en_CA and expect to fallback to "en"
         Context.get().configuration.setProperty("locale", "en_CA");
         String key = "key1";
         Assert.assertEquals("en", Context.localizedText(key));
+    }
+
+    @Test
+    public void testFallbackToDefault() throws Exception
+    {
+        // we do not have a locale en_CA and expect to fallback to "en"
+        Context.get().configuration.setProperty("locale", "fr_CA");
+        String key = "key1";
+        Assert.assertEquals("default", Context.localizedText(key));
     }
 }
