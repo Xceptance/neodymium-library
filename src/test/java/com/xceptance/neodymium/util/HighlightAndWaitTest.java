@@ -1,11 +1,8 @@
 package com.xceptance.neodymium.util;
 
-import static com.codeborne.selenide.Condition.exist;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selenide.*;
 
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -13,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
@@ -62,59 +60,41 @@ public class HighlightAndWaitTest
     @Test
     public void testWaiting()
     {
-        final long waitingTime = 3500;
+        NeodymiumWebDriverTestListener eventListener = new NeodymiumWebDriverTestListener();
+        ((EventFiringWebDriver) Context.get().driver).register(eventListener);
+
+        final long waitingTime = 500;
 
         Context.get().configuration.setProperty("implicitWait", Long.toString(waitingTime));
         Context.get().configuration.setProperty("highlightSelectors", "true");
 
-        final long estimatedPageLodingTime = 1000;
-
-        long beforeAction = 0;
-        long afterAction = 0;
-
         // one wait due to navigation
-        beforeAction = new Date().getTime();
         Selenide.open("https://blog.xceptance.com/");
-        afterAction = new Date().getTime();
-        Assert.assertTrue(waitingTime < afterAction - beforeAction);
-        Assert.assertTrue(afterAction - beforeAction < 2 * waitingTime + estimatedPageLodingTime);
+        Assert.assertEquals(1, eventListener.impliciteWaitCount);
 
         // one wait due to find
-        beforeAction = new Date().getTime();
         $("body #masthead").should(exist);
-        afterAction = new Date().getTime();
-        Assert.assertTrue(waitingTime < afterAction - beforeAction);
-        Assert.assertTrue(afterAction - beforeAction < 2 * waitingTime);
+        Assert.assertEquals(2, eventListener.impliciteWaitCount);
 
         // two waits due to chain finding
-        beforeAction = new Date().getTime();
         $("body").findElements(By.cssSelector("#content article"));
-        afterAction = new Date().getTime();
-        Assert.assertTrue(2 * waitingTime < afterAction - beforeAction);
-        Assert.assertTrue(afterAction - beforeAction < 3 * waitingTime);
+        Assert.assertEquals(4, eventListener.impliciteWaitCount);
 
         // two waits due to find and click
-        beforeAction = new Date().getTime();
         $("#text-3 h1").click();
-        afterAction = new Date().getTime();
-        Assert.assertTrue(2 * waitingTime < afterAction - beforeAction);
-        Assert.assertTrue(afterAction - beforeAction < 3 * waitingTime + estimatedPageLodingTime);
+        Assert.assertEquals(6, eventListener.impliciteWaitCount);
 
+        // additional two waits due to find and click
         $("#masthead .search-toggle").click();
+        Assert.assertEquals(8, eventListener.impliciteWaitCount);
 
         // three waits due to find and change value (consumes 2 waits)
-        beforeAction = new Date().getTime();
         $("#search-container .search-form input.search-field").val("abc");
-        afterAction = new Date().getTime();
-        Assert.assertTrue(3 * waitingTime < afterAction - beforeAction);
-        Assert.assertTrue(afterAction - beforeAction < 4 * waitingTime);
+        Assert.assertEquals(11, eventListener.impliciteWaitCount);
 
         // two waits due to find and press enter
-        beforeAction = new Date().getTime();
         $("#search-container .search-form input.search-field").pressEnter();
-        afterAction = new Date().getTime();
-        Assert.assertTrue(2 * waitingTime < afterAction - beforeAction);
-        Assert.assertTrue(afterAction - beforeAction < 3 * waitingTime);
+        Assert.assertEquals(13, eventListener.impliciteWaitCount);
     }
 
     @Test
