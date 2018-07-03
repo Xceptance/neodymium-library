@@ -51,13 +51,12 @@
 
     <distributionManagement>
         <repository>
-            <id>xceptance-releases</id>
-            <url>https://lab.xceptance.de/nexus/content/repositories/releases/</url>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
         <snapshotRepository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>xceptance-snapshots</id>
-            <url>https://lab.xceptance.de/nexus/content/repositories/snapshots/</url>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
