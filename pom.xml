@@ -127,7 +127,7 @@
             <id>release-neodymium</id>
             <activation>
                 <property>
-                    <name>release</name>
+                    <name>signArtifacts</name>
                     <value>true</value>
                 </property>
             </activation>
