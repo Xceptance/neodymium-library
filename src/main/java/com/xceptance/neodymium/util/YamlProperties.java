@@ -160,6 +160,13 @@ public class YamlProperties
             final Yaml yaml = new Yaml();
 
             final Map<String, Object> map = yaml.load(reader);
+
+            if (map == null)
+            {
+                // the localization file is empty
+                return null;
+            }
+
             final YamlProperties yamlProperties = new YamlProperties();
             yamlProperties.yamlToJavaProperties(map);
 

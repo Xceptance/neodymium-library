@@ -43,7 +43,7 @@ If you are still impatient, here is the quickest way to get Neodymium added to y
         <url>https://lab.xceptance.de/nexus/content/groups/public</url>
     </repository>
 </repositories>
-...
+
 <dependency>
     <groupId>com.xceptance</groupId>
     <artifactId>neodymium-library</artifactId>

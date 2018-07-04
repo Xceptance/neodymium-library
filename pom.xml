@@ -1,9 +1,32 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.xceptance</groupId>
     <artifactId>neodymium-library</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
+    
+    <name>neodymium-library</name>
+    <url>https://github.com/Xceptance/neodymium-library</url>
+    <description>A test automation library based on common other best practice open source libraries. It adds missing functionalities but does not reinvent the wheel. Just glues stuff together nicely and adds some sprinkles.</description>
+
+    <organization>
+        <name>Xceptance Software Technologies GmbH</name>
+        <url>https://www.xceptance.com</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/Xceptance/neodymium-library.git</connection>
+        <developerConnection>scm:git:ssh://github.com/Xceptance/neodymium-library.git</developerConnection>
+        <url>https://github.com/Xceptance/neodymium-library/tree/master</url>
+    </scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,27 +51,16 @@
 
 	<distributionManagement>
 		<repository>
-			<id>xceptance-releases</id>
-			<url>https://lab.xceptance.de/nexus/content/repositories/releases/</url>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 		<snapshotRepository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>xceptance-snapshots</id>
-			<url>https://lab.xceptance.de/nexus/content/repositories/snapshots/</url>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
 	<build>
-	    <resources>
-            <resource>
-                <!-- copy all none java files from src/test/java to target/test-classes -->
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-                <directory>${project.build.testSourceDirectory}</directory>
-                <targetPath>${project.build.testOutputDirectory}</targetPath>
-            </resource>
-        </resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -68,6 +80,7 @@
 					<reuseForks>false</reuseForks>
 					<includes>
 						<include>com/xceptance/neodymium/tests/**/*Test.java</include>
+                        <include>com/xceptance/neodymium/util/**/*Test.java</include>
 					</includes>
 				</configuration>
 			</plugin>
@@ -107,6 +120,42 @@
 			</plugin>
 		</plugins>
 	</build>
+
+    <profiles>
+        <profile>
+            <id>release-neodymium</id>
+            <activation>
+                <property>
+                    <name>signArtifacts</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <configuration>
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 	<reporting>
 		<plugins>
@@ -162,10 +211,17 @@
 			<version>${allure.version}</version>
 		</dependency>
 
+        <!-- pinned dependency since it was not not available in all life cycle steps anymore -->
 		<dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>25.1-jre</version>
+        </dependency>
+
+        <dependency>
 			<groupId>com.codeborne</groupId>
 			<artifactId>selenide</artifactId>
-			<version>4.10.01</version>
+            <version>4.12.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>

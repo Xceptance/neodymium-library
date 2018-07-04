@@ -1,5 +1,7 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser.configuration;
 
+import java.util.List;
+
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
@@ -22,6 +24,8 @@ public class BrowserConfiguration
     private int browserHeight;
 
     private boolean headless;
+
+    private List<String> arguments;
 
     public String getConfigTag()
     {
@@ -91,5 +95,15 @@ public class BrowserConfiguration
     public void setHeadless(boolean headless)
     {
         this.headless = headless;
+    }
+
+    public List<String> getArguments()
+    {
+        return arguments;
+    }
+
+    public void setArguments(List<String> arguments)
+    {
+        this.arguments = arguments;
     }
 }

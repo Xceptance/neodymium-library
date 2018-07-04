@@ -1,6 +1,8 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser.configuration;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +31,11 @@ public class BrowserConfigurationMapper
 
     private static final String PAGE_LOAD_STRATEGY = "pageLoadStrategy";
 
+    private static final String ACCEPT_INSECURE_CERTS = "acceptInsecureCertificates";
+
     private static final String HEADLESS = "headless";
+
+    private static final String ARGUMENTS = "arguments";
 
     // appium specific propertys
     private static final String APPIUM_VERSION = "appiumVersion";
@@ -175,10 +181,29 @@ public class BrowserConfigurationMapper
         if (!StringUtils.isEmpty(pageLoadStrategy))
             capabilities.setCapability("pageLoadStrategy", pageLoadStrategy);
 
+        // accept insecure certificates
+        String acceptInsecureCerts = o.get(ACCEPT_INSECURE_CERTS);
+        if (!StringUtils.isEmpty(acceptInsecureCerts))
+            capabilities.setAcceptInsecureCerts(Boolean.valueOf(acceptInsecureCerts));
+
         // headless
         String headless = o.get(HEADLESS);
         if (!StringUtils.isEmpty(headless))
             r.setHeadless(Boolean.valueOf(headless));
+
+        // additional browser arguments
+        String arguments = o.get(ARGUMENTS);
+        if (!StringUtils.isEmpty(arguments))
+        {
+            List<String> args = new LinkedList<>();
+
+            for (String arg : arguments.split(";"))
+            {
+                // cut off trailing/leading whitespace because the browsers can't handle it
+                args.add(arg.trim());
+            }
+            r.setArguments(args);
+        }
 
         capabilities.setCapability("name", o.get("name"));
         r.setCapabilities(capabilities);

@@ -17,7 +17,7 @@ public class CucumberContextSteps
     public void beforeTest()
     {
         // setup browser since we set our selenide defaults only if a browser is involved
-        Driver.setUp("headless_chrome");
+        Driver.setUp("Chrome_headless");
     }
 
     @After(order = 100)

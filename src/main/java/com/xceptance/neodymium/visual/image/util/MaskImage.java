@@ -5,8 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 
-import javax.annotation.Nullable;
-
 import com.xceptance.neodymium.visual.image.algorithm.ComparisonAlgorithm;
 
 /**
@@ -27,7 +25,7 @@ public class MaskImage
      * @param maskImage
      *            The mask image, @Nullable: Creates a blank mask image with the dimensions of the reference image
      */
-    public MaskImage(final BufferedImage referenceImage, @Nullable final BufferedImage maskImage)
+    public MaskImage(final BufferedImage referenceImage, final BufferedImage maskImage)
     {
         this.reference = ImageHelper.copyImage(referenceImage);
 

@@ -1,6 +1,6 @@
 package com.xceptance.neodymium.util;
 
-import static org.aeonbits.owner.Config.DisableableFeature.*;
+import static org.aeonbits.owner.Config.DisableableFeature.VARIABLE_EXPANSION;
 
 import org.aeonbits.owner.Config.LoadPolicy;
 import org.aeonbits.owner.Config.LoadType;
@@ -11,11 +11,19 @@ import com.xceptance.neodymium.NeodymiumRunner.DescriptionMode;
 
 @LoadPolicy(LoadType.MERGE)
 @Sources(
-    {
-        "file:config/test.properties", "file:config/credentials.properties"
-    })
+{
+  "file:config/test.properties", "file:config/credentials.properties"
+})
 public interface Configuration extends Mutable
 {
+    @Key("debug.highlight")
+    @DefaultValue("false")
+    public boolean debuggingHighlightSelectedElements();
+
+    @Key("debug.highlight.duration")
+    @DefaultValue("100")
+    public long debuggingHighlightDuration();
+
     // standard timeout for selenide interaction
     @Key("selenide.timeout")
     @DefaultValue("3000")
@@ -58,9 +66,9 @@ public interface Configuration extends Mutable
 
     @Key("url.path")
     @DisableFeature(
-        {
-            VARIABLE_EXPANSION
-        })
+    {
+      VARIABLE_EXPANSION
+    })
     public String rawPath();
 
     @Key("url.site")

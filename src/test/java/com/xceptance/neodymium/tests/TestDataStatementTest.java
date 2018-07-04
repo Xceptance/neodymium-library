@@ -1,7 +1,6 @@
 package com.xceptance.neodymium.tests;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
@@ -33,7 +32,8 @@ import com.xceptance.neodymium.testclasses.data.pkg.properties.CanReadPackageDat
 import com.xceptance.neodymium.testclasses.data.pkg.xml.CanReadPackageDataXML;
 import com.xceptance.neodymium.testclasses.data.set.csv.CanReadDataSetCSV;
 import com.xceptance.neodymium.testclasses.data.set.json.CanReadDataSetJson;
-import com.xceptance.neodymium.testclasses.data.set.properties.CanReadDataSetProperties;
+import com.xceptance.neodymium.testclasses.data.set.testid.DuplicateTestId;
+import com.xceptance.neodymium.testclasses.data.set.testid.SpecialCharacterTestId;
 import com.xceptance.neodymium.testclasses.data.set.xml.CanReadDataSetXML;
 import com.xceptance.neodymium.util.Context;
 
@@ -93,19 +93,6 @@ public class TestDataStatementTest extends NeodymiumTest
         checkPass(result, 1, 0, 0);
     }
 
-    /**
-     * This test is ignored because property files are a fairly bad data set storage. We first need to decide what a
-     * propper <key> layout would be. Maybe property files will be not supported for data sets but yaml instead.
-     */
-    @Test
-    @Ignore
-    public void testCanReadDataSetProperties()
-    {
-        // test data set properties is read
-        Result result = JUnitCore.runClasses(CanReadDataSetProperties.class);
-        checkPass(result, 1, 0, 0);
-    }
-
     @Test
     public void testCanReadDataSetXML()
     {
@@ -136,6 +123,23 @@ public class TestDataStatementTest extends NeodymiumTest
         // test that data set overrides package test data
         Result result = JUnitCore.runClasses(DataSetOverridesPackageData.class);
         checkPass(result, 1, 0, 0);
+    }
+
+    @Test
+    public void testDuplicateTestId() throws Exception
+    {
+        // more than one entry with the same "testId"
+        Result result = JUnitCore.runClasses(DuplicateTestId.class);
+        checkPass(result, 6, 0, 0);
+    }
+
+    @Test
+    public void testSpecialCharacterTestId() throws Throwable
+    {
+        // special characters in testId
+        // parenthesis will be converted to to brackets
+        Result result = JUnitCore.runClasses(SpecialCharacterTestId.class);
+        checkPass(result, 7, 0, 0);
     }
 
     ///////////////////////

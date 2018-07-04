@@ -128,8 +128,8 @@ public final class TestDataUtils
                 finally
                 {
                     // clean up
-                    IOUtils.closeQuietly(input);
-                    IOUtils.closeQuietly(output);
+                    input.close();
+                    output.close();
                     FileUtils.deleteQuietly(batchDataFile);
                 }
             }

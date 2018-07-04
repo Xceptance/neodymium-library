@@ -16,11 +16,13 @@ import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
+import com.xceptance.neodymium.NeodymiumWebDriverListener;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.BrowserRunnerHelper;
@@ -150,7 +152,8 @@ public class BrowserStatement extends StatementBuilder
             if (webdriver == null)
             {
                 LOGGER.debug("Create new browser instance");
-                webdriver = BrowserRunnerHelper.createWebdriver(browserConfiguration);
+                webdriver = new EventFiringWebDriver(BrowserRunnerHelper.createWebdriver(browserConfiguration));
+                ((EventFiringWebDriver) webdriver).register(new NeodymiumWebDriverListener());
             }
             else
             {
@@ -338,5 +341,14 @@ public class BrowserStatement extends StatementBuilder
     public String getCategoryName(Object data)
     {
         return getTestName(data);
+    }
+
+    public List<String> getBrowserTags()
+    {
+        // make a copy of all available browser tags
+        List<String> tags = new LinkedList<>();
+        tags.addAll(multibrowserConfiguration.getBrowserProfiles().keySet());
+
+        return tags;
     }
 }
