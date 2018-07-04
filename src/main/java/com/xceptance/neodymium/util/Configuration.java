@@ -16,13 +16,13 @@ import com.xceptance.neodymium.NeodymiumRunner.DescriptionMode;
 })
 public interface Configuration extends Mutable
 {
-    @Key("implicitWait")
-    @DefaultValue("0")
-    public long implicitWait();
-
-    @Key("highlightSelectors")
+    @Key("debug.highlight")
     @DefaultValue("false")
-    public boolean highlightSelectors();
+    public boolean debuggingHighlightSelectedElements();
+
+    @Key("debug.highlight.duration")
+    @DefaultValue("100")
+    public long debuggingHighlightDuration();
 
     // standard timeout for selenide interaction
     @Key("selenide.timeout")

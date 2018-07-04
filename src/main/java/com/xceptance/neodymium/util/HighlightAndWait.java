@@ -26,17 +26,9 @@ public class HighlightAndWait
         }
     }
 
-    public static void implicitWait()
-    {
-        if (Context.get().configuration.implicitWait() > 0)
-        {
-            Selenide.sleep(Context.get().configuration.implicitWait());
-        }
-    }
-
     public static void injectHighlightingJs()
     {
-        if (Context.get().configuration.highlightSelectors())
+        if (Context.get().configuration.debuggingHighlightSelectedElements())
         {
             injectJavaScript();
         }
@@ -44,18 +36,21 @@ public class HighlightAndWait
 
     public static void highlightAllElements(By by, WebDriver driver)
     {
-        if (Context.get().configuration.highlightSelectors())
+        if (Context.get().configuration.debuggingHighlightSelectedElements())
         {
             List<WebElement> foundElements = driver.findElements(by);
             highlightElements(foundElements, driver);
-            implicitWait();
+            if (Context.get().configuration.debuggingHighlightDuration() > 0)
+            {
+                Selenide.sleep(Context.get().configuration.debuggingHighlightDuration());
+            }
             resetAllHighlight();
         }
     }
 
     public static void resetHighlights()
     {
-        if (Context.get().configuration.highlightSelectors())
+        if (Context.get().configuration.debuggingHighlightSelectedElements())
         {
             resetAllHighlight();
         }
@@ -68,7 +63,7 @@ public class HighlightAndWait
 
     static void highlightElements(List<WebElement> elements, WebDriver driver)
     {
-        long highlightTime = Context.get().configuration.implicitWait();
+        long highlightTime = Context.get().configuration.debuggingHighlightDuration();
         if (highlightTime <= 0)
         {
             highlightTime = 75;

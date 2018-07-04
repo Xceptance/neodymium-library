@@ -1,5 +1,8 @@
 package com.xceptance.neodymium.util;
 
+import java.lang.reflect.Method;
+
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,25 +13,27 @@ public class NeodymiumWebDriverTestListener extends NeodymiumWebDriverListener
 {
     public int impliciteWaitCount = 0;
 
-    @Override
-    public void afterNavigateTo(String url, WebDriver driver)
+    public NeodymiumWebDriverTestListener()
     {
-        super.afterNavigateTo(url, driver);
-        impliciteWaitCount++;
-    }
+        boolean allFound = true;
+        Method[] parentMethods = NeodymiumWebDriverListener.class.getDeclaredMethods();
+        Method[] childMethods = NeodymiumWebDriverTestListener.class.getDeclaredMethods();
 
-    @Override
-    public void afterClickOn(WebElement element, WebDriver driver)
-    {
-        super.afterClickOn(element, driver);
-        impliciteWaitCount++;
-    }
-
-    @Override
-    public void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend)
-    {
-        super.afterChangeValueOf(element, driver, keysToSend);
-        impliciteWaitCount++;
+        for (int i = 0; i < parentMethods.length; i++)
+        {
+            boolean foundMethod = false;
+            for (int j = 0; j < childMethods.length; j++)
+            {
+                if (parentMethods[i].getName().equals(childMethods[j].getName()))
+                {
+                    foundMethod = true;
+                    break;
+                }
+            }
+            allFound &= foundMethod;
+        }
+        Assert.assertEquals("Test classes do not contain the same number of listeners", parentMethods.length, childMethods.length);
+        Assert.assertTrue("Test classes do not contain the same listeners", allFound);
     }
 
     @Override

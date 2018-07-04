@@ -1,7 +1,9 @@
 package com.xceptance.neodymium.util;
 
-import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Condition.exist;
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 
 import java.util.List;
 
@@ -24,7 +26,6 @@ public class HighlightAndWaitTest
     @Test
     public void testHighlighting()
     {
-        Context.get().configuration.setProperty("implicitWait", "1000");
         Selenide.open("https://blog.xceptance.com/");
         HighlightAndWait.injectJavaScript();
 
@@ -63,45 +64,41 @@ public class HighlightAndWaitTest
         NeodymiumWebDriverTestListener eventListener = new NeodymiumWebDriverTestListener();
         ((EventFiringWebDriver) Context.get().driver).register(eventListener);
 
-        final long waitingTime = 500;
-
-        Context.get().configuration.setProperty("implicitWait", Long.toString(waitingTime));
-        Context.get().configuration.setProperty("highlightSelectors", "true");
+        Context.get().configuration.setProperty("debug.highlight", "true");
 
         // one wait due to navigation
         Selenide.open("https://blog.xceptance.com/");
-        Assert.assertEquals(1, eventListener.impliciteWaitCount);
+        Assert.assertEquals(0, eventListener.impliciteWaitCount);
 
         // one wait due to find
         $("body #masthead").should(exist);
-        Assert.assertEquals(2, eventListener.impliciteWaitCount);
+        Assert.assertEquals(1, eventListener.impliciteWaitCount);
 
         // two waits due to chain finding
         $("body").findElements(By.cssSelector("#content article"));
-        Assert.assertEquals(4, eventListener.impliciteWaitCount);
+        Assert.assertEquals(3, eventListener.impliciteWaitCount);
 
         // two waits due to find and click
         $("#text-3 h1").click();
-        Assert.assertEquals(6, eventListener.impliciteWaitCount);
+        Assert.assertEquals(4, eventListener.impliciteWaitCount);
 
         // additional two waits due to find and click
         $("#masthead .search-toggle").click();
-        Assert.assertEquals(8, eventListener.impliciteWaitCount);
+        Assert.assertEquals(5, eventListener.impliciteWaitCount);
 
         // three waits due to find and change value (consumes 2 waits)
         $("#search-container .search-form input.search-field").val("abc");
-        Assert.assertEquals(11, eventListener.impliciteWaitCount);
+        Assert.assertEquals(6, eventListener.impliciteWaitCount);
 
         // two waits due to find and press enter
         $("#search-container .search-form input.search-field").pressEnter();
-        Assert.assertEquals(13, eventListener.impliciteWaitCount);
+        Assert.assertEquals(7, eventListener.impliciteWaitCount);
     }
 
     @Test
     public void testIFrames() throws Exception
     {
-        Context.get().configuration.setProperty("highlightSelectors", "true");
-        Context.get().configuration.setProperty("implicitWait", "1000");
+        Context.get().configuration.setProperty("debug.highlight", "true");
 
         Selenide.open("https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_select");
         Context.get().driver.switchTo().frame("iframeResult");
@@ -111,7 +108,7 @@ public class HighlightAndWaitTest
 
         final List<WebElement> list = $("body").findElements(By.cssSelector("select"));
 
-        Context.get().configuration.setProperty("highlightSelectors", "false");
+        Context.get().configuration.setProperty("debug.highlight", "false");
         HighlightAndWait.highlightElements(list, Context.get().driver);
         $(".neodymium-highlight-box").shouldBe(visible);
 
