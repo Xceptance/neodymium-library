@@ -15,6 +15,21 @@
         <url>https://www.xceptance.com</url>
     </organization>
 
+    <developers>
+        <developer>
+            <name>Marcus Kaufmann</name>
+            <email>neodymium@xceptance.com</email>
+            <organization>Xceptance Software Technologies GmbH</organization>
+            <organizationUrl>https://www.xceptance.com</organizationUrl>
+        </developer>
+        <developer>
+            <name>Marcel Pfotenhauer</name>
+            <email>neodymium@xceptance.com</email>
+            <organization>Xceptance Software Technologies GmbH</organization>
+            <organizationUrl>https://www.xceptance.com</organizationUrl>
+        </developer>
+    </developers>
+
     <licenses>
         <license>
             <name>MIT License</name>
