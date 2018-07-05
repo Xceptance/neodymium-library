@@ -15,6 +15,21 @@
         <url>https://www.xceptance.com</url>
     </organization>
 
+    <developers>
+        <developer>
+            <name>Marcus Kaufmann</name>
+            <email>neodymium@xceptance.com</email>
+            <organization>Xceptance Software Technologies GmbH</organization>
+            <organizationUrl>https://www.xceptance.com</organizationUrl>
+        </developer>
+        <developer>
+            <name>Marcel Pfotenhauer</name>
+            <email>neodymium@xceptance.com</email>
+            <organization>Xceptance Software Technologies GmbH</organization>
+            <organizationUrl>https://www.xceptance.com</organizationUrl>
+        </developer>
+    </developers>
+
     <licenses>
         <license>
             <name>MIT License</name>
@@ -100,7 +115,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -109,14 +124,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <!-- remove pin of commons-lang3 when upgraded to 3.1.0 -->
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.commons</groupId>
-                        <artifactId>commons-lang3</artifactId>
-                        <version>3.7</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>
