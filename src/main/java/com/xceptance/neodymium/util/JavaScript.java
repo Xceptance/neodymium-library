@@ -3,7 +3,7 @@ package com.xceptance.neodymium.util;
 import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Selenide.$;
 
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
@@ -11,8 +11,6 @@ import java.util.function.Function;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
-
-import com.xceptance.neodymium.util.Context;
 
 /**
  * Source: http://www.swtestacademy.com/selenium-wait-javascript-angular-ajax/ With a lot of modifications
@@ -24,22 +22,27 @@ public class JavaScript
     // Wait Until JQuery and JS Ready
     public static void waitForReady()
     {
+        List<Function<WebDriver, Boolean>> conditionsToWaitFor = new LinkedList<Function<WebDriver, Boolean>>();
+
         // Wait for jQuery to load
-        final Function<WebDriver, Boolean> jQueryLoad = driver -> {
+        conditionsToWaitFor.add(driver -> {
             return ((Boolean) ((JavascriptExecutor) driver).executeScript("return !!window.jQuery && window.jQuery.active == 0"));
-        };
+        });
 
         // dom ready
-        final Function<WebDriver, Boolean> readyState = driver -> {
+        conditionsToWaitFor.add(driver -> {
             return ((Boolean) ((JavascriptExecutor) driver).executeScript("return document.readyState == 'complete'"));
-        };
+        });
 
-        // no loading animation
-        final Function<WebDriver, Boolean> loadingAnimation = driver -> {
-            return !$(Context.get().configuration.javascriptLoadingAnimationSelector()).is(exist);
-        };
+        if (Context.get().configuration.javascriptLoadingAnimationSelector() != null)
+        {
+            // no loading animation
+            conditionsToWaitFor.add(driver -> {
+                return !$(Context.get().configuration.javascriptLoadingAnimationSelector()).is(exist);
+            });
+        }
 
-        until(Arrays.asList(loadingAnimation, jQueryLoad, readyState));
+        until(conditionsToWaitFor);
     }
 
     /**
