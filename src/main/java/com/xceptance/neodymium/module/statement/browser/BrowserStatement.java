@@ -173,7 +173,7 @@ public class BrowserStatement extends StatementBuilder
             Context.get().browserProfileName = browserConfiguration.getConfigTag();
 
             // set our default timeout
-            Configuration.timeout = Context.get().configuration.timeout();
+            Configuration.timeout = Context.get().configuration.selenideTimeout();
             Configuration.collectionsTimeout = Configuration.timeout * 2;
         }
         else

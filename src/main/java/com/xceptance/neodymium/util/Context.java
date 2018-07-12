@@ -28,12 +28,12 @@ public class Context
     public String browserProfileName;
 
     // our global configuration
-    public final Configuration configuration;
+    public final NeodymiumConfiguration configuration;
 
-    public final Class<? extends Configuration> clazz;
+    public final Class<? extends NeodymiumConfiguration> clazz;
 
     // localization
-    public final Localization localization;
+    public final NeodymiumLocalization localization;
 
     // our data for anywhere access
     public final Map<String, String> data = new HashMap<>();
@@ -43,7 +43,7 @@ public class Context
      * 
      * @param clazz
      */
-    private Context(final Map<String, String> testDataOfTestCase, Class<? extends Configuration> clazz)
+    private Context(final Map<String, String> testDataOfTestCase, Class<? extends NeodymiumConfiguration> clazz)
     {
         this.data.putAll(testDataOfTestCase);
         this.clazz = clazz;
@@ -55,7 +55,7 @@ public class Context
 
         configuration = ConfigFactory.create(clazz, System.getProperties(), System.getenv(), testData);
 
-        localization = Localization.build(configuration.localizationFile());
+        localization = NeodymiumLocalization.build(configuration.localizationFile());
     }
 
     /**
@@ -63,17 +63,17 @@ public class Context
      * overwritten.
      * 
      * @param clazz
-     *            A {@link Class} extends {@link Configuration} that is used to initialize the {@link Context}
+     *            A {@link Class} extends {@link NeodymiumConfiguration} that is used to initialize the {@link Context}
      * @return the context instance for the current Thread
      */
-    public static Context create(Class<? extends Configuration> clazz)
+    public static Context create(Class<? extends NeodymiumConfiguration> clazz)
     {
         return create(Collections.emptyMap(), clazz);
     }
 
     public static Context create(final Map<String, String> testDataOfTestCase)
     {
-        return create(testDataOfTestCase, Configuration.class);
+        return create(testDataOfTestCase, NeodymiumConfiguration.class);
     }
 
     /**
@@ -85,10 +85,10 @@ public class Context
      *            <a href="https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider">test data</a> that
      *            can be accessed from the test
      * @param clazz
-     *            A {@link Class} extends {@link Configuration} that is used to initialize the {@link Context}
+     *            A {@link Class} extends {@link NeodymiumConfiguration} that is used to initialize the {@link Context}
      * @return {@link Context} that was freshly created or served from cache
      */
-    public static Context create(final Map<String, String> testDataOfTestCase, Class<? extends Configuration> clazz)
+    public static Context create(final Map<String, String> testDataOfTestCase, Class<? extends NeodymiumConfiguration> clazz)
     {
         return CONTEXTS.computeIfAbsent(Thread.currentThread(), (key) -> {
             return new Context(testDataOfTestCase, clazz);
@@ -103,7 +103,7 @@ public class Context
     public static Context get()
     {
         return CONTEXTS.computeIfAbsent(Thread.currentThread(), key -> {
-            return new Context(Collections.emptyMap(), Configuration.class);
+            return new Context(Collections.emptyMap(), NeodymiumConfiguration.class);
         });
     }
 

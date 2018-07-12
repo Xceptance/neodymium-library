@@ -41,7 +41,7 @@ public class BrowserMultiplicationTest extends NeodymiumTest
     @Before
     public void setJUnitViewModeFlat()
     {
-        Context.get().configuration.setProperty("junit.viewmode", "flat");
+        Context.get().configuration.setProperty("neodymium.junit.viewmode", "flat");
     }
 
     @AfterClass
@@ -65,9 +65,9 @@ public class BrowserMultiplicationTest extends NeodymiumTest
     public void testOneBrowserOneMethod() throws Throwable
     {
         String[] expected = new String[]
-            {
-                "first :: Browser first_browser"
-            };
+        {
+          "first :: Browser first_browser"
+        };
         checkDescription(OneBrowserOneMethod.class, expected);
     }
 
@@ -75,10 +75,10 @@ public class BrowserMultiplicationTest extends NeodymiumTest
     public void testOneBrowserTwoMethods() throws Throwable
     {
         String[] expected = new String[]
-            {
-                "first :: Browser first_browser", //
-                "second :: Browser first_browser"
-            };
+        {
+          "first :: Browser first_browser", //
+          "second :: Browser first_browser"
+        };
         checkDescription(OneBrowserTwoMethods.class, expected);
     }
 
@@ -86,10 +86,10 @@ public class BrowserMultiplicationTest extends NeodymiumTest
     public void testTwoBrowserOneMethod() throws Throwable
     {
         String[] expected = new String[]
-            {
-                "first :: Browser first_browser", //
-                "first :: Browser second_browser"
-            };
+        {
+          "first :: Browser first_browser", //
+          "first :: Browser second_browser"
+        };
         checkDescription(TwoBrowserOneMethod.class, expected);
     }
 
@@ -97,12 +97,12 @@ public class BrowserMultiplicationTest extends NeodymiumTest
     public void testTwoBrowserTwoMethods() throws Throwable
     {
         String[] expected = new String[]
-            {
-                "first :: Browser first_browser", //
-                "first :: Browser second_browser", //
-                "second :: Browser first_browser", //
-                "second :: Browser second_browser"
-            };
+        {
+          "first :: Browser first_browser", //
+          "first :: Browser second_browser", //
+          "second :: Browser first_browser", //
+          "second :: Browser second_browser"
+        };
         checkDescription(TwoBrowserTwoMethods.class, expected);
     }
 

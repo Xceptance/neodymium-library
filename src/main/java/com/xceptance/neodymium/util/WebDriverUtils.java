@@ -10,7 +10,7 @@ import com.xceptance.neodymium.module.statement.browser.BrowserStatement;
 
 import cucumber.api.Scenario;
 
-public class Driver
+public class WebDriverUtils
 {
     private static ThreadLocal<BrowserStatement> browserStatement = ThreadLocal.withInitial(new Supplier<BrowserStatement>()
     {

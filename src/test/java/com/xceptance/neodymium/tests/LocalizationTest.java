@@ -26,7 +26,7 @@ public class LocalizationTest extends NeodymiumTest
         tempFiles.add(tempConfigFile);
 
         // set system property to change default localization file to the new created
-        System.setProperty("localization.file", tempConfigFile.getPath());
+        System.setProperty("neodymium.localization.file", tempConfigFile.getPath());
 
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempConfigFile)));
         bw.write("default:");
@@ -51,7 +51,7 @@ public class LocalizationTest extends NeodymiumTest
     @Test
     public void testDefault() throws Exception
     {
-        Context.get().configuration.setProperty("locale", "default");
+        Context.get().configuration.setProperty("neodymium.locale", "default");
         String key = "key1";
         Assert.assertEquals("default", Context.localizedText(key));
     }
@@ -60,7 +60,7 @@ public class LocalizationTest extends NeodymiumTest
     public void testUnsetLocale() throws Exception
     {
         // set locale null and check locale fallback to "default"
-        Context.get().configuration.setProperty("locale", null);
+        Context.get().configuration.setProperty("neodymium.locale", null);
         String key = "key1";
         Assert.assertEquals("default", Context.localizedText(key));
     }
@@ -77,7 +77,7 @@ public class LocalizationTest extends NeodymiumTest
     public void testLanguageFallback() throws Exception
     {
         // we do not have a locale en_CA and expect to fallback to "en"
-        Context.get().configuration.setProperty("locale", "en_CA");
+        Context.get().configuration.setProperty("neodymium.locale", "en_CA");
         String key = "key1";
         Assert.assertEquals("en", Context.localizedText(key));
     }
@@ -86,7 +86,7 @@ public class LocalizationTest extends NeodymiumTest
     public void testFallbackToDefault() throws Exception
     {
         // we do not have a locale en_CA and expect to fallback to "en"
-        Context.get().configuration.setProperty("locale", "fr_CA");
+        Context.get().configuration.setProperty("neodymium.locale", "fr_CA");
         String key = "key1";
         Assert.assertEquals("default", Context.localizedText(key));
     }

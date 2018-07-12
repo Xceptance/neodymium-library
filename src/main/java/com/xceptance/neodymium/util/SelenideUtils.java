@@ -16,16 +16,9 @@ import com.codeborne.selenide.impl.WebElementsCollectionWrapper;
 /**
  * Additional helpers for limits chained lookup in Selenide. Contribute that later back to Selenide if it proves to
  * work, so it can become API or better fully integrated so we don't need that workaround concept.
- * 
- * @author rschwietzke
  */
-public class SelenidePlus
+public class SelenideUtils
 {
-    private SelenidePlus()
-    {
-
-    }
-
     /**
      * Returns an supplier that will return exactly one result if any. It will return an element that is found by
      * parentSelector and has a result for subElementSelector. It does NOT return the subelements, it is meant to be a

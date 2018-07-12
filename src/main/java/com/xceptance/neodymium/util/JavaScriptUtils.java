@@ -17,7 +17,7 @@ import org.openqa.selenium.WebDriver;
  *
  * @author rschwietzke
  */
-public class JavaScript
+public class JavaScriptUtils
 {
     // Wait Until JQuery and JS Ready
     public static void waitForReady()

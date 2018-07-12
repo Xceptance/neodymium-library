@@ -11,12 +11,12 @@ import org.openqa.selenium.WebElement;
 
 import com.codeborne.selenide.Selenide;
 
-public class HighlightAndWait
+public class DebugUtils
 {
     private static final String injectJS;
     static
     {
-        try (InputStream inputStream = HighlightAndWait.class.getResourceAsStream("inject.js"))
+        try (InputStream inputStream = DebugUtils.class.getResourceAsStream("inject.js"))
         {
             injectJS = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
         }

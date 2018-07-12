@@ -34,7 +34,7 @@ public class BrowserStatementTest extends NeodymiumTest
     @Before
     public void setJUnitViewModeFlat()
     {
-        Context.get().configuration.setProperty("junit.viewmode", "flat");
+        Context.get().configuration.setProperty("neodymium.junit.viewmode", "flat");
     }
 
     @BeforeClass

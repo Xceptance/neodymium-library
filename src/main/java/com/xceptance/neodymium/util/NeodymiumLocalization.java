@@ -13,11 +13,11 @@ import org.junit.Assert;
  *
  * @author rschwietzke
  */
-public class Localization
+public class NeodymiumLocalization
 {
     private final Properties properties;
 
-    private Localization(final Properties properties)
+    private NeodymiumLocalization(final Properties properties)
     {
         this.properties = properties;
     }
@@ -29,9 +29,9 @@ public class Localization
      *            the file to load including path
      * @return a new localization object
      */
-    public static Localization build(final String file)
+    public static NeodymiumLocalization build(final String file)
     {
-        return new Localization(YamlProperties.build(new File(file)));
+        return new NeodymiumLocalization(YamlProperties.build(new File(file)));
     }
 
     /**

@@ -16,7 +16,7 @@ import io.qameta.allure.Step;
  *
  * @author rschwietzke
  */
-public class Steps
+public class AllureUtils
 {
     /**
      * Define a step without return value. This is good for complete and encapsulated test steps.
