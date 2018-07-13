@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.statement.testdata.util.TestDataUtils;
-import com.xceptance.neodymium.util.Context;
+import com.xceptance.neodymium.util.Neodymium;
 
 public class TestdataStatement extends StatementBuilder
 {
@@ -63,7 +63,7 @@ public class TestdataStatement extends StatementBuilder
     @Override
     public void evaluate() throws Throwable
     {
-        Context.get().data.putAll(testData);
+        Neodymium.getData().putAll(testData);
         next.evaluate();
     }
 

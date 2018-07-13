@@ -17,7 +17,7 @@ import com.xceptance.neodymium.testclasses.multiplication.browser.OneBrowserOneM
 import com.xceptance.neodymium.testclasses.multiplication.browser.OneBrowserTwoMethods;
 import com.xceptance.neodymium.testclasses.multiplication.browser.TwoBrowserOneMethod;
 import com.xceptance.neodymium.testclasses.multiplication.browser.TwoBrowserTwoMethods;
-import com.xceptance.neodymium.util.Context;
+import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserMultiplicationTest extends NeodymiumTest
 {
@@ -41,7 +41,7 @@ public class BrowserMultiplicationTest extends NeodymiumTest
     @Before
     public void setJUnitViewModeFlat()
     {
-        Context.get().configuration.setProperty("neodymium.junit.viewmode", "flat");
+        Neodymium.configuration().setProperty("neodymium.junit.viewmode", "flat");
     }
 
     @AfterClass

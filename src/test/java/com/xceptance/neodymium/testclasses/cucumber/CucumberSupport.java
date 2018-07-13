@@ -2,7 +2,7 @@ package com.xceptance.neodymium.testclasses.cucumber;
 
 import org.junit.Assert;
 
-import com.xceptance.neodymium.util.Context;
+import com.xceptance.neodymium.util.Neodymium;
 import com.xceptance.neodymium.util.WebDriverUtils;
 
 import cucumber.api.Scenario;
@@ -37,6 +37,6 @@ public class CucumberSupport
     @Given("^the browser \"([^\"]*)\" is setup$")
     public void validateBrowser(String browserProfileName)
     {
-        Assert.assertEquals(browserProfileName, Context.get().browserProfileName);
+        Assert.assertEquals(browserProfileName, Neodymium.getBrowserProfileName());
     }
 }

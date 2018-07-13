@@ -50,12 +50,12 @@ public class NeodymiumLocalization
             throw new RuntimeException("Localization file was not found or is invalid");
         }
 
-        final String localeString = Context.get().configuration.locale();
+        final String localeString = Neodymium.configuration().locale();
 
         Locale locale;
         try
         {
-            locale = LocaleUtils.toLocale(Context.get().configuration.locale());
+            locale = LocaleUtils.toLocale(Neodymium.configuration().locale());
         }
         catch (IllegalArgumentException e)
         {

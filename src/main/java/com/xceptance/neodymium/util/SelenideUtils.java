@@ -111,7 +111,7 @@ public class SelenideUtils
      */
     public static SelenideElement $safe(final Supplier<SelenideElement> code)
     {
-        int retryCounter = Context.get().configuration.staleElementRetryCount();
+        int retryCounter = Neodymium.configuration().staleElementRetryCount();
 
         while (retryCounter >= 0)
         {
@@ -132,7 +132,7 @@ public class SelenideUtils
                 // wait
                 try
                 {
-                    Thread.sleep(Context.get().configuration.staleElementRetryTimeout());
+                    Thread.sleep(Neodymium.configuration().staleElementRetryTimeout());
                 }
                 catch (final InterruptedException e1)
                 {

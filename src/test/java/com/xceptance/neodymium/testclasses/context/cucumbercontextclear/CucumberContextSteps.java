@@ -2,7 +2,7 @@ package com.xceptance.neodymium.testclasses.context.cucumbercontextclear;
 
 import org.junit.Assert;
 
-import com.xceptance.neodymium.util.Context;
+import com.xceptance.neodymium.util.Neodymium;
 import com.xceptance.neodymium.util.NeodymiumConfiguration;
 import com.xceptance.neodymium.util.WebDriverUtils;
 
@@ -29,7 +29,7 @@ public class CucumberContextSteps
     @Given("Change timeout to 4000")
     public void testAndChangeDefaultTimeout()
     {
-        NeodymiumConfiguration configuration = Context.get().configuration;
+        NeodymiumConfiguration configuration = Neodymium.configuration();
         Assert.assertEquals(3000, configuration.selenideTimeout());
 
         configuration.setProperty("neodymium.selenide.timeout", "4000");
@@ -39,7 +39,7 @@ public class CucumberContextSteps
     @Given("Assert timeout of 3000")
     public void testDefaultTimeout()
     {
-        NeodymiumConfiguration configuration = Context.get().configuration;
+        NeodymiumConfiguration configuration = Neodymium.configuration();
         Assert.assertEquals(3000, configuration.selenideTimeout());
     }
 

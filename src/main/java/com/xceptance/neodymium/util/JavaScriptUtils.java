@@ -34,11 +34,11 @@ public class JavaScriptUtils
             return ((Boolean) ((JavascriptExecutor) driver).executeScript("return document.readyState == 'complete'"));
         });
 
-        if (Context.get().configuration.javascriptLoadingAnimationSelector() != null)
+        if (Neodymium.configuration().javascriptLoadingAnimationSelector() != null)
         {
             // no loading animation
             conditionsToWaitFor.add(driver -> {
-                return !$(Context.get().configuration.javascriptLoadingAnimationSelector()).is(exist);
+                return !$(Neodymium.configuration().javascriptLoadingAnimationSelector()).is(exist);
             });
         }
 
@@ -53,7 +53,7 @@ public class JavaScriptUtils
      */
     public static void until(final List<Function<WebDriver, Boolean>> conditions)
     {
-        final long timeout = Context.get().configuration.javaScriptTimeout();
+        final long timeout = Neodymium.configuration().javaScriptTimeout();
         final long start = System.currentTimeMillis();
 
         // keeps track if we have seen a condition at least once being false aka continue
@@ -69,15 +69,15 @@ public class JavaScriptUtils
             {
                 try
                 {
-                    final boolean result = condition.apply(Context.get().driver);
+                    final boolean result = condition.apply(Neodymium.getDriver());
                     if (result)
                     {
-                        if (Context.get().configuration.javaScriptMustHaveBeenActive() && wasActive)
+                        if (Neodymium.configuration().javaScriptMustHaveBeenActive() && wasActive)
                         {
                             endEarly = true;
                             continue;
                         }
-                        else if (Context.get().configuration.javaScriptMustHaveBeenActive() == false)
+                        else if (Neodymium.configuration().javaScriptMustHaveBeenActive() == false)
                         {
                             endEarly = true;
                             continue;
@@ -93,7 +93,7 @@ public class JavaScriptUtils
                     // we might have to limit the exception range
                 }
 
-                sleep(Context.get().configuration.javaScriptPoolInterval());
+                sleep(Neodymium.configuration().javaScriptPoolInterval());
 
                 // time is up?
                 if (System.currentTimeMillis() - start >= timeout)

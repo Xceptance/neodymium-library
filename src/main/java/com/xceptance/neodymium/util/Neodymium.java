@@ -17,36 +17,33 @@ import com.codeborne.selenide.Selenide;
  * 
  * @author m.kaufmann
  */
-public class Context
+public class Neodymium
 {
-    private static final Map<Thread, Context> CONTEXTS = Collections.synchronizedMap(new WeakHashMap<>());
+    private static final Map<Thread, Neodymium> CONTEXTS = Collections.synchronizedMap(new WeakHashMap<>());
 
     // keep our current driver
-    public WebDriver driver;
+    private WebDriver driver;
 
     // keep our current browser profile name
-    public String browserProfileName;
+    private String browserProfileName;
 
     // our global configuration
-    public final NeodymiumConfiguration configuration;
-
-    public final Class<? extends NeodymiumConfiguration> clazz;
+    private final NeodymiumConfiguration configuration;
 
     // localization
-    public final NeodymiumLocalization localization;
+    private final NeodymiumLocalization localization;
 
     // our data for anywhere access
-    public final Map<String, String> data = new HashMap<>();
+    private final Map<String, String> data = new HashMap<>();
 
     /**
      * Constructor
      * 
      * @param clazz
      */
-    private Context(final Map<String, String> testDataOfTestCase, Class<? extends NeodymiumConfiguration> clazz)
+    private Neodymium(final Map<String, String> testDataOfTestCase, Class<? extends NeodymiumConfiguration> clazz)
     {
-        this.data.putAll(testDataOfTestCase);
-        this.clazz = clazz;
+        data.putAll(testDataOfTestCase);
 
         // build our config and use the official caching for that
         // use our test data as properties as well
@@ -63,15 +60,16 @@ public class Context
      * overwritten.
      * 
      * @param clazz
-     *            A {@link Class} extends {@link NeodymiumConfiguration} that is used to initialize the {@link Context}
+     *            A {@link Class} extends {@link NeodymiumConfiguration} that is used to initialize the
+     *            {@link Neodymium}
      * @return the context instance for the current Thread
      */
-    public static Context create(Class<? extends NeodymiumConfiguration> clazz)
+    public static Neodymium create(Class<? extends NeodymiumConfiguration> clazz)
     {
         return create(Collections.emptyMap(), clazz);
     }
 
-    public static Context create(final Map<String, String> testDataOfTestCase)
+    public static Neodymium create(final Map<String, String> testDataOfTestCase)
     {
         return create(testDataOfTestCase, NeodymiumConfiguration.class);
     }
@@ -85,13 +83,14 @@ public class Context
      *            <a href="https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider">test data</a> that
      *            can be accessed from the test
      * @param clazz
-     *            A {@link Class} extends {@link NeodymiumConfiguration} that is used to initialize the {@link Context}
-     * @return {@link Context} that was freshly created or served from cache
+     *            A {@link Class} extends {@link NeodymiumConfiguration} that is used to initialize the
+     *            {@link Neodymium}
+     * @return {@link Neodymium} that was freshly created or served from cache
      */
-    public static Context create(final Map<String, String> testDataOfTestCase, Class<? extends NeodymiumConfiguration> clazz)
+    public static Neodymium create(final Map<String, String> testDataOfTestCase, Class<? extends NeodymiumConfiguration> clazz)
     {
         return CONTEXTS.computeIfAbsent(Thread.currentThread(), (key) -> {
-            return new Context(testDataOfTestCase, clazz);
+            return new Neodymium(testDataOfTestCase, clazz);
         });
     }
 
@@ -100,10 +99,10 @@ public class Context
      * 
      * @return the context instance for the current Thread
      */
-    public static Context get()
+    static Neodymium getContex()
     {
         return CONTEXTS.computeIfAbsent(Thread.currentThread(), key -> {
-            return new Context(Collections.emptyMap(), NeodymiumConfiguration.class);
+            return new Neodymium(Collections.emptyMap(), NeodymiumConfiguration.class);
         });
     }
 
@@ -116,13 +115,67 @@ public class Context
     }
 
     /**
+     * Shortcut for localized text access. Will fail with an assertion if the key cannot be found
+     *
+     * @param key
+     *            key to lookup
+     * @return localized text
+     */
+    public static String localizedText(final String key)
+    {
+        return getContex().localization.getText(key);
+    }
+
+    public static Map<String, String> getData()
+    {
+        return getContex().data;
+    }
+
+    /**
+     * Shortcut for data access. Will fail with an assertion if the key cannot be found
+     *
+     * @param key
+     *            key to lookup
+     * @return value of the data map
+     */
+    public static String dataValue(final String key)
+    {
+        return getData().get(key);
+    }
+
+    public static NeodymiumConfiguration configuration()
+    {
+        return getContex().configuration;
+    }
+
+    public static WebDriver getDriver()
+    {
+        return getContex().driver;
+    }
+
+    public static void setDriver(WebDriver driver)
+    {
+        getContex().driver = driver;
+    }
+
+    public static String getBrowserProfileName()
+    {
+        return getContex().browserProfileName;
+    }
+
+    public static void setBrowserProfileName(String browserProfileName)
+    {
+        getContex().browserProfileName = browserProfileName;
+    }
+
+    /**
      * Current window width and height
      * 
      * @return {@link Dimension} object containing width and height of current window
      */
     public Dimension getWindowSize()
     {
-        return driver.manage().window().getSize();
+        return getDriver().manage().window().getSize();
     }
 
     /**
@@ -165,7 +218,7 @@ public class Context
      * Tablet or large phone
      * 
      * @return boolean value indicating whether it is a tablet device/large phone or not
-     * @see Context
+     * @see Neodymium
      */
     public boolean isTablet()
     {
@@ -177,7 +230,7 @@ public class Context
      * Small desktop aka half window or stuff, can be tablet as well
      * 
      * @return boolean value indicating whether it is a device with small desktop or not
-     * @see Context
+     * @see Neodymium
      */
     public boolean isSmallDesktop()
     {
@@ -189,7 +242,7 @@ public class Context
      * Large desktop resolution?
      * 
      * @return boolean value indicating whether it is a device with small desktop or not
-     * @see Context
+     * @see Neodymium
      */
     public boolean isLargeDesktop()
     {
@@ -200,34 +253,10 @@ public class Context
      * Desktop of any kind?
      * 
      * @return boolean value indicating whether it is a device desktop (neither small nor large) or not
-     * @see Context
+     * @see Neodymium
      */
     public boolean isDesktop()
     {
         return getViewportSize().getWidth() >= configuration.largeDeviceBreakpoint();
-    }
-
-    /**
-     * Shortcut for localized text access. Will fail with an assertion if the key cannot be found
-     *
-     * @param key
-     *            key to lookup
-     * @return localized text
-     */
-    public static String localizedText(final String key)
-    {
-        return get().localization.getText(key);
-    }
-
-    /**
-     * Shortcut for data access. Will fail with an assertion if the key cannot be found
-     *
-     * @param key
-     *            key to lookup
-     * @return value of the data map
-     */
-    public static String dataValue(final String key)
-    {
-        return get().data.get(key);
     }
 }

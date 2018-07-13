@@ -31,14 +31,14 @@ public class DebugUtilsTest
         assertJsSucessfullyInjected();
 
         final List<WebElement> list = $("body").findElements(By.cssSelector("#masthead"));
-        DebugUtils.highlightElements(list, Context.get().driver);
+        DebugUtils.highlightElements(list, Neodymium.getDriver());
         $(".neodymium-highlight-box").shouldBe(visible);
 
         DebugUtils.resetAllHighlight();
         $(".neodymium-highlight-box").shouldNot(exist);
 
         final List<WebElement> list2 = $("body").findElements(By.cssSelector("#content article"));
-        DebugUtils.highlightElements(list2, Context.get().driver);
+        DebugUtils.highlightElements(list2, Neodymium.getDriver());
         $$(".neodymium-highlight-box").shouldHaveSize(10);
 
         DebugUtils.resetAllHighlight();
@@ -53,7 +53,7 @@ public class DebugUtilsTest
         assertJsSucessfullyInjected();
 
         final List<WebElement> list = $("body").findElements(By.cssSelector("#masthead"));
-        DebugUtils.highlightElements(list, Context.get().driver);
+        DebugUtils.highlightElements(list, Neodymium.getDriver());
         $(".neodymium-highlight-box").shouldBe(visible);
 
         DebugUtils.resetAllHighlight();
@@ -64,9 +64,9 @@ public class DebugUtilsTest
     public void testWaiting()
     {
         NeodymiumWebDriverTestListener eventListener = new NeodymiumWebDriverTestListener();
-        ((EventFiringWebDriver) Context.get().driver).register(eventListener);
+        ((EventFiringWebDriver) Neodymium.getDriver()).register(eventListener);
 
-        Context.get().configuration.setProperty("neodymium.debugUtils.highlight", "true");
+        Neodymium.configuration().setProperty("neodymium.debugUtils.highlight", "true");
 
         // one wait due to navigation
         Selenide.open("https://blog.xceptance.com/");
@@ -101,10 +101,10 @@ public class DebugUtilsTest
     @Test
     public void testIFrames() throws Exception
     {
-        Context.get().configuration.setProperty("neodymium.debugUtils.highlight", "true");
+        Neodymium.configuration().setProperty("neodymium.debugUtils.highlight", "true");
 
         Selenide.open("https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_select");
-        Context.get().driver.switchTo().frame("iframeResult");
+        Neodymium.getDriver().switchTo().frame("iframeResult");
 
         SelenideElement body = $("body");
         body.click();
@@ -112,8 +112,8 @@ public class DebugUtilsTest
 
         final List<WebElement> list = $("body").findElements(By.cssSelector("select"));
 
-        Context.get().configuration.setProperty("neodymium.debugUtils.highlight", "false");
-        DebugUtils.highlightElements(list, Context.get().driver);
+        Neodymium.configuration().setProperty("neodymium.debugUtils.highlight", "false");
+        DebugUtils.highlightElements(list, Neodymium.getDriver());
         $(".neodymium-highlight-box").shouldBe(visible);
 
         DebugUtils.resetAllHighlight();

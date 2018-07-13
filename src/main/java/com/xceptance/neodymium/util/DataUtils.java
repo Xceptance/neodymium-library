@@ -21,10 +21,10 @@ public class DataUtils
         final String data = uuid.replaceAll("-", "");
         final StringBuilder sb = new StringBuilder(42);
 
-        sb.append(Context.get().configuration.dataUtilsEmailLocalPrefix());
+        sb.append(Neodymium.configuration().dataUtilsEmailLocalPrefix());
         sb.append(data.concat(data).substring(0, 12));
         sb.append("@");
-        sb.append(Context.get().configuration.dataUtilsEmailDomain());
+        sb.append(Neodymium.configuration().dataUtilsEmailDomain());
 
         return sb.toString().toLowerCase();
     }
@@ -38,15 +38,15 @@ public class DataUtils
     {
         final String upper = new RandomStringGenerator.Builder().selectFrom("abcdefghijklmnopqrstuvwxyz".toUpperCase().toCharArray())
                                                                 .build()
-                                                                .generate(Context.get().configuration.dataUtilsPasswordUppercaseCharAmount());
+                                                                .generate(Neodymium.configuration().dataUtilsPasswordUppercaseCharAmount());
         final String lower = new RandomStringGenerator.Builder().selectFrom("abcdefghijklmnopqrstuvwxyz".toCharArray()).build()
-                                                                .generate(Context.get().configuration.dataUtilsPasswordLowercaseCharAmount());
+                                                                .generate(Neodymium.configuration().dataUtilsPasswordLowercaseCharAmount());
         final String number = new RandomStringGenerator.Builder().selectFrom("0123456789".toCharArray()).build()
-                                                                 .generate(Context.get().configuration.dataUtilsPasswordDigitAmount());
-        final String special = new RandomStringGenerator.Builder().selectFrom(Context.get().configuration.dataUtilsPasswordSpecialChars()
-                                                                                                         .toCharArray())
+                                                                 .generate(Neodymium.configuration().dataUtilsPasswordDigitAmount());
+        final String special = new RandomStringGenerator.Builder().selectFrom(Neodymium.configuration().dataUtilsPasswordSpecialChars()
+                                                                                     .toCharArray())
                                                                   .build()
-                                                                  .generate(Context.get().configuration.dataUtilsPasswordSpecialCharAmount());
+                                                                  .generate(Neodymium.configuration().dataUtilsPasswordSpecialCharAmount());
 
         final char[] all = (upper + lower + number + special).toCharArray();
         ArrayUtils.shuffle(all);
@@ -68,7 +68,7 @@ public class DataUtils
         // just use what we have and ignore if we have more, so we can build up different objects
         // with just the data that fits
         final ObjectMapper m = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return m.convertValue(Context.get().data, clazz);
+        return m.convertValue(Neodymium.getData(), clazz);
     }
 
     /**
@@ -82,7 +82,7 @@ public class DataUtils
      */
     public static String asString(String key)
     {
-        String value = Context.dataValue(key);
+        String value = Neodymium.dataValue(key);
         if (value == null)
         {
             throw new IllegalArgumentException("Test data could not be found for key: " + key);

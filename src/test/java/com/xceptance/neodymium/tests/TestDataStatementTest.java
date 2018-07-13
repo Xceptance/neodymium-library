@@ -35,14 +35,14 @@ import com.xceptance.neodymium.testclasses.data.set.json.CanReadDataSetJson;
 import com.xceptance.neodymium.testclasses.data.set.testid.DuplicateTestId;
 import com.xceptance.neodymium.testclasses.data.set.testid.SpecialCharacterTestId;
 import com.xceptance.neodymium.testclasses.data.set.xml.CanReadDataSetXML;
-import com.xceptance.neodymium.util.Context;
+import com.xceptance.neodymium.util.Neodymium;
 
 public class TestDataStatementTest extends NeodymiumTest
 {
     @Before
     public void setJUnitViewModeFlat()
     {
-        Context.get().configuration.setProperty("neodymium.junit.viewmode", "flat");
+        Neodymium.configuration().setProperty("neodymium.junit.viewmode", "flat");
     }
 
     @Test

@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
-import com.xceptance.neodymium.util.Context;
+import com.xceptance.neodymium.util.Neodymium;
 
 import io.qameta.allure.Attachment;
 import io.qameta.allure.selenide.AllureSelenide;
@@ -29,7 +29,7 @@ public class NeodymiumCucumberRunListener extends RunListener
     @Override
     public void testStarted(Description description) throws Exception
     {
-        Context.clearThreadContext();
+        Neodymium.clearThreadContext();
         LOGGER.debug("Test started: " + description.toString());
     }
 

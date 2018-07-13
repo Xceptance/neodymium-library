@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.util.Context;
+import com.xceptance.neodymium.util.Neodymium;
 
 @RunWith(NeodymiumRunner.class)
 public class LocalizationTest extends NeodymiumTest
@@ -53,18 +53,18 @@ public class LocalizationTest extends NeodymiumTest
     @Test
     public void testDefault()
     {
-        Context.get().configuration.setProperty("neodymium.locale", "default");
+        Neodymium.configuration().setProperty("neodymium.locale", "default");
         String key = "key1";
-        Assert.assertEquals("default", Context.localizedText(key));
+        Assert.assertEquals("default", Neodymium.localizedText(key));
     }
 
     @Test
     public void testUnsetLocale()
     {
         // set locale null and check locale fallback to "default"
-        Context.get().configuration.setProperty("neodymium.locale", null);
+        Neodymium.configuration().setProperty("neodymium.locale", null);
         String key = "key1";
-        Assert.assertEquals("default", Context.localizedText(key));
+        Assert.assertEquals("default", Neodymium.localizedText(key));
     }
 
     @Test
@@ -72,38 +72,38 @@ public class LocalizationTest extends NeodymiumTest
     {
         // en_US is the default locale which is defined in interface Configuration
         String key = "key1";
-        Assert.assertEquals("en_US", Context.localizedText(key));
+        Assert.assertEquals("en_US", Neodymium.localizedText(key));
     }
 
     @Test
     public void testLanguageFallback()
     {
         // we do not have a locale en_CA and expect to fallback to "en"
-        Context.get().configuration.setProperty("neodymium.locale", "en_CA");
+        Neodymium.configuration().setProperty("neodymium.locale", "en_CA");
         String key = "key1";
-        Assert.assertEquals("en", Context.localizedText(key));
+        Assert.assertEquals("en", Neodymium.localizedText(key));
     }
 
     @Test
     public void testFallbackToDefault()
     {
         // we do not have a locale en_CA and expect to fallback to "en"
-        Context.get().configuration.setProperty("neodymium.locale", "fr_CA");
+        Neodymium.configuration().setProperty("neodymium.locale", "fr_CA");
         String key = "key1";
-        Assert.assertEquals("default", Context.localizedText(key));
+        Assert.assertEquals("default", Neodymium.localizedText(key));
     }
 
     @Test
     public void testEmptyKeyIsConvertedToEmptyString()
     {
-        Context.get().configuration.setProperty("neodymium.locale", "default");
-        Assert.assertEquals("", Context.localizedText("key2"));
+        Neodymium.configuration().setProperty("neodymium.locale", "default");
+        Assert.assertEquals("", Neodymium.localizedText("key2"));
     }
 
     @Test(expected = AssertionError.class)
     public void testAssertionErrorWhenKeyIsUnknown()
     {
-        Context.get().configuration.setProperty("neodymium.locale", "default");
-        Context.localizedText("key3");
+        Neodymium.configuration().setProperty("neodymium.locale", "default");
+        Neodymium.localizedText("key3");
     }
 }

@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.util.Context;
+import com.xceptance.neodymium.util.Neodymium;
 
 @RunWith(NeodymiumRunner.class)
 public class SpecialCharacterTestId
@@ -18,31 +18,31 @@ public class SpecialCharacterTestId
         switch (dataSet)
         {
             case 1:
-                Assert.assertEquals("'", Context.dataValue("testId"));
+                Assert.assertEquals("'", Neodymium.dataValue("testId"));
                 break;
 
             case 2:
-                Assert.assertEquals("''", Context.dataValue("testId"));
+                Assert.assertEquals("''", Neodymium.dataValue("testId"));
                 break;
 
             case 3:
-                Assert.assertEquals("(", Context.dataValue("testId"));
+                Assert.assertEquals("(", Neodymium.dataValue("testId"));
                 break;
 
             case 4:
-                Assert.assertEquals(")", Context.dataValue("testId"));
+                Assert.assertEquals(")", Neodymium.dataValue("testId"));
                 break;
 
             case 5:
-                Assert.assertEquals("()", Context.dataValue("testId"));
+                Assert.assertEquals("()", Neodymium.dataValue("testId"));
                 break;
 
             case 6:
-                Assert.assertEquals(")(", Context.dataValue("testId"));
+                Assert.assertEquals(")(", Neodymium.dataValue("testId"));
                 break;
 
             case 7:
-                Assert.assertEquals("(a)", Context.dataValue("testId"));
+                Assert.assertEquals("(a)", Neodymium.dataValue("testId"));
                 break;
 
             default:

@@ -25,7 +25,7 @@ import com.xceptance.neodymium.testclasses.browser.classonly.TwoSameClassBrowser
 import com.xceptance.neodymium.testclasses.browser.methodonly.MethodBrowserSuppressNoBrowserAnnotation;
 import com.xceptance.neodymium.testclasses.browser.methodonly.OneBrowserOneMethodBrowserSuppressed;
 import com.xceptance.neodymium.testclasses.browser.mixed.ClassAndMethodSameBrowserOneMethod;
-import com.xceptance.neodymium.util.Context;
+import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserStatementTest extends NeodymiumTest
 {
@@ -34,7 +34,7 @@ public class BrowserStatementTest extends NeodymiumTest
     @Before
     public void setJUnitViewModeFlat()
     {
-        Context.get().configuration.setProperty("neodymium.junit.viewmode", "flat");
+        Neodymium.configuration().setProperty("neodymium.junit.viewmode", "flat");
     }
 
     @BeforeClass

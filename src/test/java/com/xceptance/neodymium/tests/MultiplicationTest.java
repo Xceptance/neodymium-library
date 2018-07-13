@@ -23,7 +23,7 @@ import com.xceptance.neodymium.testclasses.multiplication.parameteranddataset.Tw
 import com.xceptance.neodymium.testclasses.multiplication.parameteranddataset.TwoDataSetsTwoParameterSetsOneMethod;
 import com.xceptance.neodymium.testclasses.multiplication.parameteranddataset.TwoDataSetsTwoParameterSetsTwoMethods;
 import com.xceptance.neodymium.testclasses.multiplication.pkgdata.PackageDataDoNotAffectMethodMultiplication;
-import com.xceptance.neodymium.util.Context;
+import com.xceptance.neodymium.util.Neodymium;
 
 public class MultiplicationTest extends NeodymiumTest
 {
@@ -31,7 +31,7 @@ public class MultiplicationTest extends NeodymiumTest
     @Before
     public void setJUnitViewModeFlat()
     {
-        Context.get().configuration.setProperty("neodymium.junit.viewmode", "flat");
+        Neodymium.configuration().setProperty("neodymium.junit.viewmode", "flat");
     }
 
     //////////////////
