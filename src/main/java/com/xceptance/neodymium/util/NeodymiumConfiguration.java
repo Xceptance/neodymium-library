@@ -29,11 +29,11 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("3000")
     public long selenideTimeout();
 
-    @Key("neodymium.selenideUtils.staleElement.retry.count")
+    @Key("neodymium.selenideAddons.staleElement.retry.count")
     @DefaultValue("3")
     public int staleElementRetryCount();
 
-    @Key("neodymium.selenideUtils.staleElement.retry.timeout")
+    @Key("neodymium.selenideAddons.staleElement.retry.timeout")
     @DefaultValue("500")
     public int staleElementRetryTimeout();
 
@@ -88,7 +88,7 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("config/localization.yaml")
     public String localizationFile();
 
-    @Key("neodymium.allureUtils.screenshots.perstep.always")
+    @Key("neodymium.allureAddons.screenshots.perstep.always")
     @DefaultValue("false")
     public boolean screenshotPerStep();
 

@@ -17,7 +17,7 @@ import com.codeborne.selenide.impl.WebElementsCollectionWrapper;
  * Additional helpers for limits chained lookup in Selenide. Contribute that later back to Selenide if it proves to
  * work, so it can become API or better fully integrated so we don't need that workaround concept.
  */
-public class SelenideUtils
+public class SelenideAddons
 {
     /**
      * Returns an supplier that will return exactly one result if any. It will return an element that is found by
