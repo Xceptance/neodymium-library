@@ -6,7 +6,7 @@ import org.junit.runner.Result;
 
 import com.xceptance.neodymium.testclasses.datautils.DataUtilsTests;
 
-public class DataUtilTest extends NeodymiumTest
+public class DataUtilsTest extends NeodymiumTest
 {
     @Test
     public void testDataUtils() throws Exception
