@@ -8,7 +8,7 @@ import com.xceptance.neodymium.testclasses.context.ContextGetsCleared;
 import com.xceptance.neodymium.testclasses.context.DefaultSelenideTimeoutCheck;
 import com.xceptance.neodymium.testclasses.context.cucumbercontextclear.CucumberContextGetsCleared;
 
-public class ContextTest extends NeodymiumTest
+public class NeodymiumContextTest extends NeodymiumTest
 {
     @Test
     public void testContextGetCleared() throws Exception
