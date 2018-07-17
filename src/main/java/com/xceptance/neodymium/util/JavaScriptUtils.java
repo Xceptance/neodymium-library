@@ -93,7 +93,7 @@ public class JavaScriptUtils
                     // we might have to limit the exception range
                 }
 
-                sleep(Neodymium.configuration().javaScriptPoolInterval());
+                sleep(Neodymium.configuration().javaScriptPollingInterval());
 
                 // time is up?
                 if (System.currentTimeMillis() - start >= timeout)

@@ -11,9 +11,9 @@ import com.xceptance.neodymium.NeodymiumRunner.DescriptionMode;
 
 @LoadPolicy(LoadType.MERGE)
 @Sources(
-{
-  "file:config/test.properties", "file:config/credentials.properties"
-})
+    {
+        "file:config/test.properties", "file:config/credentials.properties"
+    })
 public interface NeodymiumConfiguration extends Mutable
 {
     @Key("neodymium.debugUtils.highlight")
@@ -41,11 +41,11 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("2000")
     public int javaScriptTimeout();
 
-    @Key("neodymium.javaScriptUtils.pool.interval")
+    @Key("neodymium.javaScriptUtils.pollingInterval")
     @DefaultValue("200")
-    public int javaScriptPoolInterval();
+    public int javaScriptPollingInterval();
 
-    @Key("neodymium.javaScriptUtils.pool.mustHaveBeenActive")
+    @Key("neodymium.javaScriptUtils.javascriptMustHaveBeenActive")
     @DefaultValue("true")
     public boolean javaScriptMustHaveBeenActive();
 
@@ -66,9 +66,9 @@ public interface NeodymiumConfiguration extends Mutable
 
     @Key("neodymium.url.path")
     @DisableFeature(
-    {
-      VARIABLE_EXPANSION
-    })
+        {
+            VARIABLE_EXPANSION
+        })
     public String rawPath();
 
     @Key("neodymium.url.site")
