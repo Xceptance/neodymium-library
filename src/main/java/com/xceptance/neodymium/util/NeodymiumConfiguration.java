@@ -11,9 +11,9 @@ import com.xceptance.neodymium.NeodymiumRunner.DescriptionMode;
 
 @LoadPolicy(LoadType.MERGE)
 @Sources(
-    {
-        "file:config/test.properties", "file:config/credentials.properties"
-    })
+{
+  "file:config/test.properties", "file:config/credentials.properties"
+})
 public interface NeodymiumConfiguration extends Mutable
 {
     @Key("neodymium.debugUtils.highlight")
@@ -45,9 +45,9 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("200")
     public int javaScriptPollingInterval();
 
-    @Key("neodymium.javaScriptUtils.javascriptMustHaveBeenActive")
+    @Key("neodymium.javaScriptUtils.loading.jQueryIsRequired")
     @DefaultValue("true")
-    public boolean javaScriptMustHaveBeenActive();
+    public boolean javascriptLoadingJQueryIsRequired();
 
     @Key("neodymium.javaScriptUtils.loading.animationSelector")
     public String javascriptLoadingAnimationSelector();
@@ -66,9 +66,9 @@ public interface NeodymiumConfiguration extends Mutable
 
     @Key("neodymium.url.path")
     @DisableFeature(
-        {
-            VARIABLE_EXPANSION
-        })
+    {
+      VARIABLE_EXPANSION
+    })
     public String rawPath();
 
     @Key("neodymium.url.site")

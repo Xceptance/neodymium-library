@@ -1,16 +1,15 @@
 package com.xceptance.neodymium.util;
 
-import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Selenide.$;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.function.Function;
+import java.util.function.BooleanSupplier;
 
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
+
+import com.codeborne.selenide.Selenide;
 
 /**
  * Source: http://www.swtestacademy.com/selenium-wait-javascript-angular-ajax/ With a lot of modifications
@@ -22,23 +21,26 @@ public class JavaScriptUtils
     // Wait Until JQuery and JS Ready
     public static void waitForReady()
     {
-        List<Function<WebDriver, Boolean>> conditionsToWaitFor = new LinkedList<Function<WebDriver, Boolean>>();
+        List<BooleanSupplier> conditionsToWaitFor = new LinkedList<BooleanSupplier>();
 
         // Wait for jQuery to load
-        conditionsToWaitFor.add(driver -> {
-            return ((Boolean) ((JavascriptExecutor) driver).executeScript("return !!window.jQuery && window.jQuery.active == 0"));
-        });
+        if (Neodymium.configuration().javascriptLoadingJQueryIsRequired())
+        {
+            conditionsToWaitFor.add(() -> {
+                return Selenide.executeJavaScript("return !!window.jQuery && window.jQuery.active == 0");
+            });
+        }
 
         // dom ready
-        conditionsToWaitFor.add(driver -> {
-            return ((Boolean) ((JavascriptExecutor) driver).executeScript("return document.readyState == 'complete'"));
+        conditionsToWaitFor.add(() -> {
+            return Selenide.executeJavaScript("return document.readyState == 'complete'");
         });
 
         if (Neodymium.configuration().javascriptLoadingAnimationSelector() != null)
         {
             // no loading animation
-            conditionsToWaitFor.add(driver -> {
-                return !$(Neodymium.configuration().javascriptLoadingAnimationSelector()).is(exist);
+            conditionsToWaitFor.add(() -> {
+                return !$(Neodymium.configuration().javascriptLoadingAnimationSelector()).exists();
             });
         }
 
@@ -51,17 +53,13 @@ public class JavaScriptUtils
      * @param conditions
      *            a list of conditions to verify
      */
-    public static void until(final List<Function<WebDriver, Boolean>> conditions)
+    public static void until(final List<BooleanSupplier> conditions)
     {
         final long timeout = Neodymium.configuration().javaScriptTimeout();
         final long start = System.currentTimeMillis();
 
-        // keeps track if we have seen a condition at least once being false aka continue
-        // case was not true, so for instance the Jquery was still active
-        boolean wasActive = false;
-
         // loop if still is time
-        for (final Function<WebDriver, Boolean> condition : conditions)
+        for (final BooleanSupplier condition : conditions)
         {
             boolean endEarly = false;
 
@@ -69,23 +67,11 @@ public class JavaScriptUtils
             {
                 try
                 {
-                    final boolean result = condition.apply(Neodymium.getDriver());
+                    final boolean result = condition.getAsBoolean();
                     if (result)
                     {
-                        if (Neodymium.configuration().javaScriptMustHaveBeenActive() && wasActive)
-                        {
-                            endEarly = true;
-                            continue;
-                        }
-                        else if (Neodymium.configuration().javaScriptMustHaveBeenActive() == false)
-                        {
-                            endEarly = true;
-                            continue;
-                        }
-                    }
-                    else
-                    {
-                        wasActive = true;
+                        endEarly = true;
+                        continue;
                     }
                 }
                 catch (final StaleElementReferenceException | NoSuchElementException e)
