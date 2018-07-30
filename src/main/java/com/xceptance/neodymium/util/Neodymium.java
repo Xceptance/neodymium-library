@@ -3,7 +3,6 @@ package com.xceptance.neodymium.util;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.WeakHashMap;
 
 import org.aeonbits.owner.ConfigFactory;
@@ -38,60 +37,11 @@ public class Neodymium
 
     /**
      * Constructor
-     * 
-     * @param clazz
      */
-    private Neodymium(final Map<String, String> testDataOfTestCase, Class<? extends NeodymiumConfiguration> clazz)
+    private Neodymium()
     {
-        data.putAll(testDataOfTestCase);
-
-        // build our config and use the official caching for that
-        // use our test data as properties as well
-        final Properties testData = new Properties();
-        testData.putAll(data);
-
-        configuration = ConfigFactory.create(clazz, System.getProperties(), System.getenv(), testData);
-
+        configuration = ConfigFactory.create(NeodymiumConfiguration.class, System.getProperties(), System.getenv());
         localization = NeodymiumLocalization.build(configuration.localizationFile());
-    }
-
-    /**
-     * Create a new context and associates it with the threads, if there is any previous context, it is just
-     * overwritten.
-     * 
-     * @param clazz
-     *            A {@link Class} extends {@link NeodymiumConfiguration} that is used to initialize the
-     *            {@link Neodymium}
-     * @return the context instance for the current Thread
-     */
-    public static Neodymium create(Class<? extends NeodymiumConfiguration> clazz)
-    {
-        return create(Collections.emptyMap(), clazz);
-    }
-
-    public static Neodymium create(final Map<String, String> testDataOfTestCase)
-    {
-        return create(testDataOfTestCase, NeodymiumConfiguration.class);
-    }
-
-    /**
-     * Create a new context and associates it with the threads, if there is any previous context, it is just
-     * overwritten.
-     * 
-     * @param testDataOfTestCase
-     *            A {@link Map} that contains all the
-     *            <a href="https://github.com/Xceptance/neodymium-library/wiki/Test-data-provider">test data</a> that
-     *            can be accessed from the test
-     * @param clazz
-     *            A {@link Class} extends {@link NeodymiumConfiguration} that is used to initialize the
-     *            {@link Neodymium}
-     * @return {@link Neodymium} that was freshly created or served from cache
-     */
-    public static Neodymium create(final Map<String, String> testDataOfTestCase, Class<? extends NeodymiumConfiguration> clazz)
-    {
-        return CONTEXTS.computeIfAbsent(Thread.currentThread(), (key) -> {
-            return new Neodymium(testDataOfTestCase, clazz);
-        });
     }
 
     /**
@@ -102,12 +52,13 @@ public class Neodymium
     static Neodymium getContex()
     {
         return CONTEXTS.computeIfAbsent(Thread.currentThread(), key -> {
-            return new Neodymium(Collections.emptyMap(), NeodymiumConfiguration.class);
+            return new Neodymium();
         });
     }
 
     /**
-     * Clears the context instance for the current Thread.
+     * Clears the context instance for the current Thread. <br>
+     * Attention: clearing the context leads to a loss of dynamic test parameter: browserProfileName, data and driver.
      */
     public static void clearThreadContext()
     {
