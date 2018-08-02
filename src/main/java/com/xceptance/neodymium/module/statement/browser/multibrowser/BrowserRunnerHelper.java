@@ -92,11 +92,11 @@ public final class BrowserRunnerHelper
 
         // create credentials for proxy access
         if (proxyConfig.useProxy() //
-            && !StringUtils.isEmpty(proxyConfig.getUsername()) //
-            && !StringUtils.isEmpty(proxyConfig.getPassword()))
+            && !StringUtils.isEmpty(proxyConfig.getSocketUsername()) //
+            && !StringUtils.isEmpty(proxyConfig.getSocketPassword()))
         {
             final AuthScope proxyAuth = new AuthScope(proxyConfig.getHost(), Integer.valueOf(proxyConfig.getPort()));
-            final Credentials proxyCredentials = new UsernamePasswordCredentials(proxyConfig.getUsername(), proxyConfig.getPassword());
+            final Credentials proxyCredentials = new UsernamePasswordCredentials(proxyConfig.getSocketUsername(), proxyConfig.getSocketPassword());
             basicCredentialsProvider.setCredentials(proxyAuth, proxyCredentials);
         }
 
@@ -120,7 +120,6 @@ public final class BrowserRunnerHelper
 
         // this command executor will do the credential magic for us. both proxy and target site credentials
         return new HttpCommandExecutor(additionalCommands, gridUrl, new ProxyHttpClient(httpClient));
-
     }
 
     /**
@@ -218,19 +217,7 @@ public final class BrowserRunnerHelper
         {
             if (proxyConfig.useProxy())
             {
-                final String proxyHost = proxyConfig.getHost() + ":" + proxyConfig.getPort();
-
-                final Proxy webdriverProxy = new Proxy();
-                webdriverProxy.setHttpProxy(proxyHost);
-                webdriverProxy.setSslProxy(proxyHost);
-                webdriverProxy.setFtpProxy(proxyHost);
-                if (!StringUtils.isEmpty(proxyConfig.getUsername()) && !StringUtils.isEmpty(proxyConfig.getPassword()))
-                {
-                    webdriverProxy.setSocksUsername(proxyConfig.getUsername());
-                    webdriverProxy.setSocksPassword(proxyConfig.getPassword());
-                }
-
-                capabilities.setCapability(CapabilityType.PROXY, webdriverProxy);
+                capabilities.setCapability(CapabilityType.PROXY, createProxyCapabilities(proxyConfig));
             }
 
             DriverServerPath driverServerPath = MultibrowserConfiguration.getInstance().getDriverServerPath();
@@ -329,5 +316,28 @@ public final class BrowserRunnerHelper
         }
 
         return null;
+    }
+
+    public static Proxy createProxyCapabilities(ProxyConfiguration proxyConfig)
+    {
+        final String proxyHost = proxyConfig.getHost() + ":" + proxyConfig.getPort();
+
+        final Proxy webdriverProxy = new Proxy();
+        webdriverProxy.setHttpProxy(proxyHost);
+        webdriverProxy.setSslProxy(proxyHost);
+        webdriverProxy.setFtpProxy(proxyHost);
+        webdriverProxy.setSocksProxy(proxyHost);
+        if (StringUtils.isNoneEmpty(proxyConfig.getSocketUsername(), proxyConfig.getSocketPassword()))
+        {
+            webdriverProxy.setSocksUsername(proxyConfig.getSocketUsername());
+            webdriverProxy.setSocksPassword(proxyConfig.getSocketPassword());
+        }
+        if (proxyConfig.getSocketVersion() != null)
+        {
+            webdriverProxy.setSocksVersion(proxyConfig.getSocketVersion());
+        }
+
+        webdriverProxy.setNoProxy(proxyConfig.getBypass());
+        return webdriverProxy;
     }
 }
