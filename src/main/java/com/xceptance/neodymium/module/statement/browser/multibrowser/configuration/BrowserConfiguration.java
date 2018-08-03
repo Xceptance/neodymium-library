@@ -2,7 +2,7 @@ package com.xceptance.neodymium.module.statement.browser.multibrowser.configurat
 
 import java.util.List;
 
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.MutableCapabilities;
 
 /**
  * POJO class to hold browser configurations
@@ -15,7 +15,7 @@ public class BrowserConfiguration
 
     private String name;
 
-    private DesiredCapabilities capabilities;
+    private MutableCapabilities capabilities;
 
     private String testEnvironment;
 
@@ -47,12 +47,12 @@ public class BrowserConfiguration
         this.name = name;
     }
 
-    public DesiredCapabilities getCapabilities()
+    public MutableCapabilities getCapabilities()
     {
         return capabilities;
     }
 
-    protected void setCapabilities(DesiredCapabilities capabilities)
+    protected void setCapabilities(MutableCapabilities capabilities)
     {
         this.capabilities = capabilities;
     }

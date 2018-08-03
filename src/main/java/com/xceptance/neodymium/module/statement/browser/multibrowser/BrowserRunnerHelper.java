@@ -18,6 +18,7 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
@@ -32,7 +33,6 @@ import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.CommandInfo;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -209,7 +209,7 @@ public final class BrowserRunnerHelper
     @SuppressWarnings("unchecked")
     public static WebDriver createWebdriver(final BrowserConfiguration config) throws MalformedURLException
     {
-        final DesiredCapabilities capabilities = config.getCapabilities();
+        final MutableCapabilities capabilities = config.getCapabilities();
 
         final String testEnvironment = config.getTestEnvironment();
         ProxyConfiguration proxyConfig = MultibrowserConfiguration.getInstance().getProxyConfiguration();
