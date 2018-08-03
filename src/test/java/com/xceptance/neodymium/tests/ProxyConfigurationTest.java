@@ -17,7 +17,7 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.configurati
 import com.xceptance.neodymium.testclasses.proxy.RunWithProxy;
 import com.xceptance.neodymium.testclasses.proxy.SetProxForWebDriver;
 
-public class ProxyConfiguratioTest extends NeodymiumTest
+public class ProxyConfigurationTest extends NeodymiumTest
 {
     private static final String HOST = "bemylittleproxydarling.se";
 
