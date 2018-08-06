@@ -58,7 +58,6 @@ public class BrowserConfigurationMapper
     {
         BrowserConfiguration browserConfiguration = new BrowserConfiguration();
 
-        // DesiredCapabilities capabilities;
         MutableCapabilities capabilities;
 
         String emulatedBrowser = browserProfileConfiguration.get(BROWSER);
