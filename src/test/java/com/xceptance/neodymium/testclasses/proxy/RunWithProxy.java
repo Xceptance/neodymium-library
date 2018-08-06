@@ -19,10 +19,11 @@ public class RunWithProxy
     @Test(expected = ElementNotFound.class)
     public void testProxyConfiguration()
     {
-        Selenide.open("https://www.hugoboss.com");
-        $("#nav-allbrands").shouldBe(visible);
+        Selenide.open("https://www.xceptance.de");
+        $("#page #navigation").shouldBe(visible);
     }
 
+    // the test is expected to run since we configured a bypass for "www.xceptance.com"
     @Test
     public void testProxyBypassConfiguration()
     {
