@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.util.Context;
+import com.xceptance.neodymium.util.Neodymium;
 import com.xceptance.neodymium.util.DataUtils;
 
 @RunWith(NeodymiumRunner.class)
@@ -19,7 +19,7 @@ public class DataUtilsTests
     @Test
     public void testAsString() throws Exception
     {
-        Map<String, String> data = Context.get().data;
+        Map<String, String> data = Neodymium.getData();
         data.clear();
         data.put("nullValue", null);
         data.put("empty", "");
@@ -52,7 +52,7 @@ public class DataUtilsTests
     @Test
     public void testAsInt() throws Exception
     {
-        Map<String, String> data = Context.get().data;
+        Map<String, String> data = Neodymium.getData();
         data.clear();
         data.put("nullValue", null);
         data.put("empty", "");
@@ -91,7 +91,7 @@ public class DataUtilsTests
     @Test
     public void testAsLong() throws Exception
     {
-        Map<String, String> data = Context.get().data;
+        Map<String, String> data = Neodymium.getData();
         data.clear();
         data.put("nullValue", null);
         data.put("empty", "");
@@ -130,7 +130,7 @@ public class DataUtilsTests
     @Test
     public void testAsFloat() throws Exception
     {
-        Map<String, String> data = Context.get().data;
+        Map<String, String> data = Neodymium.getData();
         data.clear();
         data.put("nullValue", null);
         data.put("empty", "");
@@ -169,7 +169,7 @@ public class DataUtilsTests
     @Test
     public void testAsDouble() throws Exception
     {
-        Map<String, String> data = Context.get().data;
+        Map<String, String> data = Neodymium.getData();
         data.clear();
         data.put("nullValue", null);
         data.put("empty", "");
@@ -208,7 +208,7 @@ public class DataUtilsTests
     @Test
     public void testAsBoolean() throws Exception
     {
-        Map<String, String> data = Context.get().data;
+        Map<String, String> data = Neodymium.getData();
         data.clear();
         data.put("nullValue", null);
         data.put("empty", "");

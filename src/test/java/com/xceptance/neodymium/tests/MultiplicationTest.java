@@ -23,7 +23,7 @@ import com.xceptance.neodymium.testclasses.multiplication.parameteranddataset.Tw
 import com.xceptance.neodymium.testclasses.multiplication.parameteranddataset.TwoDataSetsTwoParameterSetsOneMethod;
 import com.xceptance.neodymium.testclasses.multiplication.parameteranddataset.TwoDataSetsTwoParameterSetsTwoMethods;
 import com.xceptance.neodymium.testclasses.multiplication.pkgdata.PackageDataDoNotAffectMethodMultiplication;
-import com.xceptance.neodymium.util.Context;
+import com.xceptance.neodymium.util.Neodymium;
 
 public class MultiplicationTest extends NeodymiumTest
 {
@@ -31,7 +31,7 @@ public class MultiplicationTest extends NeodymiumTest
     @Before
     public void setJUnitViewModeFlat()
     {
-        Context.get().configuration.setProperty("junit.viewmode", "flat");
+        Neodymium.configuration().setProperty("neodymium.junit.viewmode", "flat");
     }
 
     //////////////////
@@ -43,9 +43,9 @@ public class MultiplicationTest extends NeodymiumTest
     {
         // two test methods, no data
         String[] expected = new String[]
-            {
-                "first", "second"
-            };
+        {
+          "first", "second"
+        };
         checkDescription(TwoMethods.class, expected);
     }
 
@@ -54,9 +54,9 @@ public class MultiplicationTest extends NeodymiumTest
     {
         // two test methods and one ignored, no data
         String[] expected = new String[]
-            {
-                "first", "second"
-            };
+        {
+          "first", "second"
+        };
         checkDescription(TwoMethodsAndOneIgnored.class, expected);
     }
 
@@ -65,9 +65,9 @@ public class MultiplicationTest extends NeodymiumTest
     {
         // two methods one of them is ignored, no data
         String[] expected = new String[]
-            {
-                "first", "second"
-            };
+        {
+          "first", "second"
+        };
         checkDescription(TwoMethodsOneIgnored.class, expected);
     }
 
@@ -80,9 +80,9 @@ public class MultiplicationTest extends NeodymiumTest
     {
         // two methods, package test data do not affect multiplication
         String[] expected = new String[]
-            {
-                "first :: TestData", "second :: TestData"
-            };
+        {
+          "first :: TestData", "second :: TestData"
+        };
         checkDescription(PackageDataDoNotAffectMethodMultiplication.class, expected);
 
     }
@@ -96,9 +96,9 @@ public class MultiplicationTest extends NeodymiumTest
     {
         // one test method, one data set
         String[] expected = new String[]
-            {
-                "first :: Data set 1 / 1"
-            };
+        {
+          "first :: Data set 1 / 1"
+        };
         checkDescription(OneDataSetOneMethod.class, expected);
     }
 
@@ -107,10 +107,10 @@ public class MultiplicationTest extends NeodymiumTest
     {
         // two test methods, one data set
         String[] expected = new String[]
-            {
-                "first :: Data set 1 / 1", //
-                "second :: Data set 1 / 1"
-            };
+        {
+          "first :: Data set 1 / 1", //
+          "second :: Data set 1 / 1"
+        };
         checkDescription(OneDataSetTwoMethods.class, expected);
     }
 
@@ -119,10 +119,10 @@ public class MultiplicationTest extends NeodymiumTest
     {
         // one test method but two data sets
         String[] expected = new String[]
-            {
-                "first :: Data set 1 / 2", //
-                "first :: Data set 2 / 2"
-            };
+        {
+          "first :: Data set 1 / 2", //
+          "first :: Data set 2 / 2"
+        };
         checkDescription(TwoDataSetsOneMethod.class, expected);
 
     }
@@ -132,12 +132,12 @@ public class MultiplicationTest extends NeodymiumTest
     {
         // two methods, two data sets
         String[] expected = new String[]
-            {
-                "first :: Data set 1 / 2", //
-                "first :: Data set 2 / 2", //
-                "second :: Data set 1 / 2", //
-                "second :: Data set 2 / 2", //
-            };
+        {
+          "first :: Data set 1 / 2", //
+          "first :: Data set 2 / 2", //
+          "second :: Data set 1 / 2", //
+          "second :: Data set 2 / 2", //
+        };
         checkDescription(TwoDataSetsTwoMethods.class, expected);
     }
 
@@ -149,9 +149,9 @@ public class MultiplicationTest extends NeodymiumTest
     public void testOneParameterSetOneMethod() throws Throwable
     {
         String[] expected = new String[]
-            {
-                "first :: [0]"
-            };
+        {
+          "first :: [0]"
+        };
         checkDescription(OneParameterSetOneMethod.class, expected);
     }
 
@@ -159,10 +159,10 @@ public class MultiplicationTest extends NeodymiumTest
     public void testOneParameterSetTwoMethods() throws Throwable
     {
         String[] expected = new String[]
-            {
-                "first :: [0]", //
-                "second :: [0]"
-            };
+        {
+          "first :: [0]", //
+          "second :: [0]"
+        };
         checkDescription(OneParameterSetTwoMethods.class, expected);
     }
 
@@ -170,10 +170,10 @@ public class MultiplicationTest extends NeodymiumTest
     public void testTwoParameterSetsOneMethod() throws Throwable
     {
         String[] expected = new String[]
-            {
-                "first :: [0]", //
-                "first :: [1]"
-            };
+        {
+          "first :: [0]", //
+          "first :: [1]"
+        };
         checkDescription(TwoParameterSetsOneMethod.class, expected);
     }
 
@@ -181,12 +181,12 @@ public class MultiplicationTest extends NeodymiumTest
     public void testTwoParameterSetsTwoMethods() throws Throwable
     {
         String[] expected = new String[]
-            {
-                "first :: [0]", //
-                "first :: [1]", //
-                "second :: [0]", //
-                "second :: [1]"
-            };
+        {
+          "first :: [0]", //
+          "first :: [1]", //
+          "second :: [0]", //
+          "second :: [1]"
+        };
         checkDescription(TwoParameterSetsTwoMethods.class, expected);
     }
 
@@ -198,9 +198,9 @@ public class MultiplicationTest extends NeodymiumTest
     public void testOneDataSetOneParameterSetOneMethod() throws Throwable
     {
         String[] expected = new String[]
-            {
-                "first :: Data set 1 / 1 :: [0]" //
-            };
+        {
+          "first :: Data set 1 / 1 :: [0]" //
+        };
         checkDescription(OneDataSetOneParameterSetOneMethod.class, expected);
     }
 
@@ -208,10 +208,10 @@ public class MultiplicationTest extends NeodymiumTest
     public void testOneDataSetOneParameterSetTwoMethods() throws Throwable
     {
         String[] expected = new String[]
-            {
-                "first :: Data set 1 / 1 :: [0]", //
-                "second :: Data set 1 / 1 :: [0]"
-            };
+        {
+          "first :: Data set 1 / 1 :: [0]", //
+          "second :: Data set 1 / 1 :: [0]"
+        };
         checkDescription(OneDataSetOneParameterSetTwoMethods.class, expected);
     }
 
@@ -219,10 +219,10 @@ public class MultiplicationTest extends NeodymiumTest
     public void testOneDataSetTwoParameterSetsOneMethod() throws Throwable
     {
         String[] expected = new String[]
-            {
-                "first :: Data set 1 / 1 :: [0]", //
-                "first :: Data set 1 / 1 :: [1]"
-            };
+        {
+          "first :: Data set 1 / 1 :: [0]", //
+          "first :: Data set 1 / 1 :: [1]"
+        };
         checkDescription(OneDataSetTwoParameterSetsOneMethod.class, expected);
     }
 
@@ -230,12 +230,12 @@ public class MultiplicationTest extends NeodymiumTest
     public void testOneDataSetTwoParameterSetsTwoMethods() throws Throwable
     {
         String[] expected = new String[]
-            {
-                "first :: Data set 1 / 1 :: [0]", //
-                "first :: Data set 1 / 1 :: [1]", //
-                "second :: Data set 1 / 1 :: [0]", //
-                "second :: Data set 1 / 1 :: [1]"
-            };
+        {
+          "first :: Data set 1 / 1 :: [0]", //
+          "first :: Data set 1 / 1 :: [1]", //
+          "second :: Data set 1 / 1 :: [0]", //
+          "second :: Data set 1 / 1 :: [1]"
+        };
         checkDescription(OneDataSetTwoParameterSetsTwoMethods.class, expected);
     }
 
@@ -243,10 +243,10 @@ public class MultiplicationTest extends NeodymiumTest
     public void testTwoDataSetsOneParameterSetOneMethod() throws Throwable
     {
         String[] expected = new String[]
-            {
-                "first :: Data set 1 / 2 :: [0]", //
-                "first :: Data set 2 / 2 :: [0]"
-            };
+        {
+          "first :: Data set 1 / 2 :: [0]", //
+          "first :: Data set 2 / 2 :: [0]"
+        };
         checkDescription(TwoDataSetsOneParameterSetOneMethod.class, expected);
     }
 
@@ -254,12 +254,12 @@ public class MultiplicationTest extends NeodymiumTest
     public void testTwoDataSetsOneParameterSetTwoMethods() throws Throwable
     {
         String[] expected = new String[]
-            {
-                "first :: Data set 1 / 2 :: [0]", //
-                "first :: Data set 2 / 2 :: [0]", //
-                "second :: Data set 1 / 2 :: [0]", //
-                "second :: Data set 2 / 2 :: [0]"
-            };
+        {
+          "first :: Data set 1 / 2 :: [0]", //
+          "first :: Data set 2 / 2 :: [0]", //
+          "second :: Data set 1 / 2 :: [0]", //
+          "second :: Data set 2 / 2 :: [0]"
+        };
         checkDescription(TwoDataSetsOneParameterSetTwoMethods.class, expected);
     }
 
@@ -267,12 +267,12 @@ public class MultiplicationTest extends NeodymiumTest
     public void testTwoDataSetsTwoParameterSetsOneMethod() throws Throwable
     {
         String[] expected = new String[]
-            {
-                "first :: Data set 1 / 2 :: [0]", //
-                "first :: Data set 1 / 2 :: [1]", //
-                "first :: Data set 2 / 2 :: [0]", //
-                "first :: Data set 2 / 2 :: [1]"
-            };
+        {
+          "first :: Data set 1 / 2 :: [0]", //
+          "first :: Data set 1 / 2 :: [1]", //
+          "first :: Data set 2 / 2 :: [0]", //
+          "first :: Data set 2 / 2 :: [1]"
+        };
         checkDescription(TwoDataSetsTwoParameterSetsOneMethod.class, expected);
     }
 
@@ -280,16 +280,16 @@ public class MultiplicationTest extends NeodymiumTest
     public void testTwoDataSetsTwoParameterSetsTwoMethods() throws Throwable
     {
         String[] expected = new String[]
-            {
-                "first :: Data set 1 / 2 :: [0]", //
-                "first :: Data set 1 / 2 :: [1]", //
-                "first :: Data set 2 / 2 :: [0]", //
-                "first :: Data set 2 / 2 :: [1]", //
-                "second :: Data set 1 / 2 :: [0]", //
-                "second :: Data set 1 / 2 :: [1]", //
-                "second :: Data set 2 / 2 :: [0]", //
-                "second :: Data set 2 / 2 :: [1]"
-            };
+        {
+          "first :: Data set 1 / 2 :: [0]", //
+          "first :: Data set 1 / 2 :: [1]", //
+          "first :: Data set 2 / 2 :: [0]", //
+          "first :: Data set 2 / 2 :: [1]", //
+          "second :: Data set 1 / 2 :: [0]", //
+          "second :: Data set 1 / 2 :: [1]", //
+          "second :: Data set 2 / 2 :: [0]", //
+          "second :: Data set 2 / 2 :: [1]"
+        };
         checkDescription(TwoDataSetsTwoParameterSetsTwoMethods.class, expected);
     }
 

@@ -65,7 +65,14 @@ public class YamlProperties
      */
     private void handleTypes(final Object entry, final Deque<String> state)
     {
-        properties.setProperty(buildKey(state), entry.toString());
+        if (entry != null)
+        {
+            properties.setProperty(buildKey(state), entry.toString());
+        }
+        else
+        {
+            properties.setProperty(buildKey(state), "");
+        }
     }
 
     /**

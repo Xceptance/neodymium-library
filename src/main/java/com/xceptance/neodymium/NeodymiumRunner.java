@@ -21,7 +21,7 @@ import com.xceptance.neodymium.module.EnhancedMethod;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.order.DefaultStatementRunOrder;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
-import com.xceptance.neodymium.util.Context;
+import com.xceptance.neodymium.util.Neodymium;
 
 /**
  * This class executes {@link JUnit4} test classes (aka JUnit Runner) and adds several features to test execution e.g.
@@ -73,8 +73,8 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
     public enum DescriptionMode
     {
-     flat,
-     tree,
+        flat,
+        tree,
     };
 
     private List<FrameworkMethod> computedTestMethods;
@@ -202,7 +202,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
     public Description createTestDescriptions(List<FrameworkMethod> methods)
     {
-        switch (Context.get().configuration.junitViewMode())
+        switch (Neodymium.configuration().junitViewMode())
         {
             case flat:
                 return createFlatTestDescription(methods);
@@ -290,7 +290,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     protected void runChild(FrameworkMethod method, RunNotifier notifier)
     {
         // clear the context before next child run
-        Context.clearThreadContext();
+        Neodymium.clearThreadContext();
         super.runChild(method, notifier);
     }
 

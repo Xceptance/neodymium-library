@@ -6,8 +6,6 @@ import java.util.function.Supplier;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 
-import com.xceptance.neodymium.util.Context;
-
 import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
 
@@ -16,7 +14,7 @@ import io.qameta.allure.Step;
  *
  * @author rschwietzke
  */
-public class Steps
+public class AllureAddons
 {
     /**
      * Define a step without return value. This is good for complete and encapsulated test steps.
@@ -35,13 +33,24 @@ public class Steps
         }
         finally
         {
-            if (Context.get().configuration.screenshotPerStep())
+            if (Neodymium.configuration().screenshotPerStep())
             {
                 attachPNG(UUID.randomUUID().toString() + ".png");
             }
         }
     }
 
+    /**
+     * Define a step with a return value. This is good for complete and encapsulated test steps.
+     *
+     * @param <T>
+     *            generic return type
+     * @param description
+     *            the proper description of this step
+     * @param actions
+     *            what to do as Lambda
+     * @return T
+     */
     @Step("{description}")
     public static <T> T step(final String description, final Supplier<T> actions)
     {
@@ -51,7 +60,7 @@ public class Steps
         }
         finally
         {
-            if (Context.get().configuration.screenshotPerStep())
+            if (Neodymium.configuration().screenshotPerStep())
             {
                 attachPNG(UUID.randomUUID().toString() + ".png");
             }
@@ -61,7 +70,6 @@ public class Steps
     @Attachment(type = "image/png", value = "{filename}", fileExtension = ".png")
     public static byte[] attachPNG(final String filename)
     {
-        return ((TakesScreenshot) Context.get().driver).getScreenshotAs(OutputType.BYTES);
+        return ((TakesScreenshot) Neodymium.getDriver()).getScreenshotAs(OutputType.BYTES);
     }
-
 }

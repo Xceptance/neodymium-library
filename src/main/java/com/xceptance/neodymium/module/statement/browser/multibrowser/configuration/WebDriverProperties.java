@@ -4,9 +4,9 @@ import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Config.Sources;
 
 @Sources(
-    {
-        "file:./config/browser.properties"
-    })
+{
+  "file:./config/browser.properties"
+})
 public interface WebDriverProperties extends Config
 {
     @Key("neodymium.webDriver.window.width")

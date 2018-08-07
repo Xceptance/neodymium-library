@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.util.Context;
+import com.xceptance.neodymium.util.Neodymium;
 
 @RunWith(NeodymiumRunner.class)
 public class PackageTestDataInheritance
@@ -15,7 +15,7 @@ public class PackageTestDataInheritance
     @Test
     public void test()
     {
-        Map<String, String> data = Context.get().data;
+        Map<String, String> data = Neodymium.getData();
         Assert.assertEquals(3, data.size());
         Assert.assertEquals("child", data.get("pkgInherited"));
         Assert.assertEquals("parentValue", data.get("parentKey"));

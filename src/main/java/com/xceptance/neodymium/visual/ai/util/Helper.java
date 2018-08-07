@@ -116,7 +116,7 @@ public class Helper
     public static void readProperties(String path) throws IOException
     {
         // the property names
-        final String PREFIX = "com.xceptance.xlt.ai.";
+        final String PREFIX = "neodymium.ai.";
         final String PROPERTY_ENABLED = PREFIX + "enabled";
         final String PROPERTY_TESTCASE_BOUND = PREFIX + "TESTCASE_BOUND";
         final String PROPERTY_TESTCASE_NAME = PREFIX + "TESTCASE_NAME";

@@ -21,26 +21,27 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 
 @RunWith(NeodymiumRunner.class)
 @Browser("Chrome_headless")
-public class HighlightAndWaitTest
+public class DebugUtilsTest
 {
     @Test
     public void testHighlighting()
     {
         Selenide.open("https://blog.xceptance.com/");
-        HighlightAndWait.injectJavaScript();
+        DebugUtils.injectJavaScript();
+        assertJsSucessfullyInjected();
 
         final List<WebElement> list = $("body").findElements(By.cssSelector("#masthead"));
-        HighlightAndWait.highlightElements(list, Context.get().driver);
+        DebugUtils.highlightElements(list, Neodymium.getDriver());
         $(".neodymium-highlight-box").shouldBe(visible);
 
-        HighlightAndWait.resetAllHighlight();
+        DebugUtils.resetAllHighlight();
         $(".neodymium-highlight-box").shouldNot(exist);
 
         final List<WebElement> list2 = $("body").findElements(By.cssSelector("#content article"));
-        HighlightAndWait.highlightElements(list2, Context.get().driver);
+        DebugUtils.highlightElements(list2, Neodymium.getDriver());
         $$(".neodymium-highlight-box").shouldHaveSize(10);
 
-        HighlightAndWait.resetAllHighlight();
+        DebugUtils.resetAllHighlight();
         $(".neodymium-highlight-box").shouldNot(exist);
     }
 
@@ -48,13 +49,14 @@ public class HighlightAndWaitTest
     public void testHighlightingWithoutImplicitWaitTime()
     {
         Selenide.open("https://blog.xceptance.com/");
-        HighlightAndWait.injectJavaScript();
+        DebugUtils.injectJavaScript();
+        assertJsSucessfullyInjected();
 
         final List<WebElement> list = $("body").findElements(By.cssSelector("#masthead"));
-        HighlightAndWait.highlightElements(list, Context.get().driver);
+        DebugUtils.highlightElements(list, Neodymium.getDriver());
         $(".neodymium-highlight-box").shouldBe(visible);
 
-        HighlightAndWait.resetAllHighlight();
+        DebugUtils.resetAllHighlight();
         $(".neodymium-highlight-box").shouldNot(exist);
     }
 
@@ -62,9 +64,9 @@ public class HighlightAndWaitTest
     public void testWaiting()
     {
         NeodymiumWebDriverTestListener eventListener = new NeodymiumWebDriverTestListener();
-        ((EventFiringWebDriver) Context.get().driver).register(eventListener);
+        ((EventFiringWebDriver) Neodymium.getDriver()).register(eventListener);
 
-        Context.get().configuration.setProperty("debug.highlight", "true");
+        Neodymium.configuration().setProperty("neodymium.debugUtils.highlight", "true");
 
         // one wait due to navigation
         Selenide.open("https://blog.xceptance.com/");
@@ -73,6 +75,7 @@ public class HighlightAndWaitTest
         // one wait due to find
         $("body #masthead").should(exist);
         Assert.assertEquals(1, eventListener.impliciteWaitCount);
+        assertJsSucessfullyInjected();
 
         // two waits due to chain finding
         $("body").findElements(By.cssSelector("#content article"));
@@ -98,21 +101,27 @@ public class HighlightAndWaitTest
     @Test
     public void testIFrames() throws Exception
     {
-        Context.get().configuration.setProperty("debug.highlight", "true");
+        Neodymium.configuration().setProperty("neodymium.debugUtils.highlight", "true");
 
         Selenide.open("https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_select");
-        Context.get().driver.switchTo().frame("iframeResult");
+        Neodymium.getDriver().switchTo().frame("iframeResult");
 
         SelenideElement body = $("body");
         body.click();
+        assertJsSucessfullyInjected();
 
         final List<WebElement> list = $("body").findElements(By.cssSelector("select"));
 
-        Context.get().configuration.setProperty("debug.highlight", "false");
-        HighlightAndWait.highlightElements(list, Context.get().driver);
+        Neodymium.configuration().setProperty("neodymium.debugUtils.highlight", "false");
+        DebugUtils.highlightElements(list, Neodymium.getDriver());
         $(".neodymium-highlight-box").shouldBe(visible);
 
-        HighlightAndWait.resetAllHighlight();
+        DebugUtils.resetAllHighlight();
         $(".neodymium-highlight-box").shouldNot(exist);
+    }
+
+    private void assertJsSucessfullyInjected()
+    {
+        Assert.assertTrue(Selenide.executeJavaScript("return !!window.NEODYMIUM"));
     }
 }

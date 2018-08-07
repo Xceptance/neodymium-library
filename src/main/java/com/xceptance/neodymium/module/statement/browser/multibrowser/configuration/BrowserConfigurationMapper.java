@@ -6,8 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.opera.OperaOptions;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.safari.SafariOptions;
 
 public class BrowserConfigurationMapper
 {
@@ -48,12 +54,13 @@ public class BrowserConfigurationMapper
 
     private static final String AUTOMATION_NAME = "automationName";
 
-    public BrowserConfiguration map(Map<String, String> o)
+    public BrowserConfiguration map(Map<String, String> browserProfileConfiguration)
     {
-        BrowserConfiguration r = new BrowserConfiguration();
-        DesiredCapabilities capabilities;
+        BrowserConfiguration browserConfiguration = new BrowserConfiguration();
 
-        String emulatedBrowser = o.get(BROWSER);
+        MutableCapabilities capabilities;
+
+        String emulatedBrowser = browserProfileConfiguration.get(BROWSER);
         if (emulatedBrowser != null)
             emulatedBrowser = emulatedBrowser.toLowerCase();
 
@@ -71,11 +78,11 @@ public class BrowserConfigurationMapper
         }
         else if ("firefox".equals(emulatedBrowser))
         {
-            capabilities = DesiredCapabilities.firefox();
+            capabilities = new FirefoxOptions();
         }
         else if ("chrome".equals(emulatedBrowser))
         {
-            capabilities = DesiredCapabilities.chrome();
+            capabilities = new ChromeOptions();
         }
         else if ("internetexplorer".equals(emulatedBrowser))
         {
@@ -83,7 +90,15 @@ public class BrowserConfigurationMapper
         }
         else if ("safari".equals(emulatedBrowser))
         {
-            capabilities = DesiredCapabilities.safari();
+            capabilities = new SafariOptions();
+        }
+        else if ("edge".equals(emulatedBrowser))
+        {
+            capabilities = new EdgeOptions();
+        }
+        else if ("opera".equals(emulatedBrowser))
+        {
+            capabilities = new OperaOptions();
         }
         else
         {
@@ -93,52 +108,55 @@ public class BrowserConfigurationMapper
         /*
          * SauceLabs configuration
          */
-        String emulatedPlatform = o.get(PLATFORM);
+        String emulatedPlatform = browserProfileConfiguration.get(PLATFORM);
         if (!StringUtils.isEmpty(emulatedPlatform))
-            capabilities.setCapability("platform", emulatedPlatform);
+        {
+            capabilities.setCapability(CapabilityType.PLATFORM, emulatedPlatform);
+            capabilities.setCapability(CapabilityType.PLATFORM_NAME, emulatedPlatform);
+        }
 
-        String emulatedVersion = o.get(BROWSER_VERSION);
+        String emulatedVersion = browserProfileConfiguration.get(BROWSER_VERSION);
         if (!StringUtils.isEmpty(emulatedVersion))
-            capabilities.setCapability("version", emulatedVersion);
+            capabilities.setCapability(CapabilityType.VERSION, emulatedVersion);
 
-        String emulatedDeviceName = o.get(DEVICE_NAME);
+        String emulatedDeviceName = browserProfileConfiguration.get(DEVICE_NAME);
         if (!StringUtils.isEmpty(emulatedDeviceName))
             capabilities.setCapability("deviceName", emulatedDeviceName);
 
-        String emulatedDeviceOrienation = o.get(DEVICE_ORIENTATION);
+        String emulatedDeviceOrienation = browserProfileConfiguration.get(DEVICE_ORIENTATION);
         if (!StringUtils.isEmpty(emulatedDeviceOrienation))
             capabilities.setCapability("deviceOrientation", emulatedDeviceOrienation);
 
-        String emulatedDeviceScreenResolution = o.get(SCREEN_RESOLUTION);
+        String emulatedDeviceScreenResolution = browserProfileConfiguration.get(SCREEN_RESOLUTION);
         if (!StringUtils.isEmpty(emulatedDeviceScreenResolution))
             capabilities.setCapability("screenResolution", emulatedDeviceScreenResolution);
 
         // appium
 
-        String appiumVersion = o.get(APPIUM_VERSION);
+        String appiumVersion = browserProfileConfiguration.get(APPIUM_VERSION);
         if (!StringUtils.isEmpty(appiumVersion))
             capabilities.setCapability("appiumVersion", appiumVersion);
 
-        String browserName = o.get(BROWSER_NAME);
+        String browserName = browserProfileConfiguration.get(BROWSER_NAME);
         if (!StringUtils.isEmpty(browserName))
-            capabilities.setCapability("browserName", browserName);
+            capabilities.setCapability(CapabilityType.BROWSER_NAME, browserName);
 
-        String plattformVersion = o.get(PLATTFORM_VERSION);
+        String plattformVersion = browserProfileConfiguration.get(PLATTFORM_VERSION);
         if (!StringUtils.isEmpty(plattformVersion))
             capabilities.setCapability("platformVersion", plattformVersion);
 
-        String app = o.get(APP);
+        String app = browserProfileConfiguration.get(APP);
         if (!StringUtils.isEmpty(app))
             capabilities.setCapability("app", app);
 
-        String automationName = o.get(AUTOMATION_NAME);
+        String automationName = browserProfileConfiguration.get(AUTOMATION_NAME);
         if (!StringUtils.isEmpty(automationName))
             capabilities.setCapability("automationName", automationName);
 
         /*
          * Chrome device emulation
          */
-        String chromeEmulationProfile = o.get(CHROME_EMULATION_PROFILE);
+        String chromeEmulationProfile = browserProfileConfiguration.get(CHROME_EMULATION_PROFILE);
         if (!StringUtils.isEmpty(chromeEmulationProfile))
         {
             Map<String, String> mobileEmulation = new HashMap<String, String>();
@@ -152,14 +170,14 @@ public class BrowserConfigurationMapper
         /*
          * Explicit test environment check
          */
-        String testEnvironment = o.get(TEST_ENVIRONMENT);
+        String testEnvironment = browserProfileConfiguration.get(TEST_ENVIRONMENT);
         if (!StringUtils.isEmpty(testEnvironment))
-            r.setTestEnvironment(testEnvironment.trim());
+            browserConfiguration.setTestEnvironment(testEnvironment.trim());
 
         /*
          * Browser resolution
          */
-        String browserResolution = o.get(BROWSER_RESOLUTION);
+        String browserResolution = browserProfileConfiguration.get(BROWSER_RESOLUTION);
         if (!StringUtils.isEmpty(browserResolution))
         {
             // split the combined resolution string on every 'x', 'X' or ',' and remove all whitespace
@@ -168,31 +186,31 @@ public class BrowserConfigurationMapper
             String[] browserWidthHeight = browserResolution.replaceAll("[\\s]", "").split("[xX,]");
             if (!StringUtils.isEmpty(browserWidthHeight[0]))
             {
-                r.setBrowserWidth(Integer.parseInt(browserWidthHeight[0]));
+                browserConfiguration.setBrowserWidth(Integer.parseInt(browserWidthHeight[0]));
             }
             if (!StringUtils.isEmpty(browserWidthHeight[0]))
             {
-                r.setBrowserHeight(Integer.parseInt(browserWidthHeight[1]));
+                browserConfiguration.setBrowserHeight(Integer.parseInt(browserWidthHeight[1]));
             }
         }
 
         // page load strategy
-        String pageLoadStrategy = o.get(PAGE_LOAD_STRATEGY);
+        String pageLoadStrategy = browserProfileConfiguration.get(PAGE_LOAD_STRATEGY);
         if (!StringUtils.isEmpty(pageLoadStrategy))
-            capabilities.setCapability("pageLoadStrategy", pageLoadStrategy);
+            capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, pageLoadStrategy);
 
         // accept insecure certificates
-        String acceptInsecureCerts = o.get(ACCEPT_INSECURE_CERTS);
+        String acceptInsecureCerts = browserProfileConfiguration.get(ACCEPT_INSECURE_CERTS);
         if (!StringUtils.isEmpty(acceptInsecureCerts))
-            capabilities.setAcceptInsecureCerts(Boolean.valueOf(acceptInsecureCerts));
+            capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.parseBoolean(acceptInsecureCerts));
 
         // headless
-        String headless = o.get(HEADLESS);
+        String headless = browserProfileConfiguration.get(HEADLESS);
         if (!StringUtils.isEmpty(headless))
-            r.setHeadless(Boolean.valueOf(headless));
+            browserConfiguration.setHeadless(Boolean.valueOf(headless));
 
         // additional browser arguments
-        String arguments = o.get(ARGUMENTS);
+        String arguments = browserProfileConfiguration.get(ARGUMENTS);
         if (!StringUtils.isEmpty(arguments))
         {
             List<String> args = new LinkedList<>();
@@ -202,14 +220,14 @@ public class BrowserConfigurationMapper
                 // cut off trailing/leading whitespace because the browsers can't handle it
                 args.add(arg.trim());
             }
-            r.setArguments(args);
+            browserConfiguration.setArguments(args);
         }
 
-        capabilities.setCapability("name", o.get("name"));
-        r.setCapabilities(capabilities);
-        r.setConfigTag(o.get("browserTag"));
-        r.setName(o.get("name"));
+        capabilities.setCapability("name", browserProfileConfiguration.get("name"));
+        browserConfiguration.setCapabilities(capabilities);
+        browserConfiguration.setConfigTag(browserProfileConfiguration.get("browserTag"));
+        browserConfiguration.setName(browserProfileConfiguration.get("name"));
 
-        return r;
+        return browserConfiguration;
     }
 }

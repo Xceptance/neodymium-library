@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.statement.testdata.util.TestDataUtils;
-import com.xceptance.neodymium.util.Context;
+import com.xceptance.neodymium.util.Neodymium;
 
 public class TestdataStatement extends StatementBuilder
 {
@@ -63,7 +63,7 @@ public class TestdataStatement extends StatementBuilder
     @Override
     public void evaluate() throws Throwable
     {
-        Context.get().data.putAll(testData);
+        Neodymium.getData().putAll(testData);
         next.evaluate();
     }
 
@@ -292,7 +292,7 @@ public class TestdataStatement extends StatementBuilder
                 testDatasetIndetifier = "Data set";
             }
 
-            // replace paranthesis because https://bugs.eclipse.org/bugs/show_bug.cgi?id=102512
+            // replace parenthesis because https://bugs.eclipse.org/bugs/show_bug.cgi?id=102512
             // "Any text in parentheses is assumed to be the name of the class in which the test is defined."
             testDatasetIndetifier = testDatasetIndetifier.replaceAll("\\(", "[").replaceAll("\\)", "]");
 

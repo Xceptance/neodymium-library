@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.xceptance</groupId>
     <artifactId>neodymium-library</artifactId>
-    <version>1.1.0</version>
+    <version>2.0.0</version>
 
     <name>neodymium-library</name>
     <url>https://github.com/Xceptance/neodymium-library</url>
@@ -47,7 +47,7 @@
         <maven.compiler.source.version>1.8</maven.compiler.source.version>
         <maven.compiler.target.version>1.8</maven.compiler.target.version>
         <surefire.version>2.21.0</surefire.version>
-        <allure.version>2.6.0</allure.version>
+        <allure.version>2.7.0</allure.version>
         <cucumber.version>2.4.0</cucumber.version>
         <log4j.version>2.9.1</log4j.version>
     </properties>
@@ -90,6 +90,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.version}</version>
                 <configuration>
+                    <systemPropertyVariables>
+                        <java.util.logging.config.file>logging.properties</java.util.logging.config.file>
+                    </systemPropertyVariables>
+
                     <forkCount>4</forkCount>
                     <reuseForks>false</reuseForks>
                     <includes>
@@ -114,7 +118,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -123,14 +127,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <!-- remove pin of commons-lang3 when upgraded to 3.1.0 -->
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.commons</groupId>
-                        <artifactId>commons-lang3</artifactId>
-                        <version>3.7</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>
@@ -235,7 +231,13 @@
         <dependency>
             <groupId>com.codeborne</groupId>
             <artifactId>selenide</artifactId>
-            <version>4.12.2</version>
+            <version>4.12.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.jupiter</groupId>
+                    <artifactId>junit-jupiter-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

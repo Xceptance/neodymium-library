@@ -2,9 +2,9 @@ package com.xceptance.neodymium.testclasses.context.cucumbercontextclear;
 
 import org.junit.Assert;
 
-import com.xceptance.neodymium.util.Configuration;
-import com.xceptance.neodymium.util.Context;
-import com.xceptance.neodymium.util.Driver;
+import com.xceptance.neodymium.util.Neodymium;
+import com.xceptance.neodymium.util.NeodymiumConfiguration;
+import com.xceptance.neodymium.util.WebDriverUtils;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
@@ -17,30 +17,30 @@ public class CucumberContextSteps
     public void beforeTest()
     {
         // setup browser since we set our selenide defaults only if a browser is involved
-        Driver.setUp("Chrome_headless");
+        WebDriverUtils.setUp("Chrome_headless");
     }
 
     @After(order = 100)
     public void teardown(Scenario scenario)
     {
-        Driver.tearDown(scenario);
+        WebDriverUtils.tearDown(scenario);
     }
 
     @Given("Change timeout to 4000")
     public void testAndChangeDefaultTimeout()
     {
-        Configuration configuration = Context.get().configuration;
-        Assert.assertEquals(3000, configuration.timeout());
+        NeodymiumConfiguration configuration = Neodymium.configuration();
+        Assert.assertEquals(3000, configuration.selenideTimeout());
 
-        configuration.setProperty("selenide.timeout", "4000");
-        Assert.assertEquals(4000, configuration.timeout());
+        configuration.setProperty("neodymium.selenide.timeout", "4000");
+        Assert.assertEquals(4000, configuration.selenideTimeout());
     }
 
     @Given("Assert timeout of 3000")
     public void testDefaultTimeout()
     {
-        Configuration configuration = Context.get().configuration;
-        Assert.assertEquals(3000, configuration.timeout());
+        NeodymiumConfiguration configuration = Neodymium.configuration();
+        Assert.assertEquals(3000, configuration.selenideTimeout());
     }
 
     @Given("Change default collection timeout to 1234")

@@ -12,131 +12,131 @@ import com.xceptance.neodymium.NeodymiumRunner.DescriptionMode;
 @LoadPolicy(LoadType.MERGE)
 @Sources(
 {
-  "file:config/test.properties", "file:config/credentials.properties"
+  "file:config/neodymium.properties", "file:config/credentials.properties"
 })
-public interface Configuration extends Mutable
+public interface NeodymiumConfiguration extends Mutable
 {
-    @Key("debug.highlight")
+    @Key("neodymium.debugUtils.highlight")
     @DefaultValue("false")
     public boolean debuggingHighlightSelectedElements();
 
-    @Key("debug.highlight.duration")
+    @Key("neodymium.debugUtils.highlight.duration")
     @DefaultValue("100")
     public long debuggingHighlightDuration();
 
     // standard timeout for selenide interaction
-    @Key("selenide.timeout")
+    @Key("neodymium.selenide.timeout")
     @DefaultValue("3000")
-    public long timeout();
+    public long selenideTimeout();
 
-    @Key("stale.retry.count")
+    @Key("neodymium.selenideAddons.staleElement.retry.count")
     @DefaultValue("3")
     public int staleElementRetryCount();
 
-    @Key("stale.retry.timeout")
+    @Key("neodymium.selenideAddons.staleElement.retry.timeout")
     @DefaultValue("500")
     public int staleElementRetryTimeout();
 
-    @Key("javascript.timeout")
+    @Key("neodymium.javaScriptUtils.timeout")
     @DefaultValue("2000")
     public int javaScriptTimeout();
 
-    @Key("javascript.pool.interval")
+    @Key("neodymium.javaScriptUtils.pollingInterval")
     @DefaultValue("200")
-    public int javaScriptPoolInterval();
+    public int javaScriptPollingInterval();
 
-    @Key("javascript.pool.mustHaveBeenActive")
+    @Key("neodymium.javaScriptUtils.loading.jQueryIsRequired")
     @DefaultValue("true")
-    public boolean javaScriptMustHaveBeenActive();
+    public boolean javascriptLoadingJQueryIsRequired();
 
-    @Key("javascript.loading.animationSelector")
+    @Key("neodymium.javaScriptUtils.loading.animationSelector")
     public String javascriptLoadingAnimationSelector();
 
-    @Key("url")
+    @Key("neodymium.url")
     public String url();
 
-    @Key("url.protocol")
+    @Key("neodymium.url.protocol")
     public String protocol();
 
-    @Key("url.host")
+    @Key("neodymium.url.host")
     public String host();
 
-    @Key("url.path")
+    @Key("neodymium.url.path")
     public String path();
 
-    @Key("url.path")
+    @Key("neodymium.url.path")
     @DisableFeature(
     {
       VARIABLE_EXPANSION
     })
     public String rawPath();
 
-    @Key("url.site")
+    @Key("neodymium.url.site")
     public String site();
 
-    @Key("basicauth.username")
+    @Key("neodymium.basicauth.username")
     public String basicAuthUsername();
 
-    @Key("basicauth.password")
+    @Key("neodymium.basicauth.password")
     public String basicAuthPassword();
 
-    @Key("locale")
+    @Key("neodymium.locale")
     @DefaultValue("en_US")
     public String locale();
 
-    @Key("localization.file")
+    @Key("neodymium.localization.file")
     @DefaultValue("config/localization.yaml")
     public String localizationFile();
 
-    @Key("screenshots.perstep.always")
+    @Key("neodymium.allureAddons.screenshots.perstep.always")
     @DefaultValue("false")
     public boolean screenshotPerStep();
 
-    @Key("device.breakpoint.small")
+    @Key("neodymium.context.device.breakpoint.small")
     @DefaultValue("544")
     public int smallDeviceBreakpoint();
 
-    @Key("device.breakpoint.medium")
+    @Key("neodymium.context.device.breakpoint.medium")
     @DefaultValue("769")
     public int mediumDeviceBreakpoint();
 
-    @Key("device.breakpoint.large")
+    @Key("neodymium.context.device.breakpoint.large")
     @DefaultValue("992")
     public int largeDeviceBreakpoint();
 
-    @Key("device.breakpoint.xlarge")
+    @Key("neodymium.context.device.breakpoint.xlarge")
     @DefaultValue("1200")
     public int xlargeDeviceBreakpoint();
 
-    @Key("dataUtils.email.domain")
+    @Key("neodymium.dataUtils.email.domain")
     @DefaultValue("varmail.de")
     public String dataUtilsEmailDomain();
 
-    @Key("dataUtils.email.local.prefix")
+    @Key("neodymium.dataUtils.email.local.prefix")
     @DefaultValue("test")
     public String dataUtilsEmailLocalPrefix();
 
-    @Key("dataUtils.password.uppercaseCharAmount")
+    @Key("neodymium.dataUtils.password.uppercaseCharAmount")
     @DefaultValue("2")
     public int dataUtilsPasswordUppercaseCharAmount();
 
-    @Key("dataUtils.password.lowercaseCharAmount")
+    @Key("neodymium.dataUtils.password.lowercaseCharAmount")
     @DefaultValue("5")
     public int dataUtilsPasswordLowercaseCharAmount();
 
-    @Key("dataUtils.password.digitAmount")
+    @Key("neodymium.dataUtils.password.digitAmount")
     @DefaultValue("2")
     public int dataUtilsPasswordDigitAmount();
 
-    @Key("dataUtils.password.specialCharAmount")
+    @Key("neodymium.dataUtils.password.specialCharAmount")
     @DefaultValue("2")
     public int dataUtilsPasswordSpecialCharAmount();
 
-    @Key("dataUtils.password.specialChars")
+    @Key("neodymium.dataUtils.password.specialChars")
     @DefaultValue("+-#$%%&.;,_")
     public String dataUtilsPasswordSpecialChars();
 
-    @Key("junit.viewmode")
+    @Key("neodymium.junit.viewmode")
     @DefaultValue("tree")
     public DescriptionMode junitViewMode();
 }

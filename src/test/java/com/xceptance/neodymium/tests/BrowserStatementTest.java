@@ -12,7 +12,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.remote.CapabilityType;
 
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
@@ -25,7 +26,7 @@ import com.xceptance.neodymium.testclasses.browser.classonly.TwoSameClassBrowser
 import com.xceptance.neodymium.testclasses.browser.methodonly.MethodBrowserSuppressNoBrowserAnnotation;
 import com.xceptance.neodymium.testclasses.browser.methodonly.OneBrowserOneMethodBrowserSuppressed;
 import com.xceptance.neodymium.testclasses.browser.mixed.ClassAndMethodSameBrowserOneMethod;
-import com.xceptance.neodymium.util.Context;
+import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserStatementTest extends NeodymiumTest
 {
@@ -34,7 +35,7 @@ public class BrowserStatementTest extends NeodymiumTest
     @Before
     public void setJUnitViewModeFlat()
     {
-        Context.get().configuration.setProperty("junit.viewmode", "flat");
+        Neodymium.configuration().setProperty("neodymium.junit.viewmode", "flat");
     }
 
     @BeforeClass
@@ -183,9 +184,9 @@ public class BrowserStatementTest extends NeodymiumTest
         Assert.assertEquals("chrome", config.getConfigTag());
         Assert.assertEquals("Google Chrome", config.getName());
         Assert.assertEquals("local", config.getTestEnvironment());
-        DesiredCapabilities testCapabilities = config.getCapabilities();
+        MutableCapabilities testCapabilities = config.getCapabilities();
         Assert.assertEquals("chrome", testCapabilities.getBrowserName());
-        Assert.assertEquals(true, testCapabilities.acceptInsecureCerts());
+        Assert.assertEquals(true, testCapabilities.getCapability(CapabilityType.ACCEPT_INSECURE_CERTS));
         LinkedList<String> list = new LinkedList<>();
         list.add("headless");
         Assert.assertEquals(list, config.getArguments());
@@ -196,7 +197,7 @@ public class BrowserStatementTest extends NeodymiumTest
         Assert.assertNotNull(config);
         Assert.assertEquals("multiChrome", config.getConfigTag());
         Assert.assertEquals("Multi Argument Chrome", config.getName());
-        DesiredCapabilities testCapabilities = config.getCapabilities();
+        MutableCapabilities testCapabilities = config.getCapabilities();
         Assert.assertEquals("chrome", testCapabilities.getBrowserName());
         LinkedList<String> list = new LinkedList<>();
         list.add("-crash-test");
@@ -211,7 +212,7 @@ public class BrowserStatementTest extends NeodymiumTest
         Assert.assertEquals("firefox", config.getConfigTag());
         Assert.assertEquals("Mozilla Firefox", config.getName());
         Assert.assertEquals(null, config.getTestEnvironment());
-        DesiredCapabilities testCapabilities = config.getCapabilities();
+        MutableCapabilities testCapabilities = config.getCapabilities();
         Assert.assertEquals("firefox", testCapabilities.getBrowserName());
         LinkedList<String> list = new LinkedList<>();
         list.add("headless");
@@ -223,7 +224,7 @@ public class BrowserStatementTest extends NeodymiumTest
         Assert.assertNotNull(config);
         Assert.assertEquals("multiFirefox", config.getConfigTag());
         Assert.assertEquals("Multi Argument Firefox", config.getName());
-        DesiredCapabilities testCapabilities = config.getCapabilities();
+        MutableCapabilities testCapabilities = config.getCapabilities();
         Assert.assertEquals("firefox", testCapabilities.getBrowserName());
         LinkedList<String> list = new LinkedList<>();
         list.add("-headless");

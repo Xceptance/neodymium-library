@@ -32,7 +32,7 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.configurati
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.DriverServerPath;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.WebDriverProperties;
-import com.xceptance.neodymium.util.Context;
+import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserStatement extends StatementBuilder
 {
@@ -169,11 +169,11 @@ public class BrowserStatement extends StatementBuilder
             // set browser window size
             BrowserRunnerHelper.setBrowserWindowSize(browserConfiguration, webdriver);
             WebDriverRunner.setWebDriver(webdriver);
-            Context.get().driver = webdriver;
-            Context.get().browserProfileName = browserConfiguration.getConfigTag();
+            Neodymium.setDriver(webdriver);
+            Neodymium.setBrowserProfileName(browserConfiguration.getConfigTag());
 
             // set our default timeout
-            Configuration.timeout = Context.get().configuration.timeout();
+            Configuration.timeout = Neodymium.configuration().selenideTimeout();
             Configuration.collectionsTimeout = Configuration.timeout * 2;
         }
         else
@@ -186,16 +186,15 @@ public class BrowserStatement extends StatementBuilder
     public void teardown(boolean testFailed)
     {
         WebDriverProperties webDriverProperties = multibrowserConfiguration.getWebDriverProperties();
-        Context context = Context.get();
-        BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(context.browserProfileName);
+        BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(Neodymium.getBrowserProfileName());
 
         if (testFailed && webDriverProperties.keepBrowserOpenOnFailure() && !browserConfiguration.isHeadless())
         {
             // test failed and we want to leave the browser instance open
             // don't quit the webdriver, just remove references
             LOGGER.debug("Keep browser open");
-            context.driver = null;
-            context.browserProfileName = null;
+            Neodymium.setDriver(null);
+            Neodymium.setBrowserProfileName(null);
             return;
         }
 
@@ -213,8 +212,8 @@ public class BrowserStatement extends StatementBuilder
                     webdriver.quit();
             }
         }
-        context.driver = null;
-        context.browserProfileName = null;
+        Neodymium.setDriver(null);
+        Neodymium.setBrowserProfileName(null);
     }
 
     public static void quitCachedBrowser()

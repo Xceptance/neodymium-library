@@ -11,12 +11,12 @@ import org.openqa.selenium.WebElement;
 
 import com.codeborne.selenide.Selenide;
 
-public class HighlightAndWait
+public class DebugUtils
 {
     private static final String injectJS;
     static
     {
-        try (InputStream inputStream = HighlightAndWait.class.getResourceAsStream("inject.js"))
+        try (InputStream inputStream = DebugUtils.class.getResourceAsStream("inject.js"))
         {
             injectJS = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
         }
@@ -28,7 +28,7 @@ public class HighlightAndWait
 
     public static void injectHighlightingJs()
     {
-        if (Context.get().configuration.debuggingHighlightSelectedElements())
+        if (Neodymium.configuration().debuggingHighlightSelectedElements())
         {
             injectJavaScript();
         }
@@ -36,13 +36,13 @@ public class HighlightAndWait
 
     public static void highlightAllElements(By by, WebDriver driver)
     {
-        if (Context.get().configuration.debuggingHighlightSelectedElements())
+        if (Neodymium.configuration().debuggingHighlightSelectedElements())
         {
             List<WebElement> foundElements = driver.findElements(by);
             highlightElements(foundElements, driver);
-            if (Context.get().configuration.debuggingHighlightDuration() > 0)
+            if (Neodymium.configuration().debuggingHighlightDuration() > 0)
             {
-                Selenide.sleep(Context.get().configuration.debuggingHighlightDuration());
+                Selenide.sleep(Neodymium.configuration().debuggingHighlightDuration());
             }
             resetAllHighlight();
         }
@@ -50,7 +50,7 @@ public class HighlightAndWait
 
     public static void resetHighlights()
     {
-        if (Context.get().configuration.debuggingHighlightSelectedElements())
+        if (Neodymium.configuration().debuggingHighlightSelectedElements())
         {
             resetAllHighlight();
         }
@@ -63,7 +63,7 @@ public class HighlightAndWait
 
     static void highlightElements(List<WebElement> elements, WebDriver driver)
     {
-        long highlightTime = Context.get().configuration.debuggingHighlightDuration();
+        long highlightTime = Neodymium.configuration().debuggingHighlightDuration();
         if (highlightTime <= 0)
         {
             highlightTime = 75;

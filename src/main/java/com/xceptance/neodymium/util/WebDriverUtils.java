@@ -10,7 +10,7 @@ import com.xceptance.neodymium.module.statement.browser.BrowserStatement;
 
 import cucumber.api.Scenario;
 
-public class Driver
+public class WebDriverUtils
 {
     private static ThreadLocal<BrowserStatement> browserStatement = ThreadLocal.withInitial(new Supplier<BrowserStatement>()
     {
@@ -21,6 +21,17 @@ public class Driver
         }
     });
 
+    /**
+     * @param browserProfileName
+     *            the browser profile name that is configured in the browser.properties file
+     * 
+     *            <pre>
+     *            public void setup(String browserProfileName)
+     *            {
+     *                WebDriverUtils.setUp(browserProfileName);
+     *            }
+     *            </pre>
+     **/
     public static void setUp(final String browserProfileName)
     {
         if (browserStatement.get().getBrowserTags().contains(browserProfileName))
@@ -33,6 +44,17 @@ public class Driver
         }
     }
 
+    /**
+     * @param scenario
+     *            Scenario is a Cucumber API class that can be gathered in hooks via dependency injection
+     * 
+     *            <pre>
+     *            public void setup(Scenario scenario)
+     *            {
+     *                WebDriverUtils.setUpWithBrowserTag(scenario);
+     *            }
+     *            </pre>
+     **/
     public static void setUpWithBrowserTag(Scenario scenario)
     {
         String browserProfileName = getFirstMatchingBrowserTag(scenario);
@@ -47,7 +69,7 @@ public class Driver
      *            &#64;cucumber.api.java.After(order = 100)
      *            public void tearDown(Scenario scenario)
      *            {
-     *                Driver.tearDown(scenario);
+     *                WebDriverUtils.tearDown(scenario);
      *            }
      *            </pre>
      **/
@@ -87,5 +109,4 @@ public class Driver
             return firstBrowserTagFound;
         }
     }
-
 }
