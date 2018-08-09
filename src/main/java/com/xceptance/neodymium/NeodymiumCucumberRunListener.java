@@ -17,13 +17,15 @@ import io.qameta.allure.selenide.AllureSelenide;
 
 public class NeodymiumCucumberRunListener extends RunListener
 {
+    public static final String LISTENER_NAME = "allure-selenide-cucumber";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumCucumberRunListener.class);
 
     private List<Failure> failures = new LinkedList<>();
 
     public NeodymiumCucumberRunListener()
     {
-        SelenideLogger.addListener("allure-selenide", new AllureSelenide());
+        SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
     }
 
     @Override

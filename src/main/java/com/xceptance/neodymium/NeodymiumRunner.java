@@ -69,16 +69,18 @@ import io.qameta.allure.selenide.AllureSelenide;
  */
 public class NeodymiumRunner extends BlockJUnit4ClassRunner
 {
+    public static final String LISTENER_NAME = "allure-selenide-java";
+
     public NeodymiumRunner(Class<?> klass) throws InitializationError
     {
         super(klass);
-        SelenideLogger.addListener("allure-selenide", new AllureSelenide());
+        SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
     }
 
     public enum DescriptionMode
     {
-     flat,
-     tree,
+        flat,
+        tree,
     };
 
     private List<FrameworkMethod> computedTestMethods;
