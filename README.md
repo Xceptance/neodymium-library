@@ -1,4 +1,4 @@
-# Neodymium
+# Neodymium 2.0.0
 Neodymium tries to solve your typical and most pressing UI test automation problems by combining  JUnit, WebDriver, BDD/Cucumber, and proper reporting. It gives you ready to use templates, assembles well-known open source projects, and enhances this all with additional functionality that is often missing.
 
 Neodymium is basically the combination of state of the art open source test libraries with additionally glue to make it stick reliably together.
@@ -40,7 +40,7 @@ If you are still impatient, here is the quickest way to get Neodymium added to y
 <dependency>
     <groupId>com.xceptance</groupId>
     <artifactId>neodymium-library</artifactId>
-    <version>1.1.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 Add the `@RunWith` annotation to your test class or its superclass. This enables test execution with Neodymium.
