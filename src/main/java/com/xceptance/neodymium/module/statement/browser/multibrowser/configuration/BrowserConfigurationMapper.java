@@ -102,7 +102,7 @@ public class BrowserConfigurationMapper
         }
         else
         {
-            capabilities = DesiredCapabilities.firefox();
+            capabilities = new DesiredCapabilities();
         }
 
         /*
