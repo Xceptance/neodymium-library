@@ -2,11 +2,13 @@ package com.xceptance.neodymium.util;
 
 import static com.codeborne.selenide.Selenide.$;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.ex.ElementShould;
+import com.codeborne.selenide.ex.UIAssertionError;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 
@@ -43,5 +45,23 @@ public class SelenideAddonsTest
         $("#search-container .search-field").val("searchphrase").submit();
 
         $("#content .search-field").should(SelenideAddons.matchValue("\\d+"));
+    }
+
+    @Test()
+    public void testWrapAssertion()
+    {
+        Selenide.open("https://blog.xceptance.com/");
+        SelenideAddons.wrapAssertionError(() -> {
+            Assert.assertEquals("Passionate Testing | Xceptance Blog", Selenide.title());
+        });
+    }
+
+    @Test(expected = UIAssertionError.class)
+    public void testWrapAssertionError()
+    {
+        Selenide.open("https://blog.xceptance.com/");
+        SelenideAddons.wrapAssertionError(() -> {
+            Assert.assertEquals("MyPageTitle", Selenide.title());
+        });
     }
 }

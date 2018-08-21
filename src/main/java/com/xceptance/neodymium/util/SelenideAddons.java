@@ -13,6 +13,7 @@ import org.openqa.selenium.WebElement;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.ex.UIAssertionError;
 import com.codeborne.selenide.impl.Html;
 import com.codeborne.selenide.impl.WebElementsCollectionWrapper;
 
@@ -189,5 +190,25 @@ public class SelenideAddons
                 return name + " '" + regex + '\'';
             }
         };
+    }
+
+    /**
+     * The missing wrapper to generate screenshots and save the html source code if a jUnit assertion fails.<br>
+     * <br>
+     * Assert that page title is correct and dump the page source and a screenshot in case of a mismatch
+     * <p>
+     * Sample: <code> wrapAssertionError(()->{Assert.assertEquals("MyPageTitle", Selenide.title());});</code>
+     * </p>
+     */
+    public static void wrapAssertionError(final Runnable runnable)
+    {
+        try
+        {
+            runnable.run();
+        }
+        catch (AssertionError e)
+        {
+            throw UIAssertionError.wrapThrowable(e, System.currentTimeMillis());
+        }
     }
 }
