@@ -8,9 +8,12 @@ import java.util.stream.Collectors;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebElement;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.impl.Html;
 import com.codeborne.selenide.impl.WebElementsCollectionWrapper;
 
 /**
@@ -142,5 +145,49 @@ public class SelenideAddons
 
         // never get here
         return null;
+    }
+
+    /**
+     * The missing regular expression condition for value attributes.<br>
+     * <br>
+     * <p>
+     * Sample: <code>$("input").waitWhile(matchesValue("foo"), 12000)</code>
+     * </p>
+     *
+     * @see #matchValue(String)
+     */
+    public static Condition matchesValue(String text)
+    {
+        return matchValue(text);
+    }
+
+    /**
+     * The missing regular expression condition for value attributes.<br>
+     * <br>
+     * Assert that given element's value attribute matches given regular expression
+     * <p>
+     * Sample: <code>$("input").should(matchValue("Hello\s*John"))</code>
+     * </p>
+     *
+     * @param regex
+     *            e.g. Kicked.*Chuck Norris - in this case ".*" can contain any characters including spaces, tabs, CR
+     *            etc.
+     */
+    public static Condition matchValue(final String regex)
+    {
+        return new Condition("match value")
+        {
+            @Override
+            public boolean apply(WebElement element)
+            {
+                return Html.text.matches(element.getAttribute("value"), regex);
+            }
+
+            @Override
+            public String toString()
+            {
+                return name + " '" + regex + '\'';
+            }
+        };
     }
 }
