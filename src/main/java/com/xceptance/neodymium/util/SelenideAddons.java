@@ -154,7 +154,10 @@ public class SelenideAddons
      * <p>
      * Sample: <code>$("input").waitWhile(matchesValue("foo"), 12000)</code>
      * </p>
-     *
+     * 
+     * @param text
+     *            The text that should be contained within the value attribute
+     * @return a Selenide {@link Condition}
      * @see #matchValue(String)
      */
     public static Condition matchesValue(String text)
@@ -173,6 +176,7 @@ public class SelenideAddons
      * @param regex
      *            e.g. Kicked.*Chuck Norris - in this case ".*" can contain any characters including spaces, tabs, CR
      *            etc.
+     * @return a Selenide {@link Condition}
      */
     public static Condition matchValue(final String regex)
     {
@@ -197,8 +201,11 @@ public class SelenideAddons
      * <br>
      * Assert that page title is correct and dump the page source and a screenshot in case of a mismatch
      * <p>
-     * Sample: <code> wrapAssertionError(()->{Assert.assertEquals("MyPageTitle", Selenide.title());});</code>
+     * Sample: <code> wrapAssertionError(()-&gt;{Assert.assertEquals("MyPageTitle", Selenide.title());});</code>
      * </p>
+     * 
+     * @param runnable
+     *            The lambda containing an assertion
      */
     public static void wrapAssertionError(final Runnable runnable)
     {
