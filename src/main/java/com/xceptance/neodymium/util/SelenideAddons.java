@@ -168,9 +168,9 @@ public class SelenideAddons
     /**
      * The missing regular expression condition for value attributes.<br>
      * <br>
-     * Assert that given element's value attribute matches given regular expression
      * <p>
-     * Sample: <code>$("input").should(matchValue("Hello\s*John"))</code>
+     * Sample: Assert that given element's value attribute matches given regular expression
+     * <code>$("input").should(matchValue("Hello\s*John"))</code>
      * </p>
      *
      * @param regex
@@ -199,9 +199,9 @@ public class SelenideAddons
     /**
      * The missing wrapper to generate screenshots and save the html source code if a jUnit assertion fails.<br>
      * <br>
-     * Assert that page title is correct and dump the page source and a screenshot in case of a mismatch
      * <p>
-     * Sample: <code> wrapAssertionError(()-&gt;{Assert.assertEquals("MyPageTitle", Selenide.title());});</code>
+     * Sample: Assert that page title is correct and dump the page source and a screenshot in case of a mismatch
+     * <code> wrapAssertionError(()-&gt;{Assert.assertEquals("MyPageTitle", Selenide.title());});</code>
      * </p>
      * 
      * @param runnable
