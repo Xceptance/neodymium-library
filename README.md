@@ -1,4 +1,4 @@
-# Neodymium 2.0.0
+# Neodymium 2.1.0
 Neodymium tries to solve your typical and most pressing UI test automation problems by combining  JUnit, WebDriver, BDD/Cucumber, and proper reporting. It gives you ready to use templates, assembles well-known open source projects, and enhances this all with additional functionality that is often missing.
 
 Neodymium is basically the combination of state of the art open source test libraries with additionally glue to make it stick reliably together.

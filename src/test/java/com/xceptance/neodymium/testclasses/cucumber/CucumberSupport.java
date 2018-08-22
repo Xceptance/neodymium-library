@@ -2,6 +2,8 @@ package com.xceptance.neodymium.testclasses.cucumber;
 
 import org.junit.Assert;
 
+import com.codeborne.selenide.logevents.SelenideLogger;
+import com.xceptance.neodymium.NeodymiumCucumberRunListener;
 import com.xceptance.neodymium.util.Neodymium;
 import com.xceptance.neodymium.util.WebDriverUtils;
 
@@ -9,6 +11,7 @@ import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
 
 public class CucumberSupport
 {
@@ -38,5 +41,11 @@ public class CucumberSupport
     public void validateBrowser(String browserProfileName)
     {
         Assert.assertEquals(browserProfileName, Neodymium.getBrowserProfileName());
+    }
+
+    @Then("^validate the AllureSelenide listener is active$")
+    public void validateAllureSelenideListenerIsActive()
+    {
+        Assert.assertTrue(" AllureSelenide listener is not attached", SelenideLogger.hasListener(NeodymiumCucumberRunListener.LISTENER_NAME));
     }
 }

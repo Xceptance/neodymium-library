@@ -17,11 +17,14 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
+import com.codeborne.selenide.logevents.SelenideLogger;
 import com.xceptance.neodymium.module.EnhancedMethod;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.order.DefaultStatementRunOrder;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.util.Neodymium;
+
+import io.qameta.allure.selenide.AllureSelenide;
 
 /**
  * This class executes {@link JUnit4} test classes (aka JUnit Runner) and adds several features to test execution e.g.
@@ -66,9 +69,12 @@ import com.xceptance.neodymium.util.Neodymium;
  */
 public class NeodymiumRunner extends BlockJUnit4ClassRunner
 {
+    public static final String LISTENER_NAME = "allure-selenide-java";
+
     public NeodymiumRunner(Class<?> klass) throws InitializationError
     {
         super(klass);
+        SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
     }
 
     public enum DescriptionMode
