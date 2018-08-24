@@ -40,7 +40,7 @@ If you are still impatient, here is the quickest way to get Neodymium added to y
 <dependency>
     <groupId>com.xceptance</groupId>
     <artifactId>neodymium-library</artifactId>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 Add the `@RunWith` annotation to your test class or its superclass. This enables test execution with Neodymium.
