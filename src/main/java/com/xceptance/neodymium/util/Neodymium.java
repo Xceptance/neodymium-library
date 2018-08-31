@@ -124,7 +124,7 @@ public class Neodymium
      * 
      * @return {@link Dimension} object containing width and height of current window
      */
-    public Dimension getWindowSize()
+    public static Dimension getWindowSize()
     {
         return getDriver().manage().window().getSize();
     }
@@ -134,7 +134,7 @@ public class Neodymium
      * 
      * @return {@link Dimension} object containing width and height of current viewport
      */
-    public Dimension getViewportSize()
+    public static Dimension getViewportSize()
     {
         Long width = Selenide.executeJavaScript("return window.innerWidth");
         Long height = Selenide.executeJavaScript("return window.innerHeight");
@@ -147,7 +147,7 @@ public class Neodymium
      * 
      * @return {@link Dimension} object containing width and height of current page
      */
-    public Dimension getPageSize()
+    public static Dimension getPageSize()
     {
         Long width = Selenide.executeJavaScript("return document.documentElement.clientWidth");
         Long height = Selenide.executeJavaScript("return document.documentElement.clientHeight");
@@ -160,9 +160,9 @@ public class Neodymium
      * 
      * @return boolean value indicating whether it is a mobile device or not
      */
-    public boolean isMobile()
+    public static boolean isMobile()
     {
-        return getViewportSize().getWidth() < configuration.mediumDeviceBreakpoint();
+        return getViewportSize().getWidth() < configuration().mediumDeviceBreakpoint();
     }
 
     /**
@@ -171,10 +171,10 @@ public class Neodymium
      * @return boolean value indicating whether it is a tablet device/large phone or not
      * @see Neodymium
      */
-    public boolean isTablet()
+    public static boolean isTablet()
     {
-        return getViewportSize().getWidth() >= configuration.mediumDeviceBreakpoint() &&
-               getViewportSize().getWidth() < configuration.largeDeviceBreakpoint();
+        return getViewportSize().getWidth() >= configuration().mediumDeviceBreakpoint() &&
+               getViewportSize().getWidth() < configuration().largeDeviceBreakpoint();
     }
 
     /**
@@ -183,10 +183,10 @@ public class Neodymium
      * @return boolean value indicating whether it is a device with small desktop or not
      * @see Neodymium
      */
-    public boolean isSmallDesktop()
+    public static boolean isSmallDesktop()
     {
-        return getViewportSize().getWidth() >= configuration.largeDeviceBreakpoint() &&
-               getViewportSize().getWidth() < configuration.xlargeDeviceBreakpoint();
+        return getViewportSize().getWidth() >= configuration().largeDeviceBreakpoint() &&
+               getViewportSize().getWidth() < configuration().xlargeDeviceBreakpoint();
     }
 
     /**
@@ -195,9 +195,9 @@ public class Neodymium
      * @return boolean value indicating whether it is a device with small desktop or not
      * @see Neodymium
      */
-    public boolean isLargeDesktop()
+    public static boolean isLargeDesktop()
     {
-        return getViewportSize().getWidth() >= configuration.xlargeDeviceBreakpoint();
+        return getViewportSize().getWidth() >= configuration().xlargeDeviceBreakpoint();
     }
 
     /**
@@ -206,8 +206,8 @@ public class Neodymium
      * @return boolean value indicating whether it is a device desktop (neither small nor large) or not
      * @see Neodymium
      */
-    public boolean isDesktop()
+    public static boolean isDesktop()
     {
-        return getViewportSize().getWidth() >= configuration.largeDeviceBreakpoint();
+        return getViewportSize().getWidth() >= configuration().largeDeviceBreakpoint();
     }
 }
