@@ -49,7 +49,7 @@ public class Neodymium
      * 
      * @return the context instance for the current Thread
      */
-    static Neodymium getContex()
+    static Neodymium getContext()
     {
         return CONTEXTS.computeIfAbsent(Thread.currentThread(), key -> {
             return new Neodymium();
@@ -74,12 +74,12 @@ public class Neodymium
      */
     public static String localizedText(final String key)
     {
-        return getContex().localization.getText(key);
+        return getContext().localization.getText(key);
     }
 
     public static Map<String, String> getData()
     {
-        return getContex().data;
+        return getContext().data;
     }
 
     /**
@@ -96,27 +96,27 @@ public class Neodymium
 
     public static NeodymiumConfiguration configuration()
     {
-        return getContex().configuration;
+        return getContext().configuration;
     }
 
     public static WebDriver getDriver()
     {
-        return getContex().driver;
+        return getContext().driver;
     }
 
     public static void setDriver(WebDriver driver)
     {
-        getContex().driver = driver;
+        getContext().driver = driver;
     }
 
     public static String getBrowserProfileName()
     {
-        return getContex().browserProfileName;
+        return getContext().browserProfileName;
     }
 
     public static void setBrowserProfileName(String browserProfileName)
     {
-        getContex().browserProfileName = browserProfileName;
+        getContext().browserProfileName = browserProfileName;
     }
 
     /**
