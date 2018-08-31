@@ -49,7 +49,7 @@ public class Neodymium
      * 
      * @return the context instance for the current Thread
      */
-    static Neodymium getContext()
+    public static Neodymium getContext()
     {
         return CONTEXTS.computeIfAbsent(Thread.currentThread(), key -> {
             return new Neodymium();
