@@ -1,11 +1,9 @@
 package com.xceptance.neodymium.tests;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
@@ -18,10 +16,31 @@ import com.xceptance.neodymium.testclasses.context.cucumbercontextclear.Cucumber
 
 public class NeodymiumContextTest extends NeodymiumTest
 {
-    private static MultibrowserConfiguration browserConfig;
+    @Test
+    public void testContextGetCleared() throws Exception
+    {
+        // test that NeodymiumRunner clears the context before each run
+        Result result = JUnitCore.runClasses(ContextGetsCleared.class);
+        checkPass(result, 2, 0, 0);
+    }
 
-    @BeforeClass
-    public static void beforeClass() throws IOException
+    @Test
+    public void testCucumberContextGetsCleared() throws Exception
+    {
+        // test that NeodymiumCucumberRunListener clears the context before each run
+        Result result = JUnitCore.runClasses(CucumberContextGetsCleared.class);
+        checkPass(result, 4, 0, 0);
+    }
+
+    @Test
+    public void testDefaultSelenideTimeoutCheck() throws Exception
+    {
+        Result result = JUnitCore.runClasses(DefaultSelenideTimeoutCheck.class);
+        checkPass(result, 2, 0, 0);
+    }
+
+    @Test
+    public void testContextWindowSize() throws Exception
     {
         Map<String, String> properties = new HashMap<>();
 
@@ -54,36 +73,10 @@ public class NeodymiumContextTest extends NeodymiumTest
         tempFiles.add(tempConfigFile);
         writeMapToPropertiesFile(properties, tempConfigFile);
 
+        // this line is important as we initialize the config from the temporary file we created above
         MultibrowserConfiguration.clearAllInstances();
-        browserConfig = MultibrowserConfiguration.getInstance(tempConfigFile.getPath());
-    }
+        MultibrowserConfiguration.getInstance(tempConfigFile.getPath());
 
-    @Test
-    public void testContextGetCleared() throws Exception
-    {
-        // test that NeodymiumRunner clears the context before each run
-        Result result = JUnitCore.runClasses(ContextGetsCleared.class);
-        checkPass(result, 2, 0, 0);
-    }
-
-    @Test
-    public void testCucumberContextGetsCleared() throws Exception
-    {
-        // test that NeodymiumCucumberRunListener clears the context before each run
-        Result result = JUnitCore.runClasses(CucumberContextGetsCleared.class);
-        checkPass(result, 4, 0, 0);
-    }
-
-    @Test
-    public void testDefaultSelenideTimeoutCheck() throws Exception
-    {
-        Result result = JUnitCore.runClasses(DefaultSelenideTimeoutCheck.class);
-        checkPass(result, 2, 0, 0);
-    }
-
-    @Test
-    public void testContextWindowSize()
-    {
         // checks Neodymium functions for different browser sizes
         // isMobile()
         // isTablet()
