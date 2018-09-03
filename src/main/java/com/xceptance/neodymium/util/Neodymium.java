@@ -162,7 +162,7 @@ public class Neodymium
      */
     public static boolean isMobile()
     {
-        return getViewportSize().getWidth() < configuration().mediumDeviceBreakpoint();
+        return getViewportSize().getWidth() < configuration().smallDeviceBreakpoint();
     }
 
     /**
@@ -173,8 +173,10 @@ public class Neodymium
      */
     public static boolean isTablet()
     {
-        return getViewportSize().getWidth() >= configuration().mediumDeviceBreakpoint() &&
-               getViewportSize().getWidth() < configuration().largeDeviceBreakpoint();
+        int width = getViewportSize().getWidth();
+        NeodymiumConfiguration cfg = configuration();
+
+        return width >= cfg.smallDeviceBreakpoint() && width < cfg.mediumDeviceBreakpoint();
     }
 
     /**
@@ -185,17 +187,33 @@ public class Neodymium
      */
     public static boolean isSmallDesktop()
     {
-        return getViewportSize().getWidth() >= configuration().largeDeviceBreakpoint() &&
-               getViewportSize().getWidth() < configuration().xlargeDeviceBreakpoint();
+        int width = getViewportSize().getWidth();
+        NeodymiumConfiguration cfg = configuration();
+
+        return width >= cfg.mediumDeviceBreakpoint() && width < cfg.largeDeviceBreakpoint();
     }
 
     /**
      * Large desktop resolution?
      * 
-     * @return boolean value indicating whether it is a device with small desktop or not
+     * @return boolean value indicating whether it is a device with large desktop or not
      * @see Neodymium
      */
     public static boolean isLargeDesktop()
+    {
+        int width = getViewportSize().getWidth();
+        NeodymiumConfiguration cfg = configuration();
+
+        return width >= cfg.largeDeviceBreakpoint() && width < cfg.xlargeDeviceBreakpoint();
+    }
+
+    /**
+     * Extra large desktop resolution?
+     * 
+     * @return boolean value indicating whether it is a device with extra large resolution or not
+     * @see Neodymium
+     */
+    public static boolean isExtraLargeDesktop()
     {
         return getViewportSize().getWidth() >= configuration().xlargeDeviceBreakpoint();
     }
@@ -203,11 +221,12 @@ public class Neodymium
     /**
      * Desktop of any kind?
      * 
-     * @return boolean value indicating whether it is a device desktop (neither small nor large) or not
+     * @return boolean value indicating whether it is a device desktop (isSmallDesktop() or isLargeDesktop() or
+     *         isExtaLargeDesktop()) or not
      * @see Neodymium
      */
     public static boolean isDesktop()
     {
-        return getViewportSize().getWidth() >= configuration().largeDeviceBreakpoint();
+        return getViewportSize().getWidth() >= configuration().mediumDeviceBreakpoint();
     }
 }
