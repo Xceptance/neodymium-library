@@ -1,3 +1,5 @@
+[![Maven Central](https://img.shields.io/maven-central/v/com.xceptance/neodymium-library.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.xceptance%22%20AND%20a:%22neodymium-library%22)
+
 # Neodymium
 Neodymium tries to solve your typical and most pressing UI test automation problems by combining  JUnit, WebDriver, BDD/Cucumber, and proper reporting. It gives you ready to use templates, assembles well-known open source projects, and enhances this all with additional functionality that is often missing.
 
