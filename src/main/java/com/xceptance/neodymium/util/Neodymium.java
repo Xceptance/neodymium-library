@@ -9,6 +9,8 @@ import org.aeonbits.owner.ConfigFactory;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 
+import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Configuration.AssertionMode;
 import com.codeborne.selenide.Selenide;
 
 /**
@@ -228,5 +230,62 @@ public class Neodymium
     public static boolean isDesktop()
     {
         return getViewportSize().getWidth() >= configuration().mediumDeviceBreakpoint();
+    }
+
+    /**
+     * Shortcut to turn on/off Selenide SoftAssertions
+     * 
+     * @param useSoftAssertions
+     */
+    public static void softAssertions(boolean useSoftAssertions)
+    {
+        if (useSoftAssertions)
+        {
+            Configuration.assertionMode = AssertionMode.SOFT;
+        }
+        else
+        {
+            Configuration.assertionMode = AssertionMode.STRICT;
+        }
+    }
+
+    /**
+     * Shortcut to turn on/off Selenide clickViaJs
+     * 
+     * @param clickViaJs
+     */
+    public static void clickViaJs(boolean clickViaJs)
+    {
+        Configuration.clickViaJs = clickViaJs;
+    }
+
+    /**
+     * Shortcut to turn on/off Selenide fastSetValue
+     * 
+     * @param fastSetValue
+     */
+    public static void fastSetValue(boolean fastSetValue)
+    {
+        Configuration.fastSetValue = fastSetValue;
+    }
+
+    /**
+     * Shortcut to turn on/off Selenide timeout
+     * 
+     * @param timeout
+     */
+    public static void timeout(long timeout)
+    {
+        Configuration.timeout = timeout;
+    }
+
+    /**
+     * Shortcut to turn on/off Selenide collectionsTimeout
+     * 
+     * @param collectionsTimeout
+     */
+    public static void collectionsTimeout(int collectionsTimeout)
+    {
+        Configuration.collectionsTimeout = collectionsTimeout;
     }
 }
