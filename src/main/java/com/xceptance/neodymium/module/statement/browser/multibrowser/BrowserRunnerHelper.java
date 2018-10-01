@@ -39,9 +39,9 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.DriverServerPath;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.ProxyConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.TestEnvironment;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.WebDriverProperties;
+import com.xceptance.neodymium.util.Neodymium;
 
 public final class BrowserRunnerHelper
 {
@@ -69,8 +69,6 @@ public final class BrowserRunnerHelper
     /**
      * Returns an {@link URL} to a Selenium grid (e.g. SauceLabs) that contains basic authentication for access
      * 
-     * @param proxyConfig
-     *            {@link ProxyConfiguration} that is used to connect to gridUrl
      * @param gridUrl
      *            The {@link URL} to the grid
      * @param gridUsername
@@ -81,8 +79,7 @@ public final class BrowserRunnerHelper
      * @throws MalformedURLException
      *             if the given gridUrl is invalid
      */
-    protected static HttpCommandExecutor createGridExecutor(final ProxyConfiguration proxyConfig, final URL gridUrl,
-                                                            final String gridUsername, final String gridPassword)
+    protected static HttpCommandExecutor createGridExecutor(final URL gridUrl, final String gridUsername, final String gridPassword)
         throws MalformedURLException
     {
         // create a configuration for accessing target site via proxy (if a proxy is defined)
@@ -91,12 +88,14 @@ public final class BrowserRunnerHelper
         final BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
 
         // create credentials for proxy access
-        if (proxyConfig.useProxy() //
-            && !StringUtils.isEmpty(proxyConfig.getSocketUsername()) //
-            && !StringUtils.isEmpty(proxyConfig.getSocketPassword()))
+        if (Neodymium.configuration().useProxy() //
+            && !StringUtils.isEmpty(Neodymium.configuration().getProxySocketUsername()) //
+            && !StringUtils.isEmpty(Neodymium.configuration().getProxySocketPassword()))
         {
-            final AuthScope proxyAuth = new AuthScope(proxyConfig.getHost(), Integer.valueOf(proxyConfig.getPort()));
-            final Credentials proxyCredentials = new UsernamePasswordCredentials(proxyConfig.getSocketUsername(), proxyConfig.getSocketPassword());
+            final AuthScope proxyAuth = new AuthScope(Neodymium.configuration().getProxyHost(), Integer.valueOf(Neodymium.configuration().getProxyPort()));
+            final Credentials proxyCredentials = new UsernamePasswordCredentials(Neodymium.configuration()
+                                                                                          .getProxySocketUsername(), Neodymium.configuration()
+                                                                                                                              .getProxySocketPassword());
             basicCredentialsProvider.setCredentials(proxyAuth, proxyCredentials);
         }
 
@@ -112,8 +111,8 @@ public final class BrowserRunnerHelper
         // now create a http client, set the custom proxy and inject the credentials
         final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
         clientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
-        if (proxyConfig.useProxy())
-            clientBuilder.setProxy(new HttpHost(proxyConfig.getHost(), Integer.valueOf(proxyConfig.getPort())));
+        if (Neodymium.configuration().useProxy())
+            clientBuilder.setProxy(new HttpHost(Neodymium.configuration().getProxyHost(), Integer.valueOf(Neodymium.configuration().getProxyPort())));
         final CloseableHttpClient httpClient = clientBuilder.build();
 
         final Map<String, CommandInfo> additionalCommands = new HashMap<String, CommandInfo>(); // just a dummy
@@ -212,12 +211,12 @@ public final class BrowserRunnerHelper
         final MutableCapabilities capabilities = config.getCapabilities();
 
         final String testEnvironment = config.getTestEnvironment();
-        ProxyConfiguration proxyConfig = MultibrowserConfiguration.getInstance().getProxyConfiguration();
+        // ProxyConfiguration proxyConfig = MultibrowserConfiguration.getInstance().getProxyConfiguration();
         if (StringUtils.isEmpty(testEnvironment) || "local".equalsIgnoreCase(testEnvironment))
         {
-            if (proxyConfig.useProxy())
+            if (Neodymium.configuration().useProxy())
             {
-                capabilities.setCapability(CapabilityType.PROXY, createProxyCapabilities(proxyConfig));
+                capabilities.setCapability(CapabilityType.PROXY, createProxyCapabilities());
             }
 
             DriverServerPath driverServerPath = MultibrowserConfiguration.getInstance().getDriverServerPath();
@@ -312,32 +311,32 @@ public final class BrowserRunnerHelper
             final URL gridUrl = new URL(gridUrlString);
 
             // establish connection to target website
-            return new RemoteWebDriver(createGridExecutor(proxyConfig, gridUrl, gridUsername, gridPassword), capabilities);
+            return new RemoteWebDriver(createGridExecutor(gridUrl, gridUsername, gridPassword), capabilities);
         }
 
         return null;
     }
 
-    public static Proxy createProxyCapabilities(ProxyConfiguration proxyConfig)
+    public static Proxy createProxyCapabilities()
     {
-        final String proxyHost = proxyConfig.getHost() + ":" + proxyConfig.getPort();
+        final String proxyHost = Neodymium.configuration().getProxyHost() + ":" + Neodymium.configuration().getProxyPort();
 
         final Proxy webdriverProxy = new Proxy();
         webdriverProxy.setHttpProxy(proxyHost);
         webdriverProxy.setSslProxy(proxyHost);
         webdriverProxy.setFtpProxy(proxyHost);
         webdriverProxy.setSocksProxy(proxyHost);
-        if (StringUtils.isNoneEmpty(proxyConfig.getSocketUsername(), proxyConfig.getSocketPassword()))
+        if (StringUtils.isNoneEmpty(Neodymium.configuration().getProxySocketUsername(), Neodymium.configuration().getProxySocketPassword()))
         {
-            webdriverProxy.setSocksUsername(proxyConfig.getSocketUsername());
-            webdriverProxy.setSocksPassword(proxyConfig.getSocketPassword());
+            webdriverProxy.setSocksUsername(Neodymium.configuration().getProxySocketUsername());
+            webdriverProxy.setSocksPassword(Neodymium.configuration().getProxySocketPassword());
         }
-        if (proxyConfig.getSocketVersion() != null)
+        if (Neodymium.configuration().getProxySocketVersion() != null)
         {
-            webdriverProxy.setSocksVersion(proxyConfig.getSocketVersion());
+            webdriverProxy.setSocksVersion(Neodymium.configuration().getProxySocketVersion());
         }
 
-        webdriverProxy.setNoProxy(proxyConfig.getBypass());
+        webdriverProxy.setNoProxy(Neodymium.configuration().getProxyBypass());
         return webdriverProxy;
     }
 }

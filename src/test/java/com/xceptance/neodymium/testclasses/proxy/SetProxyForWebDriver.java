@@ -1,6 +1,5 @@
 package com.xceptance.neodymium.testclasses.proxy;
 
-import org.aeonbits.owner.ConfigFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -11,9 +10,9 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariOptions;
 
 import com.xceptance.neodymium.module.statement.browser.multibrowser.BrowserRunnerHelper;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.ProxyConfiguration;
+import com.xceptance.neodymium.util.Neodymium;
 
-public class SetProxForWebDriver
+public class SetProxyForWebDriver
 {
     @Test
     public void testChrome()
@@ -58,13 +57,10 @@ public class SetProxForWebDriver
     private DesiredCapabilities createCapabilitiesWithProxy()
     {
         final DesiredCapabilities capabilities = new DesiredCapabilities();
-
-        ProxyConfiguration proxyConfig = ConfigFactory.create(ProxyConfiguration.class);
-        if (proxyConfig.useProxy())
+        if (Neodymium.configuration().useProxy())
         {
-            capabilities.setCapability(CapabilityType.PROXY, BrowserRunnerHelper.createProxyCapabilities(proxyConfig));
+            capabilities.setCapability(CapabilityType.PROXY, BrowserRunnerHelper.createProxyCapabilities());
         }
-
         return capabilities;
     }
 }

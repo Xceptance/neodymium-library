@@ -12,7 +12,7 @@ import com.xceptance.neodymium.NeodymiumRunner.DescriptionMode;
 @LoadPolicy(LoadType.MERGE)
 @Sources(
 {
-  "file:config/neodymium.properties", "file:config/credentials.properties"
+  "file:config/neodymium.properties", "file:config/credentials.properties", "file:config/dev-neodymium.properties"
 })
 public interface NeodymiumConfiguration extends Mutable
 {
@@ -139,4 +139,26 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.junit.viewmode")
     @DefaultValue("tree")
     public DescriptionMode junitViewMode();
+
+    @Key("neodymium.proxy")
+    @DefaultValue("false")
+    public boolean useProxy();
+
+    @Key("neodymium.proxy.host")
+    public String getProxyHost();
+
+    @Key("neodymium.proxy.port")
+    public String getProxyPort();
+
+    @Key("neodymium.proxy.bypassForHosts")
+    public String getProxyBypass();
+
+    @Key("neodymium.proxy.socket.version")
+    public Integer getProxySocketVersion();
+
+    @Key("neodymium.proxy.socket.userName")
+    public String getProxySocketUsername();
+
+    @Key("neodymium.proxy.socket.password")
+    public String getProxySocketPassword();
 }
