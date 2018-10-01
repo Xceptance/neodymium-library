@@ -29,7 +29,6 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.BrowserRunn
 import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowsers;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.DriverServerPath;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.util.Neodymium;
 
@@ -59,11 +58,9 @@ public class BrowserStatement extends StatementBuilder
         if (multibrowserConfiguration == null)
             multibrowserConfiguration = MultibrowserConfiguration.getInstance(BROWSER_PROFILE_FILE);
 
-        DriverServerPath driverServerPath = multibrowserConfiguration.getDriverServerPath();
-
-        final String ieDriverPath = driverServerPath.getIeDriverPath();
-        final String chromeDriverPath = driverServerPath.getChromeDriverPath();
-        final String geckoDriverPath = driverServerPath.getFirefoxDriverPath();
+        final String ieDriverPath = Neodymium.configuration().getIeDriverPath();
+        final String chromeDriverPath = Neodymium.configuration().getChromeDriverPath();
+        final String geckoDriverPath = Neodymium.configuration().getFirefoxDriverPath();
 
         // shall we run old school firefox?
         final boolean firefoxLegacy = Neodymium.configuration().useFirefoxLegacy();

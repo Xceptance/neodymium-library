@@ -31,8 +31,6 @@ public class MultibrowserConfiguration
 
     private static final String DEFAULT_BROWSER_PROFILE_FILE = "./config/browser.properties";
 
-    private DriverServerPath driverServerPath;
-
     private Map<String, TestEnvironment> testEnvironments;
 
     private Map<String, BrowserConfiguration> browserProfiles;
@@ -74,7 +72,6 @@ public class MultibrowserConfiguration
 
         Factory configurationFactory = ConfigFactory.newInstance();
         configurationFactory.setProperty("configurationFile", configFile);
-        driverServerPath = configurationFactory.create(DriverServerPath.class);
     }
 
     private void parseTestEnvironments()
@@ -168,11 +165,6 @@ public class MultibrowserConfiguration
     public static void clearAllInstances()
     {
         CONFIGURATIONS.clear();
-    }
-
-    public DriverServerPath getDriverServerPath()
-    {
-        return driverServerPath;
     }
 
     public TestEnvironment getTestEnvironment(String environment)

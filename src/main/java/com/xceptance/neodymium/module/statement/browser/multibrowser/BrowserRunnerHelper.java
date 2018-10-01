@@ -37,7 +37,6 @@ import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.DriverServerPath;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.TestEnvironment;
 import com.xceptance.neodymium.util.Neodymium;
@@ -216,13 +215,11 @@ public final class BrowserRunnerHelper
                 capabilities.setCapability(CapabilityType.PROXY, createProxyCapabilities());
             }
 
-            DriverServerPath driverServerPath = MultibrowserConfiguration.getInstance().getDriverServerPath();
-
             final String browserName = config.getCapabilities().getBrowserName();
             if (chromeBrowsers.contains(browserName))
             {
                 // do we have a custom path?
-                final String pathToBrowser = driverServerPath.getChromeBrowserPath();
+                final String pathToBrowser = Neodymium.configuration().getChromeBrowserPath();
                 final ChromeOptions options = new ChromeOptions();
 
                 // This is a workaround for a changed Selenium behavior
@@ -270,7 +267,7 @@ public final class BrowserRunnerHelper
             else if (firefoxBrowsers.contains(browserName))
             {
                 FirefoxOptions options = new FirefoxOptions();
-                options.setBinary(createFirefoxBinary(driverServerPath.getFirefoxBrowserPath()));
+                options.setBinary(createFirefoxBinary(Neodymium.configuration().getFirefoxBrowserPath()));
                 options.merge(capabilities);
                 options.setHeadless(config.isHeadless());
                 if (config.getArguments() != null && config.getArguments().size() > 0)
