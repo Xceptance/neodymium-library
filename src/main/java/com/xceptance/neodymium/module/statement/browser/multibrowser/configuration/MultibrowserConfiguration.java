@@ -35,8 +35,6 @@ public class MultibrowserConfiguration
 
     private WebDriverProperties webDriverProperties;
 
-    // private ProxyConfiguration proxyConfiguration;
-
     private Map<String, TestEnvironment> testEnvironments;
 
     private Map<String, BrowserConfiguration> browserProfiles;
