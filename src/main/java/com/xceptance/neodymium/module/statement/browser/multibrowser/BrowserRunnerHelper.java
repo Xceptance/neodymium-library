@@ -40,7 +40,6 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.configurati
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.DriverServerPath;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.TestEnvironment;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.WebDriverProperties;
 import com.xceptance.neodymium.util.Neodymium;
 
 public final class BrowserRunnerHelper
@@ -134,11 +133,9 @@ public final class BrowserRunnerHelper
      */
     public static void setBrowserWindowSize(final BrowserConfiguration config, final WebDriver driver)
     {
-        WebDriverProperties webDriverProperties = MultibrowserConfiguration.getInstance().getWebDriverProperties();
-
         // get the configured window size and set it if defined
-        final int windowWidth = webDriverProperties.getWindowWidth();
-        final int windowHeight = webDriverProperties.getWindowHeight();
+        final int windowWidth = Neodymium.configuration().getWindowWidth();
+        final int windowHeight = Neodymium.configuration().getWindowHeight();
 
         final int configuredBrowserWidth = config.getBrowserWidth();
         final int configuredBrowserHeight = config.getBrowserHeight();

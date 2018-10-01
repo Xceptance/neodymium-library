@@ -31,7 +31,6 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCa
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.DriverServerPath;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.WebDriverProperties;
 import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserStatement extends StatementBuilder
@@ -61,14 +60,13 @@ public class BrowserStatement extends StatementBuilder
             multibrowserConfiguration = MultibrowserConfiguration.getInstance(BROWSER_PROFILE_FILE);
 
         DriverServerPath driverServerPath = multibrowserConfiguration.getDriverServerPath();
-        WebDriverProperties webDriverProperties = multibrowserConfiguration.getWebDriverProperties();
 
         final String ieDriverPath = driverServerPath.getIeDriverPath();
         final String chromeDriverPath = driverServerPath.getChromeDriverPath();
         final String geckoDriverPath = driverServerPath.getFirefoxDriverPath();
 
         // shall we run old school firefox?
-        final boolean firefoxLegacy = webDriverProperties.useFirefoxLegacy();
+        final boolean firefoxLegacy = Neodymium.configuration().useFirefoxLegacy();
         System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, Boolean.toString(!firefoxLegacy));
 
         if (!StringUtils.isEmpty(ieDriverPath))
@@ -140,7 +138,7 @@ public class BrowserStatement extends StatementBuilder
         try
         {
             // try to find appropriate web driver in cache before create a new instance
-            if (MultibrowserConfiguration.getInstance().getWebDriverProperties().reuseWebDriver())
+            if (Neodymium.configuration().reuseWebDriver())
             {
                 webdriver = WebDriverCache.instance.getRemoveWebDriver(browserConfiguration.getConfigTag());
                 if (webdriver != null)
@@ -185,10 +183,9 @@ public class BrowserStatement extends StatementBuilder
 
     public void teardown(boolean testFailed)
     {
-        WebDriverProperties webDriverProperties = multibrowserConfiguration.getWebDriverProperties();
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(Neodymium.getBrowserProfileName());
 
-        if (testFailed && webDriverProperties.keepBrowserOpenOnFailure() && !browserConfiguration.isHeadless())
+        if (testFailed && Neodymium.configuration().keepBrowserOpenOnFailure() && !browserConfiguration.isHeadless())
         {
             // test failed and we want to leave the browser instance open
             // don't quit the webdriver, just remove references
@@ -198,14 +195,14 @@ public class BrowserStatement extends StatementBuilder
             return;
         }
 
-        if (webDriverProperties.reuseWebDriver())
+        if (Neodymium.configuration().reuseWebDriver())
         {
             LOGGER.debug("Put browser into cache");
             WebDriverCache.instance.putWebDriver(browserTag, webdriver);
         }
         else
         {
-            if (browserConfiguration.isHeadless() || !webDriverProperties.keepBrowserOpen())
+            if (browserConfiguration.isHeadless() || !Neodymium.configuration().keepBrowserOpen())
             {
                 LOGGER.debug("Teardown browser");
                 if (webdriver != null)
@@ -218,8 +215,7 @@ public class BrowserStatement extends StatementBuilder
 
     public static void quitCachedBrowser()
     {
-        WebDriverProperties webDriverProperties = MultibrowserConfiguration.getInstance().getWebDriverProperties();
-        if (!webDriverProperties.keepBrowserOpen())
+        if (!Neodymium.configuration().keepBrowserOpen())
         {
             Collection<WebDriver> allWebdriver = WebDriverCache.instance.getAllWebdriver();
 

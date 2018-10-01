@@ -33,8 +33,6 @@ public class MultibrowserConfiguration
 
     private DriverServerPath driverServerPath;
 
-    private WebDriverProperties webDriverProperties;
-
     private Map<String, TestEnvironment> testEnvironments;
 
     private Map<String, BrowserConfiguration> browserProfiles;
@@ -77,7 +75,6 @@ public class MultibrowserConfiguration
         Factory configurationFactory = ConfigFactory.newInstance();
         configurationFactory.setProperty("configurationFile", configFile);
         driverServerPath = configurationFactory.create(DriverServerPath.class);
-        webDriverProperties = configurationFactory.create(WebDriverProperties.class);
     }
 
     private void parseTestEnvironments()
@@ -176,11 +173,6 @@ public class MultibrowserConfiguration
     public DriverServerPath getDriverServerPath()
     {
         return driverServerPath;
-    }
-
-    public WebDriverProperties getWebDriverProperties()
-    {
-        return webDriverProperties;
     }
 
     public TestEnvironment getTestEnvironment(String environment)
