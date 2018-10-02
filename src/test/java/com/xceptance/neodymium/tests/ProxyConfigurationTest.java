@@ -2,12 +2,9 @@ package com.xceptance.neodymium.tests;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,8 +29,6 @@ public class ProxyConfigurationTest extends NeodymiumTest
 
     private static final String SOCKET_VERSION = "4";
 
-    private static File tempConfigFile;
-
     @BeforeClass
     public static void beforeClass() throws IOException
     {
@@ -45,8 +40,9 @@ public class ProxyConfigurationTest extends NeodymiumTest
         properties.put("neodymium.proxy.socket.password", SOCKET_PASSWORD);
         properties.put("neodymium.proxy.socket.version", SOCKET_VERSION);
 
-        tempConfigFile = new File("./config/dev-neodymium.properties");
+        File tempConfigFile = new File("./config/dev-neodymium.properties");
         writeMapToPropertiesFile(properties, tempConfigFile);
+        tempFiles.add(tempConfigFile);
     }
 
     @Before
@@ -69,22 +65,5 @@ public class ProxyConfigurationTest extends NeodymiumTest
         // test adding proxy configuration to different WebDriver options and validate them
         Result result = JUnitCore.runClasses(SetProxyForWebDriver.class);
         checkPass(result, 4, 0, 0);
-    }
-
-    @AfterClass
-    public static void afterClass()
-    {
-        if (tempConfigFile.exists())
-        {
-            try
-            {
-                Files.delete(tempConfigFile.toPath());
-            }
-            catch (Exception e)
-            {
-                System.out.println(MessageFormat.format("couldn''t delete temporary file: ''{0}'' caused by {1}",
-                                                        tempConfigFile.getAbsolutePath(), e));
-            }
-        }
     }
 }
