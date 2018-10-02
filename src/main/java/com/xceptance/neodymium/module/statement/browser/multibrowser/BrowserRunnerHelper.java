@@ -207,7 +207,6 @@ public final class BrowserRunnerHelper
         final MutableCapabilities capabilities = config.getCapabilities();
 
         final String testEnvironment = config.getTestEnvironment();
-        // ProxyConfiguration proxyConfig = MultibrowserConfiguration.getInstance().getProxyConfiguration();
         if (StringUtils.isEmpty(testEnvironment) || "local".equalsIgnoreCase(testEnvironment))
         {
             if (Neodymium.configuration().useProxy())
