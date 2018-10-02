@@ -25,11 +25,15 @@ public class MultibrowserConfiguration
 
     private static final String TEST_ENVIRONMENT_FILE = "./config/credentials.properties";
 
+    private static final String DEVELOPMENT_ENVIRONMENT_FILE = "./config/dev-credentials.properties";
+
     private static final String BROWSER_PROFILE_PREFIX = "browserprofile.";
 
     private static final String TEST_ENVIRONMENT_PREFIX = BROWSER_PROFILE_PREFIX + "testEnvironment.";
 
     private static final String DEFAULT_BROWSER_PROFILE_FILE = "./config/browser.properties";
+
+    private static final String DEVELOPMENT_BROWSER_PROFILE_FILE = "./config/dev-browser.properties";
 
     private Map<String, TestEnvironment> testEnvironments;
 
@@ -52,15 +56,28 @@ public class MultibrowserConfiguration
                 testEnvironmentProperties.load(fileInputStream);
                 fileInputStream.close();
             }
-
-            File browerProfileFile = new File(configFile);
-            if (browerProfileFile.exists())
+            File devEnvironmentFile = new File(DEVELOPMENT_ENVIRONMENT_FILE);
+            if (devEnvironmentFile.exists())
             {
-                FileInputStream fileInputStream = new FileInputStream(browerProfileFile);
-                browserProfileProperties.load(fileInputStream);
+                FileInputStream fileInputStream = new FileInputStream(devEnvironmentFile);
+                testEnvironmentProperties.load(fileInputStream);
                 fileInputStream.close();
             }
 
+            File browserProfileFile = new File(configFile);
+            if (browserProfileFile.exists())
+            {
+                FileInputStream fileInputStream = new FileInputStream(browserProfileFile);
+                browserProfileProperties.load(fileInputStream);
+                fileInputStream.close();
+            }
+            File devBrowserProfileFile = new File(DEVELOPMENT_BROWSER_PROFILE_FILE);
+            if (devBrowserProfileFile.exists())
+            {
+                FileInputStream fileInputStream = new FileInputStream(devBrowserProfileFile);
+                browserProfileProperties.load(fileInputStream);
+                fileInputStream.close();
+            }
         }
         catch (Exception e)
         {
