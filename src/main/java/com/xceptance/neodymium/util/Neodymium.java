@@ -35,11 +35,18 @@ public class Neodymium
     // our data for anywhere access
     private final Map<String, String> data = new HashMap<>();
 
+    public final static String TEMPORARY_CONFIG_FILE_PROPTERY_NAME = "neodymium.temporaryConfigFile";
+
     /**
      * Constructor
      */
     private Neodymium()
     {
+        // the property needs to be a valid URI in order to satisfy the Owner framework
+        if (null == ConfigFactory.getProperty(TEMPORARY_CONFIG_FILE_PROPTERY_NAME))
+        {
+            ConfigFactory.setProperty(TEMPORARY_CONFIG_FILE_PROPTERY_NAME, "file:this/path/should/never/exist/noOneShouldCreateMe.properties");
+        }
         configuration = ConfigFactory.create(NeodymiumConfiguration.class, System.getProperties(), System.getenv());
         localization = NeodymiumLocalization.build(configuration.localizationFile());
     }

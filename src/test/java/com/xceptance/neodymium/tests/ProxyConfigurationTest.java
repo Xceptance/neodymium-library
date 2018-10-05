@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
+import org.aeonbits.owner.ConfigFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
@@ -32,7 +32,10 @@ public class ProxyConfigurationTest extends NeodymiumTest
     @BeforeClass
     public static void beforeClass() throws IOException
     {
+        final String fileLocation = "config/temp-proxy-neodymium.properties";
+
         Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.proxy", "true");
         properties.put("neodymium.proxy.host", HOST);
         properties.put("neodymium.proxy.port", PORT);
         properties.put("neodymium.proxy.bypassForHosts", BYPASS);
@@ -40,15 +43,11 @@ public class ProxyConfigurationTest extends NeodymiumTest
         properties.put("neodymium.proxy.socket.password", SOCKET_PASSWORD);
         properties.put("neodymium.proxy.socket.version", SOCKET_VERSION);
 
-        File tempConfigFile = new File("./config/dev-neodymium.properties");
+        File tempConfigFile = new File("./" + fileLocation);
         writeMapToPropertiesFile(properties, tempConfigFile);
         tempFiles.add(tempConfigFile);
-    }
 
-    @Before
-    public void before()
-    {
-        Neodymium.configuration().setProperty("neodymium.proxy", "true");
+        ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPTERY_NAME, "file:" + fileLocation);
     }
 
     @Test
