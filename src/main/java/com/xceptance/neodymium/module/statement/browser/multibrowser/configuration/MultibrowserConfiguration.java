@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.aeonbits.owner.ConfigFactory;
-import org.aeonbits.owner.Factory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +21,13 @@ public class MultibrowserConfiguration
 
     private static final Map<String, MultibrowserConfiguration> CONFIGURATIONS = Collections.synchronizedMap(new LinkedHashMap<>());
 
-    private static final String TEST_ENVIRONMENT_FILE = "./config/credentials.properties";
-
-    private static final String DEVELOPMENT_ENVIRONMENT_FILE = "./config/dev-credentials.properties";
-
     private static final String BROWSER_PROFILE_PREFIX = "browserprofile.";
 
     private static final String TEST_ENVIRONMENT_PREFIX = BROWSER_PROFILE_PREFIX + "testEnvironment.";
+
+    private static final String DEFAULT_TEST_ENVIRONMENT_FILE = "./config/credentials.properties";
+
+    private static final String DEVELOPMENT_TEST_ENVIRONMENT_FILE = "./config/dev-credentials.properties";
 
     private static final String DEFAULT_BROWSER_PROFILE_FILE = "./config/browser.properties";
 
@@ -43,52 +41,23 @@ public class MultibrowserConfiguration
 
     private Properties browserProfileProperties;
 
-    private MultibrowserConfiguration(String configFile)
+    private MultibrowserConfiguration(String temporaryConfigFile)
     {
+        // setting up the test environment
         testEnvironmentProperties = new Properties();
-        browserProfileProperties = new Properties();
-        try
-        {
-            File testEnvironmentFile = new File(TEST_ENVIRONMENT_FILE);
-            if (testEnvironmentFile.exists())
-            {
-                FileInputStream fileInputStream = new FileInputStream(testEnvironmentFile);
-                testEnvironmentProperties.load(fileInputStream);
-                fileInputStream.close();
-            }
-            File devEnvironmentFile = new File(DEVELOPMENT_ENVIRONMENT_FILE);
-            if (devEnvironmentFile.exists())
-            {
-                FileInputStream fileInputStream = new FileInputStream(devEnvironmentFile);
-                testEnvironmentProperties.load(fileInputStream);
-                fileInputStream.close();
-            }
-
-            File browserProfileFile = new File(configFile);
-            if (browserProfileFile.exists())
-            {
-                FileInputStream fileInputStream = new FileInputStream(browserProfileFile);
-                browserProfileProperties.load(fileInputStream);
-                fileInputStream.close();
-            }
-            File devBrowserProfileFile = new File(DEVELOPMENT_BROWSER_PROFILE_FILE);
-            if (devBrowserProfileFile.exists())
-            {
-                FileInputStream fileInputStream = new FileInputStream(devBrowserProfileFile);
-                browserProfileProperties.load(fileInputStream);
-                fileInputStream.close();
-            }
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException(e);
-        }
-
+        loadPropertiesFromFile(DEFAULT_TEST_ENVIRONMENT_FILE, testEnvironmentProperties);
+        loadPropertiesFromFile(DEVELOPMENT_TEST_ENVIRONMENT_FILE, testEnvironmentProperties);
         parseTestEnvironments();
-        parseBrowserProfiles();
 
-        Factory configurationFactory = ConfigFactory.newInstance();
-        configurationFactory.setProperty("configurationFile", configFile);
+        // setting up the browser profiles
+        browserProfileProperties = new Properties();
+        loadPropertiesFromFile(DEFAULT_BROWSER_PROFILE_FILE, browserProfileProperties);
+        loadPropertiesFromFile(DEVELOPMENT_BROWSER_PROFILE_FILE, browserProfileProperties);
+        if (StringUtils.isNotEmpty(temporaryConfigFile))
+        {
+            loadPropertiesFromFile(temporaryConfigFile, browserProfileProperties);
+        }
+        parseBrowserProfiles();
     }
 
     private void parseTestEnvironments()
@@ -159,7 +128,7 @@ public class MultibrowserConfiguration
         {
             LOGGER.debug(MessageFormat.format("No multi-browser configuration loaded. Load default configuration from ''{0}''",
                                               DEFAULT_BROWSER_PROFILE_FILE));
-            getInstance(DEFAULT_BROWSER_PROFILE_FILE);
+            getInstance(null);
         }
 
         return CONFIGURATIONS.entrySet().iterator().next().getValue();
@@ -192,5 +161,23 @@ public class MultibrowserConfiguration
     public Map<String, BrowserConfiguration> getBrowserProfiles()
     {
         return browserProfiles;
+    }
+
+    private static void loadPropertiesFromFile(String path, Properties properties)
+    {
+        try
+        {
+            File source = new File(path);
+            if (source.exists())
+            {
+                FileInputStream fileInputStream = new FileInputStream(source);
+                properties.load(fileInputStream);
+                fileInputStream.close();
+            }
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -84,5 +84,4 @@ public class BrowserMultiplicationTest extends NeodymiumTest
         };
         checkDescription(TwoBrowserTwoMethods.class, expected);
     }
-
 }

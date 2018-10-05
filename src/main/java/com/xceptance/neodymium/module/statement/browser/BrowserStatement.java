@@ -44,8 +44,6 @@ public class BrowserStatement extends StatementBuilder
 
     private static final String SYSTEM_PROPERTY_BROWSERDEFINITION = "browserdefinition";
 
-    private static final String BROWSER_PROFILE_FILE = "./config/browser.properties";
-
     private List<String> browserDefinitions = new LinkedList<>();
 
     private MultibrowserConfiguration multibrowserConfiguration = MultibrowserConfiguration.getInstance();
@@ -56,7 +54,7 @@ public class BrowserStatement extends StatementBuilder
     {
         // that is like a dirty hack to provide testing ability
         if (multibrowserConfiguration == null)
-            multibrowserConfiguration = MultibrowserConfiguration.getInstance(BROWSER_PROFILE_FILE);
+            multibrowserConfiguration = MultibrowserConfiguration.getInstance();
 
         final String ieDriverPath = Neodymium.configuration().getIeDriverPath();
         final String chromeDriverPath = Neodymium.configuration().getChromeDriverPath();
