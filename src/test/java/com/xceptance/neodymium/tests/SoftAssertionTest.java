@@ -4,6 +4,7 @@ import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Selenide.$;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -11,6 +12,7 @@ import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Configuration.AssertionMode;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.ex.ElementNotFound;
+import com.codeborne.selenide.junit.SoftAsserts;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.util.Neodymium;
@@ -19,6 +21,9 @@ import com.xceptance.neodymium.util.Neodymium;
 @Browser("Chrome_headless")
 public class SoftAssertionTest
 {
+    @Rule
+    public SoftAsserts softAsserts = new SoftAsserts();
+
     @Test(expected = ElementNotFound.class)
     public void validateSoftAssertion()
     {
@@ -34,7 +39,5 @@ public class SoftAssertionTest
 
         // This should not be called since
         throw new NullPointerException();
-
-        // TODO validate that SoftAssertions are visible in JUnit output
     }
 }
