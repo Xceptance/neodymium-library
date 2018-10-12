@@ -9,6 +9,8 @@ import org.aeonbits.owner.ConfigFactory;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 
+import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.Configuration.AssertionMode;
 import com.codeborne.selenide.Selenide;
 
 /**
@@ -235,5 +237,74 @@ public class Neodymium
     public static boolean isDesktop()
     {
         return getViewportSize().getWidth() >= configuration().mediumDeviceBreakpoint();
+    }
+
+    /**
+     * Shortcut to turn on/off Selenide SoftAssertions <br>
+     * You need to add the following JUnit rule to the test class to enable the feature
+     * 
+     * <pre>
+     * &#64;Rule
+     * public SoftAsserts softAsserts = new com.codeborne.selenide.junit.SoftAsserts();
+     * </pre>
+     * 
+     * @param useSoftAssertions
+     *            boolean if the Selenide soft assertion feature is activated
+     */
+    public static void softAssertions(boolean useSoftAssertions)
+    {
+        if (useSoftAssertions)
+        {
+            Configuration.assertionMode = AssertionMode.SOFT;
+        }
+        else
+        {
+            Configuration.assertionMode = AssertionMode.STRICT;
+        }
+    }
+
+    /**
+     * Shortcut to turn on/off Selenide clickViaJs
+     * 
+     * @param clickViaJs
+     *            boolean that decides if a click is executed via JavaScript
+     */
+    public static void clickViaJs(boolean clickViaJs)
+    {
+        Configuration.clickViaJs = clickViaJs;
+    }
+
+    /**
+     * Shortcut to turn on/off Selenide fastSetValue
+     * 
+     * @param fastSetValue
+     *            boolean that decides if a value is set JavaScript
+     */
+    public static void fastSetValue(boolean fastSetValue)
+    {
+        Configuration.fastSetValue = fastSetValue;
+    }
+
+    /**
+     * Shortcut to turn on/off Selenide timeout
+     * 
+     * @param timeout
+     *            the time that a Selenide command waits implicitly before it raises an error if it can't be executed
+     */
+    public static void timeout(long timeout)
+    {
+        Configuration.timeout = timeout;
+    }
+
+    /**
+     * Shortcut to turn on/off Selenide collectionsTimeout
+     * 
+     * @param collectionsTimeout
+     *            the time that a Selenide collections command waits implicitly before it raises an error if it can't be
+     *            executed
+     */
+    public static void collectionsTimeout(int collectionsTimeout)
+    {
+        Configuration.collectionsTimeout = collectionsTimeout;
     }
 }
