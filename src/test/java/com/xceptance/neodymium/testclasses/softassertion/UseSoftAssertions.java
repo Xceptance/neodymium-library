@@ -8,8 +8,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.Configuration.AssertionMode;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.ex.ElementNotFound;
 import com.codeborne.selenide.junit.SoftAsserts;

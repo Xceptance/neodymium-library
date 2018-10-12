@@ -9,8 +9,8 @@ import org.aeonbits.owner.ConfigFactory;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 
+import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.Configuration.AssertionMode;
 import com.codeborne.selenide.Selenide;
 
 /**
@@ -294,17 +294,5 @@ public class Neodymium
     public static void timeout(long timeout)
     {
         Configuration.timeout = timeout;
-    }
-
-    /**
-     * Shortcut to turn on/off Selenide collectionsTimeout
-     * 
-     * @param collectionsTimeout
-     *            the time that a Selenide collections command waits implicitly before it raises an error if it can't be
-     *            executed
-     */
-    public static void collectionsTimeout(int collectionsTimeout)
-    {
-        Configuration.collectionsTimeout = collectionsTimeout;
     }
 }
