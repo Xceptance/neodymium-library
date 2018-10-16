@@ -13,61 +13,76 @@ public class WindowSizeTests
 {
     @Test
     @Browser("chrome500")
-    public void testIsMobile()
+    public void testIsExtraSmallDevice()
     {
+        Assert.assertTrue("should be an extra small device", Neodymium.isExtraSmallDevice());
+        Assert.assertFalse("shouldn't be a small device", Neodymium.isSmallDevice());
+        Assert.assertFalse("shouldn't be a medium device", Neodymium.isMediumDevice());
+        Assert.assertFalse("shouldn't be a large device", Neodymium.isLargeDevice());
+        Assert.assertFalse("shouldn't be a extra large device", Neodymium.isExtraLargeDevice());
+
         Assert.assertTrue("should be mobile", Neodymium.isMobile());
         Assert.assertFalse("shouldn't be tablet", Neodymium.isTablet());
-        Assert.assertFalse("shouldn't be small desktop", Neodymium.isSmallDesktop());
         Assert.assertFalse("shouldn't be desktop", Neodymium.isDesktop());
-        Assert.assertFalse("shouldn't be large desktop", Neodymium.isLargeDesktop());
-        Assert.assertFalse("shouldn't be extra large desktop", Neodymium.isExtraLargeDesktop());
     }
 
     @Test
     @Browser("chrome544")
-    public void testIsTablet()
+    public void testIsSmallDevice()
     {
-        Assert.assertFalse("shouldn't be mobile", Neodymium.isMobile());
-        Assert.assertTrue("should be tablet", Neodymium.isTablet());
-        Assert.assertFalse("shouldn't be small desktop", Neodymium.isSmallDesktop());
+        Assert.assertFalse("shouldn't be an extra small device", Neodymium.isExtraSmallDevice());
+        Assert.assertTrue("should be a small device", Neodymium.isSmallDevice());
+        Assert.assertFalse("shouldn't be a medium device", Neodymium.isMediumDevice());
+        Assert.assertFalse("shouldn't be a large device", Neodymium.isLargeDevice());
+        Assert.assertFalse("shouldn't be a extra large device", Neodymium.isExtraLargeDevice());
+
+        Assert.assertTrue("should be mobile", Neodymium.isMobile());
+        Assert.assertFalse("shouldn't be tablet", Neodymium.isTablet());
         Assert.assertFalse("shouldn't be desktop", Neodymium.isDesktop());
-        Assert.assertFalse("shouldn't be large desktop", Neodymium.isLargeDesktop());
-        Assert.assertFalse("shouldn't be extra large desktop", Neodymium.isExtraLargeDesktop());
     }
 
     @Test
     @Browser("chrome769")
-    public void testIsSmallDesktop()
+    public void testIsMediumDevice()
     {
+        Assert.assertFalse("shouldn't be an extra small device", Neodymium.isExtraSmallDevice());
+        Assert.assertFalse("shouldn't be a small device", Neodymium.isSmallDevice());
+        Assert.assertTrue("should be a medium device", Neodymium.isMediumDevice());
+        Assert.assertFalse("shouldn't be a large device", Neodymium.isLargeDevice());
+        Assert.assertFalse("shouldn't be a extra large device", Neodymium.isExtraLargeDevice());
+
         Assert.assertFalse("shouldn't be mobile", Neodymium.isMobile());
-        Assert.assertFalse("shouldn't be tablet", Neodymium.isTablet());
-        Assert.assertTrue("should be small desktop", Neodymium.isSmallDesktop());
-        Assert.assertTrue("should be desktop", Neodymium.isDesktop());
-        Assert.assertFalse("shouldn't be large desktop", Neodymium.isLargeDesktop());
-        Assert.assertFalse("shouldn't be extra large desktop", Neodymium.isExtraLargeDesktop());
+        Assert.assertTrue("should be tablet", Neodymium.isTablet());
+        Assert.assertFalse("shouldn't be desktop", Neodymium.isDesktop());
     }
 
     @Test
     @Browser("chrome992")
-    public void testIsLargeDesktop()
+    public void testIsLargeDevice()
     {
+        Assert.assertFalse("shouldn't be an extra small device", Neodymium.isExtraSmallDevice());
+        Assert.assertFalse("shouldn't be a small device", Neodymium.isSmallDevice());
+        Assert.assertFalse("shouldn't be a medium device", Neodymium.isMediumDevice());
+        Assert.assertTrue("should be a large device", Neodymium.isLargeDevice());
+        Assert.assertFalse("shouldn't be a extra large device", Neodymium.isExtraLargeDevice());
+
         Assert.assertFalse("shouldn't be mobile", Neodymium.isMobile());
         Assert.assertFalse("shouldn't be tablet", Neodymium.isTablet());
-        Assert.assertFalse("shouldn't be small desktop", Neodymium.isSmallDesktop());
         Assert.assertTrue("should be desktop", Neodymium.isDesktop());
-        Assert.assertTrue("should be large desktop", Neodymium.isLargeDesktop());
-        Assert.assertFalse("shouldn't be extra large desktop", Neodymium.isExtraLargeDesktop());
     }
 
     @Test
     @Browser("chrome1200")
-    public void testIsExtraLargeDesktop()
+    public void testIsExtraLargeDevice()
     {
+        Assert.assertFalse("shouldn't be an extra small device", Neodymium.isExtraSmallDevice());
+        Assert.assertFalse("shouldn't be a small device", Neodymium.isSmallDevice());
+        Assert.assertFalse("shouldn't be a medium device", Neodymium.isMediumDevice());
+        Assert.assertFalse("shouldn't be a large device", Neodymium.isLargeDevice());
+        Assert.assertTrue("should be a extra large device", Neodymium.isExtraLargeDevice());
+
         Assert.assertFalse("shouldn't be mobile", Neodymium.isMobile());
         Assert.assertFalse("shouldn't be tablet", Neodymium.isTablet());
-        Assert.assertFalse("shouldn't be small desktop", Neodymium.isSmallDesktop());
         Assert.assertTrue("should be desktop", Neodymium.isDesktop());
-        Assert.assertFalse("shouldn't  be large desktop", Neodymium.isLargeDesktop());
-        Assert.assertTrue("should be extra large desktop", Neodymium.isExtraLargeDesktop());
     }
 }

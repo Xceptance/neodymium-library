@@ -165,22 +165,22 @@ public class Neodymium
     }
 
     /**
-     * Phone or smaller
+     * Extra small devices (portrait phones or smaller)
      * 
      * @return boolean value indicating whether it is a mobile device or not
      */
-    public static boolean isMobile()
+    public static boolean isExtraSmallDevice()
     {
         return getViewportSize().getWidth() < configuration().smallDeviceBreakpoint();
     }
 
     /**
-     * Tablet or large phone
+     * Small devices (landscape phones)
      * 
      * @return boolean value indicating whether it is a tablet device/large phone or not
      * @see Neodymium
      */
-    public static boolean isTablet()
+    public static boolean isSmallDevice()
     {
         int width = getViewportSize().getWidth();
         NeodymiumConfiguration cfg = configuration();
@@ -189,12 +189,12 @@ public class Neodymium
     }
 
     /**
-     * Small desktop aka half window or stuff, can be tablet as well
+     * Medium devices (Tablets and small desktop aka half window or stuff)
      * 
      * @return boolean value indicating whether it is a device with small desktop or not
      * @see Neodymium
      */
-    public static boolean isSmallDesktop()
+    public static boolean isMediumDevice()
     {
         int width = getViewportSize().getWidth();
         NeodymiumConfiguration cfg = configuration();
@@ -203,12 +203,12 @@ public class Neodymium
     }
 
     /**
-     * Large desktop resolution?
+     * Large devices (Desktop)
      * 
      * @return boolean value indicating whether it is a device with large desktop or not
      * @see Neodymium
      */
-    public static boolean isLargeDesktop()
+    public static boolean isLargeDevice()
     {
         int width = getViewportSize().getWidth();
         NeodymiumConfiguration cfg = configuration();
@@ -217,26 +217,47 @@ public class Neodymium
     }
 
     /**
-     * Extra large desktop resolution?
+     * Extra large devices (Large desktop)
      * 
      * @return boolean value indicating whether it is a device with extra large resolution or not
      * @see Neodymium
      */
-    public static boolean isExtraLargeDesktop()
+    public static boolean isExtraLargeDevice()
     {
         return getViewportSize().getWidth() >= configuration().xlargeDeviceBreakpoint();
     }
 
     /**
+     * Mobile of any kind?
+     * 
+     * @return boolean indicating whether it is a mobile device or not
+     * @see Neodymium
+     */
+    public static boolean isMobile()
+    {
+        return getViewportSize().getWidth() < configuration().mediumDeviceBreakpoint();
+    }
+
+    /**
+     * Tablet of any kind?
+     * 
+     * @return boolean value boolean value indicating whether it is a tablet device/large phone or not
+     * @see Neodymium
+     */
+    public static boolean isTablet()
+    {
+        return isMediumDevice();
+    }
+
+    /**
      * Desktop of any kind?
      * 
-     * @return boolean value indicating whether it is a device desktop (isSmallDesktop() or isLargeDesktop() or
-     *         isExtaLargeDesktop()) or not
+     * @return boolean value indicating whether it is a device desktop (isLargeDesktop() or isExtaLargeDesktop()) or not
      * @see Neodymium
      */
     public static boolean isDesktop()
     {
-        return getViewportSize().getWidth() >= configuration().mediumDeviceBreakpoint();
+        return getViewportSize().getWidth() >= configuration().largeDeviceBreakpoint();
     }
 
     /**
