@@ -93,11 +93,11 @@ public interface NeodymiumConfiguration extends Mutable
     public boolean screenshotPerStep();
 
     @Key("neodymium.context.device.breakpoint.small")
-    @DefaultValue("544")
+    @DefaultValue("576")
     public int smallDeviceBreakpoint();
 
     @Key("neodymium.context.device.breakpoint.medium")
-    @DefaultValue("769")
+    @DefaultValue("768")
     public int mediumDeviceBreakpoint();
 
     @Key("neodymium.context.device.breakpoint.large")

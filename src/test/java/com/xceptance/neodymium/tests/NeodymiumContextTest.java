@@ -57,15 +57,15 @@ public class NeodymiumContextTest extends NeodymiumTest
         properties.put("browserprofile.chrome500.arguments", "headless");
         properties.put("browserprofile.chrome500.browserResolution", "500x768");
 
-        properties.put("browserprofile.chrome544.name", "Google Chrome, Headless, 544x768");
-        properties.put("browserprofile.chrome544.browser", "chrome");
-        properties.put("browserprofile.chrome544.arguments", "headless");
-        properties.put("browserprofile.chrome544.browserResolution", "544x768");
+        properties.put("browserprofile.chrome580.name", "Google Chrome, Headless, 580x768");
+        properties.put("browserprofile.chrome580.browser", "chrome");
+        properties.put("browserprofile.chrome580.arguments", "headless");
+        properties.put("browserprofile.chrome580.browserResolution", "580x768");
 
-        properties.put("browserprofile.chrome769.name", "Google Chrome, Headless, 769x768");
-        properties.put("browserprofile.chrome769.browser", "chrome");
-        properties.put("browserprofile.chrome769.arguments", "headless");
-        properties.put("browserprofile.chrome769.browserResolution", "769x768");
+        properties.put("browserprofile.chrome768.name", "Google Chrome, Headless, 768x768");
+        properties.put("browserprofile.chrome768.browser", "chrome");
+        properties.put("browserprofile.chrome768.arguments", "headless");
+        properties.put("browserprofile.chrome768.browserResolution", "768x768");
 
         properties.put("browserprofile.chrome992.name", "Google Chrome, Headless, 992x768");
         properties.put("browserprofile.chrome992.browser", "chrome");
