@@ -167,7 +167,6 @@ public class BrowserStatement extends StatementBuilder
 
             // set our default timeout
             Configuration.timeout = Neodymium.configuration().selenideTimeout();
-            Configuration.collectionsTimeout = Configuration.timeout * 2;
         }
         else
         {

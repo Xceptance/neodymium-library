@@ -4,8 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.Configuration.AssertionMode;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.util.Neodymium;
@@ -60,17 +60,5 @@ public class SelenideConfigurationShortcuts
 
         Neodymium.timeout(2000);
         Assert.assertEquals(Configuration.timeout, 2000);
-    }
-
-    @Test
-    public void validateCollectionsTimeout()
-    {
-        Assert.assertEquals(Configuration.collectionsTimeout, 6000);
-
-        Neodymium.collectionsTimeout(1000);
-        Assert.assertEquals(Configuration.collectionsTimeout, 1000);
-
-        Neodymium.collectionsTimeout(2000);
-        Assert.assertEquals(Configuration.collectionsTimeout, 2000);
     }
 }

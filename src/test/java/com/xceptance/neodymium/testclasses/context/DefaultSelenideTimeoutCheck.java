@@ -19,13 +19,11 @@ public class DefaultSelenideTimeoutCheck
     public void test1() throws Exception
     {
         Configuration.timeout = 1234;
-        Configuration.collectionsTimeout = 1234;
     }
 
     @Test
     public void test2() throws Exception
     {
         Assert.assertEquals(3000, Configuration.timeout);
-        Assert.assertEquals(6000, Configuration.collectionsTimeout);
     }
 }

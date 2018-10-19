@@ -11,8 +11,10 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.ex.UIAssertionError;
 import com.codeborne.selenide.impl.Html;
 import com.codeborne.selenide.impl.WebElementsCollectionWrapper;
@@ -73,7 +75,7 @@ public class SelenideAddons
                 List<SelenideElement> list = $$(parentSelector).stream().filter(e -> {
                     return e.$(subElementSelector).exists();
                 }).collect(Collectors.toList());
-                return new ElementsCollection(new WebElementsCollectionWrapper(list));
+                return new ElementsCollection(new WebElementsCollectionWrapper(WebDriverRunner.driver(), list));
             };
         };
     }
@@ -101,7 +103,7 @@ public class SelenideAddons
                 List<SelenideElement> list = $$(parentSelector).stream().filter(e -> {
                     return !e.$(subElementSelector).exists();
                 }).collect(Collectors.toList());
-                return new ElementsCollection(new WebElementsCollectionWrapper(list));
+                return new ElementsCollection(new WebElementsCollectionWrapper(WebDriverRunner.driver(), list));
             };
         };
     }
@@ -222,15 +224,15 @@ public class SelenideAddons
         return new Condition("match " + attributeName)
         {
             @Override
-            public boolean apply(WebElement element)
-            {
-                return Html.text.matches(getAttributeValue(element, attributeName), regex);
-            }
-
-            @Override
             public String toString()
             {
                 return name + " '" + regex + '\'';
+            }
+
+            @Override
+            public boolean apply(Driver driver, WebElement element)
+            {
+                return Html.text.matches(getAttributeValue(element, attributeName), regex);
             }
         };
     }
@@ -260,7 +262,7 @@ public class SelenideAddons
         }
         catch (AssertionError e)
         {
-            throw UIAssertionError.wrapThrowable(e, System.currentTimeMillis());
+            throw UIAssertionError.wrap(WebDriverRunner.driver(), e, System.currentTimeMillis());
         }
     }
 }
