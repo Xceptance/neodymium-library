@@ -13,6 +13,6 @@ public class DataUtilsTest extends NeodymiumTest
     {
         // test the data utils
         Result result = JUnitCore.runClasses(DataUtilsTests.class);
-        checkPass(result, 6, 0, 0);
+        checkPass(result, 7, 0, 0);
     }
 }
