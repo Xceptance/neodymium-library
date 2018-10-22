@@ -86,13 +86,6 @@ public class NeodymiumContextTest extends NeodymiumTest
         MultibrowserConfiguration.getInstance(tempConfigFile.getPath());
 
         // checks Neodymium functions for different browser sizes
-        // isMobile()
-        // isTablet()
-        // isSmallDesktop()
-        // isDesktop()
-        // isLargeDesktop()
-        // isExtraLargeDesktop()
-
         Result result = JUnitCore.runClasses(WindowSizeTests.class);
         checkPass(result, 5, 0, 0);
     }
