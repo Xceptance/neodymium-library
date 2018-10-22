@@ -27,7 +27,7 @@ public class WindowSizeTests
     }
 
     @Test
-    @Browser("chrome580")
+    @Browser("chrome576")
     public void testIsSmallDevice()
     {
         Assert.assertFalse("shouldn't be an extra small device", Neodymium.isExtraSmallDevice());
