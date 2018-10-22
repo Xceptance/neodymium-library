@@ -17,6 +17,20 @@ import io.qameta.allure.Step;
 public class AllureAddons
 {
     /**
+     * Define a step without return value. This can be used to transport data (information) from test into the report.
+     *
+     * @param info
+     *            the info of the information (maybe the information itself if short enough), used in the description of
+     *            this step
+     * @param content
+     *            further information that need to be passed to the report
+     */
+    @Step("INFO: {info}")
+    public static void addToReport(String info, Object content)
+    {
+    }
+
+    /**
      * Define a step without return value. This is good for complete and encapsulated test steps.
      *
      * @param description
