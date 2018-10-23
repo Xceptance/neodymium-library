@@ -8,8 +8,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.util.Neodymium;
 import com.xceptance.neodymium.util.DataUtils;
+import com.xceptance.neodymium.util.Neodymium;
 
 @RunWith(NeodymiumRunner.class)
 public class DataUtilsTests
@@ -237,6 +237,24 @@ public class DataUtilsTests
         Assert.assertEquals(true, DataUtils.asBool("", true));
         Assert.assertEquals(true, DataUtils.asBool("nullValue", true));
         Assert.assertEquals(true, DataUtils.asBool(NIL, true));
+    }
+
+    @Test
+    public void testGetClass() throws Exception
+    {
+        Map<String, String> data = Neodymium.getData();
+        data.clear();
+        data.put("cardNumber", "4111111111111111");
+        data.put("ccv", "123");
+        data.put("month", "10");
+        data.put("year", "2018");
+
+        TestCreditCard creditCard = DataUtils.get(TestCreditCard.class);
+
+        Assert.assertEquals("4111111111111111", creditCard.getCardNumber());
+        Assert.assertEquals("123", creditCard.getCcv());
+        Assert.assertEquals(10, creditCard.getMonth());
+        Assert.assertEquals(2018, creditCard.getYear());
     }
 
     private void expectIAE(Runnable function)

@@ -20,26 +20,33 @@ import com.xceptance.neodymium.NeodymiumRunner;
 
 public abstract class NeodymiumTest
 {
-
     // holds files that will be deleted in @After method
     static List<File> tempFiles = new LinkedList<>();
 
     @AfterClass
     public static void cleanUp()
     {
-        for (File f : tempFiles)
+        for (File tempFile : tempFiles)
         {
-            if (f.exists())
+            deleteTempFile(tempFile);
+        }
+    }
+
+    /**
+     * delete a temporary test file
+     */
+    protected static void deleteTempFile(File tempFile)
+    {
+        if (tempFile.exists())
+        {
+            try
             {
-                try
-                {
-                    Files.delete(f.toPath());
-                }
-                catch (Exception e)
-                {
-                    System.out.println(MessageFormat.format("couldn''t delete temporary file: ''{0}'' caused by {1}", f.getAbsolutePath(),
-                                                            e));
-                }
+                Files.delete(tempFile.toPath());
+            }
+            catch (Exception e)
+            {
+                System.out.println(MessageFormat.format("Couldn''t delete temporary file: ''{0}'' caused by {1}",
+                                                        tempFile.getAbsolutePath(), e));
             }
         }
     }

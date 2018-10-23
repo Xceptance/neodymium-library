@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.xceptance</groupId>
     <artifactId>neodymium-library</artifactId>
-    <version>2.1.0</version>
+    <version>3.0.0-SNASHOT</version>
 
     <name>neodymium-library</name>
     <url>https://github.com/Xceptance/neodymium-library</url>
@@ -144,6 +144,13 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <forkCount>1</forkCount>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>1.6</version>
                         <configuration>
@@ -231,7 +238,7 @@
         <dependency>
             <groupId>com.codeborne</groupId>
             <artifactId>selenide</artifactId>
-            <version>4.12.3</version>
+            <version>5.0.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.junit.jupiter</groupId>

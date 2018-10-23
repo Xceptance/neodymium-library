@@ -42,17 +42,4 @@ public class CucumberContextSteps
         NeodymiumConfiguration configuration = Neodymium.configuration();
         Assert.assertEquals(3000, configuration.selenideTimeout());
     }
-
-    @Given("Change default collection timeout to 1234")
-    public void testAndChangeDefaultCollectionTimeout()
-    {
-        com.codeborne.selenide.Configuration.collectionsTimeout = 1234;
-        Assert.assertEquals(1234, com.codeborne.selenide.Configuration.collectionsTimeout);
-    }
-
-    @Given("Assert collection timeout of 6000")
-    public void testDefaultCollectionTimeout()
-    {
-        Assert.assertEquals(6000, com.codeborne.selenide.Configuration.collectionsTimeout);
-    }
 }

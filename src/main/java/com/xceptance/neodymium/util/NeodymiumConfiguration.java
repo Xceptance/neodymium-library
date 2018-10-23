@@ -12,7 +12,7 @@ import com.xceptance.neodymium.NeodymiumRunner.DescriptionMode;
 @LoadPolicy(LoadType.MERGE)
 @Sources(
 {
-  "file:config/neodymium.properties", "file:config/credentials.properties"
+  "file:config/neodymium.properties", "file:config/credentials.properties", "file:config/dev-neodymium.properties", "${neodymium.temporaryConfigFile}"
 })
 public interface NeodymiumConfiguration extends Mutable
 {
@@ -93,11 +93,11 @@ public interface NeodymiumConfiguration extends Mutable
     public boolean screenshotPerStep();
 
     @Key("neodymium.context.device.breakpoint.small")
-    @DefaultValue("544")
+    @DefaultValue("576")
     public int smallDeviceBreakpoint();
 
     @Key("neodymium.context.device.breakpoint.medium")
-    @DefaultValue("769")
+    @DefaultValue("768")
     public int mediumDeviceBreakpoint();
 
     @Key("neodymium.context.device.breakpoint.large")
@@ -139,4 +139,77 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.junit.viewmode")
     @DefaultValue("tree")
     public DescriptionMode junitViewMode();
+
+    @Key("neodymium.proxy")
+    @DefaultValue("false")
+    public boolean useProxy();
+
+    @Key("neodymium.proxy.host")
+    public String getProxyHost();
+
+    @Key("neodymium.proxy.port")
+    public String getProxyPort();
+
+    @Key("neodymium.proxy.bypassForHosts")
+    public String getProxyBypass();
+
+    @Key("neodymium.proxy.socket.version")
+    public Integer getProxySocketVersion();
+
+    @Key("neodymium.proxy.socket.userName")
+    public String getProxySocketUsername();
+
+    @Key("neodymium.proxy.socket.password")
+    public String getProxySocketPassword();
+
+    @Key("neodymium.webDriver.window.width")
+    @DefaultValue("-1")
+    public Integer getWindowWidth();
+
+    @Key("neodymium.webDriver.window.height")
+    @DefaultValue("-1")
+    public Integer getWindowHeight();
+
+    @Key("neodymium.webDriver.firefox.legacyMode")
+    @DefaultValue("false")
+    public boolean useFirefoxLegacy();
+
+    @Key("neodymium.webDriver.reuseDriver")
+    @DefaultValue("false")
+    public boolean reuseWebDriver();
+
+    @Key("neodymium.webDriver.keepBrowserOpen")
+    @DefaultValue("false")
+    public boolean keepBrowserOpen();
+
+    @Key("neodymium.webDriver.keepBrowserOpenOnFailure")
+    @DefaultValue("false")
+    public boolean keepBrowserOpenOnFailure();
+
+    @Key("neodymium.webDriver.chrome.pathToDriverServer")
+    public String getChromeDriverPath();
+
+    @Key("neodymium.webDriver.edge.pathToDriverServer")
+    public String getEdgeDriverPath();
+
+    @Key("neodymium.webDriver.firefox.pathToDriverServer")
+    public String getFirefoxDriverPath();
+
+    @Key("neodymium.webDriver.ie.pathToDriverServer")
+    public String getIeDriverPath();
+
+    @Key("neodymium.webDriver.opera.pathToDriverServer")
+    public String getOperaDriverPath();
+
+    @Key("neodymium.webDriver.phantomjs.pathToDriverServer")
+    public String getPhantomJsDriverPath();
+
+    @Key("neodymium.webDriver.chrome.pathToBrowser")
+    public String getChromeBrowserPath();
+
+    @Key("neodymium.webDriver.firefox.pathToBrowser")
+    public String getFirefoxBrowserPath();
+
+    @Key("neodymium.webDriver.opera.pathToBrowser")
+    public String getOperaBrowserPath();
 }

@@ -32,12 +32,6 @@ public class BrowserStatementTest extends NeodymiumTest
 {
     private static MultibrowserConfiguration browserConfig;
 
-    @Before
-    public void setJUnitViewModeFlat()
-    {
-        Neodymium.configuration().setProperty("neodymium.junit.viewmode", "flat");
-    }
-
     @BeforeClass
     public static void beforeClass() throws IOException
     {
@@ -67,6 +61,12 @@ public class BrowserStatementTest extends NeodymiumTest
 
         MultibrowserConfiguration.clearAllInstances();
         browserConfig = MultibrowserConfiguration.getInstance(tempConfigFile.getPath());
+    }
+
+    @Before
+    public void setJUnitViewModeFlat()
+    {
+        Neodymium.configuration().setProperty("neodymium.junit.viewmode", "flat");
     }
 
     @Test

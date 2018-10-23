@@ -17,6 +17,43 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 public class SelenideAddonsTest
 {
     @Test
+    public void testMatchesAttributeCondition()
+    {
+        Selenide.open("https://blog.xceptance.com/");
+        $("#masthead .search-toggle").click();
+
+        $("#search-container .search-field").should(SelenideAddons.matchesAttribute("placeholder", "Search"));
+    }
+
+    @Test
+    public void testMatchAttributeCondition()
+    {
+        Selenide.open("https://blog.xceptance.com/");
+        $("#masthead .search-toggle").click();
+
+        $("#search-container .search-field").should(SelenideAddons.matchAttribute("placeholder", "^S.a.c.\\s…"));
+        $("#search-container .search-field").should(SelenideAddons.matchAttribute("placeholder", "\\D+"));
+    }
+
+    @Test(expected = ElementShould.class)
+    public void testMatchAttributeConditionError()
+    {
+        Selenide.open("https://blog.xceptance.com/");
+        $("#masthead .search-toggle").click();
+
+        $("#search-container .search-field").should(SelenideAddons.matchAttribute("placeholder", "\\d+"));
+    }
+
+    @Test(expected = ElementShould.class)
+    public void testMatchAttributeConditionErrorMissingAttribute()
+    {
+        Selenide.open("https://blog.xceptance.com/");
+        $("#masthead .search-toggle").click();
+
+        $("#search-container .search-field").should(SelenideAddons.matchAttribute("foo", "bar"));
+    }
+
+    @Test
     public void testMatchesValueCondition()
     {
         Selenide.open("https://blog.xceptance.com/");

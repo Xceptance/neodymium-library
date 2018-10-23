@@ -11,8 +11,10 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.ex.UIAssertionError;
 import com.codeborne.selenide.impl.Html;
 import com.codeborne.selenide.impl.WebElementsCollectionWrapper;
@@ -73,7 +75,7 @@ public class SelenideAddons
                 List<SelenideElement> list = $$(parentSelector).stream().filter(e -> {
                     return e.$(subElementSelector).exists();
                 }).collect(Collectors.toList());
-                return new ElementsCollection(new WebElementsCollectionWrapper(list));
+                return new ElementsCollection(new WebElementsCollectionWrapper(WebDriverRunner.driver(), list));
             };
         };
     }
@@ -101,7 +103,7 @@ public class SelenideAddons
                 List<SelenideElement> list = $$(parentSelector).stream().filter(e -> {
                     return !e.$(subElementSelector).exists();
                 }).collect(Collectors.toList());
-                return new ElementsCollection(new WebElementsCollectionWrapper(list));
+                return new ElementsCollection(new WebElementsCollectionWrapper(WebDriverRunner.driver(), list));
             };
         };
     }
@@ -180,20 +182,65 @@ public class SelenideAddons
      */
     public static Condition matchValue(final String regex)
     {
-        return new Condition("match value")
-        {
-            @Override
-            public boolean apply(WebElement element)
-            {
-                return Html.text.matches(element.getAttribute("value"), regex);
-            }
+        return matchesAttribute("value", regex);
+    }
 
+    /**
+     * The missing regular expression condition for attributes.<br>
+     * <br>
+     * <p>
+     * Sample: <code>$("input").waitWhile(matchesValue("foo"), 12000)</code>
+     * </p>
+     * 
+     * @param attributeName
+     *            The name of the attribute that should contain the text
+     * @param text
+     *            The text that should be contained within the attribute
+     * @return a Selenide {@link Condition}
+     * @see #matchAttribute(String, String)
+     */
+    public static Condition matchesAttribute(String attributeName, String text)
+    {
+        return matchAttribute(attributeName, text);
+    }
+
+    /**
+     * The missing regular expression condition for attributes.<br>
+     * <br>
+     * <p>
+     * Sample: Assert that given element's value attribute matches given regular expression
+     * <code>$("input").should(matchValue("Hello\s*John"))</code>
+     * </p>
+     *
+     * @param attributeName
+     *            The name of the attribute that should be matched with the regex
+     * @param regex
+     *            e.g. Kicked.*Chuck Norris - in this case ".*" can contain any characters including spaces, tabs, CR
+     *            etc.
+     * @return a Selenide {@link Condition}
+     */
+    public static Condition matchAttribute(final String attributeName, final String regex)
+    {
+        return new Condition("match " + attributeName)
+        {
             @Override
             public String toString()
             {
                 return name + " '" + regex + '\'';
             }
+
+            @Override
+            public boolean apply(Driver driver, WebElement element)
+            {
+                return Html.text.matches(getAttributeValue(element, attributeName), regex);
+            }
         };
+    }
+
+    private static String getAttributeValue(WebElement element, String attributeName)
+    {
+        String attr = element.getAttribute(attributeName);
+        return attr == null ? "" : attr;
     }
 
     /**
@@ -215,7 +262,7 @@ public class SelenideAddons
         }
         catch (AssertionError e)
         {
-            throw UIAssertionError.wrapThrowable(e, System.currentTimeMillis());
+            throw UIAssertionError.wrap(WebDriverRunner.driver(), e, System.currentTimeMillis());
         }
     }
 }

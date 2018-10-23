@@ -2,12 +2,9 @@ package com.xceptance.neodymium.tests;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,8 +18,6 @@ import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserMultiplicationTest extends NeodymiumTest
 {
-    private static File tempConfigFile;
-
     @BeforeClass
     public static void beforeClass() throws IOException
     {
@@ -30,8 +25,9 @@ public class BrowserMultiplicationTest extends NeodymiumTest
         properties.put("browserprofile.first_browser.name", "first browser");
         properties.put("browserprofile.second_browser.name", "second browser");
 
-        tempConfigFile = File.createTempFile("browser", "", new File("./config/"));
+        File tempConfigFile = File.createTempFile("browser", "", new File("./config/"));
         writeMapToPropertiesFile(properties, tempConfigFile);
+        tempFiles.add(tempConfigFile);
 
         // this line is important as we initialize the config from the temporary file we created above
         MultibrowserConfiguration.clearAllInstances();
@@ -42,23 +38,6 @@ public class BrowserMultiplicationTest extends NeodymiumTest
     public void setJUnitViewModeFlat()
     {
         Neodymium.configuration().setProperty("neodymium.junit.viewmode", "flat");
-    }
-
-    @AfterClass
-    public static void afterClass()
-    {
-        if (tempConfigFile.exists())
-        {
-            try
-            {
-                Files.delete(tempConfigFile.toPath());
-            }
-            catch (Exception e)
-            {
-                System.out.println(MessageFormat.format("couldn''t delete temporary file: ''{0}'' caused by {1}",
-                                                        tempConfigFile.getAbsolutePath(), e));
-            }
-        }
     }
 
     @Test
@@ -105,5 +84,4 @@ public class BrowserMultiplicationTest extends NeodymiumTest
         };
         checkDescription(TwoBrowserTwoMethods.class, expected);
     }
-
 }

@@ -286,17 +286,17 @@ public class TestdataStatement extends StatementBuilder
         if (parameter.getIndex() >= 0)
         {
             // data sets and (maybe) package data
-            String testDatasetIndetifier = testData.get(TEST_ID);
-            if (StringUtils.isBlank(testDatasetIndetifier))
+            String testDatasetId = testData.get(TEST_ID);
+            if (StringUtils.isBlank(testDatasetId))
             {
-                testDatasetIndetifier = "Data set";
+                testDatasetId = "Data set";
             }
 
             // replace parenthesis because https://bugs.eclipse.org/bugs/show_bug.cgi?id=102512
             // "Any text in parentheses is assumed to be the name of the class in which the test is defined."
-            testDatasetIndetifier = testDatasetIndetifier.replaceAll("\\(", "[").replaceAll("\\)", "]");
+            testDatasetId = testDatasetId.replaceAll("\\(", "[").replaceAll("\\)", "]");
 
-            testname = String.format("%s %d / %d", testDatasetIndetifier, (parameter.getIndex() + 1), parameter.getSize());
+            testname = String.format("%s %d / %d", testDatasetId, (parameter.getIndex() + 1), parameter.getSize());
         }
         else
         {

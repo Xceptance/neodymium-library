@@ -9,6 +9,8 @@ import org.aeonbits.owner.ConfigFactory;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 
+import com.codeborne.selenide.AssertionMode;
+import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 
 /**
@@ -35,11 +37,18 @@ public class Neodymium
     // our data for anywhere access
     private final Map<String, String> data = new HashMap<>();
 
+    public final static String TEMPORARY_CONFIG_FILE_PROPTERY_NAME = "neodymium.temporaryConfigFile";
+
     /**
      * Constructor
      */
     private Neodymium()
     {
+        // the property needs to be a valid URI in order to satisfy the Owner framework
+        if (null == ConfigFactory.getProperty(TEMPORARY_CONFIG_FILE_PROPTERY_NAME))
+        {
+            ConfigFactory.setProperty(TEMPORARY_CONFIG_FILE_PROPTERY_NAME, "file:this/path/should/never/exist/noOneShouldCreateMe.properties");
+        }
         configuration = ConfigFactory.create(NeodymiumConfiguration.class, System.getProperties(), System.getenv());
         localization = NeodymiumLocalization.build(configuration.localizationFile());
     }
@@ -49,7 +58,7 @@ public class Neodymium
      * 
      * @return the context instance for the current Thread
      */
-    static Neodymium getContex()
+    static Neodymium getContext()
     {
         return CONTEXTS.computeIfAbsent(Thread.currentThread(), key -> {
             return new Neodymium();
@@ -74,12 +83,12 @@ public class Neodymium
      */
     public static String localizedText(final String key)
     {
-        return getContex().localization.getText(key);
+        return getContext().localization.getText(key);
     }
 
     public static Map<String, String> getData()
     {
-        return getContex().data;
+        return getContext().data;
     }
 
     /**
@@ -96,27 +105,27 @@ public class Neodymium
 
     public static NeodymiumConfiguration configuration()
     {
-        return getContex().configuration;
+        return getContext().configuration;
     }
 
     public static WebDriver getDriver()
     {
-        return getContex().driver;
+        return getContext().driver;
     }
 
     public static void setDriver(WebDriver driver)
     {
-        getContex().driver = driver;
+        getContext().driver = driver;
     }
 
     public static String getBrowserProfileName()
     {
-        return getContex().browserProfileName;
+        return getContext().browserProfileName;
     }
 
     public static void setBrowserProfileName(String browserProfileName)
     {
-        getContex().browserProfileName = browserProfileName;
+        getContext().browserProfileName = browserProfileName;
     }
 
     /**
@@ -124,7 +133,7 @@ public class Neodymium
      * 
      * @return {@link Dimension} object containing width and height of current window
      */
-    public Dimension getWindowSize()
+    public static Dimension getWindowSize()
     {
         return getDriver().manage().window().getSize();
     }
@@ -134,7 +143,7 @@ public class Neodymium
      * 
      * @return {@link Dimension} object containing width and height of current viewport
      */
-    public Dimension getViewportSize()
+    public static Dimension getViewportSize()
     {
         Long width = Selenide.executeJavaScript("return window.innerWidth");
         Long height = Selenide.executeJavaScript("return window.innerHeight");
@@ -147,7 +156,7 @@ public class Neodymium
      * 
      * @return {@link Dimension} object containing width and height of current page
      */
-    public Dimension getPageSize()
+    public static Dimension getPageSize()
     {
         Long width = Selenide.executeJavaScript("return document.documentElement.clientWidth");
         Long height = Selenide.executeJavaScript("return document.documentElement.clientHeight");
@@ -156,58 +165,155 @@ public class Neodymium
     }
 
     /**
-     * Phone or smaller
+     * Extra small devices (portrait phones or smaller)
      * 
      * @return boolean value indicating whether it is a mobile device or not
      */
-    public boolean isMobile()
+    public static boolean isExtraSmallDevice()
     {
-        return getViewportSize().getWidth() < configuration.mediumDeviceBreakpoint();
+        return getViewportSize().getWidth() < configuration().smallDeviceBreakpoint();
     }
 
     /**
-     * Tablet or large phone
+     * Small devices (landscape phones)
      * 
      * @return boolean value indicating whether it is a tablet device/large phone or not
      * @see Neodymium
      */
-    public boolean isTablet()
+    public static boolean isSmallDevice()
     {
-        return getViewportSize().getWidth() >= configuration.mediumDeviceBreakpoint() &&
-               getViewportSize().getWidth() < configuration.largeDeviceBreakpoint();
+        int width = getViewportSize().getWidth();
+        NeodymiumConfiguration cfg = configuration();
+
+        return width >= cfg.smallDeviceBreakpoint() && width < cfg.mediumDeviceBreakpoint();
     }
 
     /**
-     * Small desktop aka half window or stuff, can be tablet as well
+     * Medium devices (Tablets and small desktop aka half window or stuff)
      * 
      * @return boolean value indicating whether it is a device with small desktop or not
      * @see Neodymium
      */
-    public boolean isSmallDesktop()
+    public static boolean isMediumDevice()
     {
-        return getViewportSize().getWidth() >= configuration.largeDeviceBreakpoint() &&
-               getViewportSize().getWidth() < configuration.xlargeDeviceBreakpoint();
+        int width = getViewportSize().getWidth();
+        NeodymiumConfiguration cfg = configuration();
+
+        return width >= cfg.mediumDeviceBreakpoint() && width < cfg.largeDeviceBreakpoint();
     }
 
     /**
-     * Large desktop resolution?
+     * Large devices (Desktop)
      * 
-     * @return boolean value indicating whether it is a device with small desktop or not
+     * @return boolean value indicating whether it is a device with large desktop or not
      * @see Neodymium
      */
-    public boolean isLargeDesktop()
+    public static boolean isLargeDevice()
     {
-        return getViewportSize().getWidth() >= configuration.xlargeDeviceBreakpoint();
+        int width = getViewportSize().getWidth();
+        NeodymiumConfiguration cfg = configuration();
+
+        return width >= cfg.largeDeviceBreakpoint() && width < cfg.xlargeDeviceBreakpoint();
+    }
+
+    /**
+     * Extra large devices (Large desktop)
+     * 
+     * @return boolean value indicating whether it is a device with extra large resolution or not
+     * @see Neodymium
+     */
+    public static boolean isExtraLargeDevice()
+    {
+        return getViewportSize().getWidth() >= configuration().xlargeDeviceBreakpoint();
+    }
+
+    /**
+     * Mobile of any kind?
+     * 
+     * @return boolean indicating whether it is a mobile device or not
+     * @see Neodymium
+     */
+    public static boolean isMobile()
+    {
+        return getViewportSize().getWidth() < configuration().mediumDeviceBreakpoint();
+    }
+
+    /**
+     * Tablet of any kind?
+     * 
+     * @return boolean value boolean value indicating whether it is a tablet device/large phone or not
+     * @see Neodymium
+     */
+    public static boolean isTablet()
+    {
+        return isMediumDevice();
     }
 
     /**
      * Desktop of any kind?
      * 
-     * @return boolean value indicating whether it is a device desktop (neither small nor large) or not
+     * @return boolean value indicating whether it is a device desktop (isLargeDesktop() or isExtaLargeDesktop()) or not
      * @see Neodymium
      */
-    public boolean isDesktop()
+    public static boolean isDesktop()
     {
-        return getViewportSize().getWidth() >= configuration.largeDeviceBreakpoint();
+        return getViewportSize().getWidth() >= configuration().largeDeviceBreakpoint();
+    }
+
+    /**
+     * Shortcut to turn on/off Selenide SoftAssertions <br>
+     * You need to add the following JUnit rule to the test class to enable the feature
+     * 
+     * <pre>
+     * &#64;Rule
+     * public SoftAsserts softAsserts = new com.codeborne.selenide.junit.SoftAsserts();
+     * </pre>
+     * 
+     * @param useSoftAssertions
+     *            boolean if the Selenide soft assertion feature is activated
+     */
+    public static void softAssertions(boolean useSoftAssertions)
+    {
+        if (useSoftAssertions)
+        {
+            Configuration.assertionMode = AssertionMode.SOFT;
+        }
+        else
+        {
+            Configuration.assertionMode = AssertionMode.STRICT;
+        }
+    }
+
+    /**
+     * Shortcut to turn on/off Selenide clickViaJs
+     * 
+     * @param clickViaJs
+     *            boolean that decides if a click is executed via JavaScript
+     */
+    public static void clickViaJs(boolean clickViaJs)
+    {
+        Configuration.clickViaJs = clickViaJs;
+    }
+
+    /**
+     * Shortcut to turn on/off Selenide fastSetValue
+     * 
+     * @param fastSetValue
+     *            boolean that decides if a value is set JavaScript
+     */
+    public static void fastSetValue(boolean fastSetValue)
+    {
+        Configuration.fastSetValue = fastSetValue;
+    }
+
+    /**
+     * Shortcut to turn on/off Selenide timeout
+     * 
+     * @param timeout
+     *            the time that a Selenide command waits implicitly before it raises an error if it can't be executed
+     */
+    public static void timeout(long timeout)
+    {
+        Configuration.timeout = timeout;
     }
 }
