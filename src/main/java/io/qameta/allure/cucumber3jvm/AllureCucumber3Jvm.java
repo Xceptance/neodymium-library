@@ -44,7 +44,6 @@ import gherkin.pickles.PickleTable;
 import gherkin.pickles.PickleTag;
 import io.qameta.allure.Allure;
 import io.qameta.allure.AllureLifecycle;
-import io.qameta.allure.cucumber2jvm.CucumberSourceUtils;
 import io.qameta.allure.model.Parameter;
 import io.qameta.allure.model.Status;
 import io.qameta.allure.model.StatusDetails;
