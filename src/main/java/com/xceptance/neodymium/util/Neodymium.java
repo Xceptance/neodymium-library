@@ -86,6 +86,20 @@ public class Neodymium
         return getContext().localization.getText(key);
     }
 
+    /**
+     * Shortcut for localized text access. Will fail with an assertion if the key cannot be found
+     *
+     * @param key
+     *            key to lookup
+     * @param locale
+     *            locale to lookup the key with
+     * @return localized text
+     */
+    public static String localizedText(final String key, final String locale)
+    {
+        return getContext().localization.getText(key, locale);
+    }
+
     public static Map<String, String> getData()
     {
         return getContext().data;

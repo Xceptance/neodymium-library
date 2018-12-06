@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.commons.lang3.LocaleUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 
 /**
@@ -44,13 +45,26 @@ public class NeodymiumLocalization
      */
     public String getText(final String key)
     {
+        return getText(key, null);
+    }
+
+    public String getText(final String key, final String localeParam)
+    {
         if (properties == null)
         {
             // if properties is not set then the localization yaml file was not found or is empty / invalid
             throw new RuntimeException("Localization file was not found or is invalid");
         }
 
-        final String localeString = Neodymium.configuration().locale();
+        final String localeString;
+        if (StringUtils.isEmpty(localeParam))
+        {
+            localeString = Neodymium.configuration().locale();
+        }
+        else
+        {
+            localeString = localeParam;
+        }
 
         Locale locale;
         try

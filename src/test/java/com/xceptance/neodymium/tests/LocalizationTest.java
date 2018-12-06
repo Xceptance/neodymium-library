@@ -106,4 +106,28 @@ public class LocalizationTest extends NeodymiumTest
         Neodymium.configuration().setProperty("neodymium.locale", "default");
         Neodymium.localizedText("key3");
     }
+
+    @Test
+    public void testSpecificLocaleNullFallbackToDefault()
+    {
+        Neodymium.configuration().setProperty("neodymium.locale", "default");
+        String key = "key1";
+        Assert.assertEquals("default", Neodymium.localizedText(key, null));
+    }
+
+    @Test
+    public void testSpecificLocaleEmptyFallbackToDefault()
+    {
+        Neodymium.configuration().setProperty("neodymium.locale", "default");
+        String key = "key1";
+        Assert.assertEquals("default", Neodymium.localizedText(key, ""));
+    }
+
+    @Test
+    public void testSpecificLocale()
+    {
+        Neodymium.configuration().setProperty("neodymium.locale", "default");
+        String key = "key1";
+        Assert.assertEquals("en_US", Neodymium.localizedText(key, "en_US"));
+    }
 }
