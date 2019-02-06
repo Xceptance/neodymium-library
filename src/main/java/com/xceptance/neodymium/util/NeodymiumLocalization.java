@@ -32,7 +32,14 @@ public class NeodymiumLocalization
      */
     public static NeodymiumLocalization build(final String file)
     {
-        return new NeodymiumLocalization(YamlProperties.build(new File(file)));
+        try
+        {
+            return new NeodymiumLocalization(YamlProperties.build(new File(file)));
+        }
+        catch (ClassCastException e)
+        {
+            throw new RuntimeException("Localization keys must be of type String. (e.g. use \"Yes\" instead of Yes as key. This is due to YAML auto conversion.)", e);
+        }
     }
 
     /**

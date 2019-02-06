@@ -76,6 +76,13 @@ public class LocalizationTest extends NeodymiumTest
     }
 
     @Test
+    public void testFrFR()
+    {
+        Neodymium.configuration().setProperty("neodymium.locale", "fr_FR");
+        Assert.assertEquals("fr_FR", Neodymium.localizedText("key1"));
+    }
+
+    @Test
     public void testLanguageFallback()
     {
         // we do not have a locale en_CA and expect to fallback to "en"
