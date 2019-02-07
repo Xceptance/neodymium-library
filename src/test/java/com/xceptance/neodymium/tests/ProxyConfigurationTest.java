@@ -40,9 +40,9 @@ public class ProxyConfigurationTest extends NeodymiumTest
         properties.put("neodymium.proxy.port", PORT);
         properties.put("neodymium.proxy.bypassForHosts", BYPASS);
 
+        // FIXME: #72 Uncomment when a fixed Selenium version is available in project.
+        // TODO: https://github.com/Xceptance/neodymium-library/issues/72
         // TODO: The following properties lead to an error when setting up a chromedriver > v2.42
-        // TODO: This can be due to incompatibilities between current chromedriver and Selenium.
-        // FIXME: Uncomment when the new Selenium version is available in project.
         // properties.put("neodymium.proxy.socket.userName", SOCKET_USERNAME);
         // properties.put("neodymium.proxy.socket.password", SOCKET_PASSWORD);
         // properties.put("neodymium.proxy.socket.version", SOCKET_VERSION);
