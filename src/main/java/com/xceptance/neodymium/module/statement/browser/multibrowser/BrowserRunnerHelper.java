@@ -318,15 +318,20 @@ public final class BrowserRunnerHelper
         webdriverProxy.setHttpProxy(proxyHost);
         webdriverProxy.setSslProxy(proxyHost);
         webdriverProxy.setFtpProxy(proxyHost);
-        webdriverProxy.setSocksProxy(proxyHost);
-        if (StringUtils.isNoneEmpty(Neodymium.configuration().getProxySocketUsername(), Neodymium.configuration().getProxySocketPassword()))
+        if (!StringUtils.isAllEmpty(Neodymium.configuration().getProxySocketUsername(), Neodymium.configuration().getProxySocketPassword())
+            || Neodymium.configuration().getProxySocketVersion() != null)
         {
-            webdriverProxy.setSocksUsername(Neodymium.configuration().getProxySocketUsername());
-            webdriverProxy.setSocksPassword(Neodymium.configuration().getProxySocketPassword());
-        }
-        if (Neodymium.configuration().getProxySocketVersion() != null)
-        {
-            webdriverProxy.setSocksVersion(Neodymium.configuration().getProxySocketVersion());
+            webdriverProxy.setSocksProxy(proxyHost);
+            if (StringUtils.isNoneEmpty(Neodymium.configuration().getProxySocketUsername(),
+                                        Neodymium.configuration().getProxySocketPassword()))
+            {
+                webdriverProxy.setSocksUsername(Neodymium.configuration().getProxySocketUsername());
+                webdriverProxy.setSocksPassword(Neodymium.configuration().getProxySocketPassword());
+            }
+            if (Neodymium.configuration().getProxySocketVersion() != null)
+            {
+                webdriverProxy.setSocksVersion(4);
+            }
         }
 
         webdriverProxy.setNoProxy(Neodymium.configuration().getProxyBypass());
