@@ -1,27 +1,37 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser;
 
-import java.net.URL;
+import java.io.IOException;
 
-import org.apache.http.client.HttpClient;
-import org.openqa.selenium.remote.internal.ApacheHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.openqa.selenium.remote.http.HttpClient.Builder;
+import org.openqa.selenium.remote.internal.OkHttpClient;
 
 public class ProxyHttpClient implements org.openqa.selenium.remote.http.HttpClient.Factory
 {
-    private final HttpClient httpClient;
 
-    public ProxyHttpClient(HttpClient httpClient)
+    private CloseableHttpClient proxyHttpClient;
+
+    public ProxyHttpClient(CloseableHttpClient proxyHttpClient)
     {
-        this.httpClient = httpClient;
+        this.proxyHttpClient = proxyHttpClient;
     }
 
     @Override
-    public org.openqa.selenium.remote.http.HttpClient createClient(URL url)
+    public Builder builder()
     {
-        return new ApacheHttpClient(httpClient, url);
+        return new OkHttpClient.Factory().builder();
     }
 
     @Override
     public void cleanupIdleClients()
     {
+        try
+        {
+            proxyHttpClient.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 }
