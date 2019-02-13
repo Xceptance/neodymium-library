@@ -33,6 +33,7 @@ import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.CommandInfo;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -41,17 +42,27 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.configurati
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.TestEnvironment;
 import com.xceptance.neodymium.util.Neodymium;
 
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
+
 public final class BrowserRunnerHelper
 {
+    private static List<String> androidBrowsers = new LinkedList<String>();
+
     private static List<String> chromeBrowsers = new LinkedList<String>();
 
     private static List<String> firefoxBrowsers = new LinkedList<String>();
 
     private static List<String> internetExplorerBrowsers = new LinkedList<String>();
 
+    private static List<String> iPhoneBrowsers = new LinkedList<String>();
+
+    private static List<String> iPadBrowsers = new LinkedList<String>();
+
     static
     {
-        chromeBrowsers.add(BrowserType.ANDROID);
+        androidBrowsers.add(BrowserType.ANDROID);
+
         chromeBrowsers.add(BrowserType.CHROME);
 
         firefoxBrowsers.add(BrowserType.FIREFOX);
@@ -62,6 +73,9 @@ public final class BrowserRunnerHelper
         internetExplorerBrowsers.add(BrowserType.IE_HTA);
         internetExplorerBrowsers.add(BrowserType.IEXPLORE);
         internetExplorerBrowsers.add(BrowserType.IEXPLORE_PROXY);
+
+        iPhoneBrowsers.add(BrowserType.IPHONE);
+        iPadBrowsers.add(BrowserType.IPAD);
     }
 
     /**
@@ -287,6 +301,28 @@ public final class BrowserRunnerHelper
                 }
 
                 return new InternetExplorerDriver(options);
+            }
+            else if (androidBrowsers.contains(browserName))
+            {
+                DesiredCapabilities options = DesiredCapabilities.android();
+                options.merge(capabilities);
+
+                return new AndroidDriver<>(options);
+            }
+            else if (iPhoneBrowsers.contains(browserName))
+            {
+                DesiredCapabilities options = DesiredCapabilities.iphone();
+                options.merge(capabilities);
+
+                return new IOSDriver<>(options);
+
+            }
+            else if (iPadBrowsers.contains(browserName))
+            {
+                DesiredCapabilities options = DesiredCapabilities.ipad();
+                options.merge(capabilities);
+
+                return new IOSDriver<>(options);
             }
         }
         else
