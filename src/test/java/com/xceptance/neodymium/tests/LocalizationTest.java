@@ -43,9 +43,17 @@ public class LocalizationTest extends NeodymiumTest
         bw.newLine();
         bw.write(" key1: en");
         bw.newLine();
+        bw.write("fr:");
+        bw.newLine();
+        bw.write(" key1: fr");
+        bw.newLine();
         bw.write("fr_FR:");
         bw.newLine();
         bw.write(" key1: fr_FR");
+        bw.newLine();
+        bw.write("de_DE:");
+        bw.newLine();
+        bw.write(" key1: de_DE");
         bw.newLine();
         bw.close();
     }
@@ -95,9 +103,18 @@ public class LocalizationTest extends NeodymiumTest
     public void testFallbackToDefault()
     {
         // we do not have a locale en_CA and expect to fallback to "en"
-        Neodymium.configuration().setProperty("neodymium.locale", "fr_CA");
+        Neodymium.configuration().setProperty("neodymium.locale", "de_AU");
         String key = "key1";
         Assert.assertEquals("default", Neodymium.localizedText(key));
+    }
+
+    @Test
+    public void testSpecificLanguageFallback()
+    {
+        // we do not have a locale fr_CA and expect to fallback to "fr"
+        Neodymium.configuration().setProperty("neodymium.locale", "fr_CA");
+        String key = "key1";
+        Assert.assertEquals("fr", Neodymium.localizedText(key));
     }
 
     @Test
@@ -136,5 +153,13 @@ public class LocalizationTest extends NeodymiumTest
         Neodymium.configuration().setProperty("neodymium.locale", "default");
         String key = "key1";
         Assert.assertEquals("en_US", Neodymium.localizedText(key, "en_US"));
+    }
+
+    @Test
+    public void testSpecificLocaleFallback()
+    {
+        Neodymium.configuration().setProperty("neodymium.locale", "en_US");
+        String key = "key1";
+        Assert.assertEquals("fr", Neodymium.localizedText(key, "fr_CA"));
     }
 }

@@ -76,7 +76,7 @@ public class NeodymiumLocalization
         Locale locale;
         try
         {
-            locale = LocaleUtils.toLocale(Neodymium.configuration().locale());
+            locale = LocaleUtils.toLocale(localeString);
         }
         catch (IllegalArgumentException e)
         {
