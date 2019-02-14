@@ -263,12 +263,6 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.25</version>
 		</dependency>
-		<dependency>
-			<groupId>io.appium</groupId>
-			<artifactId>java-client</artifactId>
-			<version>7.0.0</version>
-		</dependency>
-
 
 		<!-- Test only dependencies -->
 		<dependency>
