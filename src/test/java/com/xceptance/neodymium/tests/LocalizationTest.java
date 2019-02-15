@@ -33,6 +33,10 @@ public class LocalizationTest extends NeodymiumTest
         bw.newLine();
         bw.write(" key1: default");
         bw.newLine();
+        bw.write(" \"Yes\": \"Yes\"");
+        bw.newLine();
+        bw.write(" \"911\": 911");
+        bw.newLine();
         bw.write(" key2:");
         bw.newLine();
         bw.write("en_US:");
@@ -46,6 +50,10 @@ public class LocalizationTest extends NeodymiumTest
         bw.write("fr:");
         bw.newLine();
         bw.write(" key1: fr");
+        bw.newLine();
+        bw.write(" \"Yes\": Oui");
+        bw.newLine();
+        bw.write(" \"911\": 112");
         bw.newLine();
         bw.write("fr_FR:");
         bw.newLine();
@@ -64,6 +72,16 @@ public class LocalizationTest extends NeodymiumTest
         Neodymium.configuration().setProperty("neodymium.locale", "default");
         String key = "key1";
         Assert.assertEquals("default", Neodymium.localizedText(key));
+    }
+
+    @Test
+    public void testAutoConversionInValue()
+    {
+        Neodymium.configuration().setProperty("neodymium.locale", "default");
+        String key1 = "Yes";
+        Assert.assertEquals("Yes", Neodymium.localizedText(key1));
+        String key2 = "911";
+        Assert.assertEquals("911", Neodymium.localizedText(key2));
     }
 
     @Test
@@ -88,6 +106,16 @@ public class LocalizationTest extends NeodymiumTest
     {
         Neodymium.configuration().setProperty("neodymium.locale", "fr_FR");
         Assert.assertEquals("fr_FR", Neodymium.localizedText("key1"));
+    }
+
+    @Test
+    public void testAutoConversionInValueFrench()
+    {
+        Neodymium.configuration().setProperty("neodymium.locale", "fr");
+        String key1 = "Yes";
+        Assert.assertEquals("Oui", Neodymium.localizedText(key1));
+        String key2 = "911";
+        Assert.assertEquals("112", Neodymium.localizedText(key2));
     }
 
     @Test
