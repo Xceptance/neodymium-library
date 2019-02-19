@@ -29,6 +29,14 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("3000")
     public long selenideTimeout();
 
+    @Key("neodymium.selenide.fastSetValue")
+    @DefaultValue("false")
+    public boolean selenideFastSetValue();
+
+    @Key("neodymium.selenide.clickViaJs")
+    @DefaultValue("false")
+    public boolean selenideClickViaJs();
+
     @Key("neodymium.selenideAddons.staleElement.retry.count")
     @DefaultValue("3")
     public int staleElementRetryCount();

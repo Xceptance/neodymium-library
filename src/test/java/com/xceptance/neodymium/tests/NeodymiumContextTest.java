@@ -13,7 +13,7 @@ import org.junit.runner.Result;
 
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.testclasses.context.ContextGetsCleared;
-import com.xceptance.neodymium.testclasses.context.DefaultSelenideTimeoutCheck;
+import com.xceptance.neodymium.testclasses.context.DefaultSelenideConfiguration;
 import com.xceptance.neodymium.testclasses.context.OverrideNeodymiumConfiguration;
 import com.xceptance.neodymium.testclasses.context.SelenideConfigurationShortcuts;
 import com.xceptance.neodymium.testclasses.context.WindowSizeTests;
@@ -58,9 +58,9 @@ public class NeodymiumContextTest extends NeodymiumTest
     }
 
     @Test
-    public void testDefaultSelenideTimeoutCheck() throws Exception
+    public void testDefaultSelenideConfigurationCheck() throws Exception
     {
-        Result result = JUnitCore.runClasses(DefaultSelenideTimeoutCheck.class);
+        Result result = JUnitCore.runClasses(DefaultSelenideConfiguration.class);
         checkPass(result, 2, 0, 0);
     }
 
