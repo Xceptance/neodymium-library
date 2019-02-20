@@ -10,13 +10,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Proxy;
@@ -77,46 +70,20 @@ public final class BrowserRunnerHelper
      * @throws MalformedURLException
      *             if the given gridUrl is invalid
      */
-    protected static HttpCommandExecutor createGridExecutor(final URL gridUrl, final String gridUsername, final String gridPassword)
-        throws MalformedURLException
+    protected static HttpCommandExecutor createGridExecutor(String testEnvironment) throws MalformedURLException
+
     {
-        // create a configuration for accessing target site via proxy (if a proxy is defined)
-        // the proxy and the destination site will have different or no credentials for accessing them
-        // so we need to create different authentication scopes and link them with the credentials
-        final BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
+        TestEnvironment testEnvironmentProperties = MultibrowserConfiguration.getInstance().getTestEnvironment(testEnvironment);
 
-        // create credentials for proxy access
-        if (Neodymium.configuration().useProxy() //
-            && !StringUtils.isEmpty(Neodymium.configuration().getProxySocketUsername()) //
-            && !StringUtils.isEmpty(Neodymium.configuration().getProxySocketPassword()))
+        if (testEnvironmentProperties == null)
         {
-            final AuthScope proxyAuth = new AuthScope(Neodymium.configuration().getProxyHost(), Integer.valueOf(Neodymium.configuration().getProxyPort()));
-            final Credentials proxyCredentials = new UsernamePasswordCredentials(Neodymium.configuration()
-                                                                                          .getProxySocketUsername(), Neodymium.configuration()
-                                                                                                                              .getProxySocketPassword());
-            basicCredentialsProvider.setCredentials(proxyAuth, proxyCredentials);
+            throw new IllegalArgumentException("No properties found for test environment: \"" + testEnvironment + "\"");
         }
-
-        // create credentials for target website
-        final AuthScope gridAuth = new AuthScope(gridUrl.getHost(), gridUrl.getPort());
-
-        if (!StringUtils.isEmpty(gridUsername))
-        {
-            final Credentials gridCredentials = new UsernamePasswordCredentials(gridUsername, gridPassword);
-            basicCredentialsProvider.setCredentials(gridAuth, gridCredentials);
-        }
-
-        // now create a http client, set the custom proxy and inject the credentials
-        final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
-        clientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
-        if (Neodymium.configuration().useProxy())
-            clientBuilder.setProxy(new HttpHost(Neodymium.configuration().getProxyHost(), Integer.valueOf(Neodymium.configuration().getProxyPort())));
-        final CloseableHttpClient httpClient = clientBuilder.build();
 
         final Map<String, CommandInfo> additionalCommands = new HashMap<String, CommandInfo>(); // just a dummy
 
-        // this command executor will do the credential magic for us. both proxy and target site credentials
-        return new HttpCommandExecutor(additionalCommands, gridUrl, new ProxyHttpClient(httpClient));
+        URL gridUrl = new URL(testEnvironmentProperties.getUrl());
+        return new HttpCommandExecutor(additionalCommands, gridUrl, new NeodymiumProxyHttpClient(testEnvironmentProperties));
     }
 
     /**
@@ -291,20 +258,8 @@ public final class BrowserRunnerHelper
         }
         else
         {
-            TestEnvironment testEnvironmentProperties = MultibrowserConfiguration.getInstance().getTestEnvironment(testEnvironment);
-
-            if (testEnvironmentProperties == null)
-            {
-                throw new IllegalArgumentException("No properties found for test environment: \"" + testEnvironment + "\"");
-            }
-
-            final String gridUsername = testEnvironmentProperties.getUsername();
-            final String gridPassword = testEnvironmentProperties.getPassword();
-            final String gridUrlString = testEnvironmentProperties.getUrl();
-            final URL gridUrl = new URL(gridUrlString);
-
             // establish connection to target website
-            return new RemoteWebDriver(createGridExecutor(gridUrl, gridUsername, gridPassword), capabilities);
+            return new RemoteWebDriver(createGridExecutor(testEnvironment), capabilities);
         }
 
         return null;
