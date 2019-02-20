@@ -22,6 +22,6 @@ public class OverrideNeodymiumConfiguration
     @Test
     public void testConfigurationContainsOveriddenParts() throws Exception
     {
-        Assert.assertEquals("/some/phantomjs/path/just/for/test/purpose", Neodymium.configuration().getPhantomJsDriverPath());
+        Assert.assertEquals("/some/phantomjs/path/just/for/test/newPurpose", Neodymium.configuration().getPhantomJsDriverPath());
     }
 }

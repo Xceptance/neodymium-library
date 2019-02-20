@@ -25,19 +25,21 @@ public class NeodymiumContextTest extends NeodymiumTest
     @BeforeClass
     public static void setUpNeodymiumConfiguration() throws IOException
     {
-        Map<String, String> properties = new HashMap<>();
-        properties.put("neodymium.webDriver.opera.pathToDriverServer", "/some/opera/path/just/for/test/purpose");
-        File tempConfigFile1 = File.createTempFile("dev-neodymium", "", new File("./config/"));
+        // set up a dev-neodymium.properties file
+        Map<String, String> properties1 = new HashMap<>();
+        properties1.put("neodymium.webDriver.opera.pathToDriverServer", "/some/opera/path/just/for/test/purpose");
+        properties1.put("neodymium.webDriver.phantomjs.pathToDriverServer", "/some/phantomjs/path/just/for/test/oldPurpose");
+        File tempConfigFile1 = new File("./config/dev-neodymium.properties");
         tempFiles.add(tempConfigFile1);
-        writeMapToPropertiesFile(properties, tempConfigFile1);
+        writeMapToPropertiesFile(properties1, tempConfigFile1);
 
-        properties.put("neodymium.webDriver.phantomjs.pathToDriverServer", "/some/phantomjs/path/just/for/test/purpose");
-
+        // set up a temp-neodymium.properties
         final String fileLocation = "config/temp-neodymium.properties";
         File tempConfigFile2 = new File("./" + fileLocation);
         tempFiles.add(tempConfigFile2);
-        writeMapToPropertiesFile(properties, tempConfigFile2);
-
+        Map<String, String> properties2 = new HashMap<>();
+        properties2.put("neodymium.webDriver.phantomjs.pathToDriverServer", "/some/phantomjs/path/just/for/test/newPurpose");
+        writeMapToPropertiesFile(properties2, tempConfigFile2);
         ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPTERY_NAME, "file:" + fileLocation);
     }
 
