@@ -58,15 +58,12 @@ public final class BrowserRunnerHelper
     }
 
     /**
-     * Returns an {@link URL} to a Selenium grid (e.g. SauceLabs) that contains basic authentication for access
+     * Returns an {@link HttpCommandExecutor} to a Selenium grid (e.g. SauceLabs) that contains basic authentication for
+     * access
      * 
-     * @param gridUrl
-     *            The {@link URL} to the grid
-     * @param gridUsername
-     *            The username that should be used to accesd the grid
-     * @param gridPassword
-     *            The password that should be used to get access to the grid
-     * @return {@link URL} to Selenium grid augmented with credentials
+     * @param testEnvironment
+     *            The {@link TestEnvironment} to the grid
+     * @return {@link HttpCommandExecutor} to Selenium grid augmented with credentials
      * @throws MalformedURLException
      *             if the given gridUrl is invalid
      */
