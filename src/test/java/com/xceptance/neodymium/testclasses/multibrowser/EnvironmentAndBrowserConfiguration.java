@@ -18,6 +18,12 @@ public class EnvironmentAndBrowserConfiguration
         Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.URL, environment.getUrl());
         Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.USERNAME, environment.getUsername());
         Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.PASSWORD, environment.getPassword());
+
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.USEPROXY1, environment.useProxy());
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.PROXYHOST1, environment.getProxyHost());
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.PROXYPORT1, environment.getProxyPort());
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.PROXYUSERNAME1, environment.getProxyUsername());
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.PROXYPASSWORD1, environment.getProxyPassword());
     }
 
     @Test
@@ -36,6 +42,12 @@ public class EnvironmentAndBrowserConfiguration
         Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.URL2, environment.getUrl());
         Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.USERNAME2, environment.getUsername());
         Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.PASSWORD2, environment.getPassword());
+
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.USEPROXY2, environment.useProxy());
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.PROXYHOST1, environment.getProxyHost());
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.PROXYPORT1, environment.getProxyPort());
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.PROXYUSERNAME1, environment.getProxyUsername());
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.PROXYPASSWORD1, environment.getProxyPassword());
     }
 
     @Test

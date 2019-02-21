@@ -31,6 +31,18 @@ public class EnvironmentAndBrowserConfigurationTest extends NeodymiumTest
 
     public static final String ENVIRONMENTNAME = "someEnvrionment";
 
+    public static final Boolean USEPROXY1 = true;
+
+    public static final Boolean USEPROXY2 = false;
+
+    public static final String PROXYHOST1 = "127.0.0.1";
+
+    public static final Integer PROXYPORT1 = 4242;
+
+    public static final String PROXYUSERNAME1 = "user1";
+
+    public static final String PROXYPASSWORD1 = "password1";
+
     @BeforeClass
     public static void beforeClass() throws IOException
     {
@@ -38,9 +50,19 @@ public class EnvironmentAndBrowserConfigurationTest extends NeodymiumTest
         properties1.put("browserprofile.testEnvironment.unittest.url", URL);
         properties1.put("browserprofile.testEnvironment.unittest.username", USERNAME);
         properties1.put("browserprofile.testEnvironment.unittest.password", PASSWORD);
+        properties1.put("browserprofile.testEnvironment.unittest.proxy", USEPROXY1.toString());
+        properties1.put("browserprofile.testEnvironment.unittest.proxy.host", PROXYHOST1);
+        properties1.put("browserprofile.testEnvironment.unittest.proxy.port", PROXYPORT1.toString());
+        properties1.put("browserprofile.testEnvironment.unittest.proxy.username", PROXYUSERNAME1);
+        properties1.put("browserprofile.testEnvironment.unittest.proxy.password", PROXYPASSWORD1);
         properties1.put("browserprofile.testEnvironment.override.url", URL);
         properties1.put("browserprofile.testEnvironment.override.username", USERNAME);
         properties1.put("browserprofile.testEnvironment.override.password", PASSWORD);
+        properties1.put("browserprofile.testEnvironment.override.proxy", USEPROXY2.toString());
+        properties1.put("browserprofile.testEnvironment.override.proxy.host", PROXYHOST1);
+        properties1.put("browserprofile.testEnvironment.override.proxy.port", PROXYPORT1.toString());
+        properties1.put("browserprofile.testEnvironment.override.proxy.username", PROXYUSERNAME1);
+        properties1.put("browserprofile.testEnvironment.override.proxy.password", PROXYPASSWORD1);
         File tempConfigFile1 = new File("./config/credentials.properties");
         writeMapToPropertiesFile(properties1, tempConfigFile1);
         tempFiles.add(tempConfigFile1);
