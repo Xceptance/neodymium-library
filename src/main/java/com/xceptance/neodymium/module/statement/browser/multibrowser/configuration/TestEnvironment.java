@@ -12,7 +12,7 @@ public class TestEnvironment
 
     private String password;
 
-    private boolean useProxy;
+    private boolean useProxy = false;
 
     private String proxyHost;
 
@@ -50,7 +50,7 @@ public class TestEnvironment
             }
             else
             {
-                throw new RuntimeException("\"The proxy port configured for evironment: \"" + baseKey + "\" needs to be set.\"");
+                throw new RuntimeException("The proxy port configured for evironment: \"" + baseKey + "\" needs to be set.");
             }
             proxyUsername = properties.getProperty(baseKey + ".proxy.username");
             proxyPassword = properties.getProperty(baseKey + ".proxy.password");
