@@ -80,7 +80,7 @@ public final class BrowserRunnerHelper
         final Map<String, CommandInfo> additionalCommands = new HashMap<String, CommandInfo>(); // just a dummy
 
         URL gridUrl = new URL(testEnvironmentProperties.getUrl());
-        return new HttpCommandExecutor(additionalCommands, gridUrl, new NeodymiumProxyHttpClient(testEnvironmentProperties));
+        return new HttpCommandExecutor(additionalCommands, gridUrl, new NeodymiumProxyHttpClientFactory(testEnvironmentProperties));
     }
 
     /**

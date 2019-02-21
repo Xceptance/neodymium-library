@@ -5,6 +5,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,13 +22,13 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.Route;
 
-public class NeodymiumProxyHttpClient extends OkHttpClient.Factory
+public class NeodymiumProxyHttpClientFactory implements HttpClient.Factory
 {
     private final ConnectionPool pool = new ConnectionPool();
 
     private TestEnvironment testEnvironment;
 
-    public NeodymiumProxyHttpClient(TestEnvironment testEnvironment) throws MalformedURLException
+    public NeodymiumProxyHttpClientFactory(TestEnvironment testEnvironment) throws MalformedURLException
     {
         this.testEnvironment = testEnvironment;
     }
@@ -71,7 +72,7 @@ public class NeodymiumProxyHttpClient extends OkHttpClient.Factory
                 {
                     String host = testEnvironment.getProxyHost();
                     Integer port = testEnvironment.getProxyPort();
-                    client.proxy(new java.net.Proxy(java.net.Proxy.Type.HTTP, new InetSocketAddress(host, port)));
+                    client.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port)));
 
                     String proxyUsername = testEnvironment.getProxyUsername();
                     String proxyPassword = testEnvironment.getProxyPassword();
@@ -109,15 +110,19 @@ public class NeodymiumProxyHttpClient extends OkHttpClient.Factory
                 if (StringUtils.isNoneBlank(userName, password))
                 {
                     String credentials = Credentials.basic(userName, password);
-                    client.authenticator((route, response) -> {
-                        if (response.request().header("Authorization") != null)
+                    client.authenticator(new Authenticator()
+                    {
+                        @Override
+                        public Request authenticate(Route route, Response response) throws IOException
                         {
-                            return null; // Give up, we've already attempted to authenticate.
+                            if (response.request().header("Authorization") != null)
+                            {
+                                return null; // Give up, we've already attempted to authenticate.
+                            }
+                            return response.request().newBuilder()
+                                           .header("Authorization", credentials)
+                                           .build();
                         }
-
-                        return response.request().newBuilder()
-                                       .header("Authorization", credentials)
-                                       .build();
                     });
                 }
             }
@@ -127,7 +132,6 @@ public class NeodymiumProxyHttpClient extends OkHttpClient.Factory
     @Override
     public void cleanupIdleClients()
     {
-        super.cleanupIdleClients();
         pool.evictAll();
     }
 }
