@@ -20,7 +20,6 @@ import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
 import com.xceptance.neodymium.NeodymiumWebDriverListener;
 import com.xceptance.neodymium.module.StatementBuilder;
@@ -165,14 +164,22 @@ public class BrowserStatement extends StatementBuilder
             Neodymium.setDriver(webdriver);
             Neodymium.setBrowserProfileName(browserConfiguration.getConfigTag());
 
-            // set our default timeout
-            Configuration.timeout = Neodymium.configuration().selenideTimeout();
+            initSelenideConfiguration();
         }
         else
         {
             throw new RuntimeException("Could not create driver for browsertag: " + browserConfiguration.getConfigTag() +
                                        ". Please check your browserconfigurations.");
         }
+    }
+
+    private void initSelenideConfiguration()
+    {
+        // set our default timeout
+        Neodymium.timeout(Neodymium.configuration().selenideTimeout());
+
+        Neodymium.fastSetValue(Neodymium.configuration().selenideFastSetValue());
+        Neodymium.clickViaJs(Neodymium.configuration().selenideClickViaJs());
     }
 
     public void teardown(boolean testFailed)

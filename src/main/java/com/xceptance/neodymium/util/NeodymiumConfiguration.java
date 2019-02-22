@@ -12,7 +12,7 @@ import com.xceptance.neodymium.NeodymiumRunner.DescriptionMode;
 @LoadPolicy(LoadType.MERGE)
 @Sources(
 {
-  "file:config/neodymium.properties", "file:config/credentials.properties", "file:config/dev-neodymium.properties", "${neodymium.temporaryConfigFile}"
+  "${neodymium.temporaryConfigFile}", "file:config/dev-neodymium.properties", "file:config/credentials.properties", "file:config/neodymium.properties"
 })
 public interface NeodymiumConfiguration extends Mutable
 {
@@ -28,6 +28,14 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.selenide.timeout")
     @DefaultValue("3000")
     public long selenideTimeout();
+
+    @Key("neodymium.selenide.fastSetValue")
+    @DefaultValue("false")
+    public boolean selenideFastSetValue();
+
+    @Key("neodymium.selenide.clickViaJs")
+    @DefaultValue("false")
+    public boolean selenideClickViaJs();
 
     @Key("neodymium.selenideAddons.staleElement.retry.count")
     @DefaultValue("3")

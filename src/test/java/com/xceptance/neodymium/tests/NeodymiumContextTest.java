@@ -1,22 +1,48 @@
 package com.xceptance.neodymium.tests;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.aeonbits.owner.ConfigFactory;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.testclasses.context.ContextGetsCleared;
-import com.xceptance.neodymium.testclasses.context.DefaultSelenideTimeoutCheck;
+import com.xceptance.neodymium.testclasses.context.DefaultSelenideConfiguration;
+import com.xceptance.neodymium.testclasses.context.OverrideNeodymiumConfiguration;
 import com.xceptance.neodymium.testclasses.context.SelenideConfigurationShortcuts;
 import com.xceptance.neodymium.testclasses.context.WindowSizeTests;
 import com.xceptance.neodymium.testclasses.context.cucumbercontextclear.CucumberContextGetsCleared;
+import com.xceptance.neodymium.util.Neodymium;
 
 public class NeodymiumContextTest extends NeodymiumTest
 {
+    @BeforeClass
+    public static void setUpNeodymiumConfiguration() throws IOException
+    {
+        // set up a dev-neodymium.properties file
+        Map<String, String> properties1 = new HashMap<>();
+        properties1.put("neodymium.webDriver.opera.pathToDriverServer", "/some/opera/path/just/for/test/purpose");
+        properties1.put("neodymium.webDriver.phantomjs.pathToDriverServer", "/some/phantomjs/path/just/for/test/oldPurpose");
+        File tempConfigFile1 = new File("./config/dev-neodymium.properties");
+        tempFiles.add(tempConfigFile1);
+        writeMapToPropertiesFile(properties1, tempConfigFile1);
+
+        // set up a temp-neodymium.properties
+        final String fileLocation = "config/temp-neodymium.properties";
+        File tempConfigFile2 = new File("./" + fileLocation);
+        tempFiles.add(tempConfigFile2);
+        Map<String, String> properties2 = new HashMap<>();
+        properties2.put("neodymium.webDriver.phantomjs.pathToDriverServer", "/some/phantomjs/path/just/for/test/newPurpose");
+        writeMapToPropertiesFile(properties2, tempConfigFile2);
+        ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPTERY_NAME, "file:" + fileLocation);
+    }
+
     @Test
     public void testContextGetCleared() throws Exception
     {
@@ -34,9 +60,9 @@ public class NeodymiumContextTest extends NeodymiumTest
     }
 
     @Test
-    public void testDefaultSelenideTimeoutCheck() throws Exception
+    public void testDefaultSelenideConfigurationCheck() throws Exception
     {
-        Result result = JUnitCore.runClasses(DefaultSelenideTimeoutCheck.class);
+        Result result = JUnitCore.runClasses(DefaultSelenideConfiguration.class);
         checkPass(result, 2, 0, 0);
     }
 
@@ -45,6 +71,13 @@ public class NeodymiumContextTest extends NeodymiumTest
     {
         Result result = JUnitCore.runClasses(SelenideConfigurationShortcuts.class);
         checkPass(result, 4, 0, 0);
+    }
+
+    @Test
+    public void testOverridingNeodymiumConfiguration() throws Exception
+    {
+        Result result = JUnitCore.runClasses(OverrideNeodymiumConfiguration.class);
+        checkPass(result, 2, 0, 0);
     }
 
     @Test

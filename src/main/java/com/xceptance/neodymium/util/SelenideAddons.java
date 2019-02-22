@@ -10,6 +10,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 
+import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.ElementsCollection;
@@ -18,6 +19,8 @@ import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.ex.UIAssertionError;
 import com.codeborne.selenide.impl.Html;
 import com.codeborne.selenide.impl.WebElementsCollectionWrapper;
+import com.codeborne.selenide.logevents.SelenideLog;
+import com.codeborne.selenide.logevents.SelenideLogger;
 
 /**
  * Additional helpers for limits chained lookup in Selenide. Contribute that later back to Selenide if it proves to
@@ -262,7 +265,12 @@ public class SelenideAddons
         }
         catch (AssertionError e)
         {
-            throw UIAssertionError.wrap(WebDriverRunner.driver(), e, System.currentTimeMillis());
+            Driver driver = WebDriverRunner.driver();
+            SelenideLogger.commitStep(new SelenideLog("Assertion error", e.getMessage()), e);
+            if (!driver.config().assertionMode().equals(AssertionMode.SOFT))
+            {
+                throw UIAssertionError.wrap(driver, e, System.currentTimeMillis());
+            }
         }
     }
 }

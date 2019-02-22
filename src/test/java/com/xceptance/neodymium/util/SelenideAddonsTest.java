@@ -9,6 +9,11 @@ import org.junit.runner.RunWith;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.ex.ElementShould;
 import com.codeborne.selenide.ex.UIAssertionError;
+import com.codeborne.selenide.logevents.LogEvent;
+import com.codeborne.selenide.logevents.LogEvent.EventStatus;
+import com.codeborne.selenide.logevents.LogEventListener;
+import com.codeborne.selenide.logevents.SelenideLog;
+import com.codeborne.selenide.logevents.SelenideLogger;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 
@@ -100,5 +105,33 @@ public class SelenideAddonsTest
         SelenideAddons.wrapAssertionError(() -> {
             Assert.assertEquals("MyPageTitle", Selenide.title());
         });
+    }
+
+    @Test
+    public void testWrapSoftAssertionError()
+    {
+        final String errMessage = "Title doesn't match.";
+        SelenideLogger.addListener("testListener", new LogEventListener()
+        {
+            @Override
+            public void onEvent(LogEvent currentLog)
+            {
+                SelenideLog log = (SelenideLog) currentLog;
+                if (log.getStatus().equals(EventStatus.FAIL))
+                {
+                    Assert.assertEquals("Selenide log event not matching", "Assertion error", log.getElement());
+                    Assert.assertTrue("Selenide log event not matching", log.getError().getMessage().startsWith(errMessage));
+                }
+            }
+        });
+
+        Selenide.open("https://blog.xceptance.com/");
+        Neodymium.softAssertions(true);
+        SelenideAddons.wrapAssertionError(() -> {
+            Assert.assertEquals(errMessage, "MyPageTitle", Selenide.title());
+        });
+        Neodymium.softAssertions(false);
+
+        SelenideLogger.removeListener("testListener");
     }
 }

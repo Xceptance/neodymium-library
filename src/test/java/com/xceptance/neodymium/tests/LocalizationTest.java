@@ -33,6 +33,10 @@ public class LocalizationTest extends NeodymiumTest
         bw.newLine();
         bw.write(" key1: default");
         bw.newLine();
+        bw.write(" \"Yes\": \"Yes\"");
+        bw.newLine();
+        bw.write(" \"911\": 911");
+        bw.newLine();
         bw.write(" key2:");
         bw.newLine();
         bw.write("en_US:");
@@ -43,9 +47,21 @@ public class LocalizationTest extends NeodymiumTest
         bw.newLine();
         bw.write(" key1: en");
         bw.newLine();
+        bw.write("fr:");
+        bw.newLine();
+        bw.write(" key1: fr");
+        bw.newLine();
+        bw.write(" \"Yes\": Oui");
+        bw.newLine();
+        bw.write(" \"911\": 112");
+        bw.newLine();
         bw.write("fr_FR:");
         bw.newLine();
         bw.write(" key1: fr_FR");
+        bw.newLine();
+        bw.write("de_DE:");
+        bw.newLine();
+        bw.write(" key1: de_DE");
         bw.newLine();
         bw.close();
     }
@@ -56,6 +72,16 @@ public class LocalizationTest extends NeodymiumTest
         Neodymium.configuration().setProperty("neodymium.locale", "default");
         String key = "key1";
         Assert.assertEquals("default", Neodymium.localizedText(key));
+    }
+
+    @Test
+    public void testAutoConversionInValue()
+    {
+        Neodymium.configuration().setProperty("neodymium.locale", "default");
+        String key1 = "Yes";
+        Assert.assertEquals("Yes", Neodymium.localizedText(key1));
+        String key2 = "911";
+        Assert.assertEquals("911", Neodymium.localizedText(key2));
     }
 
     @Test
@@ -76,6 +102,23 @@ public class LocalizationTest extends NeodymiumTest
     }
 
     @Test
+    public void testFrFR()
+    {
+        Neodymium.configuration().setProperty("neodymium.locale", "fr_FR");
+        Assert.assertEquals("fr_FR", Neodymium.localizedText("key1"));
+    }
+
+    @Test
+    public void testAutoConversionInValueFrench()
+    {
+        Neodymium.configuration().setProperty("neodymium.locale", "fr");
+        String key1 = "Yes";
+        Assert.assertEquals("Oui", Neodymium.localizedText(key1));
+        String key2 = "911";
+        Assert.assertEquals("112", Neodymium.localizedText(key2));
+    }
+
+    @Test
     public void testLanguageFallback()
     {
         // we do not have a locale en_CA and expect to fallback to "en"
@@ -88,9 +131,18 @@ public class LocalizationTest extends NeodymiumTest
     public void testFallbackToDefault()
     {
         // we do not have a locale en_CA and expect to fallback to "en"
-        Neodymium.configuration().setProperty("neodymium.locale", "fr_CA");
+        Neodymium.configuration().setProperty("neodymium.locale", "de_AU");
         String key = "key1";
         Assert.assertEquals("default", Neodymium.localizedText(key));
+    }
+
+    @Test
+    public void testSpecificLanguageFallback()
+    {
+        // we do not have a locale fr_CA and expect to fallback to "fr"
+        Neodymium.configuration().setProperty("neodymium.locale", "fr_CA");
+        String key = "key1";
+        Assert.assertEquals("fr", Neodymium.localizedText(key));
     }
 
     @Test
@@ -105,5 +157,37 @@ public class LocalizationTest extends NeodymiumTest
     {
         Neodymium.configuration().setProperty("neodymium.locale", "default");
         Neodymium.localizedText("key3");
+    }
+
+    @Test
+    public void testSpecificLocaleNullFallbackToDefault()
+    {
+        Neodymium.configuration().setProperty("neodymium.locale", "default");
+        String key = "key1";
+        Assert.assertEquals("default", Neodymium.localizedText(key, null));
+    }
+
+    @Test
+    public void testSpecificLocaleEmptyFallbackToDefault()
+    {
+        Neodymium.configuration().setProperty("neodymium.locale", "default");
+        String key = "key1";
+        Assert.assertEquals("default", Neodymium.localizedText(key, ""));
+    }
+
+    @Test
+    public void testSpecificLocale()
+    {
+        Neodymium.configuration().setProperty("neodymium.locale", "default");
+        String key = "key1";
+        Assert.assertEquals("en_US", Neodymium.localizedText(key, "en_US"));
+    }
+
+    @Test
+    public void testSpecificLocaleFallback()
+    {
+        Neodymium.configuration().setProperty("neodymium.locale", "en_US");
+        String key = "key1";
+        Assert.assertEquals("fr", Neodymium.localizedText(key, "fr_CA"));
     }
 }

@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.commons.lang3.LocaleUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 
 /**
@@ -31,7 +32,14 @@ public class NeodymiumLocalization
      */
     public static NeodymiumLocalization build(final String file)
     {
-        return new NeodymiumLocalization(YamlProperties.build(new File(file)));
+        try
+        {
+            return new NeodymiumLocalization(YamlProperties.build(new File(file)));
+        }
+        catch (ClassCastException e)
+        {
+            throw new RuntimeException("Localization keys must be of type String. (e.g. use \"Yes\" instead of Yes as key. This is due to YAML auto conversion.)", e);
+        }
     }
 
     /**
@@ -44,18 +52,31 @@ public class NeodymiumLocalization
      */
     public String getText(final String key)
     {
+        return getText(key, null);
+    }
+
+    public String getText(final String key, final String localeParam)
+    {
         if (properties == null)
         {
             // if properties is not set then the localization yaml file was not found or is empty / invalid
             throw new RuntimeException("Localization file was not found or is invalid");
         }
 
-        final String localeString = Neodymium.configuration().locale();
+        final String localeString;
+        if (StringUtils.isEmpty(localeParam))
+        {
+            localeString = Neodymium.configuration().locale();
+        }
+        else
+        {
+            localeString = localeParam;
+        }
 
         Locale locale;
         try
         {
-            locale = LocaleUtils.toLocale(Neodymium.configuration().locale());
+            locale = LocaleUtils.toLocale(localeString);
         }
         catch (IllegalArgumentException e)
         {

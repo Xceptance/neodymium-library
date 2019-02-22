@@ -43,16 +43,20 @@ public class BrowserConfigurationMapper
 
     private static final String ARGUMENTS = "arguments";
 
-    // appium specific propertys
+    // Appium specific properties
     private static final String APPIUM_VERSION = "appiumVersion";
 
     private static final String BROWSER_NAME = "browserName";
 
-    private static final String PLATTFORM_VERSION = "platformVersion";
+    private static final String PLATFORM_NAME = "platformName";
+
+    private static final String PLATFORM_VERSION = "platformVersion";
 
     private static final String APP = "app";
 
     private static final String AUTOMATION_NAME = "automationName";
+
+    private static final String ORIENTATION = "orientation";
 
     public BrowserConfiguration map(Map<String, String> browserProfileConfiguration)
     {
@@ -110,10 +114,11 @@ public class BrowserConfigurationMapper
          */
         String emulatedPlatform = browserProfileConfiguration.get(PLATFORM);
         if (!StringUtils.isEmpty(emulatedPlatform))
-        {
             capabilities.setCapability(CapabilityType.PLATFORM, emulatedPlatform);
-            capabilities.setCapability(CapabilityType.PLATFORM_NAME, emulatedPlatform);
-        }
+
+        String emulatedPlatformName = browserProfileConfiguration.get(PLATFORM_NAME);
+        if (!StringUtils.isEmpty(emulatedPlatformName))
+            capabilities.setCapability(CapabilityType.PLATFORM_NAME, emulatedPlatformName);
 
         String emulatedVersion = browserProfileConfiguration.get(BROWSER_VERSION);
         if (!StringUtils.isEmpty(emulatedVersion))
@@ -135,23 +140,31 @@ public class BrowserConfigurationMapper
 
         String appiumVersion = browserProfileConfiguration.get(APPIUM_VERSION);
         if (!StringUtils.isEmpty(appiumVersion))
-            capabilities.setCapability("appiumVersion", appiumVersion);
+            capabilities.setCapability(APPIUM_VERSION, appiumVersion);
 
         String browserName = browserProfileConfiguration.get(BROWSER_NAME);
         if (!StringUtils.isEmpty(browserName))
-            capabilities.setCapability(CapabilityType.BROWSER_NAME, browserName);
+            capabilities.setCapability(BROWSER_NAME, browserName);
 
-        String plattformVersion = browserProfileConfiguration.get(PLATTFORM_VERSION);
+        String plattformVersion = browserProfileConfiguration.get(PLATFORM_VERSION);
         if (!StringUtils.isEmpty(plattformVersion))
-            capabilities.setCapability("platformVersion", plattformVersion);
+            capabilities.setCapability(PLATFORM_VERSION, plattformVersion);
+
+        String plattformName = browserProfileConfiguration.get(PLATFORM_NAME);
+        if (!StringUtils.isEmpty(plattformName))
+            capabilities.setCapability(PLATFORM_NAME, plattformName);
 
         String app = browserProfileConfiguration.get(APP);
         if (!StringUtils.isEmpty(app))
-            capabilities.setCapability("app", app);
+            capabilities.setCapability(APP, app);
 
         String automationName = browserProfileConfiguration.get(AUTOMATION_NAME);
         if (!StringUtils.isEmpty(automationName))
-            capabilities.setCapability("automationName", automationName);
+            capabilities.setCapability(AUTOMATION_NAME, automationName);
+
+        String oriantation = browserProfileConfiguration.get(ORIENTATION);
+        if (!StringUtils.isEmpty(oriantation))
+            capabilities.setCapability(ORIENTATION, oriantation);
 
         /*
          * Chrome device emulation

@@ -180,7 +180,7 @@ public class TestdataStatement extends StatementBuilder
 
         List<DataSet> dataSetAnnotations = new LinkedList<>();
 
-        // at this point neither the class nor the method could have data sets supressed
+        // at this point neither the class nor the method could have data sets suppressed
         List<DataSet> classDataSetAnnotations = getAnnotations(testClass.getJavaClass(), DataSet.class);
         if (!methodDataSetAnnotations.isEmpty())
         {
