@@ -134,7 +134,12 @@ public class BrowserConfigurationMapper
 
         String emulatedDeviceScreenResolution = browserProfileConfiguration.get(SCREEN_RESOLUTION);
         if (!StringUtils.isEmpty(emulatedDeviceScreenResolution))
+        {
+            // SauceLabs
             capabilities.setCapability("screenResolution", emulatedDeviceScreenResolution);
+            // testingBot
+            capabilities.setCapability("screen-resolution", emulatedDeviceScreenResolution);
+        }
 
         // appium
 
