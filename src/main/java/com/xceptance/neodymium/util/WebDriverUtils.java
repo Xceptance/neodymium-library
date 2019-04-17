@@ -75,7 +75,16 @@ public class WebDriverUtils
      **/
     public static void tearDown(Scenario scenario)
     {
-        browserStatement.get().teardown(scenario.isFailed());
+        tearDown(scenario.isFailed());
+    }
+
+    /**
+     * @param isFailed
+     *            boolean to pass if the test failed in order to use Neodymium's keepBrowserOpenOnFailure feature
+     **/
+    public static void tearDown(boolean isFailed)
+    {
+        browserStatement.get().teardown(isFailed);
     }
 
     static String getFirstMatchingBrowserTag(Scenario scenario)
