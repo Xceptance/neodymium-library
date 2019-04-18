@@ -180,9 +180,7 @@ public class BrowserConfigurationMapper
             Map<String, String> mobileEmulation = new HashMap<String, String>();
             mobileEmulation.put("deviceName", chromeEmulationProfile);
 
-            Map<String, Object> chromeOptions = new HashMap<String, Object>();
-            chromeOptions.put("mobileEmulation", mobileEmulation);
-            capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
+            ((ChromeOptions) capabilities).setExperimentalOption("mobileEmulation", mobileEmulation);
         }
 
         /*

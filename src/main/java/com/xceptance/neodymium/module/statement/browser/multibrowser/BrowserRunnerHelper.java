@@ -170,14 +170,14 @@ public final class BrowserRunnerHelper
     {
         final MutableCapabilities capabilities = config.getCapabilities();
 
+        if (Neodymium.configuration().useProxy())
+        {
+            capabilities.setCapability(CapabilityType.PROXY, createProxyCapabilities());
+        }
+
         final String testEnvironment = config.getTestEnvironment();
         if (StringUtils.isEmpty(testEnvironment) || "local".equalsIgnoreCase(testEnvironment))
         {
-            if (Neodymium.configuration().useProxy())
-            {
-                capabilities.setCapability(CapabilityType.PROXY, createProxyCapabilities());
-            }
-
             final String browserName = config.getCapabilities().getBrowserName();
             if (chromeBrowsers.contains(browserName))
             {
