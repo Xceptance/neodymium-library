@@ -84,9 +84,15 @@ public class NeodymiumProxyHttpClientFactory implements HttpClient.Factory
                             public Request authenticate(Route route, Response response) throws IOException
                             {
                                 String credential = Credentials.basic(proxyUsername, proxyPassword);
-                                return response.request().newBuilder()
-                                               .header("Proxy-Authorization", credential)
-                                               .build();
+                                Request request = response.request().newBuilder()
+                                                          .header("Proxy-Authorization", credential)
+                                                          .build();
+
+                                if (response.code() == 407)
+                                {
+                                    throw new RuntimeException("The proxy credentials configured for evironment are missing or incorrect.");
+                                }
+                                return request;
                             }
                         });
                     }
