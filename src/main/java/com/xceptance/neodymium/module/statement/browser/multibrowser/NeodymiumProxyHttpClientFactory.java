@@ -78,23 +78,8 @@ public class NeodymiumProxyHttpClientFactory implements HttpClient.Factory
                     String proxyPassword = testEnvironment.getProxyPassword();
                     if (StringUtils.isNoneEmpty(proxyUsername, proxyPassword))
                     {
-                        client.proxyAuthenticator(new Authenticator()
-                        {
-                            @Override
-                            public Request authenticate(Route route, Response response) throws IOException
-                            {
-                                String credential = Credentials.basic(proxyUsername, proxyPassword);
-                                Request request = response.request().newBuilder()
-                                                          .header("Proxy-Authorization", credential)
-                                                          .build();
-
-                                if (response.code() == 407)
-                                {
-                                    throw new RuntimeException("The proxy credentials configured for evironment are missing or incorrect.");
-                                }
-                                return request;
-                            }
-                        });
+                        String credentials = Credentials.basic(proxyUsername, proxyPassword);
+                        client.proxyAuthenticator(new NeodymiumAuthenticator("Proxy-Authorization", credentials));
                     }
                 }
 
@@ -116,20 +101,7 @@ public class NeodymiumProxyHttpClientFactory implements HttpClient.Factory
                 if (StringUtils.isNoneBlank(userName, password))
                 {
                     String credentials = Credentials.basic(userName, password);
-                    client.authenticator(new Authenticator()
-                    {
-                        @Override
-                        public Request authenticate(Route route, Response response) throws IOException
-                        {
-                            if (response.request().header("Authorization") != null)
-                            {
-                                return null; // Give up, we've already attempted to authenticate.
-                            }
-                            return response.request().newBuilder()
-                                           .header("Authorization", credentials)
-                                           .build();
-                        }
-                    });
+                    client.authenticator(new NeodymiumAuthenticator("Authorization", credentials));
                 }
             }
         };
@@ -140,4 +112,30 @@ public class NeodymiumProxyHttpClientFactory implements HttpClient.Factory
     {
         pool.evictAll();
     }
+
+    private static class NeodymiumAuthenticator implements Authenticator
+    {
+        String headerName;
+
+        String credentials;
+
+        public NeodymiumAuthenticator(String headerName, String credentials)
+        {
+            this.headerName = headerName;
+            this.credentials = credentials;
+        }
+
+        @Override
+        public Request authenticate(Route route, Response response) throws IOException
+        {
+            if (response.request().header(headerName) != null)
+            {
+                return null; // Give up, we've already attempted to authenticate.
+            }
+            return response.request().newBuilder()
+                           .header(headerName, credentials)
+                           .build();
+        }
+    }
+
 }
