@@ -27,6 +27,8 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.safari.SafariOptions;
 
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
@@ -41,6 +43,8 @@ public final class BrowserRunnerHelper
 
     private static List<String> internetExplorerBrowsers = new LinkedList<String>();
 
+    private static List<String> safariBrowsers = new LinkedList<String>();
+
     static
     {
         chromeBrowsers.add(BrowserType.ANDROID);
@@ -54,6 +58,9 @@ public final class BrowserRunnerHelper
         internetExplorerBrowsers.add(BrowserType.IE_HTA);
         internetExplorerBrowsers.add(BrowserType.IEXPLORE);
         internetExplorerBrowsers.add(BrowserType.IEXPLORE_PROXY);
+
+        safariBrowsers.add(BrowserType.SAFARI);
+        safariBrowsers.add(BrowserType.SAFARI_PROXY);
     }
 
     /**
@@ -223,14 +230,21 @@ public final class BrowserRunnerHelper
 
                 return new InternetExplorerDriver(options);
             }
+            else if (safariBrowsers.contains(browserName))
+            {
+                final SafariOptions options = (SafariOptions) capabilities;
+                return new SafariDriver(options);
+            }
+            else
+            {
+                return new RemoteWebDriver(capabilities);
+            }
         }
         else
         {
             // establish connection to target website
             return new RemoteWebDriver(createGridExecutor(testEnvironment), capabilities);
         }
-
-        return null;
     }
 
     public static Proxy createProxyCapabilities()
