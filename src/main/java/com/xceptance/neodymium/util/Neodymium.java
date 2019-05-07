@@ -28,6 +28,9 @@ public class Neodymium
     // keep our current browser profile name
     private String browserProfileName;
 
+    // keep our current browser name
+    private String browserName;
+
     // our global configuration
     private final NeodymiumConfiguration configuration;
 
@@ -140,6 +143,16 @@ public class Neodymium
     public static void setBrowserProfileName(String browserProfileName)
     {
         getContext().browserProfileName = browserProfileName;
+    }
+
+    public static String getBrowserName()
+    {
+        return getContext().browserName;
+    }
+
+    public static void setBrowserName(String browserName)
+    {
+        getContext().browserName = browserName;
     }
 
     /**
@@ -330,4 +343,5 @@ public class Neodymium
     {
         Configuration.timeout = timeout;
     }
+
 }

@@ -163,6 +163,7 @@ public class BrowserStatement extends StatementBuilder
             WebDriverRunner.setWebDriver(webdriver);
             Neodymium.setDriver(webdriver);
             Neodymium.setBrowserProfileName(browserConfiguration.getConfigTag());
+            Neodymium.setBrowserName(browserConfiguration.getCapabilities().getBrowserName());
 
             initSelenideConfiguration();
         }
@@ -193,6 +194,7 @@ public class BrowserStatement extends StatementBuilder
             LOGGER.debug("Keep browser open");
             Neodymium.setDriver(null);
             Neodymium.setBrowserProfileName(null);
+            Neodymium.setBrowserName(null);
             return;
         }
 
@@ -212,6 +214,7 @@ public class BrowserStatement extends StatementBuilder
         }
         Neodymium.setDriver(null);
         Neodymium.setBrowserProfileName(null);
+        Neodymium.setBrowserName(null);
     }
 
     public static void quitCachedBrowser()

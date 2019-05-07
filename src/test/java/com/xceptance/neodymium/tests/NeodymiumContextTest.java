@@ -12,6 +12,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
+import com.xceptance.neodymium.testclasses.context.BrowserContextSetup;
 import com.xceptance.neodymium.testclasses.context.ContextGetsCleared;
 import com.xceptance.neodymium.testclasses.context.DefaultSelenideConfiguration;
 import com.xceptance.neodymium.testclasses.context.OverrideNeodymiumConfiguration;
@@ -57,6 +58,13 @@ public class NeodymiumContextTest extends NeodymiumTest
         // test that NeodymiumCucumberRunListener clears the context before each run
         Result result = JUnitCore.runClasses(CucumberContextGetsCleared.class);
         checkPass(result, 2, 0, 0);
+    }
+
+    @Test
+    public void testBrowserContextSetup() throws Exception
+    {
+        Result result = JUnitCore.runClasses(BrowserContextSetup.class);
+        checkPass(result, 1, 0, 0);
     }
 
     @Test
