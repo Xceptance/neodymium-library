@@ -17,15 +17,21 @@
 	<developers>
 		<developer>
 			<name>Marcus Kaufmann</name>
-			<email>neodymium@xceptance.com</email>
 			<organization>Xceptance Software Technologies GmbH</organization>
 			<organizationUrl>https://www.xceptance.com</organizationUrl>
+			<roles>
+				<role>former developer</role>
+			</roles>
 		</developer>
 		<developer>
 			<name>Marcel Pfotenhauer</name>
 			<email>neodymium@xceptance.com</email>
 			<organization>Xceptance Software Technologies GmbH</organization>
 			<organizationUrl>https://www.xceptance.com</organizationUrl>
+			<roles>
+				<role>architect</role>
+        		<role>developer</role>
+			</roles>
 		</developer>
 	</developers>
 
@@ -47,8 +53,8 @@
 		<maven.compiler.source.version>1.8</maven.compiler.source.version>
 		<maven.compiler.target.version>1.8</maven.compiler.target.version>
 		<surefire.version>2.22.1</surefire.version>
-		<allure.version>2.10.0</allure.version>
-		<cucumber.version>4.3.0</cucumber.version>
+		<allure.version>2.11.0</allure.version>
+		<cucumber.version>4.3.1</cucumber.version>
 		<log4j.version>2.11.2</log4j.version>
 	</properties>
 
@@ -246,7 +252,7 @@
 		<dependency>
 			<groupId>com.codeborne</groupId>
 			<artifactId>selenide</artifactId>
-			<version>5.2.2</version>
+			<version>5.2.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
