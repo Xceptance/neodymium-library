@@ -36,16 +36,16 @@ public class DataUtils
      */
     public static String randomPassword()
     {
-        final String upper = new RandomStringGenerator.Builder().selectFrom("abcdefghijklmnopqrstuvwxyz".toUpperCase().toCharArray())
-                                                                .build()
+        final String upper = new RandomStringGenerator.Builder().selectFrom("abcdefghijklmnopqrstuvwxyz".toUpperCase().toCharArray()).build()
                                                                 .generate(Neodymium.configuration().dataUtilsPasswordUppercaseCharAmount());
+
         final String lower = new RandomStringGenerator.Builder().selectFrom("abcdefghijklmnopqrstuvwxyz".toCharArray()).build()
                                                                 .generate(Neodymium.configuration().dataUtilsPasswordLowercaseCharAmount());
+
         final String number = new RandomStringGenerator.Builder().selectFrom("0123456789".toCharArray()).build()
                                                                  .generate(Neodymium.configuration().dataUtilsPasswordDigitAmount());
-        final String special = new RandomStringGenerator.Builder().selectFrom(Neodymium.configuration().dataUtilsPasswordSpecialChars()
-                                                                                     .toCharArray())
-                                                                  .build()
+
+        final String special = new RandomStringGenerator.Builder().selectFrom(Neodymium.configuration().dataUtilsPasswordSpecialChars().toCharArray()).build()
                                                                   .generate(Neodymium.configuration().dataUtilsPasswordSpecialCharAmount());
 
         final char[] all = (upper + lower + number + special).toCharArray();
@@ -76,7 +76,7 @@ public class DataUtils
      * 
      * @param key
      *            Name of the test data key
-     * @return {@link String} if the key was found
+     * @return mapped value as {@link String} if the key was found
      * @throws IllegalArgumentException
      *             if the key was NOT found
      */
@@ -98,7 +98,7 @@ public class DataUtils
      *            Name of test data key
      * @param defaultValue
      *            a value that will be returned if the key was not found
-     * @return {@link String} if the key was found else defaultValue
+     * @return mapped value as {@link String} if the key was found else defaultValue
      */
     public static String asString(String key, String defaultValue)
     {
@@ -117,7 +117,7 @@ public class DataUtils
      * 
      * @param key
      *            Name of the test data key
-     * @return int if the key was found
+     * @return mapped value as int if the key was found
      * @throws IllegalArgumentException
      *             if the key was NOT found
      */
@@ -133,7 +133,7 @@ public class DataUtils
      *            Name of test data key
      * @param defaultValue
      *            a value that will be returned if the key was not found
-     * @return {@link int} if the key was found else defaultValue
+     * @return mapped value as int if the key was found else defaultValue
      */
     public static int asInt(String key, int defaultValue)
     {
@@ -152,7 +152,7 @@ public class DataUtils
      * 
      * @param key
      *            Name of the test data key
-     * @return long if the key was found
+     * @return mapped value as long if the key was found
      * @throws IllegalArgumentException
      *             if the key was NOT found
      */
@@ -168,7 +168,7 @@ public class DataUtils
      *            Name of test data key
      * @param defaultValue
      *            a value that will be returned if the key was not found
-     * @return {@link long} if the key was found else defaultValue
+     * @return mapped value as long if the key was found else defaultValue
      */
     public static long asLong(String key, long defaultValue)
     {
@@ -187,7 +187,7 @@ public class DataUtils
      * 
      * @param key
      *            Name of the test data key
-     * @return double if the key was found
+     * @return mapped value as double if the key was found
      * @throws IllegalArgumentException
      *             if the key was NOT found
      */
@@ -203,7 +203,7 @@ public class DataUtils
      *            Name of test data key
      * @param defaultValue
      *            a value that will be returned if the key was not found
-     * @return {@link double} if the key was found else defaultValue
+     * @return mapped value as double if the key was found else defaultValue
      */
     public static double asDouble(String key, double defaultValue)
     {
@@ -222,7 +222,7 @@ public class DataUtils
      * 
      * @param key
      *            Name of the test data key
-     * @return float if the key was found
+     * @return mapped value as float if the key was found
      * @throws IllegalArgumentException
      *             if the key was NOT found
      */
@@ -238,7 +238,7 @@ public class DataUtils
      *            Name of test data key
      * @param defaultValue
      *            a value that will be returned if the key was not found
-     * @return {@link float} if the key was found else defaultValue
+     * @return mapped value as float if the key was found else defaultValue
      */
     public static float asFloat(String key, float defaultValue)
     {
@@ -257,7 +257,7 @@ public class DataUtils
      * 
      * @param key
      *            Name of the test data key
-     * @return boolean if the key was found
+     * @return mapped value as boolean if the key was found
      * @throws IllegalArgumentException
      *             if the key was NOT found
      */
@@ -273,7 +273,7 @@ public class DataUtils
      *            Name of test data key
      * @param defaultValue
      *            a value that will be returned if the key was not found
-     * @return {@link boolean} if the key was found else defaultValue
+     * @return mapped value as boolean if the key was found else defaultValue
      */
     public static boolean asBool(String key, boolean defaultValue)
     {

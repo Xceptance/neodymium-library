@@ -122,7 +122,8 @@ public class FeaturePoint implements Comparable<FeaturePoint>, Comparator<Featur
      *            Y axis coordinate.
      * @param score
      *            Score.
-     * @param value.
+     * @param value
+     *            Value.
      */
     public FeaturePoint(int x, int y, int score, boolean value)
     {
