@@ -1,7 +1,5 @@
 package com.xceptance.neodymium.util;
 
-import static com.codeborne.selenide.Selenide.$;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +14,8 @@ import com.codeborne.selenide.logevents.SelenideLog;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
+
+import static com.codeborne.selenide.Selenide.$;
 
 @RunWith(NeodymiumRunner.class)
 @Browser("Chrome_headless")
@@ -114,7 +114,7 @@ public class SelenideAddonsTest
         SelenideLogger.addListener("testListener", new LogEventListener()
         {
             @Override
-            public void onEvent(LogEvent currentLog)
+            public void afterEvent(LogEvent currentLog)
             {
                 SelenideLog log = (SelenideLog) currentLog;
                 if (log.getStatus().equals(EventStatus.FAIL))
@@ -122,6 +122,12 @@ public class SelenideAddonsTest
                     Assert.assertEquals("Selenide log event not matching", "Assertion error", log.getElement());
                     Assert.assertTrue("Selenide log event not matching", log.getError().getMessage().startsWith(errMessage));
                 }
+            }
+
+            @Override
+            public void beforeEvent(LogEvent currentLog)
+            {
+                // ignore
             }
         });
 

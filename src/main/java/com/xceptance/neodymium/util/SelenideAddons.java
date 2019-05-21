@@ -1,7 +1,5 @@
 package com.xceptance.neodymium.util;
 
-import static com.codeborne.selenide.Selenide.$$;
-
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -21,6 +19,8 @@ import com.codeborne.selenide.impl.Html;
 import com.codeborne.selenide.impl.WebElementsCollectionWrapper;
 import com.codeborne.selenide.logevents.SelenideLog;
 import com.codeborne.selenide.logevents.SelenideLogger;
+
+import static com.codeborne.selenide.Selenide.$$;
 
 /**
  * Additional helpers for limits chained lookup in Selenide. Contribute that later back to Selenide if it proves to
@@ -229,7 +229,7 @@ public class SelenideAddons
             @Override
             public String toString()
             {
-                return name + " '" + regex + '\'';
+                return this.getName() + " '" + regex + '\'';
             }
 
             @Override
