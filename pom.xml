@@ -97,7 +97,6 @@
 				<version>${surefire.version}</version>
 				<configuration>
 					<systemPropertyVariables>
-						<log4j.configurationFile>neodymium-log4j2.properties</log4j.configurationFile>
 						<java.util.logging.config.file>logging.properties</java.util.logging.config.file>
 					</systemPropertyVariables>
 					<forkCount>4</forkCount>
@@ -274,25 +273,20 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.26</version>
 		</dependency>
-
-		<!-- Test only dependencies -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-slf4j-impl</artifactId>
 			<version>${log4j.version}</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
 			<version>${log4j.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>${log4j.version}</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
