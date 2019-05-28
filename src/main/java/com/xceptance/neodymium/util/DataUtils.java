@@ -1,12 +1,15 @@
 package com.xceptance.neodymium.util;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.text.RandomStringGenerator;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class DataUtils
 {
@@ -60,15 +63,24 @@ public class DataUtils
      * @param <T>
      *            the inferred class
      * @param clazz
-     *            A reference to an clazz that should be instaciated and filled from test data
+     *            A reference to an clazz that should be instantiated and filled from test data
      * @return an instance of the class provided
      */
     public static <T> T get(final Class<T> clazz)
     {
-        // just use what we have and ignore if we have more, so we can build up different objects
-        // with just the data that fits
-        final ObjectMapper m = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return m.convertValue(Neodymium.getData(), clazz);
+        Map<String, String> data = Neodymium.getData();
+
+        JsonObject jsonObject = new JsonObject();
+        JsonParser parser = new JsonParser();
+
+        // iterate over every data entry and parse the entries to prepare complex structures for object mapping
+        for (Iterator<String> iterator = data.keySet().iterator(); iterator.hasNext();)
+        {
+            String key = (String) iterator.next();
+            jsonObject.add(key, parser.parse(data.get(key)));
+        }
+
+        return new Gson().fromJson(jsonObject, clazz);
     }
 
     /**

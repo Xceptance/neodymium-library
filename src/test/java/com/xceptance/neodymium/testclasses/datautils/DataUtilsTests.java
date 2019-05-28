@@ -1,15 +1,14 @@
 package com.xceptance.neodymium.testclasses.datautils;
 
 import java.text.MessageFormat;
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
+import com.xceptance.neodymium.module.statement.testdata.DataSet;
 import com.xceptance.neodymium.util.DataUtils;
-import com.xceptance.neodymium.util.Neodymium;
 
 @RunWith(NeodymiumRunner.class)
 public class DataUtilsTests
@@ -17,14 +16,9 @@ public class DataUtilsTests
     private static final String NIL = "not in list";
 
     @Test
+    @DataSet(id = "asString")
     public void testAsString() throws Exception
     {
-        Map<String, String> data = Neodymium.getData();
-        data.clear();
-        data.put("nullValue", null);
-        data.put("empty", "");
-        data.put("value", "value");
-
         // expect IllegalArgumentException
         expectIAE(() -> {
             DataUtils.asString(null);
@@ -46,20 +40,12 @@ public class DataUtilsTests
         Assert.assertEquals(null, DataUtils.asString("", null));
         Assert.assertEquals(null, DataUtils.asString("nullValue", null));
         Assert.assertEquals(null, DataUtils.asString(NIL, null));
-
     }
 
     @Test
+    @DataSet(id = "asInt")
     public void testAsInt() throws Exception
     {
-        Map<String, String> data = Neodymium.getData();
-        data.clear();
-        data.put("nullValue", null);
-        data.put("empty", "");
-        data.put("positiveValue", "3");
-        data.put("negativeValue", "-3");
-        data.put("zeroValue", "0");
-
         // expect IllegalArgumentException
         expectIAE(() -> {
             DataUtils.asInt(null);
@@ -89,16 +75,9 @@ public class DataUtilsTests
     }
 
     @Test
+    @DataSet(id = "asLong")
     public void testAsLong() throws Exception
     {
-        Map<String, String> data = Neodymium.getData();
-        data.clear();
-        data.put("nullValue", null);
-        data.put("empty", "");
-        data.put("positiveValue", "3");
-        data.put("negativeValue", "-3");
-        data.put("zeroValue", "0");
-
         // expect IllegalArgumentException
         expectIAE(() -> {
             DataUtils.asLong(null);
@@ -128,16 +107,9 @@ public class DataUtilsTests
     }
 
     @Test
+    @DataSet(id = "asFloat")
     public void testAsFloat() throws Exception
     {
-        Map<String, String> data = Neodymium.getData();
-        data.clear();
-        data.put("nullValue", null);
-        data.put("empty", "");
-        data.put("positiveValue", "3.3f");
-        data.put("negativeValue", "-3.3");
-        data.put("zeroValue", ".0");
-
         // expect IllegalArgumentException
         expectIAE(() -> {
             DataUtils.asFloat(null);
@@ -167,16 +139,9 @@ public class DataUtilsTests
     }
 
     @Test
+    @DataSet(id = "asDouble")
     public void testAsDouble() throws Exception
     {
-        Map<String, String> data = Neodymium.getData();
-        data.clear();
-        data.put("nullValue", null);
-        data.put("empty", "");
-        data.put("positiveValue", "3.3d");
-        data.put("negativeValue", "-3.3");
-        data.put("zeroValue", ".0");
-
         // expect IllegalArgumentException
         expectIAE(() -> {
             DataUtils.asDouble(null);
@@ -206,15 +171,9 @@ public class DataUtilsTests
     }
 
     @Test
+    @DataSet(id = "asBoolean")
     public void testAsBoolean() throws Exception
     {
-        Map<String, String> data = Neodymium.getData();
-        data.clear();
-        data.put("nullValue", null);
-        data.put("empty", "");
-        data.put("positiveValue", "true");
-        data.put("negativeValue", "FaLsE");
-
         // expect IllegalArgumentException
         expectIAE(() -> {
             DataUtils.asBool(null);
@@ -240,21 +199,28 @@ public class DataUtilsTests
     }
 
     @Test
+    @DataSet(id = "asObject")
     public void testGetClass() throws Exception
     {
-        Map<String, String> data = Neodymium.getData();
-        data.clear();
-        data.put("cardNumber", "4111111111111111");
-        data.put("ccv", "123");
-        data.put("month", "10");
-        data.put("year", "2018");
+        TestCompoundClass testClass = DataUtils.get(TestCompoundClass.class);
 
-        TestCreditCard creditCard = DataUtils.get(TestCreditCard.class);
-
-        Assert.assertEquals("4111111111111111", creditCard.getCardNumber());
-        Assert.assertEquals("123", creditCard.getCcv());
-        Assert.assertEquals(10, creditCard.getMonth());
-        Assert.assertEquals(2018, creditCard.getYear());
+        Assert.assertEquals("1234567890", testClass.getClubCardNumber());
+        Assert.assertEquals("4111111111111111", testClass.getCreditCard().getCardNumber());
+        Assert.assertEquals("123", testClass.getCreditCard().getCcv());
+        Assert.assertEquals(10, testClass.getCreditCard().getMonth());
+        Assert.assertEquals(2018, testClass.getCreditCard().getYear());
+        Assert.assertEquals(23, testClass.getAge());
+        Assert.assertEquals(3, testClass.getNames().size());
+        Assert.assertEquals("abc", testClass.getNames().get(0));
+        Assert.assertEquals("def", testClass.getNames().get(1));
+        Assert.assertEquals("ghi", testClass.getNames().get(2));
+        Assert.assertEquals(2, testClass.getPersons().size());
+        Assert.assertEquals("a", testClass.getPersons().get(0).getFirstName());
+        Assert.assertEquals("b", testClass.getPersons().get(0).getLastName());
+        Assert.assertEquals("c", testClass.getPersons().get(1).getFirstName());
+        Assert.assertEquals("d", testClass.getPersons().get(1).getLastName());
+        Assert.assertEquals("value", testClass.getKeyValueMap().get("key"));
+        Assert.assertEquals(TestCompoundClass.Level.HIGH, testClass.getLevel());
     }
 
     private void expectIAE(Runnable function)

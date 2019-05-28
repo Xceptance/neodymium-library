@@ -38,7 +38,19 @@ public class JsonFileReader
                 Map<String, String> newDataSet = new HashMap<>();
                 for (Entry<String, JsonElement> entry : dataSet.entrySet())
                 {
-                    newDataSet.put(entry.getKey(), entry.getValue().getAsString());
+                    JsonElement element = entry.getValue();
+                    if (element.isJsonNull())
+                    {
+                        newDataSet.put(entry.getKey(), null);
+                    }
+                    else if (element.isJsonArray() || element.isJsonObject())
+                    {
+                        newDataSet.put(entry.getKey(), element.toString());
+                    }
+                    else
+                    {
+                        newDataSet.put(entry.getKey(), element.getAsString());
+                    }
                 }
                 data.add(newDataSet);
             }

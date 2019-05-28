@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.xceptance</groupId>
@@ -30,7 +31,7 @@
 			<organizationUrl>https://www.xceptance.com</organizationUrl>
 			<roles>
 				<role>architect</role>
-        		<role>developer</role>
+				<role>developer</role>
 			</roles>
 		</developer>
 	</developers>
@@ -203,7 +204,6 @@
 			<artifactId>snakeyaml</artifactId>
 			<version>1.24</version>
 		</dependency>
-
 		<dependency>
 			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-junit</artifactId>
@@ -220,12 +220,6 @@
 			<version>2.3.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.9.9</version>
-		</dependency>
-
-		<dependency>
 			<groupId>io.qameta.allure</groupId>
 			<artifactId>allure-junit4</artifactId>
 			<version>${allure.version}</version>
@@ -240,18 +234,21 @@
 			<artifactId>allure-selenide</artifactId>
 			<version>${allure.version}</version>
 		</dependency>
-
-        <!-- pinned dependency since it was not not available in all life cycle steps anymore -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>27.1-jre</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.codeborne</groupId>
 			<artifactId>selenide</artifactId>
 			<version>5.2.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>net.lightbody.bmp</groupId>
+					<artifactId>browsermob-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
