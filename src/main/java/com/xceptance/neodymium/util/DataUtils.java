@@ -61,9 +61,9 @@ public class DataUtils
      * Returns data for the data type requested
      * 
      * @param <T>
-     *            the inferred class
+     *            the inferred type
      * @param clazz
-     *            A reference to an clazz that should be instantiated and filled from test data
+     *            A reference to an class that should be instantiated and filled from test data
      * @return an instance of the class provided
      */
     public static <T> T get(final Class<T> clazz)
