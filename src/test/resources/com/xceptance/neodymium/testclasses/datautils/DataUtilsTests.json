@@ -42,7 +42,7 @@
 		"nullValue": null,
 		"empty": "",
 		"positiveValue": true,
-		"negativeValue": FaLsE
+		"negativeValue": false
 	},
 	{
 		"testId": "asObject",
@@ -72,6 +72,6 @@
 		"keyValueMap": {
 			"key": "value"
 		},
-		level: "HIGH"
+		"level": "HIGH"
 	}
 ]
