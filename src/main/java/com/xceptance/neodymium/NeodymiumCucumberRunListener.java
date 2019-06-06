@@ -13,7 +13,6 @@ import com.codeborne.selenide.logevents.SelenideLogger;
 import com.xceptance.neodymium.util.Neodymium;
 
 import io.qameta.allure.Attachment;
-import io.qameta.allure.selenide.AllureSelenide;
 
 public class NeodymiumCucumberRunListener extends RunListener
 {
@@ -25,7 +24,7 @@ public class NeodymiumCucumberRunListener extends RunListener
 
     public NeodymiumCucumberRunListener()
     {
-        SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
+        SelenideLogger.addListener(LISTENER_NAME, new NeodymiumAllureSelenide());
     }
 
     @Override
