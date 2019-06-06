@@ -1,7 +1,6 @@
 package com.xceptance.neodymium.testclasses.datautils;
 
 import java.text.MessageFormat;
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,7 +9,6 @@ import org.junit.runner.RunWith;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.testdata.DataSet;
 import com.xceptance.neodymium.util.DataUtils;
-import com.xceptance.neodymium.util.Neodymium;
 
 @RunWith(NeodymiumRunner.class)
 public class DataUtilsTestsXml
@@ -21,7 +19,6 @@ public class DataUtilsTestsXml
     @DataSet(id = "asString")
     public void testAsString() throws Exception
     {
-        Map<String, String> c = Neodymium.getData();
         // expect IllegalArgumentException
         expectIAE(() -> {
             DataUtils.asString(null);
