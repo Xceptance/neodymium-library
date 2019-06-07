@@ -1,8 +1,5 @@
 package com.xceptance.neodymium;
 
-import static io.qameta.allure.util.ResultsUtils.getStatus;
-import static io.qameta.allure.util.ResultsUtils.getStatusDetails;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
@@ -15,31 +12,27 @@ import org.slf4j.LoggerFactory;
 
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.logevents.LogEvent;
+import com.codeborne.selenide.logevents.LogEventListener;
+import com.xceptance.neodymium.util.Neodymium;
 
 import io.qameta.allure.Allure;
 import io.qameta.allure.AllureLifecycle;
-import io.qameta.allure.model.Status;
-import io.qameta.allure.model.StatusDetails;
-import io.qameta.allure.selenide.AllureSelenide;
 
-public class NeodymiumAllureSelenide extends AllureSelenide
+public class AllureNeodymium implements LogEventListener
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AllureSelenide.class);
-
-    private boolean saveScreenshots = true;
-
-    private boolean savePageHtml = true;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AllureNeodymium.class);
 
     private AllureLifecycle lifecycle;
 
-    public NeodymiumAllureSelenide()
+    public AllureNeodymium()
     {
-        this(Allure.getLifecycle());
+        lifecycle = Allure.getLifecycle();
     }
 
-    public NeodymiumAllureSelenide(AllureLifecycle lifecycle)
+    @Override
+    public void beforeEvent(LogEvent currentLog)
     {
-        this.lifecycle = lifecycle;
+        // nothing to do at the moment
     }
 
     @Override
@@ -49,34 +42,17 @@ public class NeodymiumAllureSelenide extends AllureSelenide
             switch (event.getStatus())
             {
                 case PASS:
-                    lifecycle.updateStep(step -> step.setStatus(Status.PASSED));
-                    if (saveScreenshots)
+                    if (Neodymium.configuration().screenshotPerStep())
                     {
+                        LOGGER.warn(event.getElement());
                         getScreenshotBytes()
                                             .ifPresent(bytes -> lifecycle.addAttachment("Screenshot", "image/png", "png", bytes));
                     }
-                    break;
-                case FAIL:
-                    if (saveScreenshots)
-                    {
-                        getScreenshotBytes()
-                                            .ifPresent(bytes -> lifecycle.addAttachment("Screenshot", "image/png", "png", bytes));
-                    }
-                    if (savePageHtml)
-                    {
-                        getPageSourceBytes()
-                                            .ifPresent(bytes -> lifecycle.addAttachment("Page source", "text/html", "html", bytes));
-                    }
-                    lifecycle.updateStep(stepResult -> {
-                        stepResult.setStatus(getStatus(event.getError()).orElse(Status.BROKEN));
-                        stepResult.setStatusDetails(getStatusDetails(event.getError()).orElse(new StatusDetails()));
-                    });
                     break;
                 default:
-                    LOGGER.warn("Step finished with unsupported status {}", event.getStatus());
                     break;
             }
-            lifecycle.stopStep();
+            // lifecycle.stopStep();
         });
     }
 
