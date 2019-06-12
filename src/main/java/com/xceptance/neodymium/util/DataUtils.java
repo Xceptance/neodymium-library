@@ -70,17 +70,17 @@ public class DataUtils
      */
     public static <T> T get(final Class<T> clazz)
     {
-        Map<String, String> data = Neodymium.getData();
+        final Map<String, String> data = Neodymium.getData();
 
-        JsonObject jsonObject = new JsonObject();
-        JsonParser parser = new JsonParser();
+        final JsonObject jsonObject = new JsonObject();
+        final JsonParser parser = new JsonParser();
 
         // iterate over every data entry and parse the entries to prepare complex structures for object mapping
         for (Iterator<String> iterator = data.keySet().iterator(); iterator.hasNext();)
         {
-            String key = (String) iterator.next();
-            String value = data.get(key);
-            String trimmedValue = StringUtils.defaultString(value).trim();
+            final String key = (String) iterator.next();
+            final String value = data.get(key);
+            final String trimmedValue = StringUtils.defaultString(value).trim();
 
             if (value == null)
             {
@@ -110,7 +110,7 @@ public class DataUtils
      */
     public static String asString(String key)
     {
-        String value = Neodymium.dataValue(key);
+        final String value = Neodymium.dataValue(key);
         if (value == null)
         {
             throw new IllegalArgumentException("Test data could not be found for key: " + key);
