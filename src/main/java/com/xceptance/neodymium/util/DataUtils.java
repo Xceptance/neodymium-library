@@ -5,11 +5,13 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.RandomStringGenerator;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 
 public class DataUtils
 {
@@ -77,7 +79,21 @@ public class DataUtils
         for (Iterator<String> iterator = data.keySet().iterator(); iterator.hasNext();)
         {
             String key = (String) iterator.next();
-            jsonObject.add(key, parser.parse(data.get(key)));
+            String value = data.get(key);
+            String trimmedValue = StringUtils.defaultString(value).trim();
+
+            if (value == null)
+            {
+                jsonObject.add(key, null);
+            }
+            else if (trimmedValue.startsWith("{") || trimmedValue.startsWith("["))
+            {
+                jsonObject.add(key, parser.parse(value));
+            }
+            else
+            {
+                jsonObject.add(key, new JsonPrimitive(value));
+            }
         }
 
         return new Gson().fromJson(jsonObject, clazz);

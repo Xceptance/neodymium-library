@@ -4,6 +4,7 @@
 		<data key="testId">asString</data>
 		<data key="empty"></data>
 		<data key="value">value</data>
+		<data key="sentence">containing strange things like spaces and äüø</data>
 	</dataset>
 	<dataset>
 		<data key="testId">asInt</data>
@@ -42,10 +43,14 @@
 	<dataset>
 		<data key="testId">asObject</data>
 		<data key="clubCardNumber">1234567890</data>
-		<data key="creditCard">{"cardNumber": "4111111111111111","ccv": "123","month":"10","year": "2018"}</data>
+		<data key="description">containing strange things like spaces and äüø</data>
+		<data key="numberValue"> 12.34</data>
+		<data key="creditCard">{"cardNumber": "4111111111111111","ccv":
+			"123","month":"10","year": "2018"}</data>
 		<data key="age">23</data>
 		<data key="names">["abc","def","ghi"]</data>
-		<data key="persons">[{"firstName": "a","lastName": "b"},{"firstName":"c","lastName": "d"}]</data>
+		<data key="persons">[{"firstName": "a","lastName":
+			"b"},{"firstName":"c","lastName": "d"}]</data>
 		<data key="keyValueMap">{"key": "value"}</data>
 		<data key="level">HIGH</data>
 	</dataset>

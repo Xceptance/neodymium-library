@@ -35,11 +35,13 @@ public class DataUtilsTests
 
         Assert.assertEquals("", DataUtils.asString("empty"));
         Assert.assertEquals("value", DataUtils.asString("value"));
+        Assert.assertEquals("containing strange things like spaces and äüø", DataUtils.asString("sentence"));
 
         Assert.assertEquals(null, DataUtils.asString(null, null));
         Assert.assertEquals(null, DataUtils.asString("", null));
         Assert.assertEquals(null, DataUtils.asString("nullValue", null));
         Assert.assertEquals(null, DataUtils.asString(NIL, null));
+
     }
 
     @Test
@@ -202,25 +204,29 @@ public class DataUtilsTests
     @DataSet(id = "asObject")
     public void testGetClass() throws Exception
     {
-        TestCompoundClass testClass = DataUtils.get(TestCompoundClass.class);
+        TestCompoundClass testCompound = DataUtils.get(TestCompoundClass.class);
 
-        Assert.assertEquals("1234567890", testClass.getClubCardNumber());
-        Assert.assertEquals("4111111111111111", testClass.getCreditCard().getCardNumber());
-        Assert.assertEquals("123", testClass.getCreditCard().getCcv());
-        Assert.assertEquals(10, testClass.getCreditCard().getMonth());
-        Assert.assertEquals(2018, testClass.getCreditCard().getYear());
-        Assert.assertEquals(23, testClass.getAge());
-        Assert.assertEquals(3, testClass.getNames().size());
-        Assert.assertEquals("abc", testClass.getNames().get(0));
-        Assert.assertEquals("def", testClass.getNames().get(1));
-        Assert.assertEquals("ghi", testClass.getNames().get(2));
-        Assert.assertEquals(2, testClass.getPersons().size());
-        Assert.assertEquals("a", testClass.getPersons().get(0).getFirstName());
-        Assert.assertEquals("b", testClass.getPersons().get(0).getLastName());
-        Assert.assertEquals("c", testClass.getPersons().get(1).getFirstName());
-        Assert.assertEquals("d", testClass.getPersons().get(1).getLastName());
-        Assert.assertEquals("value", testClass.getKeyValueMap().get("key"));
-        Assert.assertEquals(TestCompoundClass.Level.HIGH, testClass.getLevel());
+        Assert.assertEquals("1234567890", testCompound.getClubCardNumber());
+        Assert.assertEquals(null, testCompound.getNotSet());
+        Assert.assertEquals(null, testCompound.getNullValue());
+        Assert.assertEquals(new Double(12.34), testCompound.getNumberValue());
+        Assert.assertEquals("containing strange things like spaces and äüø", testCompound.getDescription());
+        Assert.assertEquals("4111111111111111", testCompound.getCreditCard().getCardNumber());
+        Assert.assertEquals("123", testCompound.getCreditCard().getCcv());
+        Assert.assertEquals(10, testCompound.getCreditCard().getMonth());
+        Assert.assertEquals(2018, testCompound.getCreditCard().getYear());
+        Assert.assertEquals(23, testCompound.getAge());
+        Assert.assertEquals(3, testCompound.getNames().size());
+        Assert.assertEquals("abc", testCompound.getNames().get(0));
+        Assert.assertEquals("def", testCompound.getNames().get(1));
+        Assert.assertEquals("ghi", testCompound.getNames().get(2));
+        Assert.assertEquals(2, testCompound.getPersons().size());
+        Assert.assertEquals("a", testCompound.getPersons().get(0).getFirstName());
+        Assert.assertEquals("b", testCompound.getPersons().get(0).getLastName());
+        Assert.assertEquals("c", testCompound.getPersons().get(1).getFirstName());
+        Assert.assertEquals("d", testCompound.getPersons().get(1).getLastName());
+        Assert.assertEquals("value", testCompound.getKeyValueMap().get("key"));
+        Assert.assertEquals(TestCompoundClass.Level.HIGH, testCompound.getLevel());
     }
 
     private void expectIAE(Runnable function)

@@ -14,6 +14,14 @@ public class TestCompoundClass
 
     String clubCardNumber;
 
+    String description;
+
+    Object notSet;
+
+    Double numberValue;
+
+    Object nullValue = new Object();
+
     int age;
 
     TestCreditCard creditCard;
@@ -94,5 +102,45 @@ public class TestCompoundClass
     public void setLevel(Level level)
     {
         this.level = level;
+    }
+
+    public String getDescription()
+    {
+        return description;
+    }
+
+    public void setDescription(String description)
+    {
+        this.description = description;
+    }
+
+    public Double getNumberValue()
+    {
+        return numberValue;
+    }
+
+    public void setNumberValue(Double numberValue)
+    {
+        this.numberValue = numberValue;
+    }
+
+    public Object getNullValue()
+    {
+        return nullValue;
+    }
+
+    public void setNullValue(Object nullValue)
+    {
+        this.nullValue = nullValue;
+    }
+
+    public void setNotSet(Object notSet)
+    {
+        this.notSet = notSet;
+    }
+
+    public Object getNotSet()
+    {
+        return notSet;
     }
 }
