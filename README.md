@@ -13,7 +13,7 @@ We combine and use several open source frameworks. Here are some honorably menti
 * [**Selenide**](https://github.com/codeborne/selenide): There are plenty of UI automation libraries available that are built on top of WebDriver. Selenide is one of the most popular approaches that is compact, fluent, and solves a lot of the basic challenges, hence we included it.
 * [**Allure**](https://github.com/allure-framework/allure2): The Allure Framework is a flexible lightweight multi-language test report tool that not only shows a very concise representation of what have been tested in a neat web report form, but allows everyone participating in the development process to extract maximum of useful information from everyday execution of tests.
 * [**BDD/Cucumber**](https://github.com/cucumber/cucumber-jvm): Neodymium supports BDD. If you prefer this testing style, you can organize your tests using Cucumber. See our example projects for more information.
-* [Owner](https://github.com/lviggiano/owner): Organize and implement configurations throughout the different stages of test projects.
+* [**Owner**](https://github.com/lviggiano/owner): Organize and implement configurations throughout the different stages of test projects.
 
 ## Quicklinks
 If you already know what you want to do, you can pick one of the demo test suites or our test suite template. If you are new to Neodymium, please read on. 
