@@ -60,7 +60,7 @@ import com.xceptance.neodymium.visual.ai.util.Constants;
 public class FastBitmap
 {
     /**
-     * Coodinate system.
+     * Coordinate system.
      */
     public static enum CoordinateSystem
     {

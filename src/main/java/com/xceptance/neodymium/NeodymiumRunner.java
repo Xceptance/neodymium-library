@@ -94,7 +94,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     @Override
     protected Statement methodBlock(FrameworkMethod method)
     {
-        // This will build a default JUnit statement which runs excactly one of the test methods including before/after
+        // This will build a default JUnit statement which runs exactly one of the test methods including before/after
         // methods. This call will also create the test class instance in which this method will be invoked.
         Statement methodStatement = super.methodBlock(method);
         // We need this particular test class instance for our own statements but we can not access it from here.
@@ -160,7 +160,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         // super.computeTestMethods will return all methods that are annotated with @Test
         for (FrameworkMethod testAnnotatedMethod : super.computeTestMethods())
         {
-            // these lists contain all the builders and data that will be responsible for a partiuclar method
+            // these lists contain all the builders and data that will be responsible for a particular method
             List<StatementBuilder> builderList = new LinkedList<>();
             List<List<Object>> builderDataList = new LinkedList<>();
 

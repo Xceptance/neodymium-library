@@ -47,7 +47,7 @@ public class WebDriverCache
 
     /**
      * Put's the instance of a {@link WebDriver} into the cache and uses browserTag to reference it. If there is already an
-     * {@link WebDriver} stored in the cache with the same browsreTag {@link String} then the instance will be overwritten.
+     * {@link WebDriver} stored in the cache with the same browserTag {@link String} then the instance will be overwritten.
      * 
      * @param browserTag
      *            a {@link String} that will be used to reference the cached {@link WebDriver}

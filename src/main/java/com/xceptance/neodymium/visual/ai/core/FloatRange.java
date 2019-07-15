@@ -46,7 +46,7 @@ import java.io.Serializable;
 public class FloatRange implements Serializable
 {
     /**
-     * Auto genreated serial number.
+     * Auto generated serial number.
      */
     private static final long serialVersionUID = 1L;
 

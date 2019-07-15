@@ -227,7 +227,7 @@ public class AI
             Assert.assertNotNull("Screenshot couldn't be taken by the WebDriver", screenshot);
 
             // if the network is not done with training check the training folder for changes
-            // if there are changes, all unknwon images get loaded
+            // if there are changes, all unknown images get loaded
             imgList.add(screenshot);
             if (Constants.NETWORK_MODE)
             {

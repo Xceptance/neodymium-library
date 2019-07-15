@@ -28,7 +28,7 @@ public class DebugUtilsTest
     {
         Selenide.open("https://blog.xceptance.com/");
         DebugUtils.injectJavaScript();
-        assertJsSucessfullyInjected();
+        assertJsSuccessfullyInjected();
 
         final List<WebElement> list = $("body").findElements(By.cssSelector("#masthead"));
         DebugUtils.highlightElements(list, Neodymium.getDriver());
@@ -50,7 +50,7 @@ public class DebugUtilsTest
     {
         Selenide.open("https://blog.xceptance.com/");
         DebugUtils.injectJavaScript();
-        assertJsSucessfullyInjected();
+        assertJsSuccessfullyInjected();
 
         final List<WebElement> list = $("body").findElements(By.cssSelector("#masthead"));
         DebugUtils.highlightElements(list, Neodymium.getDriver());
@@ -70,32 +70,32 @@ public class DebugUtilsTest
 
         // one wait due to navigation
         Selenide.open("https://blog.xceptance.com/");
-        Assert.assertEquals(0, eventListener.impliciteWaitCount);
+        Assert.assertEquals(0, eventListener.implicitWaitCount);
 
         // one wait due to find
         $("body #masthead").should(exist);
-        Assert.assertEquals(1, eventListener.impliciteWaitCount);
-        assertJsSucessfullyInjected();
+        Assert.assertEquals(1, eventListener.implicitWaitCount);
+        assertJsSuccessfullyInjected();
 
         // two waits due to chain finding
         $("body").findElements(By.cssSelector("#content article"));
-        Assert.assertEquals(3, eventListener.impliciteWaitCount);
+        Assert.assertEquals(3, eventListener.implicitWaitCount);
 
         // two waits due to find and click
         $("#text-3 h1").click();
-        Assert.assertEquals(4, eventListener.impliciteWaitCount);
+        Assert.assertEquals(4, eventListener.implicitWaitCount);
 
         // additional two waits due to find and click
         $("#masthead .search-toggle").click();
-        Assert.assertEquals(5, eventListener.impliciteWaitCount);
+        Assert.assertEquals(5, eventListener.implicitWaitCount);
 
         // three waits due to find and change value (consumes 2 waits)
         $("#search-container .search-form input.search-field").val("abc");
-        Assert.assertEquals(6, eventListener.impliciteWaitCount);
+        Assert.assertEquals(6, eventListener.implicitWaitCount);
 
         // two waits due to find and press enter
         $("#search-container .search-form input.search-field").pressEnter();
-        Assert.assertEquals(7, eventListener.impliciteWaitCount);
+        Assert.assertEquals(7, eventListener.implicitWaitCount);
     }
 
     @Test
@@ -108,7 +108,7 @@ public class DebugUtilsTest
 
         SelenideElement body = $("body");
         body.click();
-        assertJsSucessfullyInjected();
+        assertJsSuccessfullyInjected();
 
         final List<WebElement> list = $("body").findElements(By.cssSelector("select"));
 
@@ -120,7 +120,7 @@ public class DebugUtilsTest
         $(".neodymium-highlight-box").shouldNot(exist);
     }
 
-    private void assertJsSucessfullyInjected()
+    private void assertJsSuccessfullyInjected()
     {
         Assert.assertTrue(Selenide.executeJavaScript("return !!window.NEODYMIUM"));
     }

@@ -96,7 +96,7 @@ public final class HistogramStatistics
      *            Values.
      * @param percent
      *            Values percentage around median.
-     * @return Returns the range which containes specifies percentage of values.
+     * @return Returns the range which contains specified percentage of values.
      */
     public static IntRange GetRange(int[] values, double percent)
     {

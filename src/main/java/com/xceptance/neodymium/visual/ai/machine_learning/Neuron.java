@@ -86,7 +86,7 @@ public class Neuron implements Serializable
     /**
      * Get the range.
      * 
-     * @return range FloatRagne value
+     * @return range FloatRange value
      */
     public static FloatRange getRange()
     {

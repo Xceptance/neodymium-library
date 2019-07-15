@@ -182,7 +182,7 @@ public class ParameterStatement extends StatementBuilder
             }
             catch (Exception e)
             {
-                throw new RuntimeException("An error occured during conversion of input string \"" + (String) value + "\" to type " +
+                throw new RuntimeException("An error occurred during conversion of input string \"" + (String) value + "\" to type " +
                                            fieldType.getName() + " for field \"" + field.getName() + "\"", e);
             }
         }

@@ -105,7 +105,7 @@ public class NetworkTrainer
         PerceptronLearning pl = new PerceptronLearning(an);
         pl.setLearningRate(Constants.LEARNING_RATE);
 
-        double resultVerfication = 0.0;
+        double resultVerification = 0.0;
         for (PatternHelper pattern : patternList)
         {
             pl.run(pattern.getPatternList());
@@ -113,11 +113,11 @@ public class NetworkTrainer
 
         for (PatternHelper pattern : patternList)
         {
-            resultVerfication += an.checkForRecognitionAsDouble(pattern.getPatternList());
+            resultVerification += an.checkForRecognitionAsDouble(pattern.getPatternList());
             System.out.println("Recognized value of image " + pattern.getTagName() + " = " + an.checkForRecognitionAsString(pattern.getPatternList()) + " %");
         }
 
-        System.out.println("Selftest value summed: " + (resultVerfication / patternList.size()));
+        System.out.println("Selftest value summed: " + (resultVerification / patternList.size()));
 
         an.setInternalParameter(im.getAverageMetric());
         an.Save(networkFile.toString());

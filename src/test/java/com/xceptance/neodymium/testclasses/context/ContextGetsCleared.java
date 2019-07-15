@@ -27,7 +27,7 @@ public class ContextGetsCleared
     @SuppressDataSets
     public void test2() throws Exception
     {
-        // supressing data sets makes sure we dont
+        // suppressing data sets makes sure we don't
         Assert.assertNull(Neodymium.dataValue("key1"));
     }
 }

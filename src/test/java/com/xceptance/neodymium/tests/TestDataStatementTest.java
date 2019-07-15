@@ -104,7 +104,7 @@ public class TestDataStatementTest extends NeodymiumTest
     @Test
     public void testPackageTestDataInheritance()
     {
-        // test inheritacne of package test data
+        // test inheritance of package test data
         Result result = JUnitCore.runClasses(PackageTestDataInheritance.class);
         checkPass(result, 1, 0, 0);
     }
