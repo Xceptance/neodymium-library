@@ -18,7 +18,7 @@ public class NeodymiumCucumberRunner extends Cucumber
     public void run(RunNotifier notifier)
     {
         // we add our own run listener in order to attach screenshots taken by Selenide to the Allure report
-        // this also neccessary to clear the context between tests
+        // this also necessary to clear the context between tests
         notifier.addListener(new NeodymiumCucumberRunListener());
         super.run(notifier);
     }

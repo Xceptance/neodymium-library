@@ -61,7 +61,7 @@ public class YamlProperties
      * @param entry
      *            the entry
      * @param state
-     *            the current staate of the stack
+     *            the current state of the stack
      */
     private void handleTypes(final Object entry, final Deque<String> state)
     {

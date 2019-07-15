@@ -11,7 +11,7 @@ import com.xceptance.neodymium.NeodymiumWebDriverListener;
 
 public class NeodymiumWebDriverTestListener extends NeodymiumWebDriverListener
 {
-    public int impliciteWaitCount = 0;
+    public int implicitWaitCount = 0;
 
     public NeodymiumWebDriverTestListener()
     {
@@ -40,6 +40,6 @@ public class NeodymiumWebDriverTestListener extends NeodymiumWebDriverListener
     public void beforeFindBy(By by, WebElement element, WebDriver driver)
     {
         super.beforeFindBy(by, element, driver);
-        impliciteWaitCount++;
+        implicitWaitCount++;
     }
 }

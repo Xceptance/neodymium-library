@@ -128,9 +128,9 @@ public class BrowserConfigurationMapper
         if (!StringUtils.isEmpty(emulatedDeviceName))
             capabilities.setCapability("deviceName", emulatedDeviceName);
 
-        String emulatedDeviceOrienation = browserProfileConfiguration.get(DEVICE_ORIENTATION);
-        if (!StringUtils.isEmpty(emulatedDeviceOrienation))
-            capabilities.setCapability("deviceOrientation", emulatedDeviceOrienation);
+        String emulatedDeviceOrientation = browserProfileConfiguration.get(DEVICE_ORIENTATION);
+        if (!StringUtils.isEmpty(emulatedDeviceOrientation))
+            capabilities.setCapability("deviceOrientation", emulatedDeviceOrientation);
 
         String emulatedDeviceScreenResolution = browserProfileConfiguration.get(SCREEN_RESOLUTION);
         if (!StringUtils.isEmpty(emulatedDeviceScreenResolution))
@@ -151,13 +151,13 @@ public class BrowserConfigurationMapper
         if (!StringUtils.isEmpty(browserName))
             capabilities.setCapability(BROWSER_NAME, browserName);
 
-        String plattformVersion = browserProfileConfiguration.get(PLATFORM_VERSION);
-        if (!StringUtils.isEmpty(plattformVersion))
-            capabilities.setCapability(PLATFORM_VERSION, plattformVersion);
+        String platformVersion = browserProfileConfiguration.get(PLATFORM_VERSION);
+        if (!StringUtils.isEmpty(platformVersion))
+            capabilities.setCapability(PLATFORM_VERSION, platformVersion);
 
-        String plattformName = browserProfileConfiguration.get(PLATFORM_NAME);
-        if (!StringUtils.isEmpty(plattformName))
-            capabilities.setCapability(PLATFORM_NAME, plattformName);
+        String platformName = browserProfileConfiguration.get(PLATFORM_NAME);
+        if (!StringUtils.isEmpty(platformName))
+            capabilities.setCapability(PLATFORM_NAME, platformName);
 
         String app = browserProfileConfiguration.get(APP);
         if (!StringUtils.isEmpty(app))
@@ -167,9 +167,9 @@ public class BrowserConfigurationMapper
         if (!StringUtils.isEmpty(automationName))
             capabilities.setCapability(AUTOMATION_NAME, automationName);
 
-        String oriantation = browserProfileConfiguration.get(ORIENTATION);
-        if (!StringUtils.isEmpty(oriantation))
-            capabilities.setCapability(ORIENTATION, oriantation);
+        String orientation = browserProfileConfiguration.get(ORIENTATION);
+        if (!StringUtils.isEmpty(orientation))
+            capabilities.setCapability(ORIENTATION, orientation);
 
         /*
          * Chrome device emulation

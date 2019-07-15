@@ -140,7 +140,7 @@ public class Fast9 implements ICornersFeatureDetector
      * @param threshold
      *            Threshold.
      * @param suppress
-     *            Supress.
+     *            Suppress.
      */
     public Fast9(int threshold, boolean suppress)
     {

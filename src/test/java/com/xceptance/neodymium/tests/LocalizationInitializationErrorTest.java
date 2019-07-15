@@ -14,7 +14,7 @@ import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.util.Neodymium;
 
 @RunWith(NeodymiumRunner.class)
-public class LocalizationInitalizationErrorTest extends NeodymiumTest
+public class LocalizationInitializationErrorTest extends NeodymiumTest
 {
     private static File tempConfigFile;
 

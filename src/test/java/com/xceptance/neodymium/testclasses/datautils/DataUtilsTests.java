@@ -252,13 +252,13 @@ public class DataUtilsTests
             caughtException = e;
         }
 
-        String caughtExeptionName = "no exception!";
+        String caughtExceptionName = "no exception!";
         if (caughtException != null)
-            caughtExeptionName = caughtException.getClass().toString();
+            caughtExceptionName = caughtException.getClass().toString();
 
         if (caughtException == null || caughtException.getClass() != expectedException)
         {
-            Assert.fail(MessageFormat.format("Expected exception {0} but caught {1}", expectedException.toString(), caughtExeptionName));
+            Assert.fail(MessageFormat.format("Expected exception {0} but caught {1}", expectedException.toString(), caughtExceptionName));
         }
     }
 

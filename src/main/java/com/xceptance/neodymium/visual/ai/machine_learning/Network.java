@@ -114,7 +114,7 @@ public abstract class Network implements Serializable
 
     /**
      * Get Network's output vector.
-     * 
+     *
      * @return Network's output vector.
      */
     public ArrayList<Double> getOutput()
@@ -218,11 +218,11 @@ public abstract class Network implements Serializable
         if (flag)
         {
             // compute the summed value for already seen pattern
-            double resultVerfication = 0.0;
+            double resultVerification = 0.0;
 
             for (PatternHelper element : internalList)
             {
-                resultVerfication += layer.computeSum(element.getPatternList());
+                resultVerification += layer.computeSum(element.getPatternList());
             }
 
             // compute the summed value for counter examples
@@ -231,13 +231,13 @@ public abstract class Network implements Serializable
             {
                 resultValidation += layer.computeSum(element.getPatternList());
             }
-            System.out.println("Selftest value training dir: " + (resultVerfication / internalList.size()));
+            System.out.println("Selftest value training dir: " + (resultVerification / internalList.size()));
             System.out.println("Selftest value validation dir: " + (resultValidation / internalList.size()));
 
             int validationSize = (validationList.size() != 0 ? validationList.size() : 1);
             // check if the summed value for recognition is near the intended barrier
             // and check if the summed counter example value is under the intended barrier
-            if ((resultVerfication / internalList.size()) >= Constants.INTENDED_PERCENTAGE_MATCH &&
+            if ((resultVerification / internalList.size()) >= Constants.INTENDED_PERCENTAGE_MATCH &&
                 resultValidation / validationSize < Constants.INTENDED_PERCENTAGE_MATCH)
             {
                 // disable self test for further use

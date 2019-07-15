@@ -154,7 +154,7 @@ public class BrowserStatement extends StatementBuilder
         }
         catch (final MalformedURLException e)
         {
-            throw new RuntimeException("An error occured during URL creation. See nested exception.", e);
+            throw new RuntimeException("An error occurred during URL creation. See nested exception.", e);
         }
         if (webdriver != null)
         {
