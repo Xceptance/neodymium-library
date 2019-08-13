@@ -29,6 +29,12 @@ public class BrowserConfigurationMapper
 
     private static final String SCREEN_RESOLUTION = "screenResolution";
 
+    private static final String MAXIMUM_DURATION = "maxDuration";
+
+    private static final String IDLE_TIMEOUT = "idleTimeout";
+
+    private static final String SELENIUM_VERSION = "seleniumVersion";
+
     private static final String BROWSER_RESOLUTION = "browserResolution";
 
     private static final String CHROME_EMULATION_PROFILE = "chromeEmulationProfile";
@@ -110,7 +116,7 @@ public class BrowserConfigurationMapper
         }
 
         /*
-         * SauceLabs configuration
+         * SauceLabs/TestingBot configuration
          */
         String emulatedPlatform = browserProfileConfiguration.get(PLATFORM);
         if (!StringUtils.isEmpty(emulatedPlatform))
@@ -137,12 +143,38 @@ public class BrowserConfigurationMapper
         {
             // SauceLabs
             capabilities.setCapability("screenResolution", emulatedDeviceScreenResolution);
-            // testingBot
+            // TestingBot
             capabilities.setCapability("screen-resolution", emulatedDeviceScreenResolution);
         }
 
-        // appium
+        String emulatedMaximumTestDuration = browserProfileConfiguration.get(MAXIMUM_DURATION);
+        if (!StringUtils.isEmpty(emulatedMaximumTestDuration))
+        {
+            // SauceLabs
+            capabilities.setCapability("maxDuration", emulatedMaximumTestDuration);
+            // TestingBot
+            capabilities.setCapability("maxduration", emulatedMaximumTestDuration);
+        }
 
+        String emulatedIdleTimeout = browserProfileConfiguration.get(IDLE_TIMEOUT);
+        if (!StringUtils.isEmpty(emulatedIdleTimeout))
+        {
+            // SauceLabs
+            capabilities.setCapability("idleTimeout", emulatedIdleTimeout);
+            // TestingBot
+            capabilities.setCapability("idletimeout", emulatedIdleTimeout);
+        }
+
+        String emulatedSeleniumVersion = browserProfileConfiguration.get(SELENIUM_VERSION);
+        if (!StringUtils.isEmpty(emulatedSeleniumVersion))
+        {
+            // SauceLabs
+            capabilities.setCapability("seleniumVersion", emulatedSeleniumVersion);
+            // TestingBot
+            capabilities.setCapability("selenium-version", emulatedSeleniumVersion);
+        }
+
+        // appium
         String appiumVersion = browserProfileConfiguration.get(APPIUM_VERSION);
         if (!StringUtils.isEmpty(appiumVersion))
             capabilities.setCapability(APPIUM_VERSION, appiumVersion);
