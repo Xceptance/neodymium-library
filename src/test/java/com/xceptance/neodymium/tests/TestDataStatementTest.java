@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
+import com.xceptance.neodymium.testclasses.data.file.xml.CanNotReadDataSetXml;
 import com.xceptance.neodymium.testclasses.data.inheritance.child.PackageTestDataInheritance;
 import com.xceptance.neodymium.testclasses.data.inheritance.child.grandchild.GrandChildPackageTestDataInheritance;
 import com.xceptance.neodymium.testclasses.data.inheritance.child.grandchild.set.DataSetOverridesPackageData;
@@ -358,4 +359,19 @@ public class TestDataStatementTest extends NeodymiumTest
         checkDescription(OnlyImplicitOneDataSet.class, expected);
     }
 
+    @Test
+    public void testDataFileAnnotation() throws Exception
+    {
+        // test package test data csv is read
+        Result result = JUnitCore.runClasses(com.xceptance.neodymium.testclasses.data.file.json.CanReadDataSetJson.class);
+        checkPass(result, 1, 0, 0);
+    }
+
+    @Test
+    public void testDataFileAnnotationException() throws Exception
+    {
+        Result result = JUnitCore.runClasses(CanNotReadDataSetXml.class);
+        checkFail(result, 1, 0, 1,
+                  "java.lang.RuntimeException: The data file:\"can/not/read/data/set/xml/DoesNotExist.xml\" provided within the test class:\"CanNotReadDataSetXml\" can't be read.");
+    }
 }
