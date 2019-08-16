@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 
-import cucumber.api.junit.Cucumber;
+import io.cucumber.junit.Cucumber;
 
 public class NeodymiumCucumberRunner extends Cucumber
 {

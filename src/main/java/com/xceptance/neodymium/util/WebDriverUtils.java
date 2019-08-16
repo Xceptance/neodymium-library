@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.xceptance.neodymium.module.statement.browser.BrowserStatement;
 
-import cucumber.api.Scenario;
+import io.cucumber.core.api.Scenario;
 
 public class WebDriverUtils
 {
