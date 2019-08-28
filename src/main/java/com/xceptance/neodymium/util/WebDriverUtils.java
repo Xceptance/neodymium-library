@@ -62,6 +62,26 @@ public class WebDriverUtils
     }
 
     /**
+     * This function can be used within a function of a JUnit test case that is annotated with @After to prevent the
+     * reuse of a specific WebDriver
+     * 
+     * <pre>
+     * &#64;After
+     * public void after()
+     * {
+     *     if (someConditionIsFulfilled)
+     *     {
+     *         WebDriverUtils.preventReuseAndTearDown();
+     *     }
+     * }
+     * </pre>
+     **/
+    public static void preventReuseAndTearDown()
+    {
+        browserStatement.get().teardown(false, true, Neodymium.getDriver());
+    }
+
+    /**
      * @param scenario
      *            Scenario is a Cucumber API class that can be gathered in hooks via dependency injection
      * 

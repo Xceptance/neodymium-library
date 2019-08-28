@@ -16,6 +16,7 @@ import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -185,6 +186,11 @@ public class BrowserStatement extends StatementBuilder
 
     public void teardown(boolean testFailed)
     {
+        teardown(testFailed, false, webdriver);
+    }
+
+    public void teardown(boolean testFailed, boolean preventReuse, WebDriver webDriver)
+    {
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(Neodymium.getBrowserProfileName());
 
         if (testFailed && Neodymium.configuration().keepBrowserOpenOnFailure() && !browserConfiguration.isHeadless())
@@ -198,18 +204,18 @@ public class BrowserStatement extends StatementBuilder
             return;
         }
 
-        if (Neodymium.configuration().reuseWebDriver())
+        if (!preventReuse && isWebDriverStillOpen(webDriver) && Neodymium.configuration().reuseWebDriver())
         {
             LOGGER.debug("Put browser into cache");
             WebDriverCache.instance.putWebDriver(browserTag, webdriver);
         }
         else
         {
-            if (browserConfiguration.isHeadless() || !Neodymium.configuration().keepBrowserOpen())
+            if (browserConfiguration != null && browserConfiguration.isHeadless() || !Neodymium.configuration().keepBrowserOpen())
             {
                 LOGGER.debug("Teardown browser");
-                if (webdriver != null)
-                    webdriver.quit();
+                if (webDriver != null)
+                    webDriver.quit();
             }
         }
         Neodymium.setDriver(null);
@@ -217,6 +223,21 @@ public class BrowserStatement extends StatementBuilder
         Neodymium.setBrowserName(null);
     }
 
+    /**
+     * This function can be used within a function of a JUnit test case that is annotated with @AfterClass to prevent
+     * the clear the WebDriverCache of the WebDrivers ready for reuse.
+     * <p>
+     * <b>Attention:</b> It is save to run this function during a sequential test execution. I can have
+     * repercussion(e.g. test duration) in a parallel execution environment.
+     *
+     * <pre>
+     * &#64;@AfterClass
+     * public void afterClass()
+     * {
+     *     BrowserStatement.quitCachedBrowser();
+     * }
+     * </pre>
+     **/
     public static void quitCachedBrowser()
     {
         if (!Neodymium.configuration().keepBrowserOpen())
@@ -229,6 +250,7 @@ public class BrowserStatement extends StatementBuilder
                 {
                     LOGGER.debug("Quit web driver: " + wd.toString());
                     wd.quit();
+                    WebDriverCache.instance.removeWebDriver(wd);
                 }
                 catch (Exception e)
                 {
@@ -321,7 +343,6 @@ public class BrowserStatement extends StatementBuilder
         {
             return browserAnnotations;
         }
-
     }
 
     @Override
@@ -349,5 +370,23 @@ public class BrowserStatement extends StatementBuilder
         tags.addAll(multibrowserConfiguration.getBrowserProfiles().keySet());
 
         return tags;
+    }
+
+    private boolean isWebDriverStillOpen(WebDriver webDriver)
+    {
+        if (webDriver == null)
+        {
+            return false;
+        }
+        try
+        {
+            RemoteWebDriver driver = (RemoteWebDriver) ((EventFiringWebDriver) webDriver).getWrappedDriver();
+            return driver.getSessionId() != null;
+        }
+        catch (Exception e)
+        {
+            LOGGER.warn("Couldn't detect if the WebDriver is still open!", e);
+            return true;
+        }
     }
 }
