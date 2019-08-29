@@ -275,7 +275,7 @@ public class SelenideAddons
             SelenideLogger.commitStep(new SelenideLog("Assertion error", message), e);
             if (!driver.config().assertionMode().equals(AssertionMode.SOFT))
             {
-                throw UIAssertionError.wrap(driver, e, System.currentTimeMillis());
+                throw UIAssertionError.wrap(driver, e, 0);
             }
         }
     }
