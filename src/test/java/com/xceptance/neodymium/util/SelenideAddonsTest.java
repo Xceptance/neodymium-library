@@ -140,4 +140,39 @@ public class SelenideAddonsTest
 
         SelenideLogger.removeListener("testListener");
     }
+
+    @Test
+    public void testWrapSoftAssertionErrorWithoutMessage()
+    {
+        final String errMessage = "No error message provided by the Assertion.";
+
+        SelenideLogger.addListener("testListener", new LogEventListener()
+        {
+            @Override
+            public void afterEvent(LogEvent currentLog)
+            {
+                SelenideLog log = (SelenideLog) currentLog;
+                if (log.getStatus().equals(EventStatus.FAIL))
+                {
+                    Assert.assertEquals("Selenide log event not matching", "Assertion error", log.getElement());
+                    Assert.assertEquals("Selenide log event not matching", log.getSubject(), errMessage);
+                }
+            }
+
+            @Override
+            public void beforeEvent(LogEvent currentLog)
+            {
+                // ignore
+            }
+        });
+
+        Selenide.open("https://blog.xceptance.com/");
+        Neodymium.softAssertions(true);
+        SelenideAddons.wrapAssertionError(() -> {
+            Assert.assertTrue(Selenide.title().startsWith("MyPageTitle"));
+        });
+        Neodymium.softAssertions(false);
+
+        SelenideLogger.removeListener("testListener");
+    }
 }
