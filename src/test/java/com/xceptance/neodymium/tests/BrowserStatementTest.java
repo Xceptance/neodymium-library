@@ -254,10 +254,10 @@ public class BrowserStatementTest extends NeodymiumTest
         Assert.assertEquals("Test Environment Browser", config.getName());
         MutableCapabilities testCapabilities = config.getCapabilities();
         Assert.assertEquals("chrome", testCapabilities.getBrowserName());
-        Assert.assertEquals("1234", testCapabilities.getCapability("idleTimeout"));
-        Assert.assertEquals("1234", testCapabilities.getCapability("idletimeout"));
-        Assert.assertEquals("5678", testCapabilities.getCapability("maxDuration"));
-        Assert.assertEquals("5678", testCapabilities.getCapability("maxduration"));
+        Assert.assertEquals(1234, testCapabilities.getCapability("idleTimeout"));
+        Assert.assertEquals(1234, testCapabilities.getCapability("idletimeout"));
+        Assert.assertEquals(5678, testCapabilities.getCapability("maxDuration"));
+        Assert.assertEquals(5678, testCapabilities.getCapability("maxduration"));
         Assert.assertEquals("3.1234", testCapabilities.getCapability("seleniumVersion"));
         Assert.assertEquals("3.1234", testCapabilities.getCapability("selenium-version"));
         Assert.assertEquals("800x600", testCapabilities.getCapability("screenResolution"));
