@@ -150,19 +150,39 @@ public class BrowserConfigurationMapper
         String emulatedMaximumTestDuration = browserProfileConfiguration.get(MAXIMUM_DURATION);
         if (!StringUtils.isEmpty(emulatedMaximumTestDuration))
         {
+            int maxDura = 0;
+            try
+            {
+                maxDura = Integer.parseInt(emulatedMaximumTestDuration);
+            }
+            catch (Exception e)
+            {
+                throw new RuntimeException(MAXIMUM_DURATION + " configured within the browser profiles couldn't be parsed into an int value. Given value: \""
+                                           + emulatedMaximumTestDuration + "\"", e);
+            }
             // SauceLabs
-            capabilities.setCapability("maxDuration", emulatedMaximumTestDuration);
+            capabilities.setCapability("maxDuration", maxDura);
             // TestingBot
-            capabilities.setCapability("maxduration", emulatedMaximumTestDuration);
+            capabilities.setCapability("maxduration", maxDura);
         }
 
         String emulatedIdleTimeout = browserProfileConfiguration.get(IDLE_TIMEOUT);
         if (!StringUtils.isEmpty(emulatedIdleTimeout))
         {
+            int idleTim = 0;
+            try
+            {
+                idleTim = Integer.parseInt(emulatedIdleTimeout);
+            }
+            catch (Exception e)
+            {
+                throw new RuntimeException(IDLE_TIMEOUT + " configured within the browser profiles couldn't be parsed into an int value. Given value: \""
+                                           + emulatedIdleTimeout + "\"", e);
+            }
             // SauceLabs
-            capabilities.setCapability("idleTimeout", emulatedIdleTimeout);
+            capabilities.setCapability("idleTimeout", idleTim);
             // TestingBot
-            capabilities.setCapability("idletimeout", emulatedIdleTimeout);
+            capabilities.setCapability("idletimeout", idleTim);
         }
 
         String emulatedSeleniumVersion = browserProfileConfiguration.get(SELENIUM_VERSION);
