@@ -224,14 +224,14 @@ public class BrowserStatement extends StatementBuilder
     }
 
     /**
-     * This function can be used within a function of a JUnit test case that is annotated with @AfterClass to prevent
-     * the clear the WebDriverCache of the WebDrivers ready for reuse.
+     * This function can be used within a function of a JUnit test case that is annotated with @AfterClass to clear the
+     * WebDriverCache of the WebDrivers ready for reuse.
      * <p>
-     * <b>Attention:</b> It is save to run this function during a sequential test execution. I can have
-     * repercussion(e.g. test duration) in a parallel execution environment.
+     * <b>Attention:</b> It is save to run this function during a sequential test execution. It can have repercussions
+     * (e.g. longer test duration) in a parallel execution environment.
      *
      * <pre>
-     * &#64;@AfterClass
+     * &#64;AfterClass
      * public void afterClass()
      * {
      *     BrowserStatement.quitCachedBrowser();
