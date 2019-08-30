@@ -272,6 +272,12 @@ public class SelenideAddons
             {
                 message = e.getMessage();
             }
+            else
+            {
+                AssertionError wrapper = new AssertionError(message, e);
+                wrapper.setStackTrace(e.getStackTrace());
+                e = wrapper;
+            }
             SelenideLogger.commitStep(new SelenideLog("Assertion error", message), e);
             if (!driver.config().assertionMode().equals(AssertionMode.SOFT))
             {

@@ -133,12 +133,18 @@ public class SelenideAddonsTest
 
         Selenide.open("https://blog.xceptance.com/");
         Neodymium.softAssertions(true);
-        SelenideAddons.wrapAssertionError(() -> {
-            Assert.assertEquals(errMessage, "MyPageTitle", Selenide.title());
-        });
-        Neodymium.softAssertions(false);
+        try
+        {
 
-        SelenideLogger.removeListener("testListener");
+            SelenideAddons.wrapAssertionError(() -> {
+                Assert.assertEquals(errMessage, "MyPageTitle", Selenide.title());
+            });
+        }
+        finally
+        {
+            Neodymium.softAssertions(false);
+            SelenideLogger.removeListener("testListener");
+        }
     }
 
     @Test
@@ -168,11 +174,34 @@ public class SelenideAddonsTest
 
         Selenide.open("https://blog.xceptance.com/");
         Neodymium.softAssertions(true);
-        SelenideAddons.wrapAssertionError(() -> {
-            Assert.assertTrue(Selenide.title().startsWith("MyPageTitle"));
-        });
-        Neodymium.softAssertions(false);
+        try
+        {
+            SelenideAddons.wrapAssertionError(() -> {
+                Assert.assertTrue(Selenide.title().startsWith("MyPageTitle"));
+            });
+        }
+        finally
+        {
+            Neodymium.softAssertions(false);
+            SelenideLogger.removeListener("testListener");
+        }
+    }
 
-        SelenideLogger.removeListener("testListener");
+    @Test
+    public void testWrapAssertionErrorWithoutMessage()
+    {
+        final String errMessage = "AssertionError: No error message provided by the Assertion.";
+        try
+        {
+            Selenide.open("https://blog.xceptance.com/");
+            SelenideAddons.wrapAssertionError(() -> {
+                Assert.assertTrue(Selenide.title().startsWith("MyPageTitle"));
+            });
+        }
+        catch (Throwable e)
+        {
+            Assert.assertTrue(e instanceof AssertionError);
+            Assert.assertEquals(errMessage, e.getMessage());
+        }
     }
 }
