@@ -15,7 +15,6 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 
 import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.module.statement.browser.BrowserStatement;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
 import com.xceptance.neodymium.tests.NeodymiumTest;
@@ -84,7 +83,7 @@ public class ValidateClearReuseWebDriverCache
     public static void afterClass()
     {
         Assert.assertEquals(1, WebDriverCache.instance.getAllWebdriver().size());
-        BrowserStatement.quitCachedBrowser();
+        WebDriverCache.quitCachedBrowser();
         Assert.assertEquals(0, WebDriverCache.instance.getAllWebdriver().size());
 
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);

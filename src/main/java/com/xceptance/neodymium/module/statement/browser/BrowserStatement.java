@@ -3,7 +3,6 @@ package com.xceptance.neodymium.module.statement.browser;
 import java.net.MalformedURLException;
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -193,71 +192,30 @@ public class BrowserStatement extends StatementBuilder
     {
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(Neodymium.getBrowserProfileName());
 
-        if (testFailed && Neodymium.configuration().keepBrowserOpenOnFailure() && !browserConfiguration.isHeadless())
-        {
-            // test failed and we want to leave the browser instance open
-            // don't quit the webdriver, just remove references
-            LOGGER.debug("Keep browser open");
-            Neodymium.setDriver(null);
-            Neodymium.setBrowserProfileName(null);
-            Neodymium.setBrowserName(null);
-            return;
-        }
-
-        if (!preventReuse && isWebDriverStillOpen(webDriver) && Neodymium.configuration().reuseWebDriver())
+        // reuse
+        if (Neodymium.configuration().reuseWebDriver() && !preventReuse && isWebDriverStillOpen(webDriver))
         {
             LOGGER.debug("Put browser into cache");
             WebDriverCache.instance.putWebDriver(browserTag, webdriver);
         }
+        // keep browser open
+        else if ((browserConfiguration != null && !browserConfiguration.isHeadless())
+                 && ((Neodymium.configuration().keepBrowserOpenOnFailure() && testFailed) || Neodymium.configuration().keepBrowserOpen()))
+        {
+            LOGGER.debug("Keep browser open");
+            // nothing to do
+        }
+        // close the WebDriver
         else
         {
-            if (browserConfiguration != null && browserConfiguration.isHeadless() || !Neodymium.configuration().keepBrowserOpen())
-            {
-                LOGGER.debug("Teardown browser");
-                if (webDriver != null)
-                    webDriver.quit();
-            }
+            LOGGER.debug("Teardown browser");
+            if (webDriver != null)
+                webDriver.quit();
         }
+
         Neodymium.setDriver(null);
         Neodymium.setBrowserProfileName(null);
         Neodymium.setBrowserName(null);
-    }
-
-    /**
-     * This function can be used within a function of a JUnit test case that is annotated with @AfterClass to clear the
-     * WebDriverCache of the WebDrivers ready for reuse.
-     * <p>
-     * <b>Attention:</b> It is save to run this function during a sequential test execution. It can have repercussions
-     * (e.g. longer test duration) in a parallel execution environment.
-     *
-     * <pre>
-     * &#64;AfterClass
-     * public void afterClass()
-     * {
-     *     BrowserStatement.quitCachedBrowser();
-     * }
-     * </pre>
-     **/
-    public static void quitCachedBrowser()
-    {
-        if (!Neodymium.configuration().keepBrowserOpen())
-        {
-            Collection<WebDriver> allWebdriver = WebDriverCache.instance.getAllWebdriver();
-
-            for (WebDriver wd : allWebdriver)
-            {
-                try
-                {
-                    LOGGER.debug("Quit web driver: " + wd.toString());
-                    wd.quit();
-                    WebDriverCache.instance.removeWebDriver(wd);
-                }
-                catch (Exception e)
-                {
-                    LOGGER.debug("Error on quitting web driver", e);
-                }
-            }
-        }
     }
 
     @Override

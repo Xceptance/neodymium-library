@@ -77,7 +77,6 @@ public class ValidateKeepWebDriverOpenOnFailure
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver1);
     }
 
-    // @Test(expected = ElementNotFound.class)
     @Test
     public void test2()
     {
