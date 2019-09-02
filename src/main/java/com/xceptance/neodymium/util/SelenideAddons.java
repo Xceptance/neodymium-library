@@ -274,7 +274,7 @@ public class SelenideAddons
             }
             else
             {
-                AssertionError wrapper = new AssertionError(message, e);
+                AssertionError wrapper = new AssertionError(message, e.getCause());
                 wrapper.setStackTrace(e.getStackTrace());
                 e = wrapper;
             }
