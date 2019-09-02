@@ -192,25 +192,27 @@ public class BrowserStatement extends StatementBuilder
     {
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(Neodymium.getBrowserProfileName());
 
-        // reuse
-        if (Neodymium.configuration().reuseWebDriver() && !preventReuse && isWebDriverStillOpen(webDriver))
-        {
-            LOGGER.debug("Put browser into cache");
-            WebDriverCache.instance.putWebDriver(browserTag, webdriver);
-        }
         // keep browser open
-        else if ((browserConfiguration != null && !browserConfiguration.isHeadless())
-                 && ((Neodymium.configuration().keepBrowserOpenOnFailure() && testFailed) || Neodymium.configuration().keepBrowserOpen()))
+        if ((browserConfiguration != null && !browserConfiguration.isHeadless())
+            && ((Neodymium.configuration().keepBrowserOpenOnFailure() && testFailed) || Neodymium.configuration().keepBrowserOpen()))
         {
             LOGGER.debug("Keep browser open");
             // nothing to do
+        }
+        // reuse
+        else if (Neodymium.configuration().reuseWebDriver() && !preventReuse && isWebDriverStillOpen(webDriver))
+        {
+            LOGGER.debug("Put browser into cache");
+            WebDriverCache.instance.putWebDriver(browserTag, webdriver);
         }
         // close the WebDriver
         else
         {
             LOGGER.debug("Teardown browser");
             if (webDriver != null)
+            {
                 webDriver.quit();
+            }
         }
 
         Neodymium.setDriver(null);

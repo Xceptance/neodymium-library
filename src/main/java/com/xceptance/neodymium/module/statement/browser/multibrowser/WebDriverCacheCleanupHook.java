@@ -12,6 +12,6 @@ public class WebDriverCacheCleanupHook extends Thread
     public void run()
     {
         LOGGER.debug("All tests finished. Quit cached browser");
-        WebDriverCache.quitCachedBrowser();
+        WebDriverCache.quitCachedBrowsers();
     }
 }

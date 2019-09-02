@@ -83,7 +83,7 @@ public class ValidateClearReuseWebDriverCache
     public static void afterClass()
     {
         Assert.assertEquals(1, WebDriverCache.instance.getAllWebdriver().size());
-        WebDriverCache.quitCachedBrowser();
+        WebDriverCache.quitCachedBrowsers();
         Assert.assertEquals(0, WebDriverCache.instance.getAllWebdriver().size());
 
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);

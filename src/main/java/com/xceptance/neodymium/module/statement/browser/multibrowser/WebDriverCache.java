@@ -10,8 +10,6 @@ import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xceptance.neodymium.util.Neodymium;
-
 /**
  * A cache to hold different instances of {@link WebDriver}. Instances are kept in a synchronized {@link HashMap} which
  * are indexed by an "browserTag" {@link String}. That browserTag is a unique character sequence. All access to the
@@ -112,7 +110,6 @@ public class WebDriverCache
                     removed = true;
                 }
             }
-
             return removed;
         }
     }
@@ -138,28 +135,24 @@ public class WebDriverCache
      * &#64;AfterClass
      * public void afterClass()
      * {
-     *     WebDriverCache.quitCachedBrowser();
+     *     WebDriverCache.quitCachedBrowsers();
      * }
      * </pre>
      **/
-    public static void quitCachedBrowser()
+    public static void quitCachedBrowsers()
     {
-        if (!Neodymium.configuration().keepBrowserOpen())
+        Collection<WebDriver> allWebdriver = instance.getAllWebdriver();
+        for (WebDriver wd : allWebdriver)
         {
-            Collection<WebDriver> allWebdriver = instance.getAllWebdriver();
-
-            for (WebDriver wd : allWebdriver)
+            try
             {
-                try
-                {
-                    LOGGER.debug("Quit web driver: " + wd.toString());
-                    wd.quit();
-                    instance.removeWebDriver(wd);
-                }
-                catch (Exception e)
-                {
-                    LOGGER.debug("Error on quitting web driver", e);
-                }
+                LOGGER.debug("Quit web driver: " + wd.toString());
+                wd.quit();
+                instance.removeWebDriver(wd);
+            }
+            catch (Exception e)
+            {
+                LOGGER.debug("Error on quitting web driver", e);
             }
         }
     }

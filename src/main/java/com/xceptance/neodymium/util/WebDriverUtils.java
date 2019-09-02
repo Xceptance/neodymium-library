@@ -64,7 +64,7 @@ public class WebDriverUtils
 
     /**
      * This function can be used within a function of a JUnit test case that is annotated with @After to prevent the
-     * reuse of a specific WebDriver
+     * reuse of the current WebDriver
      * 
      * <pre>
      * &#64;After
@@ -119,13 +119,13 @@ public class WebDriverUtils
      * &#64;AfterClass
      * public void afterClass()
      * {
-     *     WebDriverUtils.quitCachedBrowser();
+     *     WebDriverUtils.quitReusableCachedBrowsers();
      * }
      * </pre>
      **/
-    public static void quitCachedBrowser()
+    public static void quitReusableCachedBrowsers()
     {
-        WebDriverCache.quitCachedBrowser();
+        WebDriverCache.quitCachedBrowsers();
     }
 
     static String getFirstMatchingBrowserTag(Scenario scenario)
