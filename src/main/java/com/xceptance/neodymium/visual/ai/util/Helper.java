@@ -202,7 +202,7 @@ public class Helper
      * Transform a given image to an BufferedImkage with with exact same width and height as the original.
      * 
      * @param img
-     *            Image to transform into BuferedImage.
+     *            Image to transform into BufferedImage.
      * @param imageType
      *            Chosen int value of the target ImageType.
      * @return bi BufferedImage
@@ -281,11 +281,11 @@ public class Helper
      */
     public static BufferedImage ArrayToBufferedImage(double[][] array, int imageType)
     {
-        int xLenght = array.length;
+        int xLength = array.length;
         int yLength = array[0].length;
-        BufferedImage b = new BufferedImage(xLenght, yLength, imageType);
+        BufferedImage b = new BufferedImage(xLength, yLength, imageType);
 
-        for (int x = 0; x < xLenght; x++)
+        for (int x = 0; x < xLength; x++)
         {
             for (int y = 0; y < yLength; y++)
             {
@@ -480,13 +480,13 @@ public class Helper
      * 
      * @param path
      *            String full path name to the folder
-     * @param heigth
+     * @param height
      *            int value for scaling
      * @param width
      *            int value for scaling
      * @return ArrayList all found BufferedImages in the folder
      */
-    public static ArrayList<BufferedImage> loadAllImagesScaled_BufferedImage(String path, int heigth, int width)
+    public static ArrayList<BufferedImage> loadAllImagesScaled_BufferedImage(String path, int height, int width)
     {
         ArrayList<BufferedImage> pictureList = new ArrayList<>();
         File[] list = scanFolder(path);
@@ -495,7 +495,7 @@ public class Helper
             for (File element : list)
             {
                 BufferedImage tempimage = loadImage(path + File.separator + element.getName());
-                pictureList.add(imageToBufferedImageScaled(tempimage, BufferedImage.TYPE_INT_RGB, heigth, width));
+                pictureList.add(imageToBufferedImageScaled(tempimage, BufferedImage.TYPE_INT_RGB, height, width));
             }
         }
         return pictureList;

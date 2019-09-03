@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
@@ -266,10 +267,21 @@ public class SelenideAddons
         catch (AssertionError e)
         {
             Driver driver = WebDriverRunner.driver();
-            SelenideLogger.commitStep(new SelenideLog("Assertion error", e.getMessage()), e);
+            String message = "No error message provided by the Assertion.";
+            if (StringUtils.isNotBlank(e.getMessage()))
+            {
+                message = e.getMessage();
+            }
+            else
+            {
+                AssertionError wrapper = new AssertionError(message, e.getCause());
+                wrapper.setStackTrace(e.getStackTrace());
+                e = wrapper;
+            }
+            SelenideLogger.commitStep(new SelenideLog("Assertion error", message), e);
             if (!driver.config().assertionMode().equals(AssertionMode.SOFT))
             {
-                throw UIAssertionError.wrap(driver, e, System.currentTimeMillis());
+                throw UIAssertionError.wrap(driver, e, 0);
             }
         }
     }

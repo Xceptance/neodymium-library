@@ -133,7 +133,7 @@ public final class BrowserRunnerHelper
         }
         catch (final WebDriverException e)
         {
-            // on saucelabs in some cases like iphone emulation you cant resize the browser.
+            // on saucelabs in some cases like iphone emulation you can't resize the browser.
             // they throw an unchecked WebDriverException with the message "Not yet implemented"
             // if we catch an exception we check the message. if another message is set we throw the exception else
             // we suppress it
@@ -165,7 +165,7 @@ public final class BrowserRunnerHelper
      * Instantiate the {@link WebDriver} according to the configuration read from {@link Browser} annotations.
      * 
      * @param config
-     *            {@link BrowserConfiguration} that describes the descired browser instance
+     *            {@link BrowserConfiguration} that describes the desired browser instance
      * @return {@link WebDriver} the instance of the browser described in {@link BrowserConfiguration}
      * @throws MalformedURLException
      *             if <a href="https://github.com/Xceptance/neodymium-library/wiki/Selenium-grid">Selenium grid</a> is

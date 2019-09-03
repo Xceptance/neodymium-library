@@ -152,7 +152,7 @@ public class FastCornersDetector implements ICornersFeatureDetector
      * @param threshold
      *            Threshold.
      * @param suppress
-     *            Supress.
+     *            Suppress.
      */
     public FastCornersDetector(int threshold, boolean suppress)
     {
@@ -166,7 +166,7 @@ public class FastCornersDetector implements ICornersFeatureDetector
      * @param threshold
      *            Threshold.
      * @param suppress
-     *            Supress.
+     *            Suppress.
      * @param algorithm
      *            Algorithm.
      */

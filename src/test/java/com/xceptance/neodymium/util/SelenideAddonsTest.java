@@ -133,11 +133,75 @@ public class SelenideAddonsTest
 
         Selenide.open("https://blog.xceptance.com/");
         Neodymium.softAssertions(true);
-        SelenideAddons.wrapAssertionError(() -> {
-            Assert.assertEquals(errMessage, "MyPageTitle", Selenide.title());
-        });
-        Neodymium.softAssertions(false);
+        try
+        {
 
-        SelenideLogger.removeListener("testListener");
+            SelenideAddons.wrapAssertionError(() -> {
+                Assert.assertEquals(errMessage, "MyPageTitle", Selenide.title());
+            });
+        }
+        finally
+        {
+            Neodymium.softAssertions(false);
+            SelenideLogger.removeListener("testListener");
+        }
+    }
+
+    @Test
+    public void testWrapSoftAssertionErrorWithoutMessage()
+    {
+        final String errMessage = "No error message provided by the Assertion.";
+
+        SelenideLogger.addListener("testListener", new LogEventListener()
+        {
+            @Override
+            public void afterEvent(LogEvent currentLog)
+            {
+                SelenideLog log = (SelenideLog) currentLog;
+                if (log.getStatus().equals(EventStatus.FAIL))
+                {
+                    Assert.assertEquals("Selenide log event not matching", "Assertion error", log.getElement());
+                    Assert.assertEquals("Selenide log event not matching", log.getSubject(), errMessage);
+                }
+            }
+
+            @Override
+            public void beforeEvent(LogEvent currentLog)
+            {
+                // ignore
+            }
+        });
+
+        Selenide.open("https://blog.xceptance.com/");
+        Neodymium.softAssertions(true);
+        try
+        {
+            SelenideAddons.wrapAssertionError(() -> {
+                Assert.assertTrue(Selenide.title().startsWith("MyPageTitle"));
+            });
+        }
+        finally
+        {
+            Neodymium.softAssertions(false);
+            SelenideLogger.removeListener("testListener");
+        }
+    }
+
+    @Test
+    public void testWrapAssertionErrorWithoutMessage()
+    {
+        final String errMessage = "AssertionError: No error message provided by the Assertion.";
+        try
+        {
+            Selenide.open("https://blog.xceptance.com/");
+            SelenideAddons.wrapAssertionError(() -> {
+                Assert.assertTrue(Selenide.title().startsWith("MyPageTitle"));
+            });
+        }
+        catch (Throwable e)
+        {
+            Assert.assertTrue(e instanceof AssertionError);
+            Assert.assertEquals(errMessage, e.getMessage());
+        }
     }
 }

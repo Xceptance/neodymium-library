@@ -3,7 +3,6 @@ package com.xceptance.neodymium.module.statement.browser;
 import java.net.MalformedURLException;
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +15,7 @@ import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,7 +154,7 @@ public class BrowserStatement extends StatementBuilder
         }
         catch (final MalformedURLException e)
         {
-            throw new RuntimeException("An error occured during URL creation. See nested exception.", e);
+            throw new RuntimeException("An error occurred during URL creation. See nested exception.", e);
         }
         if (webdriver != null)
         {
@@ -185,57 +185,39 @@ public class BrowserStatement extends StatementBuilder
 
     public void teardown(boolean testFailed)
     {
+        teardown(testFailed, false, webdriver);
+    }
+
+    public void teardown(boolean testFailed, boolean preventReuse, WebDriver webDriver)
+    {
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(Neodymium.getBrowserProfileName());
 
-        if (testFailed && Neodymium.configuration().keepBrowserOpenOnFailure() && !browserConfiguration.isHeadless())
+        // keep browser open
+        if ((browserConfiguration != null && !browserConfiguration.isHeadless())
+            && ((Neodymium.configuration().keepBrowserOpenOnFailure() && testFailed) || Neodymium.configuration().keepBrowserOpen()))
         {
-            // test failed and we want to leave the browser instance open
-            // don't quit the webdriver, just remove references
             LOGGER.debug("Keep browser open");
-            Neodymium.setDriver(null);
-            Neodymium.setBrowserProfileName(null);
-            Neodymium.setBrowserName(null);
-            return;
+            // nothing to do
         }
-
-        if (Neodymium.configuration().reuseWebDriver())
+        // reuse
+        else if (Neodymium.configuration().reuseWebDriver() && !preventReuse && isWebDriverStillOpen(webDriver))
         {
             LOGGER.debug("Put browser into cache");
             WebDriverCache.instance.putWebDriver(browserTag, webdriver);
         }
+        // close the WebDriver
         else
         {
-            if (browserConfiguration.isHeadless() || !Neodymium.configuration().keepBrowserOpen())
+            LOGGER.debug("Teardown browser");
+            if (webDriver != null)
             {
-                LOGGER.debug("Teardown browser");
-                if (webdriver != null)
-                    webdriver.quit();
+                webDriver.quit();
             }
         }
+
         Neodymium.setDriver(null);
         Neodymium.setBrowserProfileName(null);
         Neodymium.setBrowserName(null);
-    }
-
-    public static void quitCachedBrowser()
-    {
-        if (!Neodymium.configuration().keepBrowserOpen())
-        {
-            Collection<WebDriver> allWebdriver = WebDriverCache.instance.getAllWebdriver();
-
-            for (WebDriver wd : allWebdriver)
-            {
-                try
-                {
-                    LOGGER.debug("Quit web driver: " + wd.toString());
-                    wd.quit();
-                }
-                catch (Exception e)
-                {
-                    LOGGER.debug("Error on quitting web driver", e);
-                }
-            }
-        }
     }
 
     @Override
@@ -321,7 +303,6 @@ public class BrowserStatement extends StatementBuilder
         {
             return browserAnnotations;
         }
-
     }
 
     @Override
@@ -349,5 +330,23 @@ public class BrowserStatement extends StatementBuilder
         tags.addAll(multibrowserConfiguration.getBrowserProfiles().keySet());
 
         return tags;
+    }
+
+    private boolean isWebDriverStillOpen(WebDriver webDriver)
+    {
+        if (webDriver == null)
+        {
+            return false;
+        }
+        try
+        {
+            RemoteWebDriver driver = (RemoteWebDriver) ((EventFiringWebDriver) webDriver).getWrappedDriver();
+            return driver.getSessionId() != null;
+        }
+        catch (Exception e)
+        {
+            LOGGER.warn("Couldn't detect if the WebDriver is still open!", e);
+            return true;
+        }
     }
 }

@@ -56,7 +56,7 @@ public class JavaScriptUtilsTest
     }
 
     @Test
-    public void testWaitingJQueryIsRequiered()
+    public void testWaitingJQueryIsRequired()
     {
         Neodymium.configuration().setProperty("neodymium.javaScriptUtils.loading.jQueryIsRequired", "true");
         Neodymium.configuration().setProperty("neodymium.javaScriptUtils.timeout", "10000");
@@ -71,7 +71,7 @@ public class JavaScriptUtilsTest
     }
 
     @Test
-    public void testWaitingJQueryIsNotRequiered()
+    public void testWaitingJQueryIsNotRequired()
     {
         Neodymium.configuration().setProperty("neodymium.javaScriptUtils.loading.jQueryIsRequired", "false");
         Neodymium.configuration().setProperty("neodymium.javaScriptUtils.timeout", "10000");

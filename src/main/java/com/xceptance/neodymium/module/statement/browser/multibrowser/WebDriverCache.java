@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A cache to hold different instances of {@link WebDriver}. Instances are kept in a synchronized {@link HashMap} which
@@ -18,15 +20,17 @@ import org.openqa.selenium.WebDriver;
  */
 public class WebDriverCache
 {
+    public static Logger LOGGER = LoggerFactory.getLogger(WebDriverCache.class);
+
     public static final WebDriverCache instance = new WebDriverCache();
 
     private static final Map<String, WebDriver> cache = Collections.synchronizedMap(new HashMap<>());
 
     /**
-     * The private constructor of the {@link WebDriverCache}. Creates the synchronized {@link HashMap} instance and add's a
-     * VM shutdown hook to clean up the cache and close the cached {@link WebDriver} gracefully if the
-     * neodymium.webDriver.keepBrowserOpen property is set to <code>false</code> in property file "browser.properties". See
-     * config folder
+     * The private constructor of the {@link WebDriverCache}. Creates the synchronized {@link HashMap} instance and
+     * add's a VM shutdown hook to clean up the cache and close the cached {@link WebDriver} gracefully if the
+     * neodymium.webDriver.keepBrowserOpen property is set to <code>false</code> in property file "browser.properties".
+     * See config folder
      */
     private WebDriverCache()
     {
@@ -46,8 +50,9 @@ public class WebDriverCache
     }
 
     /**
-     * Put's the instance of a {@link WebDriver} into the cache and uses browserTag to reference it. If there is already an
-     * {@link WebDriver} stored in the cache with the same browsreTag {@link String} then the instance will be overwritten.
+     * Put's the instance of a {@link WebDriver} into the cache and uses browserTag to reference it. If there is already
+     * an {@link WebDriver} stored in the cache with the same browserTag {@link String} then the instance will be
+     * overwritten.
      * 
      * @param browserTag
      *            a {@link String} that will be used to reference the cached {@link WebDriver}
@@ -105,7 +110,6 @@ public class WebDriverCache
                     removed = true;
                 }
             }
-
             return removed;
         }
     }
@@ -118,5 +122,38 @@ public class WebDriverCache
     public Collection<WebDriver> getAllWebdriver()
     {
         return Collections.unmodifiableCollection(cache.values());
+    }
+
+    /**
+     * This function can be used within a function of a JUnit test case that is annotated with @AfterClass to clear the
+     * WebDriverCache of the WebDrivers ready for reuse.
+     * <p>
+     * <b>Attention:</b> It is save to run this function during a sequential test execution. It can have repercussions
+     * (e.g. longer test duration) in a parallel execution environment.
+     *
+     * <pre>
+     * &#64;AfterClass
+     * public void afterClass()
+     * {
+     *     WebDriverCache.quitCachedBrowsers();
+     * }
+     * </pre>
+     **/
+    public static void quitCachedBrowsers()
+    {
+        Collection<WebDriver> allWebdriver = instance.getAllWebdriver();
+        for (WebDriver wd : allWebdriver)
+        {
+            try
+            {
+                LOGGER.debug("Quit web driver: " + wd.toString());
+                wd.quit();
+                instance.removeWebDriver(wd);
+            }
+            catch (Exception e)
+            {
+                LOGGER.debug("Error on quitting web driver", e);
+            }
+        }
     }
 }

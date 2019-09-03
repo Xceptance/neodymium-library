@@ -7,8 +7,9 @@ import java.util.function.Supplier;
 import org.apache.commons.lang3.StringUtils;
 
 import com.xceptance.neodymium.module.statement.browser.BrowserStatement;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
 
-import cucumber.api.Scenario;
+import io.cucumber.core.api.Scenario;
 
 public class WebDriverUtils
 {
@@ -62,6 +63,26 @@ public class WebDriverUtils
     }
 
     /**
+     * This function can be used within a function of a JUnit test case that is annotated with @After to prevent the
+     * reuse of the current WebDriver
+     * 
+     * <pre>
+     * &#64;After
+     * public void after()
+     * {
+     *     if (someConditionIsFulfilled)
+     *     {
+     *         WebDriverUtils.preventReuseAndTearDown();
+     *     }
+     * }
+     * </pre>
+     **/
+    public static void preventReuseAndTearDown()
+    {
+        browserStatement.get().teardown(false, true, Neodymium.getDriver());
+    }
+
+    /**
      * @param scenario
      *            Scenario is a Cucumber API class that can be gathered in hooks via dependency injection
      * 
@@ -85,6 +106,26 @@ public class WebDriverUtils
     public static void tearDown(boolean isFailed)
     {
         browserStatement.get().teardown(isFailed);
+    }
+
+    /**
+     * This function can be used within a function of a JUnit test case that is annotated with @AfterClass to clear the
+     * WebDriverCache of the WebDrivers ready for reuse.
+     * <p>
+     * <b>Attention:</b> It is save to run this function during a sequential test execution. It can have repercussions
+     * (e.g. longer test duration) in a parallel execution environment.
+     *
+     * <pre>
+     * &#64;AfterClass
+     * public void afterClass()
+     * {
+     *     WebDriverUtils.quitReusableCachedBrowsers();
+     * }
+     * </pre>
+     **/
+    public static void quitReusableCachedBrowsers()
+    {
+        WebDriverCache.quitCachedBrowsers();
     }
 
     static String getFirstMatchingBrowserTag(Scenario scenario)

@@ -11,7 +11,7 @@ import com.xceptance.neodymium.NeodymiumRunner;
 public class ParameterFieldButNoGenerator
 {
     /**
-     * Neodymium emulates JUnit's parmeterized runner with a few differences. Running this test with JUnits parameterized
+     * Neodymium emulates JUnit's parameterized runner with a few differences. Running this test with JUnits parameterized
      * runner will fail since this runner expects an generator function. Neodymium on the other site handles parameters as
      * optional. So if there is no generator function but parameterized members it just will ignore these annotation and run
      * only the test methods. So the only thing to test in absence of a generator is that the members don't change their

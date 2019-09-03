@@ -82,7 +82,7 @@ public class ParameterStatementTest extends NeodymiumTest
     @Test
     public void testGeneratorAutoTypeConversion()
     {
-        // test auto type conversion from string to various data types, aswell as arbitrary type injection
+        // test auto type conversion from string to various data types, as well as arbitrary type injection
         Result result = JUnitCore.runClasses(GeneratorAutoTypeConversion.class);
         checkPass(result, 1, 0, 0);
     }
@@ -125,6 +125,6 @@ public class ParameterStatementTest extends NeodymiumTest
     {
         // test that auto type conversion from string fails if string content can not match
         Result result = JUnitCore.runClasses(GeneratorAutoTypeConversionFailsOnWrongInputData.class);
-        checkFail(result, 1, 0, 1, "An error occured during conversion of input string \"true\" to type double for field \"aDouble\"");
+        checkFail(result, 1, 0, 1, "An error occurred during conversion of input string \"true\" to type double for field \"aDouble\"");
     }
 }

@@ -14,13 +14,13 @@ import com.xceptance.neodymium.util.Neodymium;
 public class OverrideNeodymiumConfiguration
 {
     @Test
-    public void testStandarConfigurationStillAvailable() throws Exception
+    public void testStandardConfigurationStillAvailable() throws Exception
     {
         Assert.assertEquals("/some/opera/path/just/for/test/purpose", Neodymium.configuration().getOperaDriverPath());
     }
 
     @Test
-    public void testConfigurationContainsOveriddenParts() throws Exception
+    public void testConfigurationContainsOverriddenParts() throws Exception
     {
         Assert.assertEquals("/some/phantomjs/path/just/for/test/newPurpose", Neodymium.configuration().getPhantomJsDriverPath());
     }

@@ -11,7 +11,7 @@ import com.xceptance.neodymium.tests.EnvironmentAndBrowserConfigurationTest;
 public class EnvironmentAndBrowserConfiguration
 {
     @Test
-    public void testEnvionmentApi()
+    public void testEnvironmentApi()
     {
         TestEnvironment environment = MultibrowserConfiguration.getInstance().getTestEnvironment("unittest");
 

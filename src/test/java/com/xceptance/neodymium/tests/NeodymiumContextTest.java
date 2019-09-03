@@ -41,7 +41,7 @@ public class NeodymiumContextTest extends NeodymiumTest
         Map<String, String> properties2 = new HashMap<>();
         properties2.put("neodymium.webDriver.phantomjs.pathToDriverServer", "/some/phantomjs/path/just/for/test/newPurpose");
         writeMapToPropertiesFile(properties2, tempConfigFile2);
-        ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPTERY_NAME, "file:" + fileLocation);
+        ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
     }
 
     @Test
