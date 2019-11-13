@@ -9,9 +9,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.RandomStringGenerator;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
+import com.jayway.jsonpath.spi.json.GsonJsonProvider;
+import com.jayway.jsonpath.spi.mapper.GsonMappingProvider;
 
 public class DataUtils
 {
@@ -60,15 +66,11 @@ public class DataUtils
     }
 
     /**
-     * Returns data for the data type requested
+     * Returns the available test data as JsonObject
      * 
-     * @param <T>
-     *            the inferred type
-     * @param clazz
-     *            A reference to an class that should be instantiated and filled from test data
-     * @return an instance of the class provided
+     * @return a JsonObject representing the available test data
      */
-    public static <T> T get(final Class<T> clazz)
+    public static JsonObject getDataAsJsonObject()
     {
         final Map<String, String> data = Neodymium.getData();
 
@@ -78,7 +80,7 @@ public class DataUtils
         // iterate over every data entry and parse the entries to prepare complex structures for object mapping
         for (Iterator<String> iterator = data.keySet().iterator(); iterator.hasNext();)
         {
-            final String key = (String) iterator.next();
+            final String key = iterator.next();
             final String value = data.get(key);
             final String trimmedValue = StringUtils.defaultString(value).trim();
 
@@ -95,8 +97,59 @@ public class DataUtils
                 jsonObject.add(key, new JsonPrimitive(value));
             }
         }
+        return jsonObject;
+    }
 
-        return new Gson().fromJson(jsonObject, clazz);
+    /**
+     * Returns data for the data type requested
+     * 
+     * @param <T>
+     *            the inferred type
+     * @param clazz
+     *            A reference to an class that should be instantiated and filled from test data
+     * @return an instance of the class provided
+     */
+    public static <T> T get(final Class<T> clazz)
+    {
+        return new Gson().fromJson(getDataAsJsonObject(), clazz);
+    }
+
+    /**
+     * Returns a instance of the requested data type
+     * 
+     * <pre>
+     * TestCreditCard creditCard = DataUtils.get("$.creditCard", TestCreditCard.class);
+     * Assert.assertEquals("4111111111111111", creditCard.getCardNumber());
+     * </pre>
+     * 
+     * @param <T>
+     *            the inferred type
+     * @param jsonPath
+     *            The JsonPath leading to the requested object
+     * @param clazz
+     *            A reference to an class that should be instantiated and filled from test data
+     * @return an instance of the class provided or null
+     */
+    public static <T> T get(final String jsonPath, final Class<T> clazz)
+    {
+        try
+        {
+            // GsonBuilder().serializeNulls needed to keep explicit null values within Json objects
+            return JsonPath.using(Configuration.builder().jsonProvider(new GsonJsonProvider(new GsonBuilder().serializeNulls().create()))
+                                               .mappingProvider(new GsonMappingProvider()).build())
+                           .parse(getDataAsJsonObject()).read(jsonPath, clazz);
+        }
+        catch (Exception e)
+        {
+            if (e instanceof PathNotFoundException)
+            {
+                return null;
+            }
+            else
+            {
+                throw e;
+            }
+        }
     }
 
     /**

@@ -12,36 +12,31 @@ public class TestCompoundClass
         HIGH
     }
 
-    String clubCardNumber;
+    private String clubCardNumber;
 
-    String description;
+    private String description;
 
-    Object notSet;
+    private Object notSet;
 
-    Double numberValue;
+    private Double numberValue;
 
-    Object nullValue = new Object();
+    private Object nullValue = "notNullString";
 
-    int age;
+    private int age;
 
-    TestCreditCard creditCard;
+    private TestCreditCard creditCard;
 
-    List<String> names;
+    private List<String> names;
 
-    List<TestPerson> persons;
+    private List<TestPerson> persons;
 
-    Map<String, String> keyValueMap;
+    private Map<String, String> keyValueMap;
 
-    Level level;
+    private Level level;
 
     public List<TestPerson> getPersons()
     {
         return persons;
-    }
-
-    public void setPersons(List<TestPerson> persons)
-    {
-        this.persons = persons;
     }
 
     public List<String> getNames()
@@ -49,19 +44,9 @@ public class TestCompoundClass
         return names;
     }
 
-    public void setNames(List<String> names)
-    {
-        this.names = names;
-    }
-
     public int getAge()
     {
         return age;
-    }
-
-    public void setAge(int age)
-    {
-        this.age = age;
     }
 
     public String getClubCardNumber()
@@ -69,19 +54,9 @@ public class TestCompoundClass
         return clubCardNumber;
     }
 
-    public void setClubCardNumber(String clubCardNumber)
-    {
-        this.clubCardNumber = clubCardNumber;
-    }
-
     public TestCreditCard getCreditCard()
     {
         return creditCard;
-    }
-
-    public void setCreditCard(TestCreditCard creditCard)
-    {
-        this.creditCard = creditCard;
     }
 
     public Map<String, String> getKeyValueMap()
@@ -89,19 +64,9 @@ public class TestCompoundClass
         return keyValueMap;
     }
 
-    public void setKeyValueMap(Map<String, String> keyValueMap)
-    {
-        this.keyValueMap = keyValueMap;
-    }
-
     public Level getLevel()
     {
         return level;
-    }
-
-    public void setLevel(Level level)
-    {
-        this.level = level;
     }
 
     public String getDescription()
@@ -109,34 +74,14 @@ public class TestCompoundClass
         return description;
     }
 
-    public void setDescription(String description)
-    {
-        this.description = description;
-    }
-
     public Double getNumberValue()
     {
         return numberValue;
     }
 
-    public void setNumberValue(Double numberValue)
-    {
-        this.numberValue = numberValue;
-    }
-
     public Object getNullValue()
     {
         return nullValue;
-    }
-
-    public void setNullValue(Object nullValue)
-    {
-        this.nullValue = nullValue;
-    }
-
-    public void setNotSet(Object notSet)
-    {
-        this.notSet = notSet;
     }
 
     public Object getNotSet()
