@@ -1,5 +1,7 @@
 package com.xceptance.neodymium.util;
 
+import static com.codeborne.selenide.Selenide.$$;
+
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -13,6 +15,7 @@ import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.ex.UIAssertionError;
@@ -20,8 +23,6 @@ import com.codeborne.selenide.impl.Html;
 import com.codeborne.selenide.impl.WebElementsCollectionWrapper;
 import com.codeborne.selenide.logevents.SelenideLog;
 import com.codeborne.selenide.logevents.SelenideLogger;
-
-import static com.codeborne.selenide.Selenide.$$;
 
 /**
  * Additional helpers for limits chained lookup in Selenide. Contribute that later back to Selenide if it proves to
@@ -113,7 +114,19 @@ public class SelenideAddons
     }
 
     /**
-     * Re-execute the entire code when a stale element exception comes up
+     * Re-executes the entire code when a {@link StaleElementReferenceException} comes up.
+     * <p>
+     * Attention: Since the SelenideElement class implements the InvocationHandler interface you have to make sure that
+     * the element is retrieved in order to provoke a StaleElementReferenceException. You can do this by calling a
+     * should function that uses a condition.
+     * <p>
+     * <b>Example:</b>
+     * 
+     * <pre>
+     * SelenideAddons.$safe(() -> {
+     *     return $("selector").should(exist);
+     * });
+     * </pre>
      *
      * @param code
      *            the code to run
@@ -121,37 +134,106 @@ public class SelenideAddons
      */
     public static SelenideElement $safe(final Supplier<SelenideElement> code)
     {
-        int retryCounter = Neodymium.configuration().staleElementRetryCount();
+        final int maxRetryCount = Neodymium.configuration().staleElementRetryCount();
+        int retryCounter = 0;
 
-        while (retryCounter >= 0)
+        while (retryCounter <= maxRetryCount)
         {
             try
             {
                 return code.get();
             }
-            catch (final StaleElementReferenceException e)
+            catch (final Throwable t)
             {
-                retryCounter--;
-
-                if (retryCounter < 0)
+                if (isThrowableCausedBy(t, StaleElementReferenceException.class))
                 {
-                    // fail
-                    throw e;
+                    retryCounter++;
+                    if (retryCounter > maxRetryCount)
+                    {
+                        // fail
+                        throw t;
+                    }
+                    else
+                    {
+                        AllureAddons.addToReport("StaleElementReferenceException catched times: \"" + retryCounter + "\".", retryCounter);
+                        Selenide.sleep(Neodymium.configuration().staleElementRetryTimeout());
+                    }
                 }
-
-                // wait
-                try
+                else
                 {
-                    Thread.sleep(Neodymium.configuration().staleElementRetryTimeout());
-                }
-                catch (final InterruptedException e1)
-                {
+                    // not the kind of error we are looking for
+                    throw t;
                 }
             }
         }
 
         // never get here
         return null;
+    }
+
+    /**
+     * Re-executes the entire code when a {@link StaleElementReferenceException} comes up<br>
+     * <b>Example:</b>
+     * 
+     * <pre>
+     * SelenideAddons.$safe(() -> {
+     *     $("selectorOne").find("selectorTwo").shouldBe(visible);
+     * });
+     * </pre>
+     *
+     * @param code
+     *            the code to run
+     * @return the element of the execution or any exception that might bubble up
+     */
+    public static void $safe(final Runnable code)
+    {
+        final int maxRetryCount = Neodymium.configuration().staleElementRetryCount();
+        int retryCounter = 0;
+
+        while (retryCounter <= maxRetryCount)
+        {
+            try
+            {
+                code.run();
+                break;
+            }
+            catch (final Throwable t)
+            {
+                if (isThrowableCausedBy(t, StaleElementReferenceException.class))
+                {
+                    retryCounter++;
+                    if (retryCounter > maxRetryCount)
+                    {
+                        // fail
+                        throw t;
+                    }
+                    else
+                    {
+                        AllureAddons.addToReport("StaleElementReferenceException catched times: \"" + retryCounter + "\".", retryCounter);
+                        Selenide.sleep(Neodymium.configuration().staleElementRetryTimeout());
+                    }
+                }
+                else
+                {
+                    // not the kind of error we are looking for
+                    throw t;
+                }
+            }
+        }
+    }
+
+    private static boolean isThrowableCausedBy(final Throwable throwable, Class<? extends Throwable> clazz)
+    {
+        Throwable t = throwable;
+        while (t != null)
+        {
+            if (clazz.isInstance(t))
+            {
+                return true;
+            }
+            t = t.getCause();
+        }
+        return false;
     }
 
     /**
