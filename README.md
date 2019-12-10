@@ -25,6 +25,7 @@ If you already know what you want to do, you can pick one of the demo test suite
 ## Introductions in other media
 We have an article on [DZone](https://dzone.com/articles/neodymium-an-open-source-framework-for-web-testing) describing the main features of Neodymium.
 
+We have a talk (in German) about the features and some best practices for Neodymium available on [YouTube](https://www.youtube.com/watch?v=hn-juzcXrZg).
 
 ## Additional Features
 These are our **additions** to make test automation nicer, quicker, and less painful. 
