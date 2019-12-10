@@ -21,6 +21,11 @@ import com.jayway.jsonpath.spi.mapper.GsonMappingProvider;
 
 public class DataUtils
 {
+    private final static Gson GSON = new GsonBuilder().serializeNulls().create();
+
+    private final static Configuration JSONPATH_CONFIGURATION = Configuration.builder().jsonProvider(new GsonJsonProvider(GSON))
+                                                                             .mappingProvider(new GsonMappingProvider(GSON)).build();
+
     /**
      * Returns a random email address using UUID.java
      *
@@ -111,11 +116,16 @@ public class DataUtils
      */
     public static <T> T get(final Class<T> clazz)
     {
-        return new Gson().fromJson(getDataAsJsonObject(), clazz);
+        return GSON.fromJson(getDataAsJsonObject(), clazz);
     }
 
     /**
-     * Returns a instance of the requested data type
+     * <p>
+     * Retrieves an element from the JSON representation of current test data using the given JsonPath expression and in
+     * case such an element was found, it will be returned as instance of the given class, filled with appropriate
+     * values.
+     * </p>
+     * <b>Example:</b>
      * 
      * <pre>
      * TestCreditCard creditCard = DataUtils.get("$.creditCard", TestCreditCard.class);
@@ -123,7 +133,7 @@ public class DataUtils
      * </pre>
      * 
      * @param <T>
-     *            the inferred type
+     *            The inferred type
      * @param jsonPath
      *            The JsonPath leading to the requested object
      * @param clazz
@@ -135,20 +145,11 @@ public class DataUtils
         try
         {
             // GsonBuilder().serializeNulls needed to keep explicit null values within Json objects
-            return JsonPath.using(Configuration.builder().jsonProvider(new GsonJsonProvider(new GsonBuilder().serializeNulls().create()))
-                                               .mappingProvider(new GsonMappingProvider()).build())
-                           .parse(getDataAsJsonObject()).read(jsonPath, clazz);
+            return JsonPath.using(JSONPATH_CONFIGURATION).parse(getDataAsJsonObject()).read(jsonPath, clazz);
         }
-        catch (Exception e)
+        catch (PathNotFoundException e)
         {
-            if (e instanceof PathNotFoundException)
-            {
-                return null;
-            }
-            else
-            {
-                throw e;
-            }
+            return null;
         }
     }
 
