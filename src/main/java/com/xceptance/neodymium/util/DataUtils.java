@@ -21,6 +21,7 @@ import com.jayway.jsonpath.spi.mapper.GsonMappingProvider;
 
 public class DataUtils
 {
+    // GsonBuilder().serializeNulls needed to keep explicit null values within Json objects
     private final static Gson GSON = new GsonBuilder().serializeNulls().create();
 
     private final static Configuration JSONPATH_CONFIGURATION = Configuration.builder().jsonProvider(new GsonJsonProvider(GSON))
@@ -144,7 +145,6 @@ public class DataUtils
     {
         try
         {
-            // GsonBuilder().serializeNulls needed to keep explicit null values within Json objects
             return JsonPath.using(JSONPATH_CONFIGURATION).parse(getDataAsJsonObject()).read(jsonPath, clazz);
         }
         catch (PathNotFoundException e)
