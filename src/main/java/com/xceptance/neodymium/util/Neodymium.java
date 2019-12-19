@@ -344,4 +344,26 @@ public class Neodymium
         Configuration.timeout = timeout;
     }
 
+    /**
+     * Validates if the currently configured site is equal to one or more Strings.
+     * 
+     * @param sites
+     *            Names of the sites
+     */
+    public static boolean isSite(String... sites)
+    {
+        if (Neodymium.configuration().site() == null)
+        {
+            return false;
+        }
+        for (int i = 0; i < sites.length; i++)
+        {
+            if (Neodymium.configuration().site().equals(sites[i]))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
