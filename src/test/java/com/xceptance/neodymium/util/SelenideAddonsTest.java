@@ -1,10 +1,21 @@
 package com.xceptance.neodymium.util;
 
+import static com.codeborne.selenide.Condition.exist;
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selenide.$;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.StaleElementReferenceException;
 
 import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.ex.ElementShould;
 import com.codeborne.selenide.ex.UIAssertionError;
 import com.codeborne.selenide.logevents.LogEvent;
@@ -14,8 +25,7 @@ import com.codeborne.selenide.logevents.SelenideLog;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
-
-import static com.codeborne.selenide.Selenide.$;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowsers;
 
 @RunWith(NeodymiumRunner.class)
 @Browser("Chrome_headless")
@@ -203,5 +213,216 @@ public class SelenideAddonsTest
             Assert.assertTrue(e instanceof AssertionError);
             Assert.assertEquals(errMessage, e.getMessage());
         }
+    }
+
+    class ExecutionCounter
+    {
+        private int val = 0;
+
+        public int val()
+        {
+            return val;
+        }
+
+        public void add1()
+        {
+            this.val++;
+        }
+
+        @Override
+        public String toString()
+        {
+            return Integer.toString(val);
+        }
+    }
+
+    @Test()
+    @SuppressBrowsers
+    public void testSafeRunnable()
+    {
+        // preparing the test setup as kind of generator
+        ExecutionCounter counter = new ExecutionCounter();
+        List<Runnable> runArray = new ArrayList<Runnable>();
+        runArray.add(
+                     () -> {
+                         throw new StaleElementReferenceException("You shall not pass!");
+                     });
+        runArray.add(
+                     () -> {
+                         throw new StaleElementReferenceException("You shall not pass!");
+                     });
+        runArray.add(
+                     () -> {
+                         throw new StaleElementReferenceException("You shall not pass!");
+                     });
+        runArray.add(
+                     () -> {
+                         throw new StaleElementReferenceException("You shall pass!");
+                     });
+        runArray.add(
+                     () -> {
+                         throw new StaleElementReferenceException("You shall never be seen!");
+                     });
+        final Iterator<Runnable> iterator = runArray.iterator();
+
+        // testing the error path after three exceptions
+        long startTime = new Date().getTime();
+        try
+        {
+            SelenideAddons.$safe(() -> {
+                counter.add1();
+                if (iterator.hasNext())
+                {
+                    iterator.next().run();
+                }
+            });
+        }
+        catch (StaleElementReferenceException e)
+        {
+            Assert.assertTrue(e.getMessage().startsWith("You shall pass!"));
+        }
+        long endTime = new Date().getTime();
+        Assert.assertTrue(endTime - startTime > Neodymium.configuration().staleElementRetryTimeout());
+        Assert.assertEquals(counter.val(), Neodymium.configuration().staleElementRetryCount() + 1);
+
+        // testing the happy path after one exception
+        SelenideAddons.$safe(() -> {
+            counter.add1();
+            if (iterator.hasNext())
+            {
+                iterator.next().run();
+            }
+        });
+        Assert.assertEquals(counter.val(), Neodymium.configuration().staleElementRetryCount() + 3);
+    }
+
+    @Test()
+    public void testSafeSupplier()
+    {
+        // preparing the test setup as kind of generator
+        ExecutionCounter counter = new ExecutionCounter();
+        List<Runnable> runArray = new ArrayList<Runnable>();
+        runArray.add(
+                     () -> {
+                         throw new StaleElementReferenceException("You shall not pass!");
+                     });
+        runArray.add(
+                     () -> {
+                         throw new StaleElementReferenceException("You shall not pass!");
+                     });
+        runArray.add(
+                     () -> {
+                         throw new StaleElementReferenceException("You shall not pass!");
+                     });
+        runArray.add(
+                     () -> {
+                         throw new StaleElementReferenceException("You shall pass!");
+                     });
+        runArray.add(
+                     () -> {
+                         throw new StaleElementReferenceException("You shall never be seen!");
+                     });
+        final Iterator<Runnable> iterator = runArray.iterator();
+
+        // testing the error path after three exceptions
+        Selenide.open("https://blog.xceptance.com/");
+        long startTime = new Date().getTime();
+        try
+        {
+            SelenideAddons.$safe(() -> {
+                counter.add1();
+                if (iterator.hasNext())
+                {
+                    iterator.next().run();
+                }
+                return $("body").should(exist);
+            });
+        }
+        catch (StaleElementReferenceException e)
+        {
+            Assert.assertTrue(e.getMessage().startsWith("You shall pass!"));
+        }
+        long endTime = new Date().getTime();
+        Assert.assertTrue(endTime - startTime > Neodymium.configuration().staleElementRetryTimeout());
+        Assert.assertEquals(counter.val(), Neodymium.configuration().staleElementRetryCount() + 1);
+
+        // testing the happy path after one exception
+        SelenideElement element = SelenideAddons.$safe(() -> {
+            counter.add1();
+            if (iterator.hasNext())
+            {
+                iterator.next().run();
+            }
+            return $("body");
+        });
+        Assert.assertEquals(counter.val(), Neodymium.configuration().staleElementRetryCount() + 3);
+        element.shouldBe(visible);
+    }
+
+    @Test()
+    @SuppressBrowsers
+    public void testSafeNestedException()
+    {
+        // preparing the test setup as kind of generator
+        ExecutionCounter counter = new ExecutionCounter();
+        List<Runnable> runArray = new ArrayList<Runnable>();
+        runArray.add(
+                     () -> {
+                         throw getWrappepThrowable("You shall not pass!");
+                     });
+        runArray.add(
+                     () -> {
+                         throw getWrappepThrowable("You shall not pass!");
+                     });
+        runArray.add(
+                     () -> {
+                         throw getWrappepThrowable("You shall not pass!");
+                     });
+        runArray.add(
+                     () -> {
+                         throw getWrappepThrowable("You shall pass!");
+                     });
+        runArray.add(
+                     () -> {
+                         throw getWrappepThrowable("You shall never be seen!");
+                     });
+        final Iterator<Runnable> iterator = runArray.iterator();
+
+        // testing the error path after three exceptions
+        long startTime = new Date().getTime();
+        try
+        {
+            SelenideAddons.$safe(() -> {
+                counter.add1();
+                if (iterator.hasNext())
+                {
+                    iterator.next().run();
+                }
+            });
+        }
+        catch (RuntimeException e)
+        {
+            Assert.assertNotNull(e.getCause());
+            Assert.assertTrue(e.getCause() instanceof StaleElementReferenceException);
+            Assert.assertTrue(e.getCause().getMessage().startsWith("You shall pass!"));
+        }
+        long endTime = new Date().getTime();
+        Assert.assertTrue(endTime - startTime > Neodymium.configuration().staleElementRetryTimeout());
+        Assert.assertEquals(counter.val(), Neodymium.configuration().staleElementRetryCount() + 1);
+
+        // testing the happy path after one exception
+        SelenideAddons.$safe(() -> {
+            counter.add1();
+            if (iterator.hasNext())
+            {
+                iterator.next().run();
+            }
+        });
+        Assert.assertEquals(counter.val(), Neodymium.configuration().staleElementRetryCount() + 3);
+    }
+
+    private RuntimeException getWrappepThrowable(String message)
+    {
+        return new RuntimeException(new StaleElementReferenceException(message));
     }
 }
