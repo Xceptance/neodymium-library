@@ -95,7 +95,7 @@ public class IsSiteTests
     }
 
     @Test
-    public void ExpectedNullVarchar() throws Exception
+    public void expectedNullVarchar() throws Exception
     {
         Neodymium.configuration().setProperty("neodymium.url.site", "DE");
         String[] expectedSites =
