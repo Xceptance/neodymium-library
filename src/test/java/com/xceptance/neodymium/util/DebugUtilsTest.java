@@ -1,5 +1,10 @@
 package com.xceptance.neodymium.util;
 
+import static com.codeborne.selenide.Condition.exist;
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
+
 import java.util.List;
 
 import org.junit.Assert;
@@ -14,12 +19,6 @@ import com.codeborne.selenide.SelenideElement;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 
-import static com.codeborne.selenide.Condition.exist;
-import static com.codeborne.selenide.Condition.visible;
-
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
-
 @RunWith(NeodymiumRunner.class)
 @Browser("Chrome_headless")
 public class DebugUtilsTest
@@ -27,6 +26,8 @@ public class DebugUtilsTest
     @Test
     public void testHighlighting()
     {
+        Neodymium.configuration().setProperty("neodymium.debugUtils.highlight.duration", "500");
+
         Selenide.open("https://blog.xceptance.com/");
         DebugUtils.injectJavaScript();
         assertJsSuccessfullyInjected();
@@ -49,6 +50,8 @@ public class DebugUtilsTest
     @Test
     public void testHighlightingWithoutImplicitWaitTime()
     {
+        Neodymium.configuration().setProperty("neodymium.debugUtils.highlight.duration", "500");
+
         Selenide.open("https://blog.xceptance.com/");
         DebugUtils.injectJavaScript();
         assertJsSuccessfullyInjected();
@@ -103,6 +106,7 @@ public class DebugUtilsTest
     public void testIFrames() throws Exception
     {
         Neodymium.configuration().setProperty("neodymium.debugUtils.highlight", "true");
+        Neodymium.configuration().setProperty("neodymium.debugUtils.highlight.duration", "750");
 
         Selenide.open("https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_select");
         Neodymium.getDriver().switchTo().frame("iframeResult");
