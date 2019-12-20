@@ -50,7 +50,7 @@ public class NeodymiumContextTest extends NeodymiumTest
     {
         // test the isSite function
         Result result = JUnitCore.runClasses(IsSiteTests.class);
-        checkPass(result, 9, 0, 0);
+        checkPass(result, 10, 0, 0);
     }
 
     @Test

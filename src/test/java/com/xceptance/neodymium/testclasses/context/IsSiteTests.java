@@ -10,11 +10,9 @@ import com.xceptance.neodymium.util.Neodymium;
 @RunWith(NeodymiumRunner.class)
 public class IsSiteTests
 {
-
     @Test
     public void happyPath() throws Exception
     {
-
         Neodymium.configuration().setProperty("neodymium.url.site", "USA");
         String expectedSite = "USA";
         Assert.assertTrue(Neodymium.isSite(expectedSite));
@@ -55,7 +53,6 @@ public class IsSiteTests
     @Test
     public void varcharMatch() throws Exception
     {
-
         Neodymium.configuration().setProperty("neodymium.url.site", "USA");
         String[] expectedSites =
             {
@@ -67,7 +64,6 @@ public class IsSiteTests
     @Test
     public void reverseVarcharMatch() throws Exception
     {
-
         Neodymium.configuration().setProperty("neodymium.url.site", "USA");
         String[] expectedSites =
             {
@@ -79,7 +75,6 @@ public class IsSiteTests
     @Test
     public void noMatchVarchar() throws Exception
     {
-
         Neodymium.configuration().setProperty("neodymium.url.site", "USA");
         String[] expectedSites =
             {
@@ -91,12 +86,22 @@ public class IsSiteTests
     @Test
     public void nullVarchar() throws Exception
     {
-
         Neodymium.configuration().setProperty("neodymium.url.site", null);
         String[] expectedSites =
             {
                 "DE", "UK"
             };
         Assert.assertFalse(Neodymium.isSite(expectedSites));
+    }
+
+    @Test
+    public void ExpectedNullVarchar() throws Exception
+    {
+        Neodymium.configuration().setProperty("neodymium.url.site", "DE");
+        String[] expectedSites =
+            {
+                "DE", null
+            };
+        Assert.assertTrue(Neodymium.isSite(expectedSites));
     }
 }
