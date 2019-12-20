@@ -15,6 +15,7 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.configurati
 import com.xceptance.neodymium.testclasses.context.BrowserContextSetup;
 import com.xceptance.neodymium.testclasses.context.ContextGetsCleared;
 import com.xceptance.neodymium.testclasses.context.DefaultSelenideConfiguration;
+import com.xceptance.neodymium.testclasses.context.IsSiteTests;
 import com.xceptance.neodymium.testclasses.context.OverrideNeodymiumConfiguration;
 import com.xceptance.neodymium.testclasses.context.SelenideConfigurationShortcuts;
 import com.xceptance.neodymium.testclasses.context.WindowSizeTests;
@@ -42,6 +43,14 @@ public class NeodymiumContextTest extends NeodymiumTest
         properties2.put("neodymium.webDriver.phantomjs.pathToDriverServer", "/some/phantomjs/path/just/for/test/newPurpose");
         writeMapToPropertiesFile(properties2, tempConfigFile2);
         ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
+    }
+
+    @Test
+    public void testIsSite()
+    {
+        // test the isSite function
+        Result result = JUnitCore.runClasses(IsSiteTests.class);
+        checkPass(result, 10, 0, 0);
     }
 
     @Test
