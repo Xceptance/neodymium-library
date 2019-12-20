@@ -100,7 +100,7 @@ public class IsSiteTests
         Neodymium.configuration().setProperty("neodymium.url.site", "DE");
         String[] expectedSites =
             {
-                "DE", null
+                null, "DE"
             };
         Assert.assertTrue(Neodymium.isSite(expectedSites));
     }
