@@ -208,10 +208,9 @@ public class SelenideAddonsTest
                 Assert.assertTrue(Selenide.title().startsWith("MyPageTitle"));
             });
         }
-        catch (Throwable e)
+        catch (UIAssertionError e)
         {
-            Assert.assertTrue(e instanceof AssertionError);
-            Assert.assertEquals(errMessage, e.getMessage());
+            Assert.assertTrue(e.getMessage().startsWith(errMessage));
         }
     }
 
