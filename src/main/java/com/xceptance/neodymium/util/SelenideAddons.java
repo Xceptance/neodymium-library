@@ -123,7 +123,7 @@ public class SelenideAddons
      * <b>Example:</b>
      * 
      * <pre>
-     * SelenideAddons.$safe(() -> {
+     * SelenideAddons.$safe(() -&gt; {
      *     return $("selector").should(exist);
      * });
      * </pre>
@@ -176,14 +176,13 @@ public class SelenideAddons
      * <b>Example:</b>
      * 
      * <pre>
-     * SelenideAddons.$safe(() -> {
+     * SelenideAddons.$safe(() -&gt; {
      *     $("selectorOne").find("selectorTwo").shouldBe(visible);
      * });
      * </pre>
      *
      * @param code
      *            the code to run
-     * @return the element of the execution or any exception that might bubble up
      */
     public static void $safe(final Runnable code)
     {

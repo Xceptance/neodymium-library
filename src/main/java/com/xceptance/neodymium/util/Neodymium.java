@@ -14,9 +14,11 @@ import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 
 /**
- * See our Github wiki: <a href="https://github.com/Xceptance/neodymium-library/wiki/Context">Context</a>
+ * See our Github wiki: <a href="https://github.com/Xceptance/neodymium-library/wiki/Neodymium-context">Neodymium
+ * context</a>
  * 
  * @author m.kaufmann
+ * @author m.pfotenhauer
  */
 public class Neodymium
 {
@@ -279,7 +281,8 @@ public class Neodymium
     /**
      * Desktop of any kind?
      * 
-     * @return boolean value indicating whether it is a device desktop (isLargeDesktop() or isExtraLargeDesktop()) or not
+     * @return boolean value indicating whether it is a device desktop (isLargeDesktop() or isExtraLargeDesktop()) or
+     *         not
      * @see Neodymium
      */
     public static boolean isDesktop()
@@ -349,6 +352,8 @@ public class Neodymium
      * 
      * @param sites
      *            Names of the sites
+     * @return boolean value indicating whether the configured site is matching one of the given Strings
+     * @see Neodymium
      */
     public static boolean isSite(String... sites)
     {
