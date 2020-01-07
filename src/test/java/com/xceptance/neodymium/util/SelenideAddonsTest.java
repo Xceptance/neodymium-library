@@ -347,23 +347,23 @@ public class SelenideAddonsTest
         List<Runnable> runArray = new ArrayList<Runnable>();
         runArray.add(
                      () -> {
-                         throw getWrappepThrowable("You shall not pass!");
+                         throw getWrappedThrowable("You shall not pass!");
                      });
         runArray.add(
                      () -> {
-                         throw getWrappepThrowable("You shall not pass!");
+                         throw getWrappedThrowable("You shall not pass!");
                      });
         runArray.add(
                      () -> {
-                         throw getWrappepThrowable("You shall not pass!");
+                         throw getWrappedThrowable("You shall not pass!");
                      });
         runArray.add(
                      () -> {
-                         throw getWrappepThrowable("You shall pass!");
+                         throw getWrappedThrowable("You shall pass!");
                      });
         runArray.add(
                      () -> {
-                         throw getWrappepThrowable("You shall never be seen!");
+                         throw getWrappedThrowable("You shall never be seen!");
                      });
         final Iterator<Runnable> iterator = runArray.iterator();
 
@@ -400,7 +400,7 @@ public class SelenideAddonsTest
         Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 3);
     }
 
-    private RuntimeException getWrappepThrowable(String message)
+    private RuntimeException getWrappedThrowable(String message)
     {
         return new RuntimeException(new StaleElementReferenceException(message));
     }
