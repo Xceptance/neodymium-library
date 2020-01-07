@@ -420,7 +420,7 @@ public class SelenideAddonsTest
         Assert.assertEquals(counter.val(), Neodymium.configuration().staleElementRetryCount() + 3);
     }
 
-    private RuntimeException getWrappepThrowable(String message)
+    private RuntimeException getWrappedThrowable(String message)
     {
         return new RuntimeException(new StaleElementReferenceException(message));
     }
