@@ -120,21 +120,23 @@ public class SelenideAddons
      * Attention: Since the SelenideElement class implements the InvocationHandler interface you have to make sure that
      * the element is retrieved in order to provoke a StaleElementReferenceException. You can do this by calling a
      * should function that uses a condition.
-     * <p>
-     * <p>
-     * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
-     * <li>neodymium.selenideAddons.staleElement.retry.count (default 3 retries)</li>
-     * <li>neodymium.selenideAddons.staleElement.retry.timeout (default 500ms pause between retries)</li>
      * </p>
      * <p>
+     * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
+     * </p>
+     * <ul>
+     * <li>neodymium.selenideAddons.staleElement.retry.count (default 3 retries)</li>
+     * <li>neodymium.selenideAddons.staleElement.retry.timeout (default 500ms pause between retries)</li>
+     * </ul>
+     * <p>
      * <b>Example:</b>
+     * </p>
      * 
      * <pre>
      * SelenideAddons.$safe(() -&gt; {
      *     return $("selector").should(exist);
      * });
      * </pre>
-     * </p>
      *
      * @param code
      *            the code to run
@@ -184,18 +186,20 @@ public class SelenideAddons
      * {@link StaleElementReferenceException} occurs.
      * <p>
      * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
+     * </p>
+     * <ul>
      * <li>neodymium.selenideAddons.staleElement.retry.count (default 3 retries)</li>
      * <li>neodymium.selenideAddons.staleElement.retry.timeout (default 500ms pause between retries)</li>
-     * </p>
+     * </ul>
      * <p>
      * <b>Example:</b>
+     * </p>
      * 
      * <pre>
      * SelenideAddons.$safe(() -&gt; {
      *     $("selectorOne").find("selectorTwo").shouldBe(visible);
      * });
      * </pre>
-     * </p>
      * 
      * @param code
      *            the code to run
