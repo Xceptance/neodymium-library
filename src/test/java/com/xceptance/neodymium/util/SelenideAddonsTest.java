@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -214,33 +215,12 @@ public class SelenideAddonsTest
         }
     }
 
-    class ExecutionCounter
-    {
-        private int val = 0;
-
-        public int val()
-        {
-            return val;
-        }
-
-        public void add1()
-        {
-            this.val++;
-        }
-
-        @Override
-        public String toString()
-        {
-            return Integer.toString(val);
-        }
-    }
-
     @Test()
     @SuppressBrowsers
     public void testSafeRunnable()
     {
         // preparing the test setup as kind of generator
-        ExecutionCounter counter = new ExecutionCounter();
+        AtomicInteger counter = new AtomicInteger(0);
         List<Runnable> runArray = new ArrayList<Runnable>();
         runArray.add(
                      () -> {
@@ -269,7 +249,7 @@ public class SelenideAddonsTest
         try
         {
             SelenideAddons.$safe(() -> {
-                counter.add1();
+                counter.incrementAndGet();
                 if (iterator.hasNext())
                 {
                     iterator.next().run();
@@ -282,24 +262,24 @@ public class SelenideAddonsTest
         }
         long endTime = new Date().getTime();
         Assert.assertTrue(endTime - startTime > Neodymium.configuration().staleElementRetryTimeout());
-        Assert.assertEquals(counter.val(), Neodymium.configuration().staleElementRetryCount() + 1);
+        Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 1);
 
         // testing the happy path after one exception
         SelenideAddons.$safe(() -> {
-            counter.add1();
+            counter.incrementAndGet();
             if (iterator.hasNext())
             {
                 iterator.next().run();
             }
         });
-        Assert.assertEquals(counter.val(), Neodymium.configuration().staleElementRetryCount() + 3);
+        Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 3);
     }
 
     @Test()
     public void testSafeSupplier()
     {
         // preparing the test setup as kind of generator
-        ExecutionCounter counter = new ExecutionCounter();
+        AtomicInteger counter = new AtomicInteger(0);
         List<Runnable> runArray = new ArrayList<Runnable>();
         runArray.add(
                      () -> {
@@ -329,7 +309,7 @@ public class SelenideAddonsTest
         try
         {
             SelenideAddons.$safe(() -> {
-                counter.add1();
+                counter.incrementAndGet();
                 if (iterator.hasNext())
                 {
                     iterator.next().run();
@@ -343,18 +323,18 @@ public class SelenideAddonsTest
         }
         long endTime = new Date().getTime();
         Assert.assertTrue(endTime - startTime > Neodymium.configuration().staleElementRetryTimeout());
-        Assert.assertEquals(counter.val(), Neodymium.configuration().staleElementRetryCount() + 1);
+        Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 1);
 
         // testing the happy path after one exception
         SelenideElement element = SelenideAddons.$safe(() -> {
-            counter.add1();
+            counter.incrementAndGet();
             if (iterator.hasNext())
             {
                 iterator.next().run();
             }
             return $("body");
         });
-        Assert.assertEquals(counter.val(), Neodymium.configuration().staleElementRetryCount() + 3);
+        Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 3);
         element.shouldBe(visible);
     }
 
@@ -363,7 +343,7 @@ public class SelenideAddonsTest
     public void testSafeNestedException()
     {
         // preparing the test setup as kind of generator
-        ExecutionCounter counter = new ExecutionCounter();
+        AtomicInteger counter = new AtomicInteger(0);
         List<Runnable> runArray = new ArrayList<Runnable>();
         runArray.add(
                      () -> {
@@ -392,7 +372,7 @@ public class SelenideAddonsTest
         try
         {
             SelenideAddons.$safe(() -> {
-                counter.add1();
+                counter.incrementAndGet();
                 if (iterator.hasNext())
                 {
                     iterator.next().run();
@@ -407,17 +387,17 @@ public class SelenideAddonsTest
         }
         long endTime = new Date().getTime();
         Assert.assertTrue(endTime - startTime > Neodymium.configuration().staleElementRetryTimeout());
-        Assert.assertEquals(counter.val(), Neodymium.configuration().staleElementRetryCount() + 1);
+        Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 1);
 
         // testing the happy path after one exception
         SelenideAddons.$safe(() -> {
-            counter.add1();
+            counter.incrementAndGet();
             if (iterator.hasNext())
             {
                 iterator.next().run();
             }
         });
-        Assert.assertEquals(counter.val(), Neodymium.configuration().staleElementRetryCount() + 3);
+        Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 3);
     }
 
     private RuntimeException getWrappepThrowable(String message)

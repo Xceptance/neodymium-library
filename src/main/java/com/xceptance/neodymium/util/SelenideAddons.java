@@ -114,11 +114,18 @@ public class SelenideAddons
     }
 
     /**
-     * Re-executes the entire code when a {@link StaleElementReferenceException} comes up.
+     * Executes the given code at least once but potentially multiple times as long as a
+     * {@link StaleElementReferenceException} occurs.
      * <p>
      * Attention: Since the SelenideElement class implements the InvocationHandler interface you have to make sure that
      * the element is retrieved in order to provoke a StaleElementReferenceException. You can do this by calling a
      * should function that uses a condition.
+     * <p>
+     * <p>
+     * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
+     * <li>neodymium.selenideAddons.staleElement.retry.count (default 3 retries)</li>
+     * <li>neodymium.selenideAddons.staleElement.retry.timeout (default 500ms pause between retries)</li>
+     * </p>
      * <p>
      * <b>Example:</b>
      * 
@@ -127,6 +134,7 @@ public class SelenideAddons
      *     return $("selector").should(exist);
      * });
      * </pre>
+     * </p>
      *
      * @param code
      *            the code to run
@@ -172,7 +180,14 @@ public class SelenideAddons
     }
 
     /**
-     * Re-executes the entire code when a {@link StaleElementReferenceException} comes up<br>
+     * Executes the given code at least once but potentially multiple times as long as a
+     * {@link StaleElementReferenceException} occurs.
+     * <p>
+     * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
+     * <li>neodymium.selenideAddons.staleElement.retry.count (default 3 retries)</li>
+     * <li>neodymium.selenideAddons.staleElement.retry.timeout (default 500ms pause between retries)</li>
+     * </p>
+     * <p>
      * <b>Example:</b>
      * 
      * <pre>
@@ -180,7 +195,8 @@ public class SelenideAddons
      *     $("selectorOne").find("selectorTwo").shouldBe(visible);
      * });
      * </pre>
-     *
+     * </p>
+     * 
      * @param code
      *            the code to run
      */
