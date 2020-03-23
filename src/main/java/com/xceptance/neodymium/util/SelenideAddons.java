@@ -7,9 +7,12 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.Actions;
 
 import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Condition;
@@ -384,6 +387,39 @@ public class SelenideAddons
             {
                 throw UIAssertionError.wrap(driver, e, 0);
             }
+        }
+    }
+
+    /**
+     * Drag and drop a horizontal slider to a given position. The position will be set by the user. It drags the slider
+     * and moves it to a specific position of the respective slider.
+     * 
+     * @param slider
+     *            The selector of the slider to drag and drop
+     * @param horizontalMoveOffset
+     *            The offset of the horizontal movement
+     * @param textContainer
+     *            The selector of the text container of the slider
+     * @param moveUntil
+     *            A String until the slider will be moved.
+     */
+    private void dragAndDropHorizontalUntilText(SelenideElement slider, int horizontalMoveOffset, SelenideElement textContainer, String moveUntil)
+    {
+        Actions moveSlider = new Actions(Neodymium.getDriver());
+
+        int counter = 0;
+        while (!textContainer.has(Condition.text(moveUntil)))
+        {
+            if (counter > 23)
+            {
+                SelenideAddons.wrapAssertionError(() -> {
+                    Assert.assertTrue("CircutBreaker: Was not able to interact with the slider", false);
+                });
+            }
+            Action action = moveSlider.dragAndDropBy(slider.getWrappedElement(), horizontalMoveOffset, 0).build();
+            action.perform();
+            Selenide.sleep(3000);
+            counter++;
         }
     }
 }
