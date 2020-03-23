@@ -54,9 +54,9 @@
 		<maven.compiler.source.version>1.8</maven.compiler.source.version>
 		<maven.compiler.target.version>1.8</maven.compiler.target.version>
 		<surefire.version>2.22.2</surefire.version>
-		<allure.version>2.13.1</allure.version>
+		<allure.version>2.13.2</allure.version>
 		<cucumber.version>5.5.0</cucumber.version>
-		<log4j.version>2.13.0</log4j.version>
+		<log4j.version>2.13.1</log4j.version>
 	</properties>
 
 	<repositories>
@@ -124,7 +124,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.1.1</version>
+				<version>3.2.0</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -236,7 +236,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.qameta.allure</groupId>
-			<artifactId>allure-cucumber4-jvm</artifactId>
+			<artifactId>allure-cucumber5-jvm</artifactId>
 			<version>${allure.version}</version>
 		</dependency>
 		<dependency>
@@ -247,7 +247,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>28.1-jre</version>
+			<version>28.2-jre</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
@@ -258,17 +258,11 @@
 			<groupId>com.codeborne</groupId>
 			<artifactId>selenide</artifactId>
 			<version>5.10.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>net.lightbody.bmp</groupId>
-					<artifactId>browsermob-core</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-csv</artifactId>
-			<version>1.7</version>
+			<version>1.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
