@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.xceptance.neodymium.module.statement.browser.BrowserStatement;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
 
-import io.cucumber.core.api.Scenario;
+import io.cucumber.java.Scenario;
 
 public class WebDriverUtils
 {

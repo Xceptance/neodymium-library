@@ -1,6 +1,7 @@
 package com.xceptance.neodymium.module.statement.parameter;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -106,9 +107,9 @@ public class ParameterStatement extends StatementBuilder
                 else
                 {
                     p = new Object[]
-                        {
-                            para
-                        };
+                    {
+                      para
+                    };
                 }
 
                 iterations.add(new ParameterStatementData(parameterSetCounter, p, parameterFrameworkFields));
@@ -189,6 +190,10 @@ public class ParameterStatement extends StatementBuilder
 
         try
         {
+            if (Modifier.isFinal(field.getModifiers()))
+            {
+                throw new IllegalAccessException();
+            }
             field.set(testClassInstance, value);
         }
         catch (IllegalArgumentException e)

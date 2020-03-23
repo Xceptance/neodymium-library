@@ -5,9 +5,9 @@ import java.io.IOException;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 
-import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.NeodymiumCucumberWrapper;
 
-public class NeodymiumCucumberRunner extends Cucumber
+public class NeodymiumCucumberRunner extends NeodymiumCucumberWrapper
 {
     public NeodymiumCucumberRunner(Class<?> clazz) throws InitializationError, IOException
     {

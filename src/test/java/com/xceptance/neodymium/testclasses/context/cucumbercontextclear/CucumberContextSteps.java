@@ -6,9 +6,9 @@ import com.xceptance.neodymium.util.Neodymium;
 import com.xceptance.neodymium.util.NeodymiumConfiguration;
 import com.xceptance.neodymium.util.WebDriverUtils;
 
-import io.cucumber.core.api.Scenario;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
 
 public class CucumberContextSteps
