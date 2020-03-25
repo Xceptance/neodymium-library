@@ -391,6 +391,38 @@ public class SelenideAddons
     }
 
     /**
+     * Drag and drop a horizontal or vertical slider to a given position. The position will be set by the user. It drags
+     * the slider and moves it to a specific position of the respective slider.
+     * 
+     * @param slider
+     *            The selector of the slider to drag and drop
+     * @param moveOffset
+     *            The offset of the horizontal or vertical movement
+     * @param textContainer
+     *            The selector of the text container of the slider
+     * @param moveUntil
+     *            The value of the slider until the slider will be moved.
+     * @param direction
+     *            Decision about a horizontal or vertical movement.
+     *            <p>
+     *            If <b>direction</b> boolean value is <i>true</i> - the slider will move vertical.
+     *            <p>
+     *            If <b>direction</b> boolean value is <i>false</i> - the slider will move horizontal.
+     */
+
+    public void dragAndDropUntilText(SelenideElement slider, int moveOffset, SelenideElement textContainer, String moveUntil, boolean direction)
+    {
+        if (direction)
+        {
+            dragAndDropVerticalUntilText(slider, moveOffset, textContainer, moveUntil);
+        }
+        else
+        {
+            dragAndDropHorizontalUntilText(slider, moveOffset, textContainer, moveUntil);
+        }
+    }
+
+    /**
      * Drag and drop a horizontal slider to a given position. The position will be set by the user. It drags the slider
      * and moves it to a specific position of the respective slider.
      * 
@@ -401,7 +433,7 @@ public class SelenideAddons
      * @param textContainer
      *            The selector of the text container of the slider
      * @param moveUntil
-     *            A String until the slider will be moved.
+     *            The value of the slider until the slider will be moved.
      */
     private void dragAndDropHorizontalUntilText(SelenideElement slider, int horizontalMoveOffset, SelenideElement textContainer, String moveUntil)
     {
@@ -417,6 +449,39 @@ public class SelenideAddons
                 });
             }
             Action action = moveSlider.dragAndDropBy(slider.getWrappedElement(), horizontalMoveOffset, 0).build();
+            action.perform();
+            Selenide.sleep(3000);
+            counter++;
+        }
+    }
+
+    /**
+     * Drag and drop a vertical slider to a given position. The position will be set by the user. It drags the slider
+     * and moves it to a specific position of the respective slider.
+     * 
+     * @param slider
+     *            The selector of the slider to drag and drop
+     * @param verticalMoveOffset
+     *            The offset of the vertical movement
+     * @param textContainer
+     *            The selector of the text container of the slider
+     * @param moveUntil
+     *            The value of the slider until the slider will be moved.
+     */
+    private void dragAndDropVerticalUntilText(SelenideElement slider, int verticalMoveOffset, SelenideElement textContainer, String moveUntil)
+    {
+        Actions moveSlider = new Actions(Neodymium.getDriver());
+
+        int counter = 0;
+        while (!textContainer.has(Condition.text(moveUntil)))
+        {
+            if (counter > 23)
+            {
+                SelenideAddons.wrapAssertionError(() -> {
+                    Assert.assertTrue("CircutBreaker: Was not able to interact with the slider", false);
+                });
+            }
+            Action action = moveSlider.dragAndDropBy(slider.getWrappedElement(), 0, verticalMoveOffset).build();
             action.perform();
             Selenide.sleep(3000);
             counter++;
