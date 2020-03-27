@@ -8,6 +8,8 @@ import java.util.WeakHashMap;
 import org.aeonbits.owner.ConfigFactory;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Configuration;
@@ -130,6 +132,12 @@ public class Neodymium
     public static WebDriver getDriver()
     {
         return getContext().driver;
+    }
+
+    public static RemoteWebDriver getRemoteWebDriver()
+    {
+        EventFiringWebDriver eventFiringWebDriver = (EventFiringWebDriver) getDriver();
+        return (RemoteWebDriver) eventFiringWebDriver.getWrappedDriver();
     }
 
     public static void setDriver(WebDriver driver)
