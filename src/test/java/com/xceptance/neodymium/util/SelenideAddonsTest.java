@@ -404,4 +404,44 @@ public class SelenideAddonsTest
     {
         return new RuntimeException(new StaleElementReferenceException(message));
     }
+
+    @Test()
+    public void testRightHorizontalDragAndDropUntilText()
+    {
+        Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
+
+        SelenideAddons.dragAndDropHorizontalUntilText($(".balSlider a[role=slider]"), 40, 3000, 23, "aria-valuenow", "8");
+
+        Assert.assertEquals($(".balSlider a[role=slider]").getAttribute("aria-valuenow"), "8");
+    }
+
+    @Test()
+    public void testLeftHorizontalDragAndDropUntilText()
+    {
+        Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
+
+        SelenideAddons.dragAndDropHorizontalUntilText($(".balSlider a[role=slider]"), -40, 3000, 23, "aria-valuenow", "-8");
+
+        Assert.assertEquals($(".balSlider a[role=slider]").getAttribute("aria-valuenow"), "-8");
+    }
+
+    @Test()
+    public void testUpVerticalDragAndDropUntilText()
+    {
+        Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
+
+        SelenideAddons.dragAndDropVerticalUntilText($("#equalizer .k-slider-vertical:first-child a"), -10, 3000, 23, "aria-valuenow", "16");
+
+        Assert.assertEquals($("#equalizer .k-slider-vertical:first-child a").getAttribute("aria-valuenow"), "16");
+    }
+
+    @Test()
+    public void testDownVerticalDragAndDropUntilText()
+    {
+        Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
+
+        SelenideAddons.dragAndDropVerticalUntilText($("#equalizer .k-slider-vertical:first-child a"), 10, 3000, 23, "aria-valuenow", "-6");
+
+        Assert.assertEquals($("#equalizer .k-slider-vertical:first-child a").getAttribute("aria-valuenow"), "-6");
+    }
 }
