@@ -396,29 +396,37 @@ public class SelenideAddons
      * 
      * @param slider
      *            The selector of the slider to drag and drop
-     * @param moveOffset
-     *            The offset of the horizontal or vertical movement
-     * @param textContainer
-     *            The selector of the text container of the slider
-     * @param moveUntil
-     *            The value of the slider until the slider will be moved.
-     * @param direction
-     *            Decision about a horizontal or vertical movement.
-     *            <p>
-     *            If <b>direction</b> boolean value is <i>true</i> - the slider will move vertical.
-     *            <p>
-     *            If <b>direction</b> boolean value is <i>false</i> - the slider will move horizontal.
+     * @param horizontalMoveOffset
+     *            The offset for the horizontal movement
+     * @param verticalMoveOffset
+     *            The offset for the vertical movement
+     * @param timeToSleep
+     *            Time to pass after the slider do the next movement step
+     * @param retryToMoveSlider
+     *            Amount of retries the slider will be moved
+     * @param condition
+     *            The condition for the slider to verify the movement
      */
 
-    public void dragAndDropUntilText(SelenideElement slider, int moveOffset, SelenideElement textContainer, String moveUntil, boolean direction)
+    public static void dragAndDropUntilText(SelenideElement slider, int horizontalMoveOffset, int verticalMoveOffset, int timeToSleep, int retryToMoveSlider,
+                                            Condition condition)
+
     {
-        if (direction)
+        Actions moveSlider = new Actions(Neodymium.getDriver());
+
+        int counter = 0;
+        while (!slider.has(condition))
         {
-            dragAndDropVerticalUntilText(slider, moveOffset, textContainer, moveUntil);
-        }
-        else
-        {
-            dragAndDropHorizontalUntilText(slider, moveOffset, textContainer, moveUntil);
+            if (counter > retryToMoveSlider)
+            {
+                SelenideAddons.wrapAssertionError(() -> {
+                    Assert.assertTrue("CircutBreaker: Was not able to interact with the slider", false);
+                });
+            }
+            Action action = moveSlider.dragAndDropBy(slider.getWrappedElement(), horizontalMoveOffset, verticalMoveOffset).build();
+            action.perform();
+            Selenide.sleep(timeToSleep);
+            counter++;
         }
     }
 
@@ -430,29 +438,19 @@ public class SelenideAddons
      *            The selector of the slider to drag and drop
      * @param horizontalMoveOffset
      *            The offset of the horizontal movement
-     * @param textContainer
-     *            The selector of the text container of the slider
+     * @param timeToSleep
+     *            Time to pass after the slider do the next movement step
+     * @param retryToMoveSlider
+     *            Amount of retries the slider will be moved
+     * @param sliderValueAttributeName
+     *            The attribute name of the slider value to compare
      * @param moveUntil
-     *            The value of the slider until the slider will be moved.
+     *            The value of the slider until the slider will be moved
      */
-    private void dragAndDropHorizontalUntilText(SelenideElement slider, int horizontalMoveOffset, SelenideElement textContainer, String moveUntil)
+    public static void dragAndDropHorizontalUntilText(SelenideElement slider, int horizontalMoveOffset, int timeToSleep, int retryToMoveSlider,
+                                                      String sliderValueAttributeName, String moveUntil)
     {
-        Actions moveSlider = new Actions(Neodymium.getDriver());
-
-        int counter = 0;
-        while (!textContainer.has(Condition.text(moveUntil)))
-        {
-            if (counter > 23)
-            {
-                SelenideAddons.wrapAssertionError(() -> {
-                    Assert.assertTrue("CircutBreaker: Was not able to interact with the slider", false);
-                });
-            }
-            Action action = moveSlider.dragAndDropBy(slider.getWrappedElement(), horizontalMoveOffset, 0).build();
-            action.perform();
-            Selenide.sleep(3000);
-            counter++;
-        }
+        dragAndDropUntilText(slider, horizontalMoveOffset, 0, timeToSleep, retryToMoveSlider, Condition.attribute(sliderValueAttributeName, moveUntil));
     }
 
     /**
@@ -463,28 +461,18 @@ public class SelenideAddons
      *            The selector of the slider to drag and drop
      * @param verticalMoveOffset
      *            The offset of the vertical movement
-     * @param textContainer
-     *            The selector of the text container of the slider
+     * @param timeToSleep
+     *            Time to pass after the slider do the next movement step
+     * @param retryToMoveSlider
+     *            Amount of retries the slider will be moved
+     * @param sliderValueAttributeName
+     *            The attribute name of the slider value to compare
      * @param moveUntil
-     *            The value of the slider until the slider will be moved.
+     *            The value of the slider until the slider will be moved
      */
-    private void dragAndDropVerticalUntilText(SelenideElement slider, int verticalMoveOffset, SelenideElement textContainer, String moveUntil)
+    public static void dragAndDropVerticalUntilText(SelenideElement slider, int verticalMoveOffset, int timeToSleep, int retryToMoveSlider,
+                                                    String sliderValueAttributeName, String moveUntil)
     {
-        Actions moveSlider = new Actions(Neodymium.getDriver());
-
-        int counter = 0;
-        while (!textContainer.has(Condition.text(moveUntil)))
-        {
-            if (counter > 23)
-            {
-                SelenideAddons.wrapAssertionError(() -> {
-                    Assert.assertTrue("CircutBreaker: Was not able to interact with the slider", false);
-                });
-            }
-            Action action = moveSlider.dragAndDropBy(slider.getWrappedElement(), 0, verticalMoveOffset).build();
-            action.perform();
-            Selenide.sleep(3000);
-            counter++;
-        }
+        dragAndDropUntilText(slider, 0, verticalMoveOffset, timeToSleep, retryToMoveSlider, Condition.attribute(sliderValueAttributeName, moveUntil));
     }
 }
