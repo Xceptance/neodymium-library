@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 
+import com.browserup.bup.BrowserUpProxy;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
@@ -26,6 +27,8 @@ public class ValidateClearReuseWebDriverCache
 {
     private static WebDriver webDriver1;
 
+    private static BrowserUpProxy proxy1;
+
     private static File tempConfigFile;
 
     @BeforeClass
@@ -36,11 +39,14 @@ public class ValidateClearReuseWebDriverCache
         tempConfigFile = new File("./" + fileLocation);
         Map<String, String> properties = new HashMap<>();
         properties.put("neodymium.webDriver.reuseDriver", "true");
+        properties.put("neodymium.localproxy", "true");
         NeodymiumTest.writeMapToPropertiesFile(properties, tempConfigFile);
         ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
 
         Assert.assertNull(webDriver1);
         Assert.assertNull(Neodymium.getDriver());
+        Assert.assertNull(proxy1);
+        Assert.assertNull(Neodymium.getLocalProxy());
     }
 
     @Before
@@ -55,6 +61,15 @@ public class ValidateClearReuseWebDriverCache
             Assert.assertNotNull(Neodymium.getDriver());
         }
         Assert.assertNotNull(webDriver1);
+        if (proxy1 == null)
+        {
+            proxy1 = Neodymium.getLocalProxy();
+        }
+        else
+        {
+            Assert.assertNotNull(Neodymium.getLocalProxy());
+        }
+        Assert.assertNotNull(proxy1);
     }
 
     @Test
@@ -63,6 +78,9 @@ public class ValidateClearReuseWebDriverCache
     {
         Assert.assertEquals(webDriver1, Neodymium.getDriver());
         Assert.assertNotNull(webDriver1);
+
+        Assert.assertEquals(proxy1, Neodymium.getLocalProxy());
+        Assert.assertNotNull(proxy1);
     }
 
     @Test
@@ -71,22 +89,27 @@ public class ValidateClearReuseWebDriverCache
     {
         Assert.assertEquals(webDriver1, Neodymium.getDriver());
         Assert.assertNotNull(webDriver1);
+
+        Assert.assertEquals(proxy1, Neodymium.getLocalProxy());
+        Assert.assertNotNull(proxy1);
     }
 
     @After
     public void after()
     {
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver1);
+        NeodymiumWebDriverTest.assertProxyAlive(proxy1);
     }
 
     @AfterClass
     public static void afterClass()
     {
-        Assert.assertEquals(1, WebDriverCache.instance.getAllWebdriver().size());
+        Assert.assertEquals(1, WebDriverCache.instance.getAllWebDriverAndProxy().size());
         WebDriverCache.quitCachedBrowsers();
-        Assert.assertEquals(0, WebDriverCache.instance.getAllWebdriver().size());
+        Assert.assertEquals(0, WebDriverCache.instance.getAllWebDriverAndProxy().size());
 
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
+        NeodymiumWebDriverTest.assertProxyStopped(proxy1);
 
         NeodymiumTest.deleteTempFile(tempConfigFile);
     }

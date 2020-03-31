@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 
+import com.browserup.bup.BrowserUpProxy;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
@@ -31,6 +32,12 @@ public class ValidatePreventReuseWebDriver
 
     private static WebDriver webDriver3;
 
+    private static BrowserUpProxy proxy1;
+
+    private static BrowserUpProxy proxy2;
+
+    private static BrowserUpProxy proxy3;
+
     private static File tempConfigFile;
 
     @BeforeClass
@@ -41,6 +48,7 @@ public class ValidatePreventReuseWebDriver
         tempConfigFile = new File("./" + fileLocation);
         Map<String, String> properties = new HashMap<>();
         properties.put("neodymium.webDriver.reuseDriver", "true");
+        properties.put("neodymium.localproxy", "true");
         NeodymiumTest.writeMapToPropertiesFile(properties, tempConfigFile);
         ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
 
@@ -68,6 +76,24 @@ public class ValidatePreventReuseWebDriver
             Assert.assertNotNull(Neodymium.getDriver());
         }
         Assert.assertNotNull(webDriver1);
+
+        if (proxy1 == null)
+        {
+            proxy1 = Neodymium.getLocalProxy();
+        }
+        else if (proxy2 == null)
+        {
+            proxy2 = Neodymium.getLocalProxy();
+        }
+        else if (proxy3 == null)
+        {
+            proxy3 = Neodymium.getLocalProxy();
+        }
+        else
+        {
+            Assert.assertNotNull(Neodymium.getLocalProxy());
+        }
+        Assert.assertNotNull(proxy1);
     }
 
     @Test
@@ -78,7 +104,11 @@ public class ValidatePreventReuseWebDriver
         Assert.assertNotNull(webDriver1);
         Assert.assertNotEquals(webDriver1, webDriver2);
 
-        Assert.assertEquals(0, WebDriverCache.instance.getAllWebdriver().size());
+        Assert.assertEquals(proxy1, Neodymium.getLocalProxy());
+        Assert.assertNotNull(proxy1);
+        Assert.assertNotEquals(proxy1, proxy2);
+
+        Assert.assertEquals(0, WebDriverCache.instance.getAllWebDriverAndProxy().size());
     }
 
     @Test
@@ -90,7 +120,12 @@ public class ValidatePreventReuseWebDriver
         Assert.assertNotNull(webDriver2);
         Assert.assertNotEquals(webDriver1, webDriver2);
 
-        Assert.assertEquals(0, WebDriverCache.instance.getAllWebdriver().size());
+        Assert.assertEquals(proxy2, Neodymium.getLocalProxy());
+        Assert.assertNotNull(proxy1);
+        Assert.assertNotNull(proxy2);
+        Assert.assertNotEquals(proxy1, proxy2);
+
+        Assert.assertEquals(0, WebDriverCache.instance.getAllWebDriverAndProxy().size());
     }
 
     @Test
@@ -104,7 +139,14 @@ public class ValidatePreventReuseWebDriver
         Assert.assertNotEquals(webDriver1, webDriver2);
         Assert.assertEquals(webDriver2, webDriver3);
 
-        Assert.assertEquals(0, WebDriverCache.instance.getAllWebdriver().size());
+        Assert.assertEquals(proxy3, Neodymium.getLocalProxy());
+        Assert.assertNotNull(proxy1);
+        Assert.assertNotNull(proxy2);
+        Assert.assertNotNull(proxy3);
+        Assert.assertNotEquals(proxy1, proxy2);
+        Assert.assertEquals(proxy2, proxy3);
+
+        Assert.assertEquals(0, WebDriverCache.instance.getAllWebDriverAndProxy().size());
     }
 
     @After
@@ -122,7 +164,12 @@ public class ValidatePreventReuseWebDriver
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver2);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver3);
-        Assert.assertEquals(1, WebDriverCache.instance.getAllWebdriver().size());
+
+        NeodymiumWebDriverTest.assertProxyStopped(proxy1);
+        NeodymiumWebDriverTest.assertProxyAlive(proxy2);
+        NeodymiumWebDriverTest.assertProxyAlive(proxy3);
+
+        Assert.assertEquals(1, WebDriverCache.instance.getAllWebDriverAndProxy().size());
 
         NeodymiumTest.deleteTempFile(tempConfigFile);
     }

@@ -79,7 +79,7 @@ public class WebDriverUtils
      **/
     public static void preventReuseAndTearDown()
     {
-        browserStatement.get().teardown(false, true, Neodymium.getDriver());
+        browserStatement.get().teardown(false, true, Neodymium.getDriver(), Neodymium.getLocalProxy());
     }
 
     /**

@@ -20,11 +20,13 @@ import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.browserup.bup.BrowserUpProxy;
 import com.codeborne.selenide.WebDriverRunner;
 import com.xceptance.neodymium.NeodymiumWebDriverListener;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.BrowserRunnerHelper;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.CachingContainer;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowsers;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
@@ -48,6 +50,8 @@ public class BrowserStatement extends StatementBuilder
     private MultibrowserConfiguration multibrowserConfiguration = MultibrowserConfiguration.getInstance();
 
     private WebDriver webdriver;
+
+    private BrowserUpProxy proxy;
 
     public BrowserStatement()
     {
@@ -134,7 +138,9 @@ public class BrowserStatement extends StatementBuilder
             // try to find appropriate web driver in cache before create a new instance
             if (Neodymium.configuration().reuseWebDriver())
             {
-                webdriver = WebDriverCache.instance.getRemoveWebDriver(browserConfiguration.getConfigTag());
+                CachingContainer container = WebDriverCache.instance.getRemoveWebDriverAndProxy(browserConfiguration.getConfigTag());
+                webdriver = container != null ? container.getWebDriver() : null;
+                proxy = container != null ? container.getProxy() : null;
                 if (webdriver != null)
                 {
                     webdriver.manage().deleteAllCookies();
@@ -144,7 +150,9 @@ public class BrowserStatement extends StatementBuilder
             if (webdriver == null)
             {
                 LOGGER.debug("Create new browser instance");
-                webdriver = new EventFiringWebDriver(BrowserRunnerHelper.createWebdriver(browserConfiguration));
+                CachingContainer container = BrowserRunnerHelper.createWebdriver(browserConfiguration);
+                webdriver = new EventFiringWebDriver(container.getWebDriver());
+                proxy = container.getProxy();
                 ((EventFiringWebDriver) webdriver).register(new NeodymiumWebDriverListener());
             }
             else
@@ -162,6 +170,7 @@ public class BrowserStatement extends StatementBuilder
             BrowserRunnerHelper.setBrowserWindowSize(browserConfiguration, webdriver);
             WebDriverRunner.setWebDriver(webdriver);
             Neodymium.setDriver(webdriver);
+            Neodymium.setLocalProxy(proxy);
             Neodymium.setBrowserProfileName(browserConfiguration.getConfigTag());
             Neodymium.setBrowserName(browserConfiguration.getCapabilities().getBrowserName());
 
@@ -185,10 +194,10 @@ public class BrowserStatement extends StatementBuilder
 
     public void teardown(boolean testFailed)
     {
-        teardown(testFailed, false, webdriver);
+        teardown(testFailed, false, webdriver, proxy);
     }
 
-    public void teardown(boolean testFailed, boolean preventReuse, WebDriver webDriver)
+    public void teardown(boolean testFailed, boolean preventReuse, WebDriver webDriver, BrowserUpProxy proxy)
     {
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(Neodymium.getBrowserProfileName());
 
@@ -203,7 +212,7 @@ public class BrowserStatement extends StatementBuilder
         else if (Neodymium.configuration().reuseWebDriver() && !preventReuse && isWebDriverStillOpen(webDriver))
         {
             LOGGER.debug("Put browser into cache");
-            WebDriverCache.instance.putWebDriver(browserTag, webdriver);
+            WebDriverCache.instance.putWebDriverAndProxy(browserTag, webDriver, proxy);
         }
         // close the WebDriver
         else
@@ -213,9 +222,21 @@ public class BrowserStatement extends StatementBuilder
             {
                 webDriver.quit();
             }
+            if (proxy != null)
+            {
+                try
+                {
+                    proxy.stop();
+                }
+                catch (IllegalStateException e)
+                {
+                    // nothing to do here except for catching error of a second stop of the proxy
+                }
+            }
         }
 
         Neodymium.setDriver(null);
+        Neodymium.setLocalProxy(null);
         Neodymium.setBrowserProfileName(null);
         Neodymium.setBrowserName(null);
     }

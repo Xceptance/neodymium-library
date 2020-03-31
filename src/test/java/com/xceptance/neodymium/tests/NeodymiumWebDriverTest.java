@@ -8,6 +8,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
+import com.browserup.bup.BrowserUpProxy;
+import com.browserup.bup.BrowserUpProxyServer;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateClearReuseWebDriverCache;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpen;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpenOnFailure;
@@ -74,5 +76,19 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
         Assert.assertNotNull(webDriver);
         RemoteWebDriver driver = (RemoteWebDriver) ((EventFiringWebDriver) webDriver).getWrappedDriver();
         Assert.assertNotNull(driver.getSessionId());
+    }
+
+    public static void assertProxyStopped(BrowserUpProxy proxy)
+    {
+        Assert.assertNotNull(proxy);
+        Assert.assertTrue(proxy.isStarted());
+        Assert.assertTrue(((BrowserUpProxyServer) proxy).isStopped());
+    }
+
+    public static void assertProxyAlive(BrowserUpProxy proxy)
+    {
+        Assert.assertNotNull(proxy);
+        Assert.assertTrue(proxy.isStarted());
+        Assert.assertFalse(((BrowserUpProxyServer) proxy).isStopped());
     }
 }

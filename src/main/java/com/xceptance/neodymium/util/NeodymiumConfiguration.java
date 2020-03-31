@@ -170,6 +170,28 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.proxy.socket.password")
     public String getProxySocketPassword();
 
+    @Key("neodymium.localproxy")
+    @DefaultValue("false")
+    public boolean useLocalProxy();
+
+    @Key("neodymium.certificate")
+    @DefaultValue("false")
+    public boolean useLocalWithSelfSignedCertificate();
+
+    @Key("neodymium.localproxy.certificate.archiveFile")
+    @DefaultValue("./config/Certificates.p12")
+    public String localProxyCertificateArchiveFile();
+
+    @Key("neodymium.localproxy.certificate.archivetype")
+    @DefaultValue("PKCS12")
+    public String localProxyCertificateArchiveType();
+
+    @Key("neodymium.localproxy.certificate.name")
+    public String localProxyCertificateName();
+
+    @Key("neodymium.localproxy.certificate.password")
+    public String localProxyCertificatePassword();
+
     @Key("neodymium.webDriver.window.width")
     @DefaultValue("-1")
     public Integer getWindowWidth();
