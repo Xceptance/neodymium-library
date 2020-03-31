@@ -134,10 +134,14 @@ public class Neodymium
         return getContext().driver;
     }
 
+    public static EventFiringWebDriver getEventFiringWebdriver()
+    {
+        return (EventFiringWebDriver) getDriver();
+    }
+
     public static RemoteWebDriver getRemoteWebDriver()
     {
-        EventFiringWebDriver eventFiringWebDriver = (EventFiringWebDriver) getDriver();
-        return (RemoteWebDriver) eventFiringWebDriver.getWrappedDriver();
+        return (RemoteWebDriver) getEventFiringWebdriver().getWrappedDriver();
     }
 
     public static void setDriver(WebDriver driver)
