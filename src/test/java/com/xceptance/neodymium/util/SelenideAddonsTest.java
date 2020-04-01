@@ -444,4 +444,12 @@ public class SelenideAddonsTest
 
         Assert.assertEquals($("#equalizer .k-slider-vertical:first-child a").getAttribute("aria-valuenow"), "-6");
     }
+
+    @Test(expected = AssertionError.class)
+    public void testDragAndDropAssertionError()
+    {
+        Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
+
+        SelenideAddons.dragAndDropHorizontalUntilText($(".balSlider a[role=slider]"), 40, 3000, 3, "aria-valuenow", "-2");
+    }
 }
