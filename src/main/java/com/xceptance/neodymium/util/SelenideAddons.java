@@ -394,85 +394,41 @@ public class SelenideAddons
      * Drag and drop a horizontal or vertical slider to a given position. The position will be set by the user. It drags
      * the slider and moves it to a specific position of the respective slider.
      * 
-     * @param slider
+     * @param elementToMove
      *            The selector of the slider to drag and drop
-     * @param horizontalMoveOffset
+     * @param elementToCheck
+     *            The locator of the slider value
+     * @param horizontalMovement
      *            The offset for the horizontal movement
-     * @param verticalMoveOffset
+     * @param verticalMovement
      *            The offset for the vertical movement
-     * @param timeToSleep
+     * @param pauseBetweenMovements
      *            Time to pass after the slider do the next movement step
-     * @param retryToMoveSlider
+     * @param retryMovements
      *            Amount of retries the slider will be moved
      * @param condition
      *            The condition for the slider to verify the movement
      */
 
-    public static void dragAndDropUntilText(SelenideElement slider, int horizontalMoveOffset, int verticalMoveOffset, int timeToSleep, int retryToMoveSlider,
-                                            Condition condition)
-
+    public static void dragAndDropUntilCondition(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement, int verticalMovement,
+                                                 int pauseBetweenMovements, int retryMovements, Condition condition)
     {
         Actions moveSlider = new Actions(Neodymium.getDriver());
 
         int counter = 0;
-        while (!slider.has(condition))
+        while (!elementToCheck.has(condition))
         {
-            if (counter > retryToMoveSlider)
+            if (counter > retryMovements)
             {
                 SelenideAddons.wrapAssertionError(() -> {
-                    Assert.assertTrue("CircutBreaker: Was not able to interact with the slider", false);
+                    Assert.assertTrue("CircutBreaker: Was not able to move the element and to reach the condition. Tried: " + retryMovements
+                                      + " times to move the element.", false);
                 });
             }
-            Action action = moveSlider.dragAndDropBy(slider.getWrappedElement(), horizontalMoveOffset, verticalMoveOffset).build();
+            Action action = moveSlider.dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement).build();
             action.perform();
-            Selenide.sleep(timeToSleep);
+            Selenide.sleep(pauseBetweenMovements);
             counter++;
         }
-    }
-
-    /**
-     * Drag and drop a horizontal slider to a given position. The position will be set by the user. It drags the slider
-     * and moves it to a specific position of the respective slider.
-     * 
-     * @param slider
-     *            The selector of the slider to drag and drop
-     * @param horizontalMoveOffset
-     *            The offset of the horizontal movement
-     * @param timeToSleep
-     *            Time to pass after the slider do the next movement step
-     * @param retryToMoveSlider
-     *            Amount of retries the slider will be moved
-     * @param sliderValueAttributeName
-     *            The attribute name of the slider value to compare
-     * @param moveUntil
-     *            The value of the slider until the slider will be moved
-     */
-    public static void dragAndDropHorizontalUntilText(SelenideElement slider, int horizontalMoveOffset, int timeToSleep, int retryToMoveSlider,
-                                                      String sliderValueAttributeName, String moveUntil)
-    {
-        dragAndDropUntilText(slider, horizontalMoveOffset, 0, timeToSleep, retryToMoveSlider, Condition.attribute(sliderValueAttributeName, moveUntil));
-    }
-
-    /**
-     * Drag and drop a vertical slider to a given position. The position will be set by the user. It drags the slider
-     * and moves it to a specific position of the respective slider.
-     * 
-     * @param slider
-     *            The selector of the slider to drag and drop
-     * @param verticalMoveOffset
-     *            The offset of the vertical movement
-     * @param timeToSleep
-     *            Time to pass after the slider do the next movement step
-     * @param retryToMoveSlider
-     *            Amount of retries the slider will be moved
-     * @param sliderValueAttributeName
-     *            The attribute name of the slider value to compare
-     * @param moveUntil
-     *            The value of the slider until the slider will be moved
-     */
-    public static void dragAndDropVerticalUntilText(SelenideElement slider, int verticalMoveOffset, int timeToSleep, int retryToMoveSlider,
-                                                    String sliderValueAttributeName, String moveUntil)
-    {
-        dragAndDropUntilText(slider, 0, verticalMoveOffset, timeToSleep, retryToMoveSlider, Condition.attribute(sliderValueAttributeName, moveUntil));
     }
 }

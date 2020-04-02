@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.StaleElementReferenceException;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.ex.ElementShould;
@@ -406,41 +407,47 @@ public class SelenideAddonsTest
     }
 
     @Test()
-    public void testRightHorizontalDragAndDropUntilText()
+    public void testRightHorizontalDragAndDropUntilCondition()
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
 
-        SelenideAddons.dragAndDropHorizontalUntilText($(".balSlider a[role=slider]"), 40, 3000, 23, "aria-valuenow", "8");
+        SelenideAddons.dragAndDropUntilCondition($(".balSlider a[role=slider]"), $(".balSlider a[role=slider]"), 40, 0, 3000, 23,
+                                                 Condition.attribute("aria-valuenow", "8"));
 
         Assert.assertEquals($(".balSlider a[role=slider]").getAttribute("aria-valuenow"), "8");
     }
 
     @Test()
-    public void testLeftHorizontalDragAndDropUntilText()
+    public void testLeftHorizontalDragAndDropUntilCondition()
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
 
-        SelenideAddons.dragAndDropHorizontalUntilText($(".balSlider a[role=slider]"), -40, 3000, 23, "aria-valuenow", "-8");
+        SelenideAddons.dragAndDropUntilCondition($(".balSlider a[role=slider]"), $(".balSlider a[role=slider]"), -40, 0, 3000, 23,
+                                                 Condition.attribute("aria-valuenow", "-8"));
 
         Assert.assertEquals($(".balSlider a[role=slider]").getAttribute("aria-valuenow"), "-8");
     }
 
     @Test()
-    public void testUpVerticalDragAndDropUntilText()
+    public void testUpVerticalDragAndDropUntilCondition()
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
 
-        SelenideAddons.dragAndDropVerticalUntilText($("#equalizer .k-slider-vertical:first-child a"), -10, 3000, 23, "aria-valuenow", "16");
+        SelenideAddons.dragAndDropUntilCondition($("#equalizer .k-slider-vertical:first-child a"), $("#equalizer .k-slider-vertical:first-child a"), 0, -10,
+                                                 3000, 23,
+                                                 Condition.attribute("aria-valuenow", "16"));
 
         Assert.assertEquals($("#equalizer .k-slider-vertical:first-child a").getAttribute("aria-valuenow"), "16");
     }
 
     @Test()
-    public void testDownVerticalDragAndDropUntilText()
+    public void testDownVerticalDragAndDropUntilCondition()
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
 
-        SelenideAddons.dragAndDropVerticalUntilText($("#equalizer .k-slider-vertical:first-child a"), 10, 3000, 23, "aria-valuenow", "-6");
+        SelenideAddons.dragAndDropUntilCondition($("#equalizer .k-slider-vertical:first-child a"), $("#equalizer .k-slider-vertical:first-child a"), 0, 10,
+                                                 3000, 23,
+                                                 Condition.attribute("aria-valuenow", "-6"));
 
         Assert.assertEquals($("#equalizer .k-slider-vertical:first-child a").getAttribute("aria-valuenow"), "-6");
     }
@@ -450,6 +457,25 @@ public class SelenideAddonsTest
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
 
-        SelenideAddons.dragAndDropHorizontalUntilText($(".balSlider a[role=slider]"), 40, 3000, 3, "aria-valuenow", "-2");
+        SelenideAddons.dragAndDropUntilCondition($(".balSlider a[role=slider]"), $(".balSlider a[role=slider]"), -10, 0, 3000, -1,
+                                                 Condition.attribute("aria-valuenow", "-16"));
+    }
+
+    @Test()
+    public void testLeftHorizontalDragAndDropUntilText()
+    {
+        Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
+
+        leftHorizontalDragAndDropUntilText($(".balSlider a[role=slider]"), $(".balSlider a[role=slider]"), -40, "aria-valuenow", "-8");
+
+        Assert.assertEquals($(".balSlider a[role=slider]").getAttribute("aria-valuenow"), "-8");
+    }
+
+    private void leftHorizontalDragAndDropUntilText(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement,
+                                                    String sliderValueAttributeName, String moveUntil)
+    {
+        // Example: create a special method to move until a given text
+        SelenideAddons.dragAndDropUntilCondition(elementToMove, elementToCheck, horizontalMovement, 0, 3000, 10,
+                                                 Condition.attribute(sliderValueAttributeName, moveUntil));
     }
 }
