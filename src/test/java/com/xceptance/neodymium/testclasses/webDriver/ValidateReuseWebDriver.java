@@ -17,6 +17,7 @@ import org.openqa.selenium.WebDriver;
 import com.browserup.bup.BrowserUpProxy;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
 import com.xceptance.neodymium.tests.NeodymiumTest;
 import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
@@ -96,13 +97,14 @@ public class ValidateReuseWebDriver
     public void after()
     {
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver1);
-
         NeodymiumWebDriverTest.assertProxyAlive(proxy1);
     }
 
     @AfterClass
     public static void afterClass()
     {
+        Assert.assertEquals(1, WebDriverCache.instance.getAllWebDriverAndProxy().size());
+
         NeodymiumTest.deleteTempFile(tempConfigFile);
     }
 }

@@ -119,6 +119,7 @@ public class ValidateKeepWebDriverOpenOnFailure
         NeodymiumWebDriverTest.assertProxyStopped(proxy1);
         NeodymiumWebDriverTest.assertProxyAlive(proxy2);
 
+        // Let condition fail so that the WebDriver/browser is kept open
         Selenide.$("#cantFindMe").should(Condition.exist);
     }
 

@@ -174,7 +174,7 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("false")
     public boolean useLocalProxy();
 
-    @Key("neodymium.certificate")
+    @Key("neodymium.localproxy.certificate")
     @DefaultValue("false")
     public boolean useLocalWithSelfSignedCertificate();
 
