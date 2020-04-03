@@ -411,8 +411,8 @@ public class SelenideAddonsTest
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
 
-        SelenideAddons.dragAndDropUntilCondition($(".balSlider a[role=slider]"), $(".balSlider a[role=slider]"), 40, 0, 3000, 23,
-                                                 Condition.attribute("aria-valuenow", "8"));
+        SelenideElement slider = $(".balSlider a[role=slider]");
+        SelenideAddons.dragAndDropUntilCondition(slider, slider, 40, 0, 3000, 23, Condition.attribute("aria-valuenow", "8"));
 
         Assert.assertEquals($(".balSlider a[role=slider]").getAttribute("aria-valuenow"), "8");
     }
@@ -422,8 +422,8 @@ public class SelenideAddonsTest
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
 
-        SelenideAddons.dragAndDropUntilCondition($(".balSlider a[role=slider]"), $(".balSlider a[role=slider]"), -40, 0, 3000, 23,
-                                                 Condition.attribute("aria-valuenow", "-8"));
+        SelenideElement slider = $(".balSlider a[role=slider]");
+        SelenideAddons.dragAndDropUntilCondition(slider, slider, -40, 0, 3000, 23, Condition.attribute("aria-valuenow", "-8"));
 
         Assert.assertEquals($(".balSlider a[role=slider]").getAttribute("aria-valuenow"), "-8");
     }
@@ -433,9 +433,8 @@ public class SelenideAddonsTest
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
 
-        SelenideAddons.dragAndDropUntilCondition($("#equalizer .k-slider-vertical:first-child a"), $("#equalizer .k-slider-vertical:first-child a"), 0, -10,
-                                                 3000, 23,
-                                                 Condition.attribute("aria-valuenow", "16"));
+        SelenideElement slider = $("#equalizer .k-slider-vertical:first-child a");
+        SelenideAddons.dragAndDropUntilCondition(slider, slider, 0, -10, 3000, 23, Condition.attribute("aria-valuenow", "16"));
 
         Assert.assertEquals($("#equalizer .k-slider-vertical:first-child a").getAttribute("aria-valuenow"), "16");
     }
@@ -445,9 +444,8 @@ public class SelenideAddonsTest
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
 
-        SelenideAddons.dragAndDropUntilCondition($("#equalizer .k-slider-vertical:first-child a"), $("#equalizer .k-slider-vertical:first-child a"), 0, 10,
-                                                 3000, 23,
-                                                 Condition.attribute("aria-valuenow", "-6"));
+        SelenideElement slider = $("#equalizer .k-slider-vertical:first-child a");
+        SelenideAddons.dragAndDropUntilCondition(slider, slider, 0, 10, 3000, 23, Condition.attribute("aria-valuenow", "-6"));
 
         Assert.assertEquals($("#equalizer .k-slider-vertical:first-child a").getAttribute("aria-valuenow"), "-6");
     }
@@ -457,8 +455,8 @@ public class SelenideAddonsTest
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
 
-        SelenideAddons.dragAndDropUntilCondition($(".balSlider a[role=slider]"), $(".balSlider a[role=slider]"), -10, 0, 3000, -1,
-                                                 Condition.attribute("aria-valuenow", "-16"));
+        SelenideElement slider = $(".balSlider a[role=slider]");
+        SelenideAddons.dragAndDropUntilCondition(slider, slider, -10, 0, 3000, -1, Condition.attribute("aria-valuenow", "-16"));
     }
 
     @Test()
@@ -466,7 +464,8 @@ public class SelenideAddonsTest
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
 
-        leftHorizontalDragAndDropUntilText($(".balSlider a[role=slider]"), $(".balSlider a[role=slider]"), -40, "aria-valuenow", "-8");
+        SelenideElement slider = $(".balSlider a[role=slider]");
+        leftHorizontalDragAndDropUntilText(slider, slider, -40, "aria-valuenow", "-8");
 
         Assert.assertEquals($(".balSlider a[role=slider]").getAttribute("aria-valuenow"), "-8");
     }

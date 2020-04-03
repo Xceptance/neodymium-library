@@ -391,8 +391,8 @@ public class SelenideAddons
     }
 
     /**
-     * Drag and drop a horizontal or vertical slider to a given position. The position will be set by the user. It drags
-     * the slider and moves it to a specific position of the respective slider.
+     * Drag and drop an element to a given position. The position will be set by the user. It drags the element and
+     * moves it to a specific position of the respective slider.
      * 
      * @param elementToMove
      *            The selector of the slider to drag and drop
