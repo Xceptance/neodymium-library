@@ -7,9 +7,12 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.Actions;
 
 import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Condition;
@@ -384,6 +387,48 @@ public class SelenideAddons
             {
                 throw UIAssertionError.wrap(driver, e, 0);
             }
+        }
+    }
+
+    /**
+     * Drag and drop an element to a given position. The position will be set by the user. It drags the element and
+     * moves it to a specific position of the respective slider.
+     * 
+     * @param elementToMove
+     *            The selector of the slider to drag and drop
+     * @param elementToCheck
+     *            The locator of the slider value
+     * @param horizontalMovement
+     *            The offset for the horizontal movement
+     * @param verticalMovement
+     *            The offset for the vertical movement
+     * @param pauseBetweenMovements
+     *            Time to pass after the slider do the next movement step
+     * @param retryMovements
+     *            Amount of retries the slider will be moved
+     * @param condition
+     *            The condition for the slider to verify the movement
+     */
+
+    public static void dragAndDropUntilCondition(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement, int verticalMovement,
+                                                 int pauseBetweenMovements, int retryMovements, Condition condition)
+    {
+        Actions moveSlider = new Actions(Neodymium.getDriver());
+
+        int counter = 0;
+        while (!elementToCheck.has(condition))
+        {
+            if (counter > retryMovements)
+            {
+                SelenideAddons.wrapAssertionError(() -> {
+                    Assert.assertTrue("CircutBreaker: Was not able to move the element and to reach the condition. Tried: " + retryMovements
+                                      + " times to move the element.", false);
+                });
+            }
+            Action action = moveSlider.dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement).build();
+            action.perform();
+            Selenide.sleep(pauseBetweenMovements);
+            counter++;
         }
     }
 }
