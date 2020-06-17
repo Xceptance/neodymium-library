@@ -30,7 +30,7 @@ public class JsonFileReader
             InputStreamReader streamReader = new InputStreamReader(new BufferedInputStream(bufferedStream), Charset.forName("UTF-8"));
             JsonReader jsonReader = new JsonReader(streamReader);
 
-            JsonArray asJsonArray = new JsonParser().parse(jsonReader).getAsJsonArray();
+            JsonArray asJsonArray = JsonParser.parseReader(jsonReader).getAsJsonArray();
 
             for (int i = 0; i < asJsonArray.size(); i++)
             {
