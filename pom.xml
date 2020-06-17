@@ -54,9 +54,9 @@
 		<maven.compiler.source.version>1.8</maven.compiler.source.version>
 		<maven.compiler.target.version>1.8</maven.compiler.target.version>
 		<surefire.version>2.22.2</surefire.version>
-		<allure.version>2.13.2</allure.version>
-		<cucumber.version>5.6.0</cucumber.version>
-		<log4j.version>2.13.1</log4j.version>
+		<allure.version>2.13.3</allure.version>
+		<cucumber.version>5.7.0</cucumber.version>
+		<log4j.version>2.13.3</log4j.version>
 	</properties>
 
 	<repositories>
@@ -197,7 +197,7 @@
 		<dependency>
 			<groupId>org.aeonbits.owner</groupId>
 			<artifactId>owner</artifactId>
-			<version>1.0.10</version>
+			<version>1.0.12</version>
 		</dependency>
 		<dependency>
 			<groupId>org.yaml</groupId>
@@ -247,7 +247,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>28.2-jre</version>
+			<version>29.0-jre</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
