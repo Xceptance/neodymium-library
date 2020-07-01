@@ -10,6 +10,10 @@ import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import com.browserup.bup.BrowserUpProxy;
 import com.browserup.bup.BrowserUpProxyServer;
+import com.xceptance.neodymium.testclasses.webDriver.LocalProxyTrustAllServers;
+import com.xceptance.neodymium.testclasses.webDriver.LocalProxyUsingProvidedCertificates;
+import com.xceptance.neodymium.testclasses.webDriver.LocalProxyUsingProvidedCertificatesRuntimeException;
+import com.xceptance.neodymium.testclasses.webDriver.LocalProxyUsingSelfCreatedCertificates;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateClearReuseWebDriverCache;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpen;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpenOnFailure;
@@ -62,6 +66,35 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     {
         Result result = JUnitCore.runClasses(ValidateKeepWebDriverOpenOnFailure.class);
         checkFail(result, 3, 0, 1, null);
+    }
+
+    @Test
+    public void testLocalProxyTrustAllServers()
+    {
+        Result result = JUnitCore.runClasses(LocalProxyTrustAllServers.class);
+        checkPass(result, 1, 0, 0);
+    }
+
+    @Test
+    public void testLocalProxyUsingSelfCreatedCertificates()
+    {
+        Result result = JUnitCore.runClasses(LocalProxyUsingSelfCreatedCertificates.class);
+        checkPass(result, 1, 0, 0);
+    }
+
+    @Test
+    public void testLocalProxyUsingProvidedCertificates()
+    {
+        Result result = JUnitCore.runClasses(LocalProxyUsingProvidedCertificates.class);
+        checkPass(result, 1, 0, 0);
+    }
+
+    @Test
+    public void testLocalProxyUsingProvidedCertificatesRuntimeException()
+    {
+        Result result = JUnitCore.runClasses(LocalProxyUsingProvidedCertificatesRuntimeException.class);
+        checkFail(result, 1, 0, 1,
+                  "The local proxy certificate isn't fully configured. Please check: certificate archive type, certificate archive file, certificate name and certificate password.");
     }
 
     public static void assertWebDriverClosed(WebDriver webDriver)
