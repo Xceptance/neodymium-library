@@ -410,6 +410,7 @@ public class SelenideAddonsTest
     public void testRightHorizontalDragAndDropUntilCondition()
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
+        $("#onetrust-accept-btn-handler").shouldBe(visible).click();
 
         SelenideElement slider = $(".balSlider a[role=slider]");
         SelenideAddons.dragAndDropUntilCondition(slider, slider, 40, 0, 3000, 23, Condition.attribute("aria-valuenow", "8"));
@@ -421,6 +422,7 @@ public class SelenideAddonsTest
     public void testLeftHorizontalDragAndDropUntilCondition()
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
+        $("#onetrust-accept-btn-handler").shouldBe(visible).click();
 
         SelenideElement slider = $(".balSlider a[role=slider]");
         SelenideAddons.dragAndDropUntilCondition(slider, slider, -40, 0, 3000, 23, Condition.attribute("aria-valuenow", "-8"));
@@ -432,6 +434,7 @@ public class SelenideAddonsTest
     public void testUpVerticalDragAndDropUntilCondition()
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
+        $("#onetrust-accept-btn-handler").shouldBe(visible).click();
 
         SelenideElement slider = $("#equalizer .k-slider-vertical:first-child a");
         SelenideAddons.dragAndDropUntilCondition(slider, slider, 0, -10, 3000, 23, Condition.attribute("aria-valuenow", "16"));
@@ -443,6 +446,7 @@ public class SelenideAddonsTest
     public void testDownVerticalDragAndDropUntilCondition()
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
+        $("#onetrust-accept-btn-handler").shouldBe(visible).click();
 
         SelenideElement slider = $("#equalizer .k-slider-vertical:first-child a");
         SelenideAddons.dragAndDropUntilCondition(slider, slider, 0, 10, 3000, 23, Condition.attribute("aria-valuenow", "-6"));
@@ -454,6 +458,7 @@ public class SelenideAddonsTest
     public void testDragAndDropAssertionError()
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
+        $("#onetrust-accept-btn-handler").shouldBe(visible).click();
 
         SelenideElement slider = $(".balSlider a[role=slider]");
         SelenideAddons.dragAndDropUntilCondition(slider, slider, -10, 0, 3000, -1, Condition.attribute("aria-valuenow", "-16"));
@@ -463,6 +468,7 @@ public class SelenideAddonsTest
     public void testLeftHorizontalDragAndDropUntilText()
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
+        $("#onetrust-accept-btn-handler").shouldBe(visible).click();
 
         SelenideElement slider = $(".balSlider a[role=slider]");
         leftHorizontalDragAndDropUntilText(slider, slider, -40, "aria-valuenow", "-8");
