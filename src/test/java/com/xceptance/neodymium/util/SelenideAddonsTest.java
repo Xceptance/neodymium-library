@@ -476,6 +476,53 @@ public class SelenideAddonsTest
         Assert.assertEquals($(".balSlider a[role=slider]").getAttribute("aria-valuenow"), "-8");
     }
 
+    @Test()
+    public void testRightHorizontalDragAndDropBy()
+    {
+        Selenide.open("https://skidding.github.io/dragdealer/");
+
+        SelenideElement slider = $("#just-a-slider .handle");
+        SelenideAddons.dragAndDropBy(slider, 300, 0);
+        Assert.assertEquals($("#just-a-slider .handle>.value").getText(), "47");
+    }
+
+    @Test()
+    public void testLeftHorizontalDragAndDropBy()
+    {
+        Selenide.open("https://skidding.github.io/dragdealer/");
+
+        SelenideElement slider = $("#just-a-slider .handle");
+        SelenideAddons.dragAndDropBy(slider, 300, 0);
+        SelenideAddons.dragAndDropBy(slider, -200, 0);
+
+        Assert.assertEquals($("#just-a-slider .handle>.value").getText(), "16");
+    }
+
+    @Test()
+    public void testUpVerticalDragAndDropBy()
+    {
+        Selenide.open("https://skidding.github.io/dragdealer/");
+
+        SelenideElement slider = $("#content-scroller .handle");
+        slider.scrollIntoView(true);
+        SelenideAddons.dragAndDropBy(slider, 0, 200);
+        SelenideAddons.dragAndDropBy(slider, 0, -100);
+
+        Assert.assertEquals($(".content-body").getCssValue("margin-top"), "-516.25px");
+    }
+
+    @Test()
+    public void testDownVerticalDragAndDropBy()
+    {
+        Selenide.open("https://skidding.github.io/dragdealer/");
+
+        SelenideElement slider = $("#content-scroller .handle");
+        slider.scrollIntoView(true);
+        SelenideAddons.dragAndDropBy(slider, 0, 200);
+
+        Assert.assertEquals($(".content-body").getCssValue("margin-top"), "-1032.5px");
+    }
+
     private void leftHorizontalDragAndDropUntilText(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement,
                                                     String sliderValueAttributeName, String moveUntil)
     {

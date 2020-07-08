@@ -396,6 +396,26 @@ public class SelenideAddons
      * 
      * @param elementToMove
      *            The selector of the slider to drag and drop
+     * @param horizontalMovement
+     *            The offset for the horizontal movement
+     * @param verticalMovement
+     *            The offset for the vertical movement
+     */
+
+    public static void dragAndDropBy(SelenideElement elementToMove, int horizontalMovement, int verticalMovement)
+    {
+        Actions moveSlider = new Actions(Neodymium.getDriver());
+
+        Action action = moveSlider.dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement).build();
+        action.perform();
+    }
+
+    /**
+     * Drag and drop an element to a given position. The position will be set by the user. It drags the element and
+     * moves it to a specific position of the respective slider.
+     * 
+     * @param elementToMove
+     *            The selector of the slider to drag and drop
      * @param elementToCheck
      *            The locator of the slider value
      * @param horizontalMovement
@@ -413,8 +433,6 @@ public class SelenideAddons
     public static void dragAndDropUntilCondition(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement, int verticalMovement,
                                                  int pauseBetweenMovements, int retryMovements, Condition condition)
     {
-        Actions moveSlider = new Actions(Neodymium.getDriver());
-
         int counter = 0;
         while (!elementToCheck.has(condition))
         {
@@ -425,8 +443,7 @@ public class SelenideAddons
                                       + " times to move the element.", false);
                 });
             }
-            Action action = moveSlider.dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement).build();
-            action.perform();
+            dragAndDropBy(elementToMove, horizontalMovement, verticalMovement);
             Selenide.sleep(pauseBetweenMovements);
             counter++;
         }
