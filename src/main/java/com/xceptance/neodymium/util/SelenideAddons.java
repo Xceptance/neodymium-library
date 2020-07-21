@@ -11,7 +11,6 @@ import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
 
 import com.codeborne.selenide.AssertionMode;
@@ -392,7 +391,7 @@ public class SelenideAddons
 
     /**
      * Drag and drop an element to a given position. The position will be set by the user. It drags the element and
-     * moves it to a specific position of the respective slider.
+     * moves it to a specific position of the respective element.
      * 
      * @param elementToMove
      *            The selector of the slider to drag and drop
@@ -402,12 +401,10 @@ public class SelenideAddons
      *            The offset for the vertical movement
      */
 
-    public static void dragAndDropBy(SelenideElement elementToMove, int horizontalMovement, int verticalMovement)
+    public static void dragAndDrop(SelenideElement elementToMove, int horizontalMovement, int verticalMovement)
     {
-        Actions moveSlider = new Actions(Neodymium.getDriver());
-
-        Action action = moveSlider.dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement).build();
-        action.perform();
+        // perform drag and drop via the standard Selenium way
+        new Actions(Neodymium.getDriver()).dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement).build().perform();
     }
 
     /**
@@ -429,7 +426,6 @@ public class SelenideAddons
      * @param condition
      *            The condition for the slider to verify the movement
      */
-
     public static void dragAndDropUntilCondition(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement, int verticalMovement,
                                                  int pauseBetweenMovements, int retryMovements, Condition condition)
     {
@@ -443,7 +439,7 @@ public class SelenideAddons
                                       + " times to move the element.", false);
                 });
             }
-            dragAndDropBy(elementToMove, horizontalMovement, verticalMovement);
+            dragAndDrop(elementToMove, horizontalMovement, verticalMovement);
             Selenide.sleep(pauseBetweenMovements);
             counter++;
         }
