@@ -480,7 +480,6 @@ public class SelenideAddonsTest
 
         SelenideElement slider = $(".balSlider a[role=slider]");
         SelenideAddons.dragAndDrop(slider, 32, 0);
-
         Assert.assertEquals("2", slider.getAttribute("aria-valuenow"));
     }
 
@@ -522,6 +521,7 @@ public class SelenideAddonsTest
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
         $("#onetrust-accept-btn-handler").shouldBe(visible).click();
         $("#onetrust-consent-sdk .onetrust-pc-dark-filter").waitUntil(hidden, Neodymium.configuration().selenideTimeout());
+        Selenide.refresh();
     }
 
     private void leftHorizontalDragAndDropUntilAttribute(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement,
