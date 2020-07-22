@@ -14,6 +14,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
 
 import com.google.common.base.Joiner;
 import com.xceptance.neodymium.NeodymiumRunner;
@@ -54,11 +55,16 @@ public abstract class NeodymiumTest
     public void check(Result result, boolean expectedSuccessful, int expectedRunCount, int expectedIgnoreCount, int expectedFailCount,
                       String expectedFailureMessage)
     {
-        Assert.assertEquals("Test successful", expectedSuccessful, result.wasSuccessful());
-        Assert.assertEquals("Method run count", expectedRunCount, result.getRunCount());
-        Assert.assertEquals("Method ignore count", expectedIgnoreCount, result.getIgnoreCount());
-        Assert.assertEquals("Method fail count", expectedFailCount, result.getFailureCount());
-
+        String stackTrace = "";
+        for (Failure failue : result.getFailures())
+        {
+            stackTrace += failue.getTrace();
+        }
+        Assert.assertEquals("Test successful " + (stackTrace.equals("") ? "" : "\nStack trace: " + stackTrace), expectedSuccessful, result.wasSuccessful());
+        Assert.assertEquals("Method run count " + (stackTrace.equals("") ? "" : "\nStack trace: " + stackTrace), expectedRunCount, result.getRunCount());
+        Assert.assertEquals("Method ignore count " + (stackTrace.equals("") ? "" : "\nStack trace: " + stackTrace), expectedIgnoreCount,
+                            result.getIgnoreCount());
+        Assert.assertEquals("Method fail count " + (stackTrace.equals("") ? "" : "\nStack trace: " + stackTrace), expectedFailCount, result.getFailureCount());
         if (expectedFailureMessage != null)
         {
             Assert.assertTrue("Failure count", expectedFailCount == 1);
