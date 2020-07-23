@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,9 +42,11 @@ public class LocalizationInitializationErrorTest extends NeodymiumTest
         bw.close();
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testAssertionErrorWhenKeyIsUnknown()
     {
-        Neodymium.localizedText("key1");
+        Assert.assertThrows(RuntimeException.class, () -> {
+            Neodymium.localizedText("key1");
+        });
     }
 }
