@@ -11,11 +11,12 @@ import com.xceptance.neodymium.util.Neodymium;
 @RunWith(NeodymiumRunner.class)
 public class BrowserWithoutAvailableEnvironment
 {
-
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     @Browser("Galaxy_Note3_Emulation")
     public void testWithUnavailableEnvironment()
     {
-        Assert.assertEquals("Galaxy_Note3_Emulation", Neodymium.getBrowserProfileName());
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            Assert.assertEquals("Galaxy_Note3_Emulation", Neodymium.getBrowserProfileName());
+        });
     }
 }
