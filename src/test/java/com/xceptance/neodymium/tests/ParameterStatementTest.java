@@ -25,7 +25,7 @@ public class ParameterStatementTest extends NeodymiumTest
     {
         // test parameter annotated class members without an generator function (@Parameters)
         Result result = JUnitCore.runClasses(ParameterFieldButNoGenerator.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class ParameterStatementTest extends NeodymiumTest
     {
         // one test data element, one test iteration
         Result result = JUnitCore.runClasses(GeneratorIterableReturnOne.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class ParameterStatementTest extends NeodymiumTest
     {
         // test auto type conversion from string to various data types, as well as arbitrary type injection
         Result result = JUnitCore.runClasses(GeneratorAutoTypeConversion.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
@@ -101,7 +101,7 @@ public class ParameterStatementTest extends NeodymiumTest
     {
         // test that a static field can be set
         Result result = JUnitCore.runClasses(GeneratorCanSetStaticField.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test

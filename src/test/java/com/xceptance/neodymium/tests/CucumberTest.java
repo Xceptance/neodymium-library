@@ -15,7 +15,7 @@ public class CucumberTest extends NeodymiumTest
     public void testSetBrowserViaTestData() throws Exception
     {
         Result result = JUnitCore.runClasses(CucumberSetBrowserViaTestData.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
@@ -29,7 +29,7 @@ public class CucumberTest extends NeodymiumTest
     public void testSetBrowserViaTag() throws Exception
     {
         Result result = JUnitCore.runClasses(CucumberSetBrowserViaTag.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test

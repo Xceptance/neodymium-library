@@ -59,7 +59,7 @@ public class ProxyConfigurationTest extends NeodymiumTest
     {
         // test proxy configuration as far as possible without setting up a proxy
         Result result = JUnitCore.runClasses(RunWithProxy.class);
-        checkPass(result, 2, 0, 0);
+        checkPass(result, 2, 0);
     }
 
     @Test
@@ -67,6 +67,6 @@ public class ProxyConfigurationTest extends NeodymiumTest
     {
         // test adding proxy configuration to different WebDriver options and validate them
         Result result = JUnitCore.runClasses(SetProxyForWebDriver.class);
-        checkPass(result, 4, 0, 0);
+        checkPass(result, 4, 0);
     }
 }

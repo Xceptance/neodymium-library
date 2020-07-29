@@ -77,21 +77,21 @@ public class NeodymiumTestTest extends NeodymiumTest
     public void testCheckPassedOneFromOne() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
         Result result = createResult(1, 0, new ArrayList<Throwable>());
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
     public void testCheckPassedTwoFromTwo() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
         Result result = createResult(2, 0, new ArrayList<Throwable>());
-        checkPass(result, 2, 0, 0);
+        checkPass(result, 2, 0);
     }
 
     @Test
     public void testCheckOnePassedOneIgnoredFromTwo() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
         Result result = createResult(2, 1, new ArrayList<Throwable>());
-        checkPass(result, 2, 1, 0);
+        checkPass(result, 2, 1);
     }
 
     private Result createResult(int runCount, int ignoreCount, List<Throwable> failureCauses)

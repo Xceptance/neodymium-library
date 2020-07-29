@@ -87,13 +87,10 @@ public abstract class NeodymiumTest
      *            expected number of run tests (including ignored)
      * @param expectedIgnoreCount
      *            expected number of ignored tests
-     * @param expectedFailCount
-     *            expected number of failed tests (always 0, otherwise assertion will fail)
      */
-    // FIXME: remove expectedFailCount parameter and replace it with 0
-    public void checkPass(Result result, int expectedRunCount, int expectedIgnoreCount, int expectedFailCount)
+    public void checkPass(Result result, int expectedRunCount, int expectedIgnoreCount)
     {
-        check(result, true, expectedRunCount, expectedIgnoreCount, expectedFailCount, null);
+        check(result, true, expectedRunCount, expectedIgnoreCount, 0, null);
     }
 
     /**

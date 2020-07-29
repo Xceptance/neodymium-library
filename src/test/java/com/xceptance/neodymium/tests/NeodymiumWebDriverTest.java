@@ -27,7 +27,7 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     public void testValidateWebDriverClosed()
     {
         Result result = JUnitCore.runClasses(ValidateWebDriverClosed.class);
-        checkPass(result, 2, 0, 0);
+        checkPass(result, 2, 0);
     }
 
     @Test
@@ -35,7 +35,7 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     {
         // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateReuseWebDriver.class);
-        checkPass(result, 2, 0, 0);
+        checkPass(result, 2, 0);
     }
 
     @Test
@@ -43,7 +43,7 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     {
         // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateClearReuseWebDriverCache.class);
-        checkPass(result, 2, 0, 0);
+        checkPass(result, 2, 0);
     }
 
     @Test
@@ -51,14 +51,14 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     {
         // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidatePreventReuseWebDriver.class);
-        checkPass(result, 3, 0, 0);
+        checkPass(result, 3, 0);
     }
 
     @Test
     public void testValidateKeepWebDriverOpen()
     {
         Result result = JUnitCore.runClasses(ValidateKeepWebDriverOpen.class);
-        checkPass(result, 2, 0, 0);
+        checkPass(result, 2, 0);
     }
 
     @Test
@@ -72,21 +72,21 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     public void testLocalProxyTrustAllServers()
     {
         Result result = JUnitCore.runClasses(LocalProxyTrustAllServers.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
     public void testLocalProxyUsingSelfCreatedCertificates()
     {
         Result result = JUnitCore.runClasses(LocalProxyUsingSelfCreatedCertificates.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
     public void testLocalProxyUsingProvidedCertificates()
     {
         Result result = JUnitCore.runClasses(LocalProxyUsingProvidedCertificates.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
