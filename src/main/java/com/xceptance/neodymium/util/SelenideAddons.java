@@ -1,17 +1,23 @@
 package com.xceptance.neodymium.util;
 
+import static com.codeborne.selenide.Selenide.$$;
+
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 
 import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.ex.UIAssertionError;
@@ -19,8 +25,6 @@ import com.codeborne.selenide.impl.Html;
 import com.codeborne.selenide.impl.WebElementsCollectionWrapper;
 import com.codeborne.selenide.logevents.SelenideLog;
 import com.codeborne.selenide.logevents.SelenideLogger;
-
-import static com.codeborne.selenide.Selenide.$$;
 
 /**
  * Additional helpers for limits chained lookup in Selenide. Contribute that later back to Selenide if it proves to
@@ -112,7 +116,29 @@ public class SelenideAddons
     }
 
     /**
-     * Re-execute the entire code when a stale element exception comes up
+     * Executes the given code at least once but potentially multiple times as long as a
+     * {@link StaleElementReferenceException} occurs.
+     * <p>
+     * Attention: Since the SelenideElement class implements the InvocationHandler interface you have to make sure that
+     * the element is retrieved in order to provoke a StaleElementReferenceException. You can do this by calling a
+     * should function that uses a condition.
+     * </p>
+     * <p>
+     * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
+     * </p>
+     * <ul>
+     * <li>neodymium.selenideAddons.staleElement.retry.count (default 3 retries)</li>
+     * <li>neodymium.selenideAddons.staleElement.retry.timeout (default 500ms pause between retries)</li>
+     * </ul>
+     * <p>
+     * <b>Example:</b>
+     * </p>
+     * 
+     * <pre>
+     * SelenideAddons.$safe(() -&gt; {
+     *     return $("selector").should(exist);
+     * });
+     * </pre>
      *
      * @param code
      *            the code to run
@@ -120,37 +146,115 @@ public class SelenideAddons
      */
     public static SelenideElement $safe(final Supplier<SelenideElement> code)
     {
-        int retryCounter = Neodymium.configuration().staleElementRetryCount();
+        final int maxRetryCount = Neodymium.configuration().staleElementRetryCount();
+        int retryCounter = 0;
 
-        while (retryCounter >= 0)
+        while (retryCounter <= maxRetryCount)
         {
             try
             {
                 return code.get();
             }
-            catch (final StaleElementReferenceException e)
+            catch (final Throwable t)
             {
-                retryCounter--;
-
-                if (retryCounter < 0)
+                if (isThrowableCausedBy(t, StaleElementReferenceException.class))
                 {
-                    // fail
-                    throw e;
+                    retryCounter++;
+                    if (retryCounter > maxRetryCount)
+                    {
+                        // fail
+                        throw t;
+                    }
+                    else
+                    {
+                        AllureAddons.addToReport("StaleElementReferenceException catched times: \"" + retryCounter + "\".", retryCounter);
+                        Selenide.sleep(Neodymium.configuration().staleElementRetryTimeout());
+                    }
                 }
-
-                // wait
-                try
+                else
                 {
-                    Thread.sleep(Neodymium.configuration().staleElementRetryTimeout());
-                }
-                catch (final InterruptedException e1)
-                {
+                    // not the kind of error we are looking for
+                    throw t;
                 }
             }
         }
 
         // never get here
         return null;
+    }
+
+    /**
+     * Executes the given code at least once but potentially multiple times as long as a
+     * {@link StaleElementReferenceException} occurs.
+     * <p>
+     * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
+     * </p>
+     * <ul>
+     * <li>neodymium.selenideAddons.staleElement.retry.count (default 3 retries)</li>
+     * <li>neodymium.selenideAddons.staleElement.retry.timeout (default 500ms pause between retries)</li>
+     * </ul>
+     * <p>
+     * <b>Example:</b>
+     * </p>
+     * 
+     * <pre>
+     * SelenideAddons.$safe(() -&gt; {
+     *     $("selectorOne").find("selectorTwo").shouldBe(visible);
+     * });
+     * </pre>
+     * 
+     * @param code
+     *            the code to run
+     */
+    public static void $safe(final Runnable code)
+    {
+        final int maxRetryCount = Neodymium.configuration().staleElementRetryCount();
+        int retryCounter = 0;
+
+        while (retryCounter <= maxRetryCount)
+        {
+            try
+            {
+                code.run();
+                break;
+            }
+            catch (final Throwable t)
+            {
+                if (isThrowableCausedBy(t, StaleElementReferenceException.class))
+                {
+                    retryCounter++;
+                    if (retryCounter > maxRetryCount)
+                    {
+                        // fail
+                        throw t;
+                    }
+                    else
+                    {
+                        AllureAddons.addToReport("StaleElementReferenceException catched times: \"" + retryCounter + "\".", retryCounter);
+                        Selenide.sleep(Neodymium.configuration().staleElementRetryTimeout());
+                    }
+                }
+                else
+                {
+                    // not the kind of error we are looking for
+                    throw t;
+                }
+            }
+        }
+    }
+
+    private static boolean isThrowableCausedBy(final Throwable throwable, Class<? extends Throwable> clazz)
+    {
+        Throwable t = throwable;
+        while (t != null)
+        {
+            if (clazz.isInstance(t))
+            {
+                return true;
+            }
+            t = t.getCause();
+        }
+        return false;
     }
 
     /**
@@ -266,11 +370,78 @@ public class SelenideAddons
         catch (AssertionError e)
         {
             Driver driver = WebDriverRunner.driver();
-            SelenideLogger.commitStep(new SelenideLog("Assertion error", e.getMessage()), e);
+            String message = "No error message provided by the Assertion.";
+            if (StringUtils.isNotBlank(e.getMessage()))
+            {
+                message = e.getMessage();
+            }
+            else
+            {
+                AssertionError wrapper = new AssertionError(message, e.getCause());
+                wrapper.setStackTrace(e.getStackTrace());
+                e = wrapper;
+            }
+            SelenideLogger.commitStep(new SelenideLog("Assertion error", message), e);
             if (!driver.config().assertionMode().equals(AssertionMode.SOFT))
             {
-                throw UIAssertionError.wrap(driver, e, System.currentTimeMillis());
+                throw UIAssertionError.wrap(driver, e, 0);
             }
+        }
+    }
+
+    /**
+     * Drag and drop an element to a given position. The position will be set by the user. It drags the element and
+     * moves it to a specific position of the respective element.
+     * 
+     * @param elementToMove
+     *            The selector of the slider to drag and drop
+     * @param horizontalMovement
+     *            The offset for the horizontal movement
+     * @param verticalMovement
+     *            The offset for the vertical movement
+     */
+
+    public static void dragAndDrop(SelenideElement elementToMove, int horizontalMovement, int verticalMovement)
+    {
+        // perform drag and drop via the standard Selenium way
+        new Actions(Neodymium.getDriver()).dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement).build().perform();
+    }
+
+    /**
+     * Drag and drop an element to a given position. The position will be set by the user. It drags the element and
+     * moves it to a specific position of the respective slider.
+     * 
+     * @param elementToMove
+     *            The selector of the slider to drag and drop
+     * @param elementToCheck
+     *            The locator of the slider value
+     * @param horizontalMovement
+     *            The offset for the horizontal movement
+     * @param verticalMovement
+     *            The offset for the vertical movement
+     * @param pauseBetweenMovements
+     *            Time to pass after the slider do the next movement step
+     * @param retryMovements
+     *            Amount of retries the slider will be moved
+     * @param condition
+     *            The condition for the slider to verify the movement
+     */
+    public static void dragAndDropUntilCondition(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement, int verticalMovement,
+                                                 int pauseBetweenMovements, int retryMovements, Condition condition)
+    {
+        int counter = 0;
+        while (!elementToCheck.has(condition))
+        {
+            if (counter > retryMovements)
+            {
+                SelenideAddons.wrapAssertionError(() -> {
+                    Assert.assertTrue("CircutBreaker: Was not able to move the element and to reach the condition. Tried: " + retryMovements
+                                      + " times to move the element.", false);
+                });
+            }
+            dragAndDrop(elementToMove, horizontalMovement, verticalMovement);
+            Selenide.sleep(pauseBetweenMovements);
+            counter++;
         }
     }
 }

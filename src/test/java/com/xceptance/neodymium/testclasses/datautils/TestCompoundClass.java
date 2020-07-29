@@ -12,28 +12,31 @@ public class TestCompoundClass
         HIGH
     }
 
-    String clubCardNumber;
+    private String clubCardNumber;
 
-    int age;
+    private String description;
 
-    TestCreditCard creditCard;
+    private Object notSet;
 
-    List<String> names;
+    private Double numberValue;
 
-    List<TestPerson> persons;
+    private Object nullValue = "notNullString";
 
-    Map<String, String> keyValueMap;
+    private int age;
 
-    Level level;
+    private TestCreditCard creditCard;
+
+    private List<String> names;
+
+    private List<TestPerson> persons;
+
+    private Map<String, String> keyValueMap;
+
+    private Level level;
 
     public List<TestPerson> getPersons()
     {
         return persons;
-    }
-
-    public void setPersons(List<TestPerson> persons)
-    {
-        this.persons = persons;
     }
 
     public List<String> getNames()
@@ -41,19 +44,9 @@ public class TestCompoundClass
         return names;
     }
 
-    public void setNames(List<String> names)
-    {
-        this.names = names;
-    }
-
     public int getAge()
     {
         return age;
-    }
-
-    public void setAge(int age)
-    {
-        this.age = age;
     }
 
     public String getClubCardNumber()
@@ -61,19 +54,9 @@ public class TestCompoundClass
         return clubCardNumber;
     }
 
-    public void setClubCardNumber(String clubCardNumber)
-    {
-        this.clubCardNumber = clubCardNumber;
-    }
-
     public TestCreditCard getCreditCard()
     {
         return creditCard;
-    }
-
-    public void setCreditCard(TestCreditCard creditCard)
-    {
-        this.creditCard = creditCard;
     }
 
     public Map<String, String> getKeyValueMap()
@@ -81,18 +64,28 @@ public class TestCompoundClass
         return keyValueMap;
     }
 
-    public void setKeyValueMap(Map<String, String> keyValueMap)
-    {
-        this.keyValueMap = keyValueMap;
-    }
-
     public Level getLevel()
     {
         return level;
     }
 
-    public void setLevel(Level level)
+    public String getDescription()
     {
-        this.level = level;
+        return description;
+    }
+
+    public Double getNumberValue()
+    {
+        return numberValue;
+    }
+
+    public Object getNullValue()
+    {
+        return nullValue;
+    }
+
+    public Object getNotSet()
+    {
+        return notSet;
     }
 }

@@ -8,19 +8,27 @@ import java.util.WeakHashMap;
 import org.aeonbits.owner.ConfigFactory;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 
+import com.browserup.bup.BrowserUpProxy;
 import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 
 /**
- * See our Github wiki: <a href="https://github.com/Xceptance/neodymium-library/wiki/Context">Context</a>
+ * See our Github wiki: <a href="https://github.com/Xceptance/neodymium-library/wiki/Neodymium-context">Neodymium
+ * context</a>
  * 
  * @author m.kaufmann
+ * @author m.pfotenhauer
  */
 public class Neodymium
 {
     private static final Map<Thread, Neodymium> CONTEXTS = Collections.synchronizedMap(new WeakHashMap<>());
+
+    // keep our local proxy if created
+    private BrowserUpProxy browserUpProxy;
 
     // keep our current driver
     private WebDriver driver;
@@ -40,7 +48,7 @@ public class Neodymium
     // our data for anywhere access
     private final Map<String, String> data = new HashMap<>();
 
-    public final static String TEMPORARY_CONFIG_FILE_PROPTERY_NAME = "neodymium.temporaryConfigFile";
+    public final static String TEMPORARY_CONFIG_FILE_PROPERTY_NAME = "neodymium.temporaryConfigFile";
 
     /**
      * Constructor
@@ -48,9 +56,9 @@ public class Neodymium
     private Neodymium()
     {
         // the property needs to be a valid URI in order to satisfy the Owner framework
-        if (null == ConfigFactory.getProperty(TEMPORARY_CONFIG_FILE_PROPTERY_NAME))
+        if (null == ConfigFactory.getProperty(TEMPORARY_CONFIG_FILE_PROPERTY_NAME))
         {
-            ConfigFactory.setProperty(TEMPORARY_CONFIG_FILE_PROPTERY_NAME, "file:this/path/should/never/exist/noOneShouldCreateMe.properties");
+            ConfigFactory.setProperty(TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:this/path/should/never/exist/noOneShouldCreateMe.properties");
         }
         configuration = ConfigFactory.create(NeodymiumConfiguration.class, System.getProperties(), System.getenv());
         localization = NeodymiumLocalization.build(configuration.localizationFile());
@@ -130,9 +138,29 @@ public class Neodymium
         return getContext().driver;
     }
 
+    public static EventFiringWebDriver getEventFiringWebdriver()
+    {
+        return (EventFiringWebDriver) getDriver();
+    }
+
+    public static RemoteWebDriver getRemoteWebDriver()
+    {
+        return (RemoteWebDriver) getEventFiringWebdriver().getWrappedDriver();
+    }
+
     public static void setDriver(WebDriver driver)
     {
         getContext().driver = driver;
+    }
+
+    public static BrowserUpProxy getLocalProxy()
+    {
+        return getContext().browserUpProxy;
+    }
+
+    public static BrowserUpProxy setLocalProxy(BrowserUpProxy browserUpProxy)
+    {
+        return getContext().browserUpProxy = browserUpProxy;
     }
 
     public static String getBrowserProfileName()
@@ -279,7 +307,8 @@ public class Neodymium
     /**
      * Desktop of any kind?
      * 
-     * @return boolean value indicating whether it is a device desktop (isLargeDesktop() or isExtaLargeDesktop()) or not
+     * @return boolean value indicating whether it is a device desktop (isLargeDesktop() or isExtraLargeDesktop()) or
+     *         not
      * @see Neodymium
      */
     public static boolean isDesktop()
@@ -344,4 +373,27 @@ public class Neodymium
         Configuration.timeout = timeout;
     }
 
+    /**
+     * Validates if the currently configured site is equal to one or more Strings.
+     * 
+     * @param sites
+     *            Names of the sites
+     * @return boolean value indicating whether the configured site is matching one of the given Strings
+     * @see Neodymium
+     */
+    public static boolean isSite(String... sites)
+    {
+        if (Neodymium.configuration().site() == null)
+        {
+            return false;
+        }
+        for (int i = 0; i < sites.length; i++)
+        {
+            if (Neodymium.configuration().site().equals(sites[i]))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

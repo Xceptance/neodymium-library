@@ -20,7 +20,7 @@ public class BadProxyEnvironmentConfiguration
         }
         catch (RuntimeException e)
         {
-            Assert.assertEquals("The proxy host configured for evironment: \"browserprofile.testEnvironment.badProxy\" needs to be set.", e.getMessage());
+            Assert.assertEquals("The proxy host configured for environment: \"browserprofile.testEnvironment.badProxy\" needs to be set.", e.getMessage());
         }
     }
 
@@ -36,7 +36,7 @@ public class BadProxyEnvironmentConfiguration
         }
         catch (RuntimeException e)
         {
-            Assert.assertEquals("The proxy port configured for evironment: \"browserprofile.testEnvironment.badProxy\" needs to be set.", e.getMessage());
+            Assert.assertEquals("The proxy port configured for environment: \"browserprofile.testEnvironment.badProxy\" needs to be set.", e.getMessage());
         }
     }
 
@@ -53,7 +53,7 @@ public class BadProxyEnvironmentConfiguration
         }
         catch (RuntimeException e)
         {
-            Assert.assertEquals("The proxy port configured for evironment: \"browserprofile.testEnvironment.badProxy\" needs to be an Integer.",
+            Assert.assertEquals("The proxy port configured for environment: \"browserprofile.testEnvironment.badProxy\" needs to be an Integer.",
                                 e.getMessage());
         }
     }

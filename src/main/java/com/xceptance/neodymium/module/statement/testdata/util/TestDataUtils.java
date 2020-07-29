@@ -24,6 +24,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.xceptance.neodymium.module.statement.testdata.DataFile;
+
 /**
  * Utility class for test data handling.
  * 
@@ -52,17 +54,36 @@ public final class TestDataUtils
         // no specific file -> try the usual suspects
         final Set<String> fileNames = new LinkedHashSet<String>();
 
-        final String dottedName = testClass.getName();
-        final String slashedName = dottedName.replace('.', '/');
+        DataFile dataFile = testClass.getAnnotation(DataFile.class);
+        String filePath = dataFile != null ? dataFile.value() : null;
 
-        String[] filetype = new String[]
-            {
-                ".csv", ".json", ".xml"
-            };
-        for (final String fileExtension : filetype)
+        if (StringUtils.isBlank(filePath))
         {
-            fileNames.add(slashedName + fileExtension);
-            fileNames.add(dottedName + fileExtension);
+            final String dottedName = testClass.getName();
+            final String slashedName = dottedName.replace('.', '/');
+
+            String[] filetype = new String[]
+            {
+              ".csv", ".json", ".xml"
+            };
+            for (final String fileExtension : filetype)
+            {
+                fileNames.add(slashedName + fileExtension);
+                fileNames.add(dottedName + fileExtension);
+            }
+        }
+        else
+        {
+            InputStream inputStream = testClass.getResourceAsStream("/" + filePath);
+            if (inputStream != null)
+            {
+                fileNames.add(filePath);
+            }
+            else
+            {
+                throw new RuntimeException("The data file:\"" + filePath + "\" provided within the test class:\"" + testClass.getSimpleName()
+                                           + "\" can't be read.");
+            }
         }
 
         List<File> dataSetFileDirs = new LinkedList<>();

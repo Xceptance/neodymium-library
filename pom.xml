@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.xceptance</groupId>
 	<artifactId>neodymium-library</artifactId>
-	<version>3.2.1-SNAPSHOT</version>
+	<version>3.7.0-SNAPSHOT</version>
 
 	<name>neodymium-library</name>
 	<url>https://github.com/Xceptance/neodymium-library</url>
@@ -53,10 +53,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source.version>1.8</maven.compiler.source.version>
 		<maven.compiler.target.version>1.8</maven.compiler.target.version>
-		<surefire.version>2.22.1</surefire.version>
-		<allure.version>2.12.1</allure.version>
-		<cucumber.version>4.3.1</cucumber.version>
-		<log4j.version>2.11.2</log4j.version>
+		<surefire.version>2.22.2</surefire.version>
+		<allure.version>2.13.3</allure.version>
+		<cucumber.version>5.7.0</cucumber.version>
+		<log4j.version>2.13.3</log4j.version>
 	</properties>
 
 	<repositories>
@@ -86,7 +86,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
+				<version>3.8.1</version>
 				<configuration>
 					<source>${maven.compiler.source.version}</source>
 					<target>${maven.compiler.target.version}</target>
@@ -111,7 +111,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>3.0.1</version>
+				<version>3.2.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -124,7 +124,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.0.1</version>
+				<version>3.2.0</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -197,16 +197,21 @@
 		<dependency>
 			<groupId>org.aeonbits.owner</groupId>
 			<artifactId>owner</artifactId>
-			<version>1.0.10</version>
+			<version>1.0.12</version>
 		</dependency>
 		<dependency>
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
-			<version>1.24</version>
+			<version>1.26</version>
 		</dependency>
 		<dependency>
 			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-junit</artifactId>
+			<version>${cucumber.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-java</artifactId>
 			<version>${cucumber.version}</version>
 		</dependency>
 		<dependency>
@@ -231,7 +236,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.qameta.allure</groupId>
-			<artifactId>allure-cucumber4-jvm</artifactId>
+			<artifactId>allure-cucumber5-jvm</artifactId>
 			<version>${allure.version}</version>
 		</dependency>
 		<dependency>
@@ -242,38 +247,37 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>27.1-jre</version>
+			<version>29.0-jre</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+			<version>2.4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.codeborne</groupId>
 			<artifactId>selenide</artifactId>
-			<version>5.2.3</version>
-			<exclusions>
-				<exclusion>
-					<groupId>net.lightbody.bmp</groupId>
-					<artifactId>browsermob-core</artifactId>
-				</exclusion>
-			</exclusions>
+			<version>5.12.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-csv</artifactId>
-			<version>1.6</version>
+			<version>1.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-text</artifactId>
-			<version>1.6</version>
+			<version>1.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.9</version>
+			<version>3.10</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.26</version>
+			<version>1.7.30</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
@@ -289,6 +293,23 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
 			<version>${log4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.browserup</groupId>
+			<artifactId>browserup-proxy-core</artifactId>
+			<version>2.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.browserup</groupId>
+			<artifactId>browserup-proxy-mitm</artifactId>
+			<version>2.1.1</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>xyz.rogfam</groupId>
+			<artifactId>littleproxy</artifactId>
+			<version>2.0.0-beta-5</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 </project>

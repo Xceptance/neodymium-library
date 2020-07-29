@@ -7,6 +7,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.browserup.bup.BrowserUpProxy;
 
 /**
  * A cache to hold different instances of {@link WebDriver}. Instances are kept in a synchronized {@link HashMap} which
@@ -18,15 +22,17 @@ import org.openqa.selenium.WebDriver;
  */
 public class WebDriverCache
 {
+    public static Logger LOGGER = LoggerFactory.getLogger(WebDriverCache.class);
+
     public static final WebDriverCache instance = new WebDriverCache();
 
-    private static final Map<String, WebDriver> cache = Collections.synchronizedMap(new HashMap<>());
+    private static final Map<String, CachingContainer> cache = Collections.synchronizedMap(new HashMap<>());
 
     /**
-     * The private constructor of the {@link WebDriverCache}. Creates the synchronized {@link HashMap} instance and add's a
-     * VM shutdown hook to clean up the cache and close the cached {@link WebDriver} gracefully if the
-     * neodymium.webDriver.keepBrowserOpen property is set to <code>false</code> in property file "browser.properties". See
-     * config folder
+     * The private constructor of the {@link WebDriverCache}. Creates the synchronized {@link HashMap} instance and
+     * add's a VM shutdown hook to clean up the cache and close the cached {@link WebDriver} gracefully if the
+     * neodymium.webDriver.keepBrowserOpen property is set to <code>false</code> in property file "browser.properties".
+     * See config folder
      */
     private WebDriverCache()
     {
@@ -42,21 +48,29 @@ public class WebDriverCache
      */
     public WebDriver getWebDriverForBrowserTag(String browserTag)
     {
-        return cache.get(browserTag);
+        CachingContainer container = cache.get(browserTag);
+        return container != null ? container.getWebDriver() : null;
     }
 
     /**
-     * Put's the instance of a {@link WebDriver} into the cache and uses browserTag to reference it. If there is already an
-     * {@link WebDriver} stored in the cache with the same browsreTag {@link String} then the instance will be overwritten.
+     * Put's the instance of a {@link WebDriver} into the cache and uses browserTag to reference it. If there is already
+     * an {@link WebDriver} stored in the cache with the same browserTag {@link String} then the instance will be
+     * overwritten.
      * 
      * @param browserTag
      *            a {@link String} that will be used to reference the cached {@link WebDriver}
      * @param webDriver
      *            an instance of {@link WebDriver} that should be stored in the cache
+     * @param proxy
+     *            an instance of {@link BrowserUpProxy} that should be stored in the cache this can be null if no local
+     *            proxy is used
      */
-    public void putWebDriver(String browserTag, WebDriver webDriver)
+    public void putWebDriverAndProxy(String browserTag, WebDriver webDriver, BrowserUpProxy proxy)
     {
-        cache.put(browserTag, webDriver);
+        CachingContainer container = new CachingContainer();
+        container.setWebDriver(webDriver);
+        container.setProxy(proxy);
+        cache.put(browserTag, container);
     }
 
     /**
@@ -67,9 +81,9 @@ public class WebDriverCache
      *            a {@link String} that will be used to find the referenced {@link WebDriver} in the cache
      * @return {@link Boolean} indicating whether it was found and removed or not
      */
-    public boolean removeWebDriver(String browserTag)
+    public boolean removeWebDriverAndProxy(String browserTag)
     {
-        return (getRemoveWebDriver(browserTag) != null);
+        return (getRemoveWebDriverAndProxy(browserTag) != null);
     }
 
     /**
@@ -80,7 +94,7 @@ public class WebDriverCache
      *            The String used in {@link Browser} to reference a browser configuration
      * @return {@link WebDriver} if found, else <code>null</code>
      */
-    public WebDriver getRemoveWebDriver(String browserTag)
+    public CachingContainer getRemoveWebDriverAndProxy(String browserTag)
     {
         return cache.remove(browserTag);
     }
@@ -92,20 +106,19 @@ public class WebDriverCache
      *            an instance of {@link WebDriver}
      * @return {@link Boolean} which indicates if the {@link WebDriver} was found and removed from cache.
      */
-    public boolean removeWebDriver(WebDriver driver)
+    public boolean removeWebDriverAndProxy(WebDriver driver)
     {
         synchronized (cache)
         {
             boolean removed = false;
-            for (Entry<String, WebDriver> entry : cache.entrySet())
+            for (Entry<String, CachingContainer> entry : cache.entrySet())
             {
-                if (entry.getValue() == driver)
+                if (entry.getValue().getWebDriver() == driver)
                 {
                     cache.remove(entry.getKey());
                     removed = true;
                 }
             }
-
             return removed;
         }
     }
@@ -115,8 +128,47 @@ public class WebDriverCache
      * 
      * @return unmodifiable {@link Collection} of all {@link WebDriver} that are currently in the {@link WebDriverCache}
      */
-    public Collection<WebDriver> getAllWebdriver()
+    public Collection<CachingContainer> getAllWebDriverAndProxy()
     {
         return Collections.unmodifiableCollection(cache.values());
+    }
+
+    /**
+     * This function can be used within a function of a JUnit test case that is annotated with @AfterClass to clear the
+     * WebDriverCache of the WebDrivers ready for reuse.
+     * <p>
+     * <b>Attention:</b> It is save to run this function during a sequential test execution. It can have repercussions
+     * (e.g. longer test duration) in a parallel execution environment.
+     *
+     * <pre>
+     * &#64;AfterClass
+     * public void afterClass()
+     * {
+     *     WebDriverCache.quitCachedBrowsers();
+     * }
+     * </pre>
+     **/
+    public static void quitCachedBrowsers()
+    {
+        Collection<CachingContainer> allWebdriver = instance.getAllWebDriverAndProxy();
+        for (CachingContainer cont : allWebdriver)
+        {
+            try
+            {
+                WebDriver wd = cont.getWebDriver();
+                LOGGER.debug("Quit web driver: " + wd.toString());
+                wd.quit();
+                BrowserUpProxy proxy = cont.getProxy();
+                if (proxy != null)
+                {
+                    proxy.stop();
+                }
+                instance.removeWebDriverAndProxy(wd);
+            }
+            catch (Exception e)
+            {
+                LOGGER.debug("Error on quitting web driver", e);
+            }
+        }
     }
 }

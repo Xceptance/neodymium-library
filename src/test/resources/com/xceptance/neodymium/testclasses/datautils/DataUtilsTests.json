@@ -3,7 +3,8 @@
 		"testId": "asString",
 		"nullValue": null,
 		"empty": "",
-		"value": "value"
+		"value": "value",
+		"sentence": "containing strange things like spaces and äüø"
 	},
 	{
 		"testId": "asInt",
@@ -47,6 +48,9 @@
 	{
 		"testId": "asObject",
 		"clubCardNumber": 1234567890,
+		"description": "containing strange things like spaces and äüø",
+		"numberValue":12.34,
+		"nullValue":null,
 		"creditCard": {
 			"cardNumber": "4111111111111111",
 			"ccv": "123",

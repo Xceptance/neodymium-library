@@ -25,3 +25,6 @@ hs_err_pid*
 /.project
 /.settings/
 build
+dev-*.properties 
+temp-*.properties
+embeddedLocalProxySelfSignedRootCertificate.p12

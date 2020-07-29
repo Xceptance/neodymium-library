@@ -51,7 +51,7 @@ public class ProxyConfigurationTest extends NeodymiumTest
         writeMapToPropertiesFile(properties, tempConfigFile);
         tempFiles.add(tempConfigFile);
 
-        ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPTERY_NAME, "file:" + fileLocation);
+        ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
     }
 
     @Test

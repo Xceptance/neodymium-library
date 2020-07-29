@@ -1,7 +1,7 @@
 package com.xceptance.neodymium.testclasses.datautils;
 
 import java.text.MessageFormat;
-import java.util.Map;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.testdata.DataSet;
 import com.xceptance.neodymium.util.DataUtils;
-import com.xceptance.neodymium.util.Neodymium;
 
 @RunWith(NeodymiumRunner.class)
 public class DataUtilsTestsXml
@@ -21,7 +20,6 @@ public class DataUtilsTestsXml
     @DataSet(id = "asString")
     public void testAsString() throws Exception
     {
-        Map<String, String> c = Neodymium.getData();
         // expect IllegalArgumentException
         expectIAE(() -> {
             DataUtils.asString(null);
@@ -38,6 +36,7 @@ public class DataUtilsTestsXml
 
         Assert.assertEquals("", DataUtils.asString("empty"));
         Assert.assertEquals("value", DataUtils.asString("value"));
+        Assert.assertEquals("containing strange things like spaces and äüø", DataUtils.asString("sentence"));
 
         Assert.assertEquals(null, DataUtils.asString(null, null));
         Assert.assertEquals(null, DataUtils.asString("", null));
@@ -205,25 +204,97 @@ public class DataUtilsTestsXml
     @DataSet(id = "asObject")
     public void testGetClass() throws Exception
     {
-        TestCompoundClass testClass = DataUtils.get(TestCompoundClass.class);
+        TestCompoundClass testCompound = DataUtils.get(TestCompoundClass.class);
 
-        Assert.assertEquals("1234567890", testClass.getClubCardNumber());
-        Assert.assertEquals("4111111111111111", testClass.getCreditCard().getCardNumber());
-        Assert.assertEquals("123", testClass.getCreditCard().getCcv());
-        Assert.assertEquals(10, testClass.getCreditCard().getMonth());
-        Assert.assertEquals(2018, testClass.getCreditCard().getYear());
-        Assert.assertEquals(23, testClass.getAge());
-        Assert.assertEquals(3, testClass.getNames().size());
-        Assert.assertEquals("abc", testClass.getNames().get(0));
-        Assert.assertEquals("def", testClass.getNames().get(1));
-        Assert.assertEquals("ghi", testClass.getNames().get(2));
-        Assert.assertEquals(2, testClass.getPersons().size());
-        Assert.assertEquals("a", testClass.getPersons().get(0).getFirstName());
-        Assert.assertEquals("b", testClass.getPersons().get(0).getLastName());
-        Assert.assertEquals("c", testClass.getPersons().get(1).getFirstName());
-        Assert.assertEquals("d", testClass.getPersons().get(1).getLastName());
-        Assert.assertEquals("value", testClass.getKeyValueMap().get("key"));
-        Assert.assertEquals(TestCompoundClass.Level.HIGH, testClass.getLevel());
+        Assert.assertEquals("1234567890", testCompound.getClubCardNumber());
+        Assert.assertEquals(null, testCompound.getNotSet());
+        // our XML parer does not support explicit null value
+        // Assert.assertEquals(null, testCompound.getNullValue());
+        Assert.assertEquals(new Double(12.34), testCompound.getNumberValue());
+        Assert.assertEquals("containing strange things like spaces and äüø", testCompound.getDescription());
+        Assert.assertEquals("4111111111111111", testCompound.getCreditCard().getCardNumber());
+        Assert.assertEquals("123", testCompound.getCreditCard().getCcv());
+        Assert.assertEquals(10, testCompound.getCreditCard().getMonth());
+        Assert.assertEquals(2018, testCompound.getCreditCard().getYear());
+        Assert.assertEquals(23, testCompound.getAge());
+        Assert.assertEquals(3, testCompound.getNames().size());
+        Assert.assertEquals("abc", testCompound.getNames().get(0));
+        Assert.assertEquals("def", testCompound.getNames().get(1));
+        Assert.assertEquals("ghi", testCompound.getNames().get(2));
+        Assert.assertEquals(2, testCompound.getPersons().size());
+        Assert.assertEquals("a", testCompound.getPersons().get(0).getFirstName());
+        Assert.assertEquals("b", testCompound.getPersons().get(0).getLastName());
+        Assert.assertEquals("c", testCompound.getPersons().get(1).getFirstName());
+        Assert.assertEquals("d", testCompound.getPersons().get(1).getLastName());
+        Assert.assertEquals("value", testCompound.getKeyValueMap().get("key"));
+        Assert.assertEquals(TestCompoundClass.Level.HIGH, testCompound.getLevel());
+    }
+
+    @Test
+    @DataSet(id = "asObject")
+    public void testGetByPath() throws Exception
+    {
+        Double numberValue = DataUtils.get("$.numberValue", Double.class);
+        Assert.assertEquals(new Double(12.34), numberValue);
+
+        String description = DataUtils.get("$.description", String.class);
+        Assert.assertEquals("containing strange things like spaces and äüø", description);
+
+        TestCreditCard creditCard = DataUtils.get("$.creditCard", TestCreditCard.class);
+        Assert.assertEquals("4111111111111111", creditCard.getCardNumber());
+        Assert.assertEquals("123", creditCard.getCcv());
+        Assert.assertEquals(10, creditCard.getMonth());
+        Assert.assertEquals(2018, creditCard.getYear());
+
+        String name = DataUtils.get("$.names[2]", String.class);
+        Assert.assertEquals("ghi", name);
+
+        String lastName = DataUtils.get("$.persons[1].lastName", String.class);
+        Assert.assertEquals("d", lastName);
+
+        TestCompoundClass.Level level = DataUtils.get("$.level", TestCompoundClass.Level.class);
+        Assert.assertEquals(TestCompoundClass.Level.HIGH, level);
+
+        @SuppressWarnings("unchecked")
+        List<String> firstNames = DataUtils.get("$.persons[*].firstName", List.class);
+        Assert.assertEquals("a", firstNames.get(0));
+        Assert.assertEquals("c", firstNames.get(1));
+
+        Object nullValue = DataUtils.get("$.nullValue", Object.class);
+        Assert.assertEquals(null, nullValue);
+
+        Object notSet = DataUtils.get("$.notSet", Object.class);
+        Assert.assertEquals(null, notSet);
+    }
+
+    @Test
+    @DataSet(id = "asObject")
+    public void testGetClassByPath() throws Exception
+    {
+        TestCompoundClass testCompound = DataUtils.get("$", TestCompoundClass.class);
+
+        Assert.assertEquals("1234567890", testCompound.getClubCardNumber());
+        Assert.assertEquals(null, testCompound.getNotSet());
+        // our XML parer does not support explicit null value
+        // Assert.assertEquals(null, testCompound.getNullValue());
+        Assert.assertEquals(new Double(12.34), testCompound.getNumberValue());
+        Assert.assertEquals("containing strange things like spaces and äüø", testCompound.getDescription());
+        Assert.assertEquals("4111111111111111", testCompound.getCreditCard().getCardNumber());
+        Assert.assertEquals("123", testCompound.getCreditCard().getCcv());
+        Assert.assertEquals(10, testCompound.getCreditCard().getMonth());
+        Assert.assertEquals(2018, testCompound.getCreditCard().getYear());
+        Assert.assertEquals(23, testCompound.getAge());
+        Assert.assertEquals(3, testCompound.getNames().size());
+        Assert.assertEquals("abc", testCompound.getNames().get(0));
+        Assert.assertEquals("def", testCompound.getNames().get(1));
+        Assert.assertEquals("ghi", testCompound.getNames().get(2));
+        Assert.assertEquals(2, testCompound.getPersons().size());
+        Assert.assertEquals("a", testCompound.getPersons().get(0).getFirstName());
+        Assert.assertEquals("b", testCompound.getPersons().get(0).getLastName());
+        Assert.assertEquals("c", testCompound.getPersons().get(1).getFirstName());
+        Assert.assertEquals("d", testCompound.getPersons().get(1).getLastName());
+        Assert.assertEquals("value", testCompound.getKeyValueMap().get("key"));
+        Assert.assertEquals(TestCompoundClass.Level.HIGH, testCompound.getLevel());
     }
 
     private void expectIAE(Runnable function)
@@ -249,13 +320,13 @@ public class DataUtilsTestsXml
             caughtException = e;
         }
 
-        String caughtExeptionName = "no exception!";
+        String caughtExceptionName = "no exception!";
         if (caughtException != null)
-            caughtExeptionName = caughtException.getClass().toString();
+            caughtExceptionName = caughtException.getClass().toString();
 
         if (caughtException == null || caughtException.getClass() != expectedException)
         {
-            Assert.fail(MessageFormat.format("Expected exception {0} but caught {1}", expectedException.toString(), caughtExeptionName));
+            Assert.fail(MessageFormat.format("Expected exception {0} but caught {1}", expectedException.toString(), caughtExceptionName));
         }
     }
 

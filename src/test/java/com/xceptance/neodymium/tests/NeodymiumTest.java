@@ -35,7 +35,7 @@ public abstract class NeodymiumTest
     /**
      * delete a temporary test file
      */
-    protected static void deleteTempFile(File tempFile)
+    public static void deleteTempFile(File tempFile)
     {
         if (tempFile.exists())
         {

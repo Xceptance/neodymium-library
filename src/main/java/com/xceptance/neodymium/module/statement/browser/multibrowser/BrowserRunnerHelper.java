@@ -30,6 +30,14 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariOptions;
 
+import com.browserup.bup.BrowserUpProxy;
+import com.browserup.bup.BrowserUpProxyServer;
+import com.browserup.bup.client.ClientUtil;
+import com.browserup.bup.mitm.CertificateAndKeySource;
+import com.browserup.bup.mitm.KeyStoreFileCertificateSource;
+import com.browserup.bup.mitm.RootCertificateGenerator;
+import com.browserup.bup.mitm.manager.ImpersonatingMitmManager;
+import com.browserup.bup.proxy.auth.AuthType;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.TestEnvironment;
@@ -37,6 +45,12 @@ import com.xceptance.neodymium.util.Neodymium;
 
 public final class BrowserRunnerHelper
 {
+    private static final String CERT_PASSWORD = "xceptance";
+
+    private static final String CERT_NAME = "MITMProxy";
+
+    private static final String CERT_FORMAT = "PKCS12";
+
     private static List<String> chromeBrowsers = new LinkedList<String>();
 
     private static List<String> firefoxBrowsers = new LinkedList<String>();
@@ -71,7 +85,7 @@ public final class BrowserRunnerHelper
      *            The {@link TestEnvironment} to the grid
      * @return {@link HttpCommandExecutor} to Selenium grid augmented with credentials
      * @throws MalformedURLException
-     *             if the given gridUrl is invalid
+     *             if the given grid URL is invalid
      */
     protected static HttpCommandExecutor createGridExecutor(String testEnvironment) throws MalformedURLException
 
@@ -133,7 +147,7 @@ public final class BrowserRunnerHelper
         }
         catch (final WebDriverException e)
         {
-            // on saucelabs in some cases like iphone emulation you cant resize the browser.
+            // on saucelabs in some cases like iphone emulation you can't resize the browser.
             // they throw an unchecked WebDriverException with the message "Not yet implemented"
             // if we catch an exception we check the message. if another message is set we throw the exception else
             // we suppress it
@@ -165,17 +179,28 @@ public final class BrowserRunnerHelper
      * Instantiate the {@link WebDriver} according to the configuration read from {@link Browser} annotations.
      * 
      * @param config
-     *            {@link BrowserConfiguration} that describes the descired browser instance
+     *            {@link BrowserConfiguration} that describes the desired browser instance
      * @return {@link WebDriver} the instance of the browser described in {@link BrowserConfiguration}
      * @throws MalformedURLException
      *             if <a href="https://github.com/Xceptance/neodymium-library/wiki/Selenium-grid">Selenium grid</a> is
-     *             used
+     *             used and the given grid URL is invalid
      */
-    public static WebDriver createWebdriver(final BrowserConfiguration config) throws MalformedURLException
+    public static CachingContainer createWebdriver(final BrowserConfiguration config) throws MalformedURLException
     {
         final MutableCapabilities capabilities = config.getCapabilities();
+        final CachingContainer container = new CachingContainer();
 
-        if (Neodymium.configuration().useProxy())
+        if (Neodymium.configuration().useLocalProxy())
+        {
+            BrowserUpProxy proxy = setupEmbeddedProxy();
+
+            // set the Proxy for later usage
+            container.setProxy(proxy);
+
+            // configure the proxy via capabilities
+            capabilities.setCapability(CapabilityType.PROXY, ClientUtil.createSeleniumProxy(proxy));
+        }
+        else if (Neodymium.configuration().useProxy())
         {
             capabilities.setCapability(CapabilityType.PROXY, createProxyCapabilities());
         }
@@ -200,7 +225,7 @@ public final class BrowserRunnerHelper
                     options.addArguments(config.getArguments());
                 }
 
-                return new ChromeDriver(options);
+                container.setWebDriver(new ChromeDriver(options));
             }
             else if (firefoxBrowsers.contains(browserName))
             {
@@ -213,7 +238,7 @@ public final class BrowserRunnerHelper
                     options.addArguments(config.getArguments());
                 }
 
-                return new FirefoxDriver(options);
+                container.setWebDriver(new FirefoxDriver(options));
             }
             else if (internetExplorerBrowsers.contains(browserName))
             {
@@ -227,23 +252,89 @@ public final class BrowserRunnerHelper
                     }
                 }
 
-                return new InternetExplorerDriver(options);
+                container.setWebDriver(new InternetExplorerDriver(options));
             }
             else if (safariBrowsers.contains(browserName))
             {
                 final SafariOptions options = (SafariOptions) capabilities;
-                return new SafariDriver(options);
+                container.setWebDriver(new SafariDriver(options));
             }
             else
             {
-                return new RemoteWebDriver(capabilities);
+                container.setWebDriver(new RemoteWebDriver(capabilities));
             }
         }
         else
         {
             // establish connection to target website
-            return new RemoteWebDriver(createGridExecutor(testEnvironment), capabilities);
+            container.setWebDriver(new RemoteWebDriver(createGridExecutor(testEnvironment), capabilities));
         }
+
+        return container;
+    }
+
+    private static BrowserUpProxy setupEmbeddedProxy()
+    {
+        // instantiate the proxy
+        BrowserUpProxy proxy = new BrowserUpProxyServer();
+
+        if (Neodymium.configuration().useLocalProxyWithSelfSignedCertificate())
+        {
+            ImpersonatingMitmManager mitmManager = null;
+            if (Neodymium.configuration().localProxyGenerateSelfSignedCertificate())
+            {
+                CertificateAndKeySource certSource;
+                File certFile = new File("./config/embeddedLocalProxySelfSignedRootCertificate.p12");
+                if (certFile.canRead())
+                {
+                    certSource = new KeyStoreFileCertificateSource(CERT_FORMAT, certFile, CERT_NAME, CERT_PASSWORD);
+                }
+                else
+                {
+                    // create a dynamic CA root certificate generator using default settings (2048-bit RSA keys)
+                    RootCertificateGenerator rootCertificateGenerator = RootCertificateGenerator.builder().build();
+                    // save the dynamically-generated CA root certificate for installation in a browser
+                    rootCertificateGenerator.saveRootCertificateAndKey(CERT_FORMAT, certFile, CERT_NAME, CERT_PASSWORD);
+                    certSource = rootCertificateGenerator;
+                }
+                // tell the MitmManager to use the root certificate we just generated
+                mitmManager = ImpersonatingMitmManager.builder().rootCertificateSource(certSource).build();
+            }
+            else
+            {
+                // configure the MITM using the provided certificate
+                String type = Neodymium.configuration().localProxyCertificateArchiveType();
+                String file = Neodymium.configuration().localProxyCertificateArchiveFile();
+                String cName = Neodymium.configuration().localProxyCertificateName();
+                String cPassword = Neodymium.configuration().localProxyCertificatePassword();
+                if (StringUtils.isAnyBlank(type, file, cName, cPassword))
+                {
+                    throw new RuntimeException("The local proxy certificate isn't fully configured. Please check: certificate archive type, certificate archive file, certificate name and certificate password.");
+                }
+                KeyStoreFileCertificateSource fileCertificateSource = new KeyStoreFileCertificateSource(type, new File(file), cName, cPassword);
+                mitmManager = ImpersonatingMitmManager.builder().rootCertificateSource(fileCertificateSource).build();
+            }
+            proxy.setMitmManager(mitmManager);
+        }
+        else
+        {
+            // disable proxy certificate verification
+            proxy.setTrustAllServers(true);
+        }
+
+        // start the proxy
+        proxy.start();
+
+        // default basic authentication via the proxy
+        String host = Neodymium.configuration().host();
+        String bUsername = Neodymium.configuration().basicAuthUsername();
+        String bPassword = Neodymium.configuration().basicAuthPassword();
+        if (StringUtils.isNoneBlank(host, bUsername, bPassword))
+        {
+            proxy.autoAuthorization(host, bUsername, bPassword, AuthType.BASIC);
+        }
+
+        return proxy;
     }
 
     public static Proxy createProxyCapabilities()

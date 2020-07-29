@@ -33,7 +33,7 @@ public class TestEnvironment
             proxyHost = properties.getProperty(baseKey + ".proxy.host");
             if (StringUtils.isBlank(proxyHost))
             {
-                throw new RuntimeException("The proxy host configured for evironment: \"" + baseKey + "\" needs to be set.");
+                throw new RuntimeException("The proxy host configured for environment: \"" + baseKey + "\" needs to be set.");
             }
 
             String port = properties.getProperty(baseKey + ".proxy.port");
@@ -45,12 +45,12 @@ public class TestEnvironment
                 }
                 catch (NumberFormatException e)
                 {
-                    throw new RuntimeException("The proxy port configured for evironment: \"" + baseKey + "\" needs to be an Integer.");
+                    throw new RuntimeException("The proxy port configured for environment: \"" + baseKey + "\" needs to be an Integer.");
                 }
             }
             else
             {
-                throw new RuntimeException("The proxy port configured for evironment: \"" + baseKey + "\" needs to be set.");
+                throw new RuntimeException("The proxy port configured for environment: \"" + baseKey + "\" needs to be set.");
             }
             proxyUsername = properties.getProperty(baseKey + ".proxy.username");
             proxyPassword = properties.getProperty(baseKey + ".proxy.password");

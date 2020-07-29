@@ -5,14 +5,28 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.RandomStringGenerator;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
+import com.jayway.jsonpath.spi.json.GsonJsonProvider;
+import com.jayway.jsonpath.spi.mapper.GsonMappingProvider;
 
 public class DataUtils
 {
+    // GsonBuilder().serializeNulls needed to keep explicit null values within Json objects
+    private final static Gson GSON = new GsonBuilder().serializeNulls().create();
+
+    private final static Configuration JSONPATH_CONFIGURATION = Configuration.builder().jsonProvider(new GsonJsonProvider(GSON))
+                                                                             .mappingProvider(new GsonMappingProvider(GSON)).build();
+
     /**
      * Returns a random email address using UUID.java
      *
@@ -58,6 +72,39 @@ public class DataUtils
     }
 
     /**
+     * Returns the available test data as JsonObject
+     * 
+     * @return a JsonObject representing the available test data
+     */
+    public static JsonObject getDataAsJsonObject()
+    {
+        final Map<String, String> data = Neodymium.getData();
+        final JsonObject jsonObject = new JsonObject();
+
+        // iterate over every data entry and parse the entries to prepare complex structures for object mapping
+        for (Iterator<String> iterator = data.keySet().iterator(); iterator.hasNext();)
+        {
+            final String key = iterator.next();
+            final String value = data.get(key);
+            final String trimmedValue = StringUtils.defaultString(value).trim();
+
+            if (value == null)
+            {
+                jsonObject.add(key, null);
+            }
+            else if (trimmedValue.startsWith("{") || trimmedValue.startsWith("["))
+            {
+                jsonObject.add(key, JsonParser.parseString(value));
+            }
+            else
+            {
+                jsonObject.add(key, new JsonPrimitive(value));
+            }
+        }
+        return jsonObject;
+    }
+
+    /**
      * Returns data for the data type requested
      * 
      * @param <T>
@@ -68,19 +115,40 @@ public class DataUtils
      */
     public static <T> T get(final Class<T> clazz)
     {
-        Map<String, String> data = Neodymium.getData();
+        return GSON.fromJson(getDataAsJsonObject(), clazz);
+    }
 
-        JsonObject jsonObject = new JsonObject();
-        JsonParser parser = new JsonParser();
-
-        // iterate over every data entry and parse the entries to prepare complex structures for object mapping
-        for (Iterator<String> iterator = data.keySet().iterator(); iterator.hasNext();)
+    /**
+     * <p>
+     * Retrieves an element from the JSON representation of current test data using the given JsonPath expression and in
+     * case such an element was found, it will be returned as instance of the given class, filled with appropriate
+     * values.
+     * </p>
+     * <b>Example:</b>
+     * 
+     * <pre>
+     * TestCreditCard creditCard = DataUtils.get("$.creditCard", TestCreditCard.class);
+     * Assert.assertEquals("4111111111111111", creditCard.getCardNumber());
+     * </pre>
+     * 
+     * @param <T>
+     *            The inferred type
+     * @param jsonPath
+     *            The JsonPath leading to the requested object
+     * @param clazz
+     *            A reference to an class that should be instantiated and filled from test data
+     * @return an instance of the class provided or null
+     */
+    public static <T> T get(final String jsonPath, final Class<T> clazz)
+    {
+        try
         {
-            String key = (String) iterator.next();
-            jsonObject.add(key, parser.parse(data.get(key)));
+            return JsonPath.using(JSONPATH_CONFIGURATION).parse(getDataAsJsonObject()).read(jsonPath, clazz);
         }
-
-        return new Gson().fromJson(jsonObject, clazz);
+        catch (PathNotFoundException e)
+        {
+            return null;
+        }
     }
 
     /**
@@ -94,7 +162,7 @@ public class DataUtils
      */
     public static String asString(String key)
     {
-        String value = Neodymium.dataValue(key);
+        final String value = Neodymium.dataValue(key);
         if (value == null)
         {
             throw new IllegalArgumentException("Test data could not be found for key: " + key);

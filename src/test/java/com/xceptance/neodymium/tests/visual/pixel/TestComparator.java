@@ -17,7 +17,7 @@ public class TestComparator extends ImageTest
 
     private final ComparisonAlgorithm algorithm;
 
-    private ImageComparison comperator;
+    private ImageComparison comparator;
 
     private MaskImage masker;
 
@@ -64,20 +64,20 @@ public class TestComparator extends ImageTest
     public TestComparator to(final BufferedImage comparisonImage)
     {
         this.comparisonImage = comparisonImage;
-        comperator = new ImageComparison(referenceImage);
+        comparator = new ImageComparison(referenceImage);
 
         return this;
     }
 
     public TestComparator isEqual()
     {
-        Assert.assertTrue(comperator.isEqual(comparisonImage, masker, algorithm));
+        Assert.assertTrue(comparator.isEqual(comparisonImage, masker, algorithm));
         return this;
     }
 
     public TestComparator isNotEqual()
     {
-        Assert.assertFalse(comperator.isEqual(comparisonImage, masker, algorithm));
+        Assert.assertFalse(comparator.isEqual(comparisonImage, masker, algorithm));
         return this;
     }
 
@@ -99,20 +99,20 @@ public class TestComparator extends ImageTest
 
     public TestComparator hasMarking(final BufferedImage marking)
     {
-        final BufferedImage comperatorDifference = comperator.getMarkedImageWithBoxes(markingSizeX, markingSizeY);
+        final BufferedImage comparatorDifference = comparator.getMarkedImageWithBoxes(markingSizeX, markingSizeY);
 
         final long now = System.currentTimeMillis();
-        writeToTmp(comperatorDifference, MessageFormat.format("actual.{0}.png", String.valueOf(now)));
+        writeToTmp(comparatorDifference, MessageFormat.format("actual.{0}.png", String.valueOf(now)));
         writeToTmp(marking, MessageFormat.format("expected.{0}.png", String.valueOf(now)));
-        Assert.assertTrue(imageEqual(comperatorDifference, marking));
+        Assert.assertTrue(imageEqual(comparatorDifference, marking));
 
         return this;
     }
 
     public TestComparator hasNoMarking()
     {
-        final BufferedImage comperatorDifference = comperator.getMarkedImageWithBoxes(markingSizeX, markingSizeY);
-        Assert.assertNull(comperatorDifference);
+        final BufferedImage comparatorDifference = comparator.getMarkedImageWithBoxes(markingSizeX, markingSizeY);
+        Assert.assertNull(comparatorDifference);
 
         return this;
     }
@@ -122,8 +122,8 @@ public class TestComparator extends ImageTest
         return masker;
     }
 
-    public ImageComparison getComperator()
+    public ImageComparison getComparator()
     {
-        return comperator;
+        return comparator;
     }
 }

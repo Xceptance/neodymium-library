@@ -53,7 +53,6 @@ public class TestdataStatement extends StatementBuilder
                 testData.put(newDataEntry.getKey(), newDataEntry.getValue());
             }
         }
-
     }
 
     public TestdataStatement()
@@ -134,7 +133,7 @@ public class TestdataStatement extends StatementBuilder
             {
                 // now the funny part, we encountered an duplicated object
 
-                // always set the first occurance of an object to 1
+                // always set the first occurrence of an object to 1
                 TestdataStatementData existingObject = (TestdataStatementData) object;
                 existingObject.setIterationIndex(1);
 

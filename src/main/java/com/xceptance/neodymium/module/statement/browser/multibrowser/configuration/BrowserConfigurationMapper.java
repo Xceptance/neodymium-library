@@ -29,6 +29,12 @@ public class BrowserConfigurationMapper
 
     private static final String SCREEN_RESOLUTION = "screenResolution";
 
+    private static final String MAXIMUM_DURATION = "maxDuration";
+
+    private static final String IDLE_TIMEOUT = "idleTimeout";
+
+    private static final String SELENIUM_VERSION = "seleniumVersion";
+
     private static final String BROWSER_RESOLUTION = "browserResolution";
 
     private static final String CHROME_EMULATION_PROFILE = "chromeEmulationProfile";
@@ -110,7 +116,7 @@ public class BrowserConfigurationMapper
         }
 
         /*
-         * SauceLabs configuration
+         * SauceLabs/TestingBot configuration
          */
         String emulatedPlatform = browserProfileConfiguration.get(PLATFORM);
         if (!StringUtils.isEmpty(emulatedPlatform))
@@ -128,21 +134,67 @@ public class BrowserConfigurationMapper
         if (!StringUtils.isEmpty(emulatedDeviceName))
             capabilities.setCapability("deviceName", emulatedDeviceName);
 
-        String emulatedDeviceOrienation = browserProfileConfiguration.get(DEVICE_ORIENTATION);
-        if (!StringUtils.isEmpty(emulatedDeviceOrienation))
-            capabilities.setCapability("deviceOrientation", emulatedDeviceOrienation);
+        String emulatedDeviceOrientation = browserProfileConfiguration.get(DEVICE_ORIENTATION);
+        if (!StringUtils.isEmpty(emulatedDeviceOrientation))
+            capabilities.setCapability("deviceOrientation", emulatedDeviceOrientation);
 
         String emulatedDeviceScreenResolution = browserProfileConfiguration.get(SCREEN_RESOLUTION);
         if (!StringUtils.isEmpty(emulatedDeviceScreenResolution))
         {
             // SauceLabs
             capabilities.setCapability("screenResolution", emulatedDeviceScreenResolution);
-            // testingBot
+            // TestingBot
             capabilities.setCapability("screen-resolution", emulatedDeviceScreenResolution);
         }
 
-        // appium
+        String emulatedMaximumTestDuration = browserProfileConfiguration.get(MAXIMUM_DURATION);
+        if (!StringUtils.isEmpty(emulatedMaximumTestDuration))
+        {
+            int maxDura = 0;
+            try
+            {
+                maxDura = Integer.parseInt(emulatedMaximumTestDuration);
+            }
+            catch (Exception e)
+            {
+                throw new RuntimeException(MAXIMUM_DURATION + " configured within the browser profiles couldn't be parsed into an int value. Given value: \""
+                                           + emulatedMaximumTestDuration + "\"", e);
+            }
+            // SauceLabs
+            capabilities.setCapability("maxDuration", maxDura);
+            // TestingBot
+            capabilities.setCapability("maxduration", maxDura);
+        }
 
+        String emulatedIdleTimeout = browserProfileConfiguration.get(IDLE_TIMEOUT);
+        if (!StringUtils.isEmpty(emulatedIdleTimeout))
+        {
+            int idleTim = 0;
+            try
+            {
+                idleTim = Integer.parseInt(emulatedIdleTimeout);
+            }
+            catch (Exception e)
+            {
+                throw new RuntimeException(IDLE_TIMEOUT + " configured within the browser profiles couldn't be parsed into an int value. Given value: \""
+                                           + emulatedIdleTimeout + "\"", e);
+            }
+            // SauceLabs
+            capabilities.setCapability("idleTimeout", idleTim);
+            // TestingBot
+            capabilities.setCapability("idletimeout", idleTim);
+        }
+
+        String emulatedSeleniumVersion = browserProfileConfiguration.get(SELENIUM_VERSION);
+        if (!StringUtils.isEmpty(emulatedSeleniumVersion))
+        {
+            // SauceLabs
+            capabilities.setCapability("seleniumVersion", emulatedSeleniumVersion);
+            // TestingBot
+            capabilities.setCapability("selenium-version", emulatedSeleniumVersion);
+        }
+
+        // appium
         String appiumVersion = browserProfileConfiguration.get(APPIUM_VERSION);
         if (!StringUtils.isEmpty(appiumVersion))
             capabilities.setCapability(APPIUM_VERSION, appiumVersion);
@@ -151,13 +203,13 @@ public class BrowserConfigurationMapper
         if (!StringUtils.isEmpty(browserName))
             capabilities.setCapability(BROWSER_NAME, browserName);
 
-        String plattformVersion = browserProfileConfiguration.get(PLATFORM_VERSION);
-        if (!StringUtils.isEmpty(plattformVersion))
-            capabilities.setCapability(PLATFORM_VERSION, plattformVersion);
+        String platformVersion = browserProfileConfiguration.get(PLATFORM_VERSION);
+        if (!StringUtils.isEmpty(platformVersion))
+            capabilities.setCapability(PLATFORM_VERSION, platformVersion);
 
-        String plattformName = browserProfileConfiguration.get(PLATFORM_NAME);
-        if (!StringUtils.isEmpty(plattformName))
-            capabilities.setCapability(PLATFORM_NAME, plattformName);
+        String platformName = browserProfileConfiguration.get(PLATFORM_NAME);
+        if (!StringUtils.isEmpty(platformName))
+            capabilities.setCapability(PLATFORM_NAME, platformName);
 
         String app = browserProfileConfiguration.get(APP);
         if (!StringUtils.isEmpty(app))
@@ -167,9 +219,9 @@ public class BrowserConfigurationMapper
         if (!StringUtils.isEmpty(automationName))
             capabilities.setCapability(AUTOMATION_NAME, automationName);
 
-        String oriantation = browserProfileConfiguration.get(ORIENTATION);
-        if (!StringUtils.isEmpty(oriantation))
-            capabilities.setCapability(ORIENTATION, oriantation);
+        String orientation = browserProfileConfiguration.get(ORIENTATION);
+        if (!StringUtils.isEmpty(orientation))
+            capabilities.setCapability(ORIENTATION, orientation);
 
         /*
          * Chrome device emulation

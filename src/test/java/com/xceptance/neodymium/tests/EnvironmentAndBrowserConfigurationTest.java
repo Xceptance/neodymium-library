@@ -30,7 +30,7 @@ public class EnvironmentAndBrowserConfigurationTest extends NeodymiumTest
 
     public static final String BROWSERNAME = "My new name for Samsung S3";
 
-    public static final String ENVIRONMENTNAME = "someEnvrionment";
+    public static final String ENVIRONMENTNAME = "someEnvironment";
 
     public static final Boolean USEPROXY1 = true;
 
