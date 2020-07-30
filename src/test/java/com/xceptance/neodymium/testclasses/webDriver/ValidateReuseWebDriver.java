@@ -18,6 +18,7 @@ import com.browserup.bup.BrowserUpProxy;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverStateContainer;
 import com.xceptance.neodymium.tests.NeodymiumTest;
 import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
@@ -103,7 +104,9 @@ public class ValidateReuseWebDriver
     @AfterClass
     public static void afterClass()
     {
-        Assert.assertEquals(1, WebDriverCache.instance.getAllWebDriverAndProxy().size());
+        Assert.assertEquals(1, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
+        WebDriverStateContainer cachingContainer = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
+        Assert.assertEquals(2, cachingContainer.getUsedCount());
 
         NeodymiumTest.deleteTempFile(tempConfigFile);
     }

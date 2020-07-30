@@ -108,7 +108,7 @@ public class ValidatePreventReuseWebDriver
         Assert.assertNotNull(proxy1);
         Assert.assertNotEquals(proxy1, proxy2);
 
-        Assert.assertEquals(0, WebDriverCache.instance.getAllWebDriverAndProxy().size());
+        Assert.assertEquals(0, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
     }
 
     @Test
@@ -125,7 +125,7 @@ public class ValidatePreventReuseWebDriver
         Assert.assertNotNull(proxy2);
         Assert.assertNotEquals(proxy1, proxy2);
 
-        Assert.assertEquals(0, WebDriverCache.instance.getAllWebDriverAndProxy().size());
+        Assert.assertEquals(0, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
     }
 
     @Test
@@ -146,7 +146,7 @@ public class ValidatePreventReuseWebDriver
         Assert.assertNotEquals(proxy1, proxy2);
         Assert.assertEquals(proxy2, proxy3);
 
-        Assert.assertEquals(0, WebDriverCache.instance.getAllWebDriverAndProxy().size());
+        Assert.assertEquals(0, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
     }
 
     @After
@@ -169,8 +169,9 @@ public class ValidatePreventReuseWebDriver
         NeodymiumWebDriverTest.assertProxyAlive(proxy2);
         NeodymiumWebDriverTest.assertProxyAlive(proxy3);
 
-        Assert.assertEquals(1, WebDriverCache.instance.getAllWebDriverAndProxy().size());
+        Assert.assertEquals(1, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
 
+        WebDriverCache.quitCachedBrowsers();
         NeodymiumTest.deleteTempFile(tempConfigFile);
     }
 }

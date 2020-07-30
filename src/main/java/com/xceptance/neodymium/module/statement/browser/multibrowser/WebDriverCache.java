@@ -1,8 +1,8 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -26,7 +26,7 @@ public class WebDriverCache
 
     public static final WebDriverCache instance = new WebDriverCache();
 
-    private static final Map<String, CachingContainer> cache = Collections.synchronizedMap(new HashMap<>());
+    private static final Map<String, WebDriverStateContainer> cache = Collections.synchronizedMap(new HashMap<>());
 
     /**
      * The private constructor of the {@link WebDriverCache}. Creates the synchronized {@link HashMap} instance and
@@ -46,9 +46,9 @@ public class WebDriverCache
      *            a {@link String} that will be used find a referenced {@link WebDriver} instance in the cache
      * @return the {@link WebDriver} if one was found in the cache, else <code>null</code>
      */
-    public WebDriver getWebDriverForBrowserTag(String browserTag)
+    public WebDriver getWebDriverByBrowserTag(String browserTag)
     {
-        CachingContainer container = cache.get(browserTag);
+        WebDriverStateContainer container = cache.get(browserTag);
         return container != null ? container.getWebDriver() : null;
     }
 
@@ -59,18 +59,13 @@ public class WebDriverCache
      * 
      * @param browserTag
      *            a {@link String} that will be used to reference the cached {@link WebDriver}
-     * @param webDriver
-     *            an instance of {@link WebDriver} that should be stored in the cache
-     * @param proxy
-     *            an instance of {@link BrowserUpProxy} that should be stored in the cache this can be null if no local
-     *            proxy is used
+     * @param webDriverStateContainer
+     *            an instance of {@link WebDriverStateContainer} that should be stored in the cache this contains the
+     *            WebDriver and belonging objects and information like the proxy and the used count
      */
-    public void putWebDriverAndProxy(String browserTag, WebDriver webDriver, BrowserUpProxy proxy)
+    public void putWebDriverStateContainer(String browserTag, WebDriverStateContainer webDriverStateContainer)
     {
-        CachingContainer container = new CachingContainer();
-        container.setWebDriver(webDriver);
-        container.setProxy(proxy);
-        cache.put(browserTag, container);
+        cache.put(browserTag, webDriverStateContainer);
     }
 
     /**
@@ -81,22 +76,35 @@ public class WebDriverCache
      *            a {@link String} that will be used to find the referenced {@link WebDriver} in the cache
      * @return {@link Boolean} indicating whether it was found and removed or not
      */
-    public boolean removeWebDriverAndProxy(String browserTag)
+    public boolean removeWebDriverStateContainer(String browserTag)
     {
-        return (getRemoveWebDriverAndProxy(browserTag) != null);
+        return (removeWebDriverStateContainerByBrowserTag(browserTag) != null);
     }
 
     /**
-     * Look's up the cache for the browserTag argument and removes {@link WebDriver} instance from cache and returns the
-     * stored {@link WebDriver} instance if found.
+     * Look's up the cache for the browserTag argument and removes {@link WebDriverStateContainer} instance from cache
+     * and returns the stored {@link WebDriverStateContainer} instance if found.
      * 
      * @param browserTag
      *            The String used in {@link Browser} to reference a browser configuration
-     * @return {@link WebDriver} if found, else <code>null</code>
+     * @return {@link WebDriverStateContainer} if found, else <code>null</code>
      */
-    public CachingContainer getRemoveWebDriverAndProxy(String browserTag)
+    public WebDriverStateContainer removeWebDriverStateContainerByBrowserTag(String browserTag)
     {
         return cache.remove(browserTag);
+    }
+
+    /**
+     * Look's up the cache for the browserTag argument and retrieves {@link WebDriverStateContainer} instance from cache
+     * and returns the stored {@link WebDriverStateContainer} instance if found.
+     * 
+     * @param browserTag
+     *            The String used in {@link Browser} to reference a browser configuration
+     * @return {@link WebDriverStateContainer} if found, else <code>null</code>
+     */
+    public WebDriverStateContainer getWebDriverStateContainerByBrowserTag(String browserTag)
+    {
+        return cache.get(browserTag);
     }
 
     /**
@@ -106,12 +114,12 @@ public class WebDriverCache
      *            an instance of {@link WebDriver}
      * @return {@link Boolean} which indicates if the {@link WebDriver} was found and removed from cache.
      */
-    public boolean removeWebDriverAndProxy(WebDriver driver)
+    public boolean removeWebDriverStateContainerByBrowserTagByWebDriver(WebDriver driver)
     {
         synchronized (cache)
         {
             boolean removed = false;
-            for (Entry<String, CachingContainer> entry : cache.entrySet())
+            for (Entry<String, WebDriverStateContainer> entry : cache.entrySet())
             {
                 if (entry.getValue().getWebDriver() == driver)
                 {
@@ -124,13 +132,13 @@ public class WebDriverCache
     }
 
     /**
-     * Retrieves a unmodifiable copy of all cached {@link WebDriver}
+     * Retrieves the number of all cached {@link WebDriverStateContainer}
      * 
-     * @return unmodifiable {@link Collection} of all {@link WebDriver} that are currently in the {@link WebDriverCache}
+     * @return size
      */
-    public Collection<CachingContainer> getAllWebDriverAndProxy()
+    public int getWebDriverStateContainerCacheSize()
     {
-        return Collections.unmodifiableCollection(cache.values());
+        return cache.size();
     }
 
     /**
@@ -150,9 +158,9 @@ public class WebDriverCache
      **/
     public static void quitCachedBrowsers()
     {
-        Collection<CachingContainer> allWebdriver = instance.getAllWebDriverAndProxy();
-        for (CachingContainer cont : allWebdriver)
+        for (Iterator<Entry<String, WebDriverStateContainer>> iterator = cache.entrySet().iterator(); iterator.hasNext();)
         {
+            WebDriverStateContainer cont = iterator.next().getValue();
             try
             {
                 WebDriver wd = cont.getWebDriver();
@@ -163,12 +171,13 @@ public class WebDriverCache
                 {
                     proxy.stop();
                 }
-                instance.removeWebDriverAndProxy(wd);
             }
             catch (Exception e)
             {
                 LOGGER.debug("Error on quitting web driver", e);
             }
+
+            iterator.remove();
         }
     }
 }
