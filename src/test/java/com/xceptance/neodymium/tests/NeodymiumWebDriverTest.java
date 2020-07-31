@@ -20,6 +20,8 @@ import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpenOn
 import com.xceptance.neodymium.testclasses.webDriver.ValidatePreventReuseWebDriver;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateReuseWebDriver;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateWebDriverClosed;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateWebDriverMaxReuse;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateWebDriverMaxReuseWithTwoWebDriver;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateWebDriverReuseCounter;
 
 public class NeodymiumWebDriverTest extends NeodymiumTest
@@ -43,6 +45,20 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     {
         Result result = JUnitCore.runClasses(ValidateWebDriverReuseCounter.class);
         checkPass(result, 6, 0, 0);
+    }
+
+    @Test
+    public void testValidateWebDriverMaxReuse()
+    {
+        Result result = JUnitCore.runClasses(ValidateWebDriverMaxReuse.class);
+        checkPass(result, 5, 0, 0);
+    }
+
+    @Test
+    public void testValidateWebDriverMaxReuseWithTwoWebDriver()
+    {
+        Result result = JUnitCore.runClasses(ValidateWebDriverMaxReuseWithTwoWebDriver.class);
+        checkPass(result, 9, 0, 0);
     }
 
     @Test

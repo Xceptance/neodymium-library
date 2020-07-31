@@ -23,7 +23,7 @@ import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
 @RunWith(NeodymiumRunner.class)
-public class ValidateWebDriverReuseCounter
+public class ValidateWebDriverMaxReuseWithTwoWebDriver
 {
     private static WebDriver webDriver1;
 
@@ -39,11 +39,11 @@ public class ValidateWebDriverReuseCounter
     public static void beforeClass()
     {
         // set up a temporary neodymium.properties
-        final String fileLocation = "config/temp-ValidateWebDriverReuseCounter-neodymium.properties";
+        final String fileLocation = "config/temp-ValidateWebDriverMaxReuseWithTwoWebDriver-neodymium.properties";
         tempConfigFile = new File("./" + fileLocation);
         Map<String, String> properties = new HashMap<>();
         properties.put("neodymium.webDriver.reuseDriver", "true");
-        properties.put("neodymium.webDriver.maxReuse", "0");
+        properties.put("neodymium.webDriver.maxReuse", "2");
         properties.put("neodymium.localproxy", "true");
         NeodymiumTest.writeMapToPropertiesFile(properties, tempConfigFile);
         ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
@@ -95,6 +95,8 @@ public class ValidateWebDriverReuseCounter
         Assert.assertNotNull(proxy1);
         Assert.assertNull(proxy2);
         NeodymiumWebDriverTest.assertProxyAlive(proxy1);
+
+        Assert.assertEquals(0, Neodymium.getWebDriverStateContainer().getUsedCount());
     }
 
     @Test
@@ -110,6 +112,11 @@ public class ValidateWebDriverReuseCounter
         Assert.assertEquals(proxy2, Neodymium.getLocalProxy());
         NeodymiumWebDriverTest.assertProxyAlive(proxy1);
         NeodymiumWebDriverTest.assertProxyAlive(proxy2);
+
+        Assert.assertEquals(0, Neodymium.getWebDriverStateContainer().getUsedCount());
+
+        WebDriverStateContainer cachingContainer1 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
+        Assert.assertEquals(1, cachingContainer1.getUsedCount());
     }
 
     @Test
@@ -125,6 +132,11 @@ public class ValidateWebDriverReuseCounter
         Assert.assertNotEquals(proxy2, Neodymium.getLocalProxy());
         NeodymiumWebDriverTest.assertProxyAlive(proxy1);
         NeodymiumWebDriverTest.assertProxyAlive(proxy2);
+
+        Assert.assertEquals(1, Neodymium.getWebDriverStateContainer().getUsedCount());
+
+        WebDriverStateContainer cachingContainer2 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_1500x1000_headless");
+        Assert.assertEquals(1, cachingContainer2.getUsedCount());
     }
 
     @Test
@@ -140,6 +152,11 @@ public class ValidateWebDriverReuseCounter
         Assert.assertEquals(proxy2, Neodymium.getLocalProxy());
         NeodymiumWebDriverTest.assertProxyAlive(proxy1);
         NeodymiumWebDriverTest.assertProxyAlive(proxy2);
+
+        Assert.assertEquals(1, Neodymium.getWebDriverStateContainer().getUsedCount());
+
+        WebDriverStateContainer cachingContainer1 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
+        Assert.assertEquals(2, cachingContainer1.getUsedCount());
     }
 
     @Test
@@ -155,6 +172,11 @@ public class ValidateWebDriverReuseCounter
         Assert.assertNotEquals(proxy2, Neodymium.getLocalProxy());
         NeodymiumWebDriverTest.assertProxyAlive(proxy1);
         NeodymiumWebDriverTest.assertProxyAlive(proxy2);
+
+        Assert.assertEquals(2, Neodymium.getWebDriverStateContainer().getUsedCount());
+
+        WebDriverStateContainer cachingContainer2 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_1500x1000_headless");
+        Assert.assertEquals(2, cachingContainer2.getUsedCount());
     }
 
     @Test
@@ -163,13 +185,72 @@ public class ValidateWebDriverReuseCounter
     {
         Assert.assertNotEquals(webDriver1, Neodymium.getDriver());
         Assert.assertEquals(webDriver2, Neodymium.getDriver());
-        NeodymiumWebDriverTest.assertWebDriverAlive(webDriver1);
+        NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver2);
 
         Assert.assertNotEquals(proxy1, Neodymium.getLocalProxy());
         Assert.assertEquals(proxy2, Neodymium.getLocalProxy());
-        NeodymiumWebDriverTest.assertProxyAlive(proxy1);
+        NeodymiumWebDriverTest.assertProxyStopped(proxy1);
         NeodymiumWebDriverTest.assertProxyAlive(proxy2);
+
+        Assert.assertEquals(2, Neodymium.getWebDriverStateContainer().getUsedCount());
+    }
+
+    @Test
+    @Browser("Chrome_headless")
+    public void test7()
+    {
+        Assert.assertNotEquals(webDriver1, Neodymium.getDriver());
+        Assert.assertNotEquals(webDriver2, Neodymium.getDriver());
+        NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
+        NeodymiumWebDriverTest.assertWebDriverClosed(webDriver2);
+
+        Assert.assertNotEquals(proxy1, Neodymium.getLocalProxy());
+        Assert.assertNotEquals(proxy2, Neodymium.getLocalProxy());
+        NeodymiumWebDriverTest.assertProxyStopped(proxy1);
+        NeodymiumWebDriverTest.assertProxyStopped(proxy2);
+
+        Assert.assertEquals(0, Neodymium.getWebDriverStateContainer().getUsedCount());
+    }
+
+    @Test
+    @Browser("Chrome_1500x1000_headless")
+    public void test8()
+    {
+        Assert.assertNotEquals(webDriver1, Neodymium.getDriver());
+        Assert.assertNotEquals(webDriver2, Neodymium.getDriver());
+        NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
+        NeodymiumWebDriverTest.assertWebDriverClosed(webDriver2);
+
+        Assert.assertNotEquals(proxy1, Neodymium.getLocalProxy());
+        Assert.assertNotEquals(proxy2, Neodymium.getLocalProxy());
+        NeodymiumWebDriverTest.assertProxyStopped(proxy1);
+        NeodymiumWebDriverTest.assertProxyStopped(proxy2);
+
+        Assert.assertEquals(0, Neodymium.getWebDriverStateContainer().getUsedCount());
+
+        WebDriverStateContainer cachingContainer1 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
+        Assert.assertEquals(1, cachingContainer1.getUsedCount());
+    }
+
+    @Test
+    @Browser("Chrome_headless")
+    public void test9()
+    {
+        Assert.assertNotEquals(webDriver1, Neodymium.getDriver());
+        Assert.assertNotEquals(webDriver2, Neodymium.getDriver());
+        NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
+        NeodymiumWebDriverTest.assertWebDriverClosed(webDriver2);
+
+        Assert.assertNotEquals(proxy1, Neodymium.getLocalProxy());
+        Assert.assertNotEquals(proxy2, Neodymium.getLocalProxy());
+        NeodymiumWebDriverTest.assertProxyStopped(proxy1);
+        NeodymiumWebDriverTest.assertProxyStopped(proxy2);
+
+        Assert.assertEquals(1, Neodymium.getWebDriverStateContainer().getUsedCount());
+
+        WebDriverStateContainer cachingContainer2 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_1500x1000_headless");
+        Assert.assertEquals(1, cachingContainer2.getUsedCount());
     }
 
     @AfterClass
@@ -177,9 +258,9 @@ public class ValidateWebDriverReuseCounter
     {
         Assert.assertEquals(2, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
         WebDriverStateContainer cachingContainer1 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
-        Assert.assertEquals(3, cachingContainer1.getUsedCount());
+        Assert.assertEquals(2, cachingContainer1.getUsedCount());
         WebDriverStateContainer cachingContainer2 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_1500x1000_headless");
-        Assert.assertEquals(3, cachingContainer2.getUsedCount());
+        Assert.assertEquals(1, cachingContainer2.getUsedCount());
 
         NeodymiumTest.deleteTempFile(tempConfigFile);
         WebDriverCache.quitCachedBrowsers();
