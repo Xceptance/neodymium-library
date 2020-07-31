@@ -199,14 +199,13 @@ public class BrowserStatement extends StatementBuilder
         BrowserUpProxy proxy = webDriverStateContainer != null ? webDriverStateContainer.getProxy() : null;
 
         // keep browser open
-        if ((browserConfiguration != null && !browserConfiguration.isHeadless())
-            && ((Neodymium.configuration().keepBrowserOpenOnFailure() && testFailed) || Neodymium.configuration().keepBrowserOpen()))
+        if (keepOpen(testFailed, browserConfiguration))
         {
             LOGGER.debug("Keep browser open");
             // nothing to do
         }
         // reuse
-        else if (Neodymium.configuration().reuseWebDriver() && !preventReuse && isWebDriverStillOpen(webDriver))
+        else if (canReuse(preventReuse, webDriver, webDriverStateContainer))
         {
             LOGGER.debug("Put browser into cache");
             webDriverStateContainer.increaseUsesedCount();
@@ -236,6 +235,19 @@ public class BrowserStatement extends StatementBuilder
         Neodymium.setWebDriverStateContainer(null);
         Neodymium.setBrowserProfileName(null);
         Neodymium.setBrowserName(null);
+    }
+
+    private boolean keepOpen(boolean testFailed, BrowserConfiguration browserConfiguration)
+    {
+        return (browserConfiguration != null && !browserConfiguration.isHeadless())
+               && ((Neodymium.configuration().keepBrowserOpenOnFailure() && testFailed) || Neodymium.configuration().keepBrowserOpen());
+    }
+
+    private boolean canReuse(boolean preventReuse, WebDriver webDriver, WebDriverStateContainer webDriverStateContainer)
+    {
+        boolean maxReuseReached = (Neodymium.configuration().maxWebDriverReuse() > 0)
+                                  && (webDriverStateContainer.getUsedCount() >= Neodymium.configuration().maxWebDriverReuse());
+        return Neodymium.configuration().reuseWebDriver() && !preventReuse && !maxReuseReached && isWebDriverStillOpen(webDriver);
     }
 
     @Override
