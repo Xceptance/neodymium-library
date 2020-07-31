@@ -12,6 +12,6 @@ public class SoftAssertionTest extends NeodymiumTest
     public void validateSoftAssertion()
     {
         Result result = JUnitCore.runClasses(UseSoftAssertions.class);
-        checkFail(result, 1, 0, 1, null);
+        checkFail(result, 1, 0, 1);
     }
 }

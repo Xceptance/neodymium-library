@@ -1,8 +1,8 @@
 package com.xceptance.neodymium.tests;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -22,10 +22,10 @@ public class NeodymiumTestTest extends NeodymiumTest
     public void testCheckFailedOneFromOne() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
         final String errorMessage = "This is RuntimeException 1";
-        Result result = createResult(1, 0, new ArrayList<Throwable>()
+        Result result = createResult(1, 0, new HashMap<String, Throwable>()
         {
             {
-                this.add(new RuntimeException(errorMessage));
+                this.put(name.getMethodName() + "1", new RuntimeException(errorMessage));
             }
         });
         checkFail(result, 1, 0, 1, errorMessage);
@@ -35,38 +35,74 @@ public class NeodymiumTestTest extends NeodymiumTest
     public void testCheckFailedOneFromTwo() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
         final String errorMessage = "This is RuntimeException 1";
-        Result result = createResult(2, 0, new ArrayList<Throwable>()
+        Result result = createResult(2, 0, new HashMap<String, Throwable>()
         {
             {
-                this.add(new RuntimeException(errorMessage));
+                this.put(name.getMethodName() + "1", new RuntimeException("This is RuntimeException 1"));
             }
         });
         checkFail(result, 2, 0, 1, errorMessage);
     }
 
     @Test
-    public void testCheckFailedTwoFromTwo() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+    public void testCheckFailedTwoFromTwoNumber() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
-        Result result = createResult(2, 0, new ArrayList<Throwable>()
+        Result result = createResult(2, 0, new HashMap<String, Throwable>()
         {
             {
-                this.add(new RuntimeException("This is RuntimeException 1"));
-                this.add(new RuntimeException("This is RuntimeException 2"));
+                this.put(name.getMethodName() + "1", new RuntimeException("This is RuntimeException 1"));
+                this.put(name.getMethodName() + "2", new RuntimeException("This is RuntimeException 1"));
             }
         });
 
         // no assertion for failure message, as one is only possible for single fail
-        checkFail(result, 2, 0, 2, null);
+        checkFail(result, 2, 0, 2);
+    }
+
+    @Test
+    public void testCheckFailedTwoFromTwoOneFailureMessage() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+    {
+        Result result = createResult(2, 0, new HashMap<String, Throwable>()
+        {
+            {
+                this.put(name.getMethodName() + "1", new RuntimeException("This is RuntimeException 1"));
+                this.put(name.getMethodName() + "2", new RuntimeException("This is RuntimeException 1"));
+            }
+        });
+
+        // no assertion for failure message, as one is only possible for single fail
+        checkFail(result, 2, 0, 2, "This is RuntimeException 1");
+    }
+
+    @Test
+    public void testCheckFailedTwoFromTwoTwoFailureMessages() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+    {
+        Result result = createResult(2, 0, new HashMap<String, Throwable>()
+        {
+            {
+                this.put(name.getMethodName() + "1", new RuntimeException("This is RuntimeException 1"));
+                this.put(name.getMethodName() + "2", new RuntimeException("This is RuntimeException 2"));
+            }
+        });
+        HashMap<String, String> expectedFailureMessages = new HashMap<String, String>()
+        {
+            {
+                this.put(name.getMethodName() + "1", "This is RuntimeException 1");
+                this.put(name.getMethodName() + "2", "This is RuntimeException 2");
+            }
+        };
+        // no assertion for failure message, as one is only possible for single fail
+        checkFail(result, 2, 0, 2, expectedFailureMessages);
     }
 
     @Test
     public void testCheckOneFailedOneIgnoredFromTwo() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
         final String errorMessage = "This is RuntimeException 1";
-        Result result = createResult(2, 1, new ArrayList<Throwable>()
+        Result result = createResult(2, 1, new HashMap<String, Throwable>()
         {
             {
-                this.add(new RuntimeException(errorMessage));
+                this.put(name.getMethodName() + "1", new RuntimeException(errorMessage));
             }
         });
         checkFail(result, 2, 1, 1, errorMessage);
@@ -76,25 +112,25 @@ public class NeodymiumTestTest extends NeodymiumTest
     @Test
     public void testCheckPassedOneFromOne() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
-        Result result = createResult(1, 0, new ArrayList<Throwable>());
+        Result result = createResult(1, 0, null);
         checkPass(result, 1, 0);
     }
 
     @Test
     public void testCheckPassedTwoFromTwo() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
-        Result result = createResult(2, 0, new ArrayList<Throwable>());
+        Result result = createResult(2, 0, null);
         checkPass(result, 2, 0);
     }
 
     @Test
     public void testCheckOnePassedOneIgnoredFromTwo() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
-        Result result = createResult(2, 1, new ArrayList<Throwable>());
+        Result result = createResult(2, 1, null);
         checkPass(result, 2, 1);
     }
 
-    private Result createResult(int runCount, int ignoreCount, List<Throwable> failureCauses)
+    private Result createResult(int runCount, int ignoreCount, Map<String, Throwable> failureCauses)
         throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
         Result result = new Result();
@@ -109,14 +145,16 @@ public class NeodymiumTestTest extends NeodymiumTest
         countField.set(result, new AtomicInteger(runCount));
         ignoreCountField.set(result, new AtomicInteger(ignoreCount));
 
-        CopyOnWriteArrayList<Failure> failures = new CopyOnWriteArrayList<>();
-        for (Throwable failureCause : failureCauses)
+        if (failureCauses != null)
         {
-            Failure failure = new Failure(Description.createTestDescription(getClass(), name.getMethodName()), failureCause);
-            failures.add(failure);
+            CopyOnWriteArrayList<Failure> failures = new CopyOnWriteArrayList<>();
+            for (String testMethodName : failureCauses.keySet())
+            {
+                Failure failure = new Failure(Description.createTestDescription(getClass(), testMethodName), failureCauses.get(testMethodName));
+                failures.add(failure);
+            }
+            failuresField.set(result, failures);
         }
-        failuresField.set(result, failures);
-
         countField.setAccessible(false);
         ignoreCountField.setAccessible(false);
         failuresField.setAccessible(false);

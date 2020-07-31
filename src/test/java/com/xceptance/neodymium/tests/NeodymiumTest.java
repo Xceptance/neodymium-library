@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,7 @@ public abstract class NeodymiumTest
     }
 
     public void check(Result result, boolean expectedSuccessful, int expectedRunCount, int expectedIgnoreCount, int expectedFailCount,
-                      String expectedFailureMessage)
+                      Map<String, String> expectedFailureMessages)
     {
         String stackTrace = "";
         for (Failure failue : result.getFailures())
@@ -66,10 +67,10 @@ public abstract class NeodymiumTest
             Assert.assertEquals("Method run count", expectedRunCount, result.getRunCount());
             Assert.assertEquals("Method ignore count", expectedIgnoreCount, result.getIgnoreCount());
             Assert.assertEquals("Method fail count", expectedFailCount, result.getFailureCount());
-            if (expectedFailureMessage != null)
+            for (int i = 0; expectedFailureMessages != null && i < result.getFailures().size(); i++)
             {
-                Assert.assertTrue("Failure count", expectedFailCount == 1);
-                Assert.assertEquals("Failure message", expectedFailureMessage, result.getFailures().get(0).getMessage());
+                String methodName = result.getFailures().get(i).getDescription().getMethodName();
+                Assert.assertEquals("Failure message", expectedFailureMessages.get(methodName), result.getFailures().get(i).getMessage());
             }
         }
         catch (AssertionError e)
@@ -104,13 +105,55 @@ public abstract class NeodymiumTest
      *            expected number of ignored tests
      * @param expectedFailCount
      *            expected number of failed tests
+     */
+    public void checkFail(Result result, int expectedRunCount, int expectedIgnoreCount, int expectedFailCount)
+    {
+        check(result, false, expectedRunCount, expectedIgnoreCount, expectedFailCount, null);
+    }
+
+    /**
+     * Assert the are one or more failed tests in run
+     * 
+     * @param result
+     *            test result to make assertions on
+     * @param expectedRunCount
+     *            expected number of run tests (including ignored)
+     * @param expectedIgnoreCount
+     *            expected number of ignored tests
+     * @param expectedFailCount
+     *            expected number of failed tests
      * @param expectedFailureMessage
-     *            expected failure message (only possible to assert if expectedFailCount is equals 1)
+     *            expected failure message for all failures
      */
     public void checkFail(Result result, int expectedRunCount, int expectedIgnoreCount, int expectedFailCount,
                           String expectedFailureMessage)
     {
-        check(result, false, expectedRunCount, expectedIgnoreCount, expectedFailCount, expectedFailureMessage);
+        HashMap<String, String> expectedFailureMessages = new HashMap<String, String>();
+        for (Failure failure : result.getFailures())
+        {
+            expectedFailureMessages.put(failure.getDescription().getMethodName(), expectedFailureMessage);
+        }
+        check(result, false, expectedRunCount, expectedIgnoreCount, expectedFailCount, expectedFailureMessages);
+    }
+
+    /**
+     * Assert the are one or more failed tests in run
+     * 
+     * @param result
+     *            test result to make assertions on
+     * @param expectedRunCount
+     *            expected number of run tests (including ignored)
+     * @param expectedIgnoreCount
+     *            expected number of ignored tests
+     * @param expectedFailCount
+     *            expected number of failed tests
+     * @param expectedFailureMessages
+     *            Map with test method name as key and corresponding expected failure message as value
+     */
+    public void checkFail(Result result, int expectedRunCount, int expectedIgnoreCount, int expectedFailCount,
+                          Map<String, String> expectedFailureMessages)
+    {
+        check(result, false, expectedRunCount, expectedIgnoreCount, expectedFailCount, expectedFailureMessages);
     }
 
     public void checkDescription(Description testDescription, String[] expectedTestDescription)

@@ -65,7 +65,7 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     public void testValidateKeepWebDriverOpenOnFailure()
     {
         Result result = JUnitCore.runClasses(ValidateKeepWebDriverOpenOnFailure.class);
-        checkFail(result, 3, 0, 1, null);
+        checkFail(result, 3, 0, 1);
     }
 
     @Test
