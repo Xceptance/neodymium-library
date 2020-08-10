@@ -55,7 +55,7 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     }
 
     @Test
-    public void testValidateWebDriverMaxReuseWithTwoWebDriver()
+    public void testValidateWebDriverMaxReuseWithTwoWebDrivers()
     {
         Result result = JUnitCore.runClasses(ValidateWebDriverMaxReuseWithTwoWebDrivers.class);
         checkPass(result, 9, 0, 0);

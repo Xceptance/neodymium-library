@@ -21,6 +21,9 @@ import com.xceptance.neodymium.tests.NeodymiumTest;
 import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
+/*
+ * Validate that web driver instances are reused once and closed after their second use within a test function is finished.
+ */
 @RunWith(NeodymiumRunner.class)
 public class ValidateWebDriverMaxReuse
 {
@@ -174,6 +177,12 @@ public class ValidateWebDriverMaxReuse
         Assert.assertEquals(1, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
         WebDriverStateContainer wDSContainer = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
         Assert.assertEquals(1, wDSContainer.getUsedCount());
+
+        NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
+        NeodymiumWebDriverTest.assertWebDriverClosed(webDriver2);
+        NeodymiumWebDriverTest.assertWebDriverClosed(webDriver3);
+        NeodymiumWebDriverTest.assertWebDriverClosed(webDriver4);
+        NeodymiumWebDriverTest.assertWebDriverAlive(webDriver5);
 
         NeodymiumTest.deleteTempFile(tempConfigFile);
         WebDriverCache.quitCachedBrowsers();

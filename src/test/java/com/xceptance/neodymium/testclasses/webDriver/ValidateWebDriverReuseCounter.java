@@ -22,6 +22,9 @@ import com.xceptance.neodymium.tests.NeodymiumTest;
 import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
+/*
+ * Validate that the reuse of a web driver is counted correctly.
+ */
 @RunWith(NeodymiumRunner.class)
 public class ValidateWebDriverReuseCounter
 {
@@ -95,6 +98,8 @@ public class ValidateWebDriverReuseCounter
         Assert.assertNotNull(proxy1);
         Assert.assertNull(proxy2);
         NeodymiumWebDriverTest.assertProxyAlive(proxy1);
+
+        Assert.assertEquals(0, Neodymium.getWebDriverStateContainer().getUsedCount());
     }
 
     @Test
@@ -110,6 +115,8 @@ public class ValidateWebDriverReuseCounter
         Assert.assertEquals(proxy2, Neodymium.getLocalProxy());
         NeodymiumWebDriverTest.assertProxyAlive(proxy1);
         NeodymiumWebDriverTest.assertProxyAlive(proxy2);
+
+        Assert.assertEquals(0, Neodymium.getWebDriverStateContainer().getUsedCount());
     }
 
     @Test
@@ -125,6 +132,8 @@ public class ValidateWebDriverReuseCounter
         Assert.assertNotEquals(proxy2, Neodymium.getLocalProxy());
         NeodymiumWebDriverTest.assertProxyAlive(proxy1);
         NeodymiumWebDriverTest.assertProxyAlive(proxy2);
+
+        Assert.assertEquals(1, Neodymium.getWebDriverStateContainer().getUsedCount());
     }
 
     @Test
@@ -140,6 +149,8 @@ public class ValidateWebDriverReuseCounter
         Assert.assertEquals(proxy2, Neodymium.getLocalProxy());
         NeodymiumWebDriverTest.assertProxyAlive(proxy1);
         NeodymiumWebDriverTest.assertProxyAlive(proxy2);
+
+        Assert.assertEquals(1, Neodymium.getWebDriverStateContainer().getUsedCount());
     }
 
     @Test
@@ -155,6 +166,8 @@ public class ValidateWebDriverReuseCounter
         Assert.assertNotEquals(proxy2, Neodymium.getLocalProxy());
         NeodymiumWebDriverTest.assertProxyAlive(proxy1);
         NeodymiumWebDriverTest.assertProxyAlive(proxy2);
+
+        Assert.assertEquals(2, Neodymium.getWebDriverStateContainer().getUsedCount());
     }
 
     @Test
@@ -170,6 +183,8 @@ public class ValidateWebDriverReuseCounter
         Assert.assertEquals(proxy2, Neodymium.getLocalProxy());
         NeodymiumWebDriverTest.assertProxyAlive(proxy1);
         NeodymiumWebDriverTest.assertProxyAlive(proxy2);
+
+        Assert.assertEquals(2, Neodymium.getWebDriverStateContainer().getUsedCount());
     }
 
     @AfterClass

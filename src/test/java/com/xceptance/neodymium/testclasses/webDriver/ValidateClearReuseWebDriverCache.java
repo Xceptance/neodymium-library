@@ -22,6 +22,17 @@ import com.xceptance.neodymium.tests.NeodymiumTest;
 import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
+/*
+ * Validate that the web driver cache can be cleared manually. 
+ * 
+ * Scenario: 
+ *   setup and use the driver 
+ *   reuse the first driver
+ *   create another driver
+ *   validate that the two drivers are in the cache
+ *   clear the cache
+ *   validate the cache is empty
+ */
 @RunWith(NeodymiumRunner.class)
 public class ValidateClearReuseWebDriverCache
 {

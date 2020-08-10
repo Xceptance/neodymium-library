@@ -23,6 +23,10 @@ import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 import com.xceptance.neodymium.util.WebDriverUtils;
 
+/*
+ * Validate that the reuse of a web driver could be prevented programmatically.
+ * Validate that the other web driver is not reused.
+ */
 @RunWith(NeodymiumRunner.class)
 public class ValidatePreventReuseWebDriver
 {
@@ -152,6 +156,7 @@ public class ValidatePreventReuseWebDriver
     @After
     public void after()
     {
+        // prevent the reuse of the web driver after the first the method was executed
         if (webDriver2 == null)
         {
             WebDriverUtils.preventReuseAndTearDown();

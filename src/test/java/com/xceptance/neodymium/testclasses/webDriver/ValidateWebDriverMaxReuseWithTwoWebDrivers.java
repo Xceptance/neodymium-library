@@ -22,6 +22,9 @@ import com.xceptance.neodymium.tests.NeodymiumTest;
 import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
+/*
+ * Validate that the reuse feature still works when there is more then one browser state within the cache.
+ */
 @RunWith(NeodymiumRunner.class)
 public class ValidateWebDriverMaxReuseWithTwoWebDrivers
 {

@@ -23,6 +23,10 @@ import com.xceptance.neodymium.tests.NeodymiumTest;
 import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
+/*
+ * Validate that a web driver can be reused.
+ * This is the minimal test setup for this feature. 
+ */
 @RunWith(NeodymiumRunner.class)
 public class ValidateReuseWebDriver
 {
