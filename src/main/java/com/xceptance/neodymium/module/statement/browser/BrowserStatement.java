@@ -208,7 +208,7 @@ public class BrowserStatement extends StatementBuilder
         else if (canReuse(preventReuse, webDriver, webDriverStateContainer))
         {
             LOGGER.debug("Put browser into cache");
-            webDriverStateContainer.increaseUsesedCount();
+            webDriverStateContainer.incrementUsedCount();
             WebDriverCache.instance.putWebDriverStateContainer(browserTag, webDriverStateContainer);
         }
         // close the WebDriver

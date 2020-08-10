@@ -12,10 +12,6 @@ public class WebDriverStateContainer
 
     private BrowserUpProxy proxy;
 
-    public WebDriverStateContainer()
-    {
-    }
-
     public WebDriver getWebDriver()
     {
         return webDriver;
@@ -41,7 +37,7 @@ public class WebDriverStateContainer
         return usedCount;
     }
 
-    public void increaseUsesedCount()
+    public void incrementUsedCount()
     {
         usedCount++;
     }
