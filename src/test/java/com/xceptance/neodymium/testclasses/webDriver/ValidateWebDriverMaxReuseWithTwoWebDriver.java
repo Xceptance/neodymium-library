@@ -115,8 +115,8 @@ public class ValidateWebDriverMaxReuseWithTwoWebDriver
 
         Assert.assertEquals(0, Neodymium.getWebDriverStateContainer().getUsedCount());
 
-        WebDriverStateContainer cachingContainer1 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
-        Assert.assertEquals(1, cachingContainer1.getUsedCount());
+        WebDriverStateContainer wDSContainer = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
+        Assert.assertEquals(1, wDSContainer.getUsedCount());
     }
 
     @Test
@@ -135,8 +135,8 @@ public class ValidateWebDriverMaxReuseWithTwoWebDriver
 
         Assert.assertEquals(1, Neodymium.getWebDriverStateContainer().getUsedCount());
 
-        WebDriverStateContainer cachingContainer2 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_1500x1000_headless");
-        Assert.assertEquals(1, cachingContainer2.getUsedCount());
+        WebDriverStateContainer wDSContainer = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_1500x1000_headless");
+        Assert.assertEquals(1, wDSContainer.getUsedCount());
     }
 
     @Test
@@ -155,8 +155,8 @@ public class ValidateWebDriverMaxReuseWithTwoWebDriver
 
         Assert.assertEquals(1, Neodymium.getWebDriverStateContainer().getUsedCount());
 
-        WebDriverStateContainer cachingContainer1 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
-        Assert.assertEquals(2, cachingContainer1.getUsedCount());
+        WebDriverStateContainer wDSContainer = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
+        Assert.assertEquals(2, wDSContainer.getUsedCount());
     }
 
     @Test
@@ -175,8 +175,8 @@ public class ValidateWebDriverMaxReuseWithTwoWebDriver
 
         Assert.assertEquals(2, Neodymium.getWebDriverStateContainer().getUsedCount());
 
-        WebDriverStateContainer cachingContainer2 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_1500x1000_headless");
-        Assert.assertEquals(2, cachingContainer2.getUsedCount());
+        WebDriverStateContainer wDSContainer = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_1500x1000_headless");
+        Assert.assertEquals(2, wDSContainer.getUsedCount());
     }
 
     @Test
@@ -229,8 +229,8 @@ public class ValidateWebDriverMaxReuseWithTwoWebDriver
 
         Assert.assertEquals(0, Neodymium.getWebDriverStateContainer().getUsedCount());
 
-        WebDriverStateContainer cachingContainer1 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
-        Assert.assertEquals(1, cachingContainer1.getUsedCount());
+        WebDriverStateContainer wDSContainer = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
+        Assert.assertEquals(1, wDSContainer.getUsedCount());
     }
 
     @Test
@@ -249,18 +249,18 @@ public class ValidateWebDriverMaxReuseWithTwoWebDriver
 
         Assert.assertEquals(1, Neodymium.getWebDriverStateContainer().getUsedCount());
 
-        WebDriverStateContainer cachingContainer2 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_1500x1000_headless");
-        Assert.assertEquals(1, cachingContainer2.getUsedCount());
+        WebDriverStateContainer wDSContainer = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_1500x1000_headless");
+        Assert.assertEquals(1, wDSContainer.getUsedCount());
     }
 
     @AfterClass
     public static void afterClass()
     {
         Assert.assertEquals(2, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
-        WebDriverStateContainer cachingContainer1 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
-        Assert.assertEquals(2, cachingContainer1.getUsedCount());
-        WebDriverStateContainer cachingContainer2 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_1500x1000_headless");
-        Assert.assertEquals(1, cachingContainer2.getUsedCount());
+        WebDriverStateContainer wDSContainer1 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
+        Assert.assertEquals(2, wDSContainer1.getUsedCount());
+        WebDriverStateContainer wDSContainer2 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_1500x1000_headless");
+        Assert.assertEquals(1, wDSContainer2.getUsedCount());
 
         NeodymiumTest.deleteTempFile(tempConfigFile);
         WebDriverCache.quitCachedBrowsers();

@@ -176,10 +176,10 @@ public class ValidateWebDriverReuseCounter
     public static void afterClass()
     {
         Assert.assertEquals(2, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
-        WebDriverStateContainer cachingContainer1 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
-        Assert.assertEquals(3, cachingContainer1.getUsedCount());
-        WebDriverStateContainer cachingContainer2 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_1500x1000_headless");
-        Assert.assertEquals(3, cachingContainer2.getUsedCount());
+        WebDriverStateContainer wDSContainer1 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
+        Assert.assertEquals(3, wDSContainer1.getUsedCount());
+        WebDriverStateContainer wDSContainer2 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_1500x1000_headless");
+        Assert.assertEquals(3, wDSContainer2.getUsedCount());
 
         NeodymiumTest.deleteTempFile(tempConfigFile);
         WebDriverCache.quitCachedBrowsers();

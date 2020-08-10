@@ -172,8 +172,8 @@ public class ValidateWebDriverMaxReuse
     public static void afterClass()
     {
         Assert.assertEquals(1, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
-        WebDriverStateContainer cachingContainer1 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
-        Assert.assertEquals(1, cachingContainer1.getUsedCount());
+        WebDriverStateContainer wDSContainer = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
+        Assert.assertEquals(1, wDSContainer.getUsedCount());
 
         NeodymiumTest.deleteTempFile(tempConfigFile);
         WebDriverCache.quitCachedBrowsers();
