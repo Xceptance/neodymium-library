@@ -195,8 +195,6 @@ public class BrowserStatement extends StatementBuilder
     public void teardown(boolean testFailed, boolean preventReuse, WebDriverStateContainer webDriverStateContainer)
     {
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(Neodymium.getBrowserProfileName());
-        WebDriver webDriver = webDriverStateContainer.getWebDriver();
-        BrowserUpProxy proxy = webDriverStateContainer != null ? webDriverStateContainer.getProxy() : null;
 
         // keep browser open
         if (keepOpen(testFailed, browserConfiguration))
@@ -205,7 +203,7 @@ public class BrowserStatement extends StatementBuilder
             // nothing to do
         }
         // reuse
-        else if (canReuse(preventReuse, webDriver, webDriverStateContainer))
+        else if (canReuse(preventReuse, webDriverStateContainer))
         {
             LOGGER.debug("Put browser into cache");
             webDriverStateContainer.incrementUsedCount();
@@ -215,10 +213,13 @@ public class BrowserStatement extends StatementBuilder
         else
         {
             LOGGER.debug("Teardown browser");
+            WebDriver webDriver = webDriverStateContainer.getWebDriver();
             if (webDriver != null)
             {
                 webDriver.quit();
             }
+
+            BrowserUpProxy proxy = webDriverStateContainer != null ? webDriverStateContainer.getProxy() : null;
             if (proxy != null)
             {
                 try
@@ -243,11 +244,11 @@ public class BrowserStatement extends StatementBuilder
                && ((Neodymium.configuration().keepBrowserOpenOnFailure() && testFailed) || Neodymium.configuration().keepBrowserOpen());
     }
 
-    private boolean canReuse(boolean preventReuse, WebDriver webDriver, WebDriverStateContainer webDriverStateContainer)
+    private boolean canReuse(boolean preventReuse, WebDriverStateContainer webDriverStateContainer)
     {
         boolean maxReuseReached = (Neodymium.configuration().maxWebDriverReuse() > 0)
                                   && (webDriverStateContainer.getUsedCount() >= Neodymium.configuration().maxWebDriverReuse());
-        return Neodymium.configuration().reuseWebDriver() && !preventReuse && !maxReuseReached && isWebDriverStillOpen(webDriver);
+        return Neodymium.configuration().reuseWebDriver() && !preventReuse && !maxReuseReached && isWebDriverStillOpen(webDriverStateContainer.getWebDriver());
     }
 
     @Override
