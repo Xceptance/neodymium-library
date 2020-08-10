@@ -23,7 +23,7 @@ import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
 @RunWith(NeodymiumRunner.class)
-public class ValidateWebDriverMaxReuseWithTwoWebDriver
+public class ValidateWebDriverMaxReuseWithTwoWebDrivers
 {
     private static WebDriver webDriver1;
 
