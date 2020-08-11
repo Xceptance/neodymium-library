@@ -15,6 +15,7 @@ import com.browserup.bup.BrowserUpProxy;
 import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverStateContainer;
 
 /**
  * See our Github wiki: <a href="https://github.com/Xceptance/neodymium-library/wiki/Neodymium-context">Neodymium
@@ -27,11 +28,8 @@ public class Neodymium
 {
     private static final Map<Thread, Neodymium> CONTEXTS = Collections.synchronizedMap(new WeakHashMap<>());
 
-    // keep our local proxy if created
-    private BrowserUpProxy browserUpProxy;
-
-    // keep our current driver
-    private WebDriver driver;
+    // keep our current WebDriver state
+    private WebDriverStateContainer webDriverStateContainer;
 
     // keep our current browser profile name
     private String browserProfileName;
@@ -133,9 +131,19 @@ public class Neodymium
         return getContext().configuration;
     }
 
+    public static void setWebDriverStateContainer(WebDriverStateContainer webDriverStateContainer)
+    {
+        getContext().webDriverStateContainer = webDriverStateContainer;
+    }
+
+    public static WebDriverStateContainer getWebDriverStateContainer()
+    {
+        return getContext().webDriverStateContainer;
+    }
+
     public static WebDriver getDriver()
     {
-        return getContext().driver;
+        return getContext().webDriverStateContainer != null ? getContext().webDriverStateContainer.getWebDriver() : null;
     }
 
     public static EventFiringWebDriver getEventFiringWebdriver()
@@ -148,19 +156,9 @@ public class Neodymium
         return (RemoteWebDriver) getEventFiringWebdriver().getWrappedDriver();
     }
 
-    public static void setDriver(WebDriver driver)
-    {
-        getContext().driver = driver;
-    }
-
     public static BrowserUpProxy getLocalProxy()
     {
-        return getContext().browserUpProxy;
-    }
-
-    public static BrowserUpProxy setLocalProxy(BrowserUpProxy browserUpProxy)
-    {
-        return getContext().browserUpProxy = browserUpProxy;
+        return getContext().webDriverStateContainer != null ? getContext().webDriverStateContainer.getProxy() : null;
     }
 
     public static String getBrowserProfileName()
@@ -396,4 +394,5 @@ public class Neodymium
         }
         return false;
     }
+
 }

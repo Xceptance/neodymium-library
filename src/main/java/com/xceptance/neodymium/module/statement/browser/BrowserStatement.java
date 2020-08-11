@@ -26,9 +26,9 @@ import com.xceptance.neodymium.NeodymiumWebDriverListener;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.BrowserRunnerHelper;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.CachingContainer;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowsers;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverStateContainer;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.util.Neodymium;
@@ -49,9 +49,7 @@ public class BrowserStatement extends StatementBuilder
 
     private MultibrowserConfiguration multibrowserConfiguration = MultibrowserConfiguration.getInstance();
 
-    private WebDriver webdriver;
-
-    private BrowserUpProxy proxy;
+    private WebDriverStateContainer wDSCont;
 
     public BrowserStatement()
     {
@@ -128,7 +126,7 @@ public class BrowserStatement extends StatementBuilder
      */
     public void setUpTest(String browserTag)
     {
-        webdriver = null;
+        wDSCont = null;
         this.browserTag = browserTag;
         LOGGER.debug("Create browser for name: " + browserTag);
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(browserTag);
@@ -138,22 +136,20 @@ public class BrowserStatement extends StatementBuilder
             // try to find appropriate web driver in cache before create a new instance
             if (Neodymium.configuration().reuseWebDriver())
             {
-                CachingContainer container = WebDriverCache.instance.getRemoveWebDriverAndProxy(browserConfiguration.getConfigTag());
-                webdriver = container != null ? container.getWebDriver() : null;
-                proxy = container != null ? container.getProxy() : null;
-                if (webdriver != null)
+                wDSCont = WebDriverCache.instance.removeWebDriverStateContainerByBrowserTag(browserConfiguration.getConfigTag());
+                if (wDSCont != null && wDSCont.getWebDriver() != null)
                 {
-                    webdriver.manage().deleteAllCookies();
+                    wDSCont.getWebDriver().manage().deleteAllCookies();
                 }
             }
 
-            if (webdriver == null)
+            if (wDSCont == null)
             {
                 LOGGER.debug("Create new browser instance");
-                CachingContainer container = BrowserRunnerHelper.createWebdriver(browserConfiguration);
-                webdriver = new EventFiringWebDriver(container.getWebDriver());
-                proxy = container.getProxy();
-                ((EventFiringWebDriver) webdriver).register(new NeodymiumWebDriverListener());
+                wDSCont = BrowserRunnerHelper.createWebdriver(browserConfiguration);
+                EventFiringWebDriver eFWDriver = new EventFiringWebDriver(wDSCont.getWebDriver());
+                eFWDriver.register(new NeodymiumWebDriverListener());
+                wDSCont.setWebDriver(eFWDriver);
             }
             else
             {
@@ -164,13 +160,12 @@ public class BrowserStatement extends StatementBuilder
         {
             throw new RuntimeException("An error occurred during URL creation. See nested exception.", e);
         }
-        if (webdriver != null)
+        if (wDSCont != null)
         {
             // set browser window size
-            BrowserRunnerHelper.setBrowserWindowSize(browserConfiguration, webdriver);
-            WebDriverRunner.setWebDriver(webdriver);
-            Neodymium.setDriver(webdriver);
-            Neodymium.setLocalProxy(proxy);
+            BrowserRunnerHelper.setBrowserWindowSize(browserConfiguration, wDSCont.getWebDriver());
+            WebDriverRunner.setWebDriver(wDSCont.getWebDriver());
+            Neodymium.setWebDriverStateContainer(wDSCont);
             Neodymium.setBrowserProfileName(browserConfiguration.getConfigTag());
             Neodymium.setBrowserName(browserConfiguration.getCapabilities().getBrowserName());
 
@@ -194,34 +189,37 @@ public class BrowserStatement extends StatementBuilder
 
     public void teardown(boolean testFailed)
     {
-        teardown(testFailed, false, webdriver, proxy);
+        teardown(testFailed, false, wDSCont);
     }
 
-    public void teardown(boolean testFailed, boolean preventReuse, WebDriver webDriver, BrowserUpProxy proxy)
+    public void teardown(boolean testFailed, boolean preventReuse, WebDriverStateContainer webDriverStateContainer)
     {
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(Neodymium.getBrowserProfileName());
 
         // keep browser open
-        if ((browserConfiguration != null && !browserConfiguration.isHeadless())
-            && ((Neodymium.configuration().keepBrowserOpenOnFailure() && testFailed) || Neodymium.configuration().keepBrowserOpen()))
+        if (keepOpen(testFailed, browserConfiguration))
         {
             LOGGER.debug("Keep browser open");
             // nothing to do
         }
         // reuse
-        else if (Neodymium.configuration().reuseWebDriver() && !preventReuse && isWebDriverStillOpen(webDriver))
+        else if (canReuse(preventReuse, webDriverStateContainer))
         {
             LOGGER.debug("Put browser into cache");
-            WebDriverCache.instance.putWebDriverAndProxy(browserTag, webDriver, proxy);
+            webDriverStateContainer.incrementUsedCount();
+            WebDriverCache.instance.putWebDriverStateContainer(browserTag, webDriverStateContainer);
         }
         // close the WebDriver
         else
         {
             LOGGER.debug("Teardown browser");
+            WebDriver webDriver = webDriverStateContainer.getWebDriver();
             if (webDriver != null)
             {
                 webDriver.quit();
             }
+
+            BrowserUpProxy proxy = webDriverStateContainer != null ? webDriverStateContainer.getProxy() : null;
             if (proxy != null)
             {
                 try
@@ -235,10 +233,22 @@ public class BrowserStatement extends StatementBuilder
             }
         }
 
-        Neodymium.setDriver(null);
-        Neodymium.setLocalProxy(null);
+        Neodymium.setWebDriverStateContainer(null);
         Neodymium.setBrowserProfileName(null);
         Neodymium.setBrowserName(null);
+    }
+
+    private boolean keepOpen(boolean testFailed, BrowserConfiguration browserConfiguration)
+    {
+        return (browserConfiguration != null && !browserConfiguration.isHeadless())
+               && ((Neodymium.configuration().keepBrowserOpenOnFailure() && testFailed) || Neodymium.configuration().keepBrowserOpen());
+    }
+
+    private boolean canReuse(boolean preventReuse, WebDriverStateContainer webDriverStateContainer)
+    {
+        boolean maxReuseReached = (Neodymium.configuration().maxWebDriverReuse() > 0)
+                                  && (webDriverStateContainer.getUsedCount() >= Neodymium.configuration().maxWebDriverReuse());
+        return Neodymium.configuration().reuseWebDriver() && !preventReuse && !maxReuseReached && isWebDriverStillOpen(webDriverStateContainer.getWebDriver());
     }
 
     @Override

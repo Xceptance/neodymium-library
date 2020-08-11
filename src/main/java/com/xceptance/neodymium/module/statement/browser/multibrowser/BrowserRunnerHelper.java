@@ -185,10 +185,10 @@ public final class BrowserRunnerHelper
      *             if <a href="https://github.com/Xceptance/neodymium-library/wiki/Selenium-grid">Selenium grid</a> is
      *             used and the given grid URL is invalid
      */
-    public static CachingContainer createWebdriver(final BrowserConfiguration config) throws MalformedURLException
+    public static WebDriverStateContainer createWebdriver(final BrowserConfiguration config) throws MalformedURLException
     {
         final MutableCapabilities capabilities = config.getCapabilities();
-        final CachingContainer container = new CachingContainer();
+        final WebDriverStateContainer container = new WebDriverStateContainer();
 
         if (Neodymium.configuration().useLocalProxy())
         {

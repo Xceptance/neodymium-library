@@ -20,6 +20,9 @@ import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpenOn
 import com.xceptance.neodymium.testclasses.webDriver.ValidatePreventReuseWebDriver;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateReuseWebDriver;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateWebDriverClosed;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateWebDriverMaxReuse;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateWebDriverMaxReuseWithTwoWebDrivers;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateWebDriverReuseCounter;
 
 public class NeodymiumWebDriverTest extends NeodymiumTest
 {
@@ -33,23 +36,41 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidateReuseWebDriver()
     {
-        // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateReuseWebDriver.class);
         checkPass(result, 2, 0, 0);
     }
 
     @Test
+    public void testValidateWebDriverReuseCounter()
+    {
+        Result result = JUnitCore.runClasses(ValidateWebDriverReuseCounter.class);
+        checkPass(result, 6, 0, 0);
+    }
+
+    @Test
+    public void testValidateWebDriverMaxReuse()
+    {
+        Result result = JUnitCore.runClasses(ValidateWebDriverMaxReuse.class);
+        checkPass(result, 5, 0, 0);
+    }
+
+    @Test
+    public void testValidateWebDriverMaxReuseWithTwoWebDrivers()
+    {
+        Result result = JUnitCore.runClasses(ValidateWebDriverMaxReuseWithTwoWebDrivers.class);
+        checkPass(result, 9, 0, 0);
+    }
+
+    @Test
     public void testValidateClearReuseWebDriverCache()
     {
-        // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateClearReuseWebDriverCache.class);
-        checkPass(result, 2, 0, 0);
+        checkPass(result, 3, 0, 0);
     }
 
     @Test
     public void testValidatePreventReuseWebDriver()
     {
-        // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidatePreventReuseWebDriver.class);
         checkPass(result, 3, 0, 0);
     }
@@ -57,6 +78,7 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidateKeepWebDriverOpen()
     {
+        // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateKeepWebDriverOpen.class);
         checkPass(result, 2, 0, 0);
     }
@@ -64,6 +86,7 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidateKeepWebDriverOpenOnFailure()
     {
+        // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateKeepWebDriverOpenOnFailure.class);
         checkFail(result, 3, 0, 1, null);
     }
