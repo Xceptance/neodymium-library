@@ -108,6 +108,8 @@ public class DebugUtilsTest
         Neodymium.configuration().setProperty("neodymium.debugUtils.highlight.duration", "750");
 
         Selenide.open("https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_select");
+        $("#snigel-cmp-framework #accept-choices").click();
+
         Neodymium.getDriver().switchTo().frame("iframeResult");
 
         SelenideElement body = $("body");
