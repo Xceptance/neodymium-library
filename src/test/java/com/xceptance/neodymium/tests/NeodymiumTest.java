@@ -9,13 +9,13 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 
-import com.google.common.base.Joiner;
 import com.xceptance.neodymium.NeodymiumRunner;
 
 public abstract class NeodymiumTest
@@ -107,10 +107,12 @@ public abstract class NeodymiumTest
     {
         try
         {
-            String join = Joiner.on("\r\n").withKeyValueSeparator("=").join(map);
+            String propertiesString = map.keySet().stream()
+                                         .map(key -> key + "=" + map.get(key))
+                                         .collect(Collectors.joining("\r\n"));
 
             FileOutputStream outputStream = new FileOutputStream(file);
-            outputStream.write(join.getBytes());
+            outputStream.write(propertiesString.getBytes());
             outputStream.close();
         }
         catch (Exception e)
