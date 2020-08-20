@@ -537,4 +537,14 @@ public class SelenideAddonsTest
         SelenideAddons.dragAndDropUntilCondition(elementToMove, elementToCheck, horizontalMovement, 0, 3000, 10,
                                                  Condition.attribute(sliderValueAttributeName, moveUntil));
     }
+
+    @Test
+    public void testOpenHtmlContentWithCurrentWebDriver()
+    {
+        final String text = "Hi\n\nHow are you?)\n\nBye";
+        final String textHtml = "<div dir=\"auto\">Hi<div dir=\"auto\"><br></div><div dir=\"auto\">How are you?)</div><div dir=\"auto\"><br></div><div dir=\"auto\">Bye</div></div>";
+
+        SelenideAddons.openHtmlContentWithCurrentWebDriver(textHtml);
+        Assert.assertEquals(text, $("body").getText());
+    }
 }
