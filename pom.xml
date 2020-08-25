@@ -51,8 +51,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source.version>1.8</maven.compiler.source.version>
-		<maven.compiler.target.version>1.8</maven.compiler.target.version>
+		<maven.compiler.source.version>11</maven.compiler.source.version>
+		<maven.compiler.target.version>11</maven.compiler.target.version>
 		<surefire.version>2.22.2</surefire.version>
 		<allure.version>2.13.3</allure.version>
 		<cucumber.version>5.7.0</cucumber.version>
@@ -135,6 +135,7 @@
 				</executions>
 				<configuration>
 					<source>8</source>
+					<detectJavaApiLink>false</detectJavaApiLink>
 				</configuration>
 			</plugin>
 		</plugins>
