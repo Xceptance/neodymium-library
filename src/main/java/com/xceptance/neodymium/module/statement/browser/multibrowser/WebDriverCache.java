@@ -26,7 +26,7 @@ public class WebDriverCache
 
     public static final WebDriverCache instance = new WebDriverCache();
 
-    private static final Map<String, WebDriverStateContainer> cache = Collections.synchronizedMap(new HashMap<>());
+    private final Map<String, WebDriverStateContainer> cache = Collections.synchronizedMap(new HashMap<>());
 
     /**
      * The private constructor of the {@link WebDriverCache}. Creates the synchronized {@link HashMap} instance and
@@ -158,7 +158,7 @@ public class WebDriverCache
      **/
     public static void quitCachedBrowsers()
     {
-        for (Iterator<Entry<String, WebDriverStateContainer>> iterator = cache.entrySet().iterator(); iterator.hasNext();)
+        for (Iterator<Entry<String, WebDriverStateContainer>> iterator = instance.cache.entrySet().iterator(); iterator.hasNext();)
         {
             WebDriverStateContainer cont = iterator.next().getValue();
             try
