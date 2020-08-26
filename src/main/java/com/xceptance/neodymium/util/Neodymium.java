@@ -143,7 +143,8 @@ public class Neodymium
 
     public static WebDriver getDriver()
     {
-        return getContext().webDriverStateContainer != null ? getContext().webDriverStateContainer.getWebDriver() : null;
+        final WebDriverStateContainer wDSC = getContext().webDriverStateContainer;
+        return wDSC == null ? null : wDSC.getWebDriver();
     }
 
     public static EventFiringWebDriver getEventFiringWebdriver()
@@ -158,7 +159,8 @@ public class Neodymium
 
     public static BrowserUpProxy getLocalProxy()
     {
-        return getContext().webDriverStateContainer != null ? getContext().webDriverStateContainer.getProxy() : null;
+        final WebDriverStateContainer wDSC = getContext().webDriverStateContainer;
+        return wDSC == null ? null : wDSC.getProxy();
     }
 
     public static String getBrowserProfileName()

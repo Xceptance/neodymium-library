@@ -4,9 +4,7 @@ import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.sleep;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -458,21 +456,7 @@ public class SelenideAddons
      */
     public static void openHtmlContentWithCurrentWebDriver(String htmlContent)
     {
-        File tempHtmlContentFile = null;
-        try
-        {
-            tempHtmlContentFile = File.createTempFile("htmlContent", ".html", new File("./target/"));
-            tempHtmlContentFile.deleteOnExit();
-
-            FileWriter fileWriter;
-            fileWriter = new FileWriter(tempHtmlContentFile);
-            fileWriter.append(htmlContent);
-            fileWriter.close();
-        }
-        catch (final IOException e)
-        {
-            e.printStackTrace();
-        }
-        open("file://" + tempHtmlContentFile.getAbsolutePath());
+        String encodedStuff = Base64.getEncoder().encodeToString(htmlContent.getBytes());
+        open("data:text/html;charset=utf-8;base64," + encodedStuff);
     }
 }
