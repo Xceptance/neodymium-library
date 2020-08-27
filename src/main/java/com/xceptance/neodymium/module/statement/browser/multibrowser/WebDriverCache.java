@@ -2,7 +2,6 @@ package com.xceptance.neodymium.module.statement.browser.multibrowser;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -158,15 +157,13 @@ public class WebDriverCache
      **/
     public static void quitCachedBrowsers()
     {
-        for (Iterator<Entry<String, WebDriverStateContainer>> iterator = instance.cache.entrySet().iterator(); iterator.hasNext();)
-        {
-            WebDriverStateContainer cont = iterator.next().getValue();
+        instance.cache.values().forEach((wDSC) -> {
             try
             {
-                WebDriver wd = cont.getWebDriver();
-                LOGGER.debug("Quit web driver: " + wd.toString());
-                wd.quit();
-                BrowserUpProxy proxy = cont.getProxy();
+                WebDriver webDriver = wDSC.getWebDriver();
+                LOGGER.debug("Quit web driver: " + webDriver.toString());
+                webDriver.quit();
+                BrowserUpProxy proxy = wDSC.getProxy();
                 if (proxy != null)
                 {
                     proxy.stop();
@@ -176,8 +173,7 @@ public class WebDriverCache
             {
                 LOGGER.debug("Error on quitting web driver", e);
             }
-
-            iterator.remove();
-        }
+        });
+        instance.cache.clear();
     }
 }
