@@ -98,7 +98,7 @@ public class WebDriverCache
      * and returns the stored {@link WebDriverStateContainer} instance if found.
      * 
      * @param browserTag
-     *            The String used in {@link Browser} to reference a browser configuration
+     *            the String used in {@link Browser} to reference a browser configuration
      * @return {@link WebDriverStateContainer} if found, else <code>null</code>
      */
     public WebDriverStateContainer getWebDriverStateContainerByBrowserTag(String browserTag)
