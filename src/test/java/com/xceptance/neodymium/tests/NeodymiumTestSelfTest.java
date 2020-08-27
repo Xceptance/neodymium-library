@@ -13,7 +13,7 @@ import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
-public class NeodymiumTestTest extends NeodymiumTest
+public class NeodymiumTestSelfTest extends NeodymiumTest
 {
     @Rule
     public TestName name = new TestName();
