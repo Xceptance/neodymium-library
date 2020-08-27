@@ -3,7 +3,6 @@ package com.xceptance.neodymium.module;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Repeatable;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,8 +27,7 @@ public abstract class StatementBuilder extends Statement
         {
             return clazz.getDeclaredConstructor().newInstance();
         }
-        catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-            | SecurityException e)
+        catch (ReflectiveOperationException e)
         {
             throw new RuntimeException(e);
         }
@@ -54,7 +52,7 @@ public abstract class StatementBuilder extends Statement
             {
                 annotations.addAll(Arrays.asList((T[]) annotation.getClass().getMethod("value").invoke(annotation)));
             }
-            catch (Exception e)
+            catch (ReflectiveOperationException e)
             {
                 throw new RuntimeException(e);
             }
@@ -90,7 +88,7 @@ public abstract class StatementBuilder extends Statement
             {
                 annotations.addAll(Arrays.asList((T[]) annotation.getClass().getMethod("value").invoke(annotation)));
             }
-            catch (Exception e)
+            catch (ReflectiveOperationException e)
             {
                 throw new RuntimeException(e);
             }
