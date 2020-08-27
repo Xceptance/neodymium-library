@@ -146,7 +146,7 @@ public class BrowserStatement extends StatementBuilder
             if (wDSCont == null)
             {
                 LOGGER.debug("Create new browser instance");
-                wDSCont = BrowserRunnerHelper.createWebdriver(browserConfiguration);
+                wDSCont = BrowserRunnerHelper.createWebDriverStateContainer(browserConfiguration);
                 EventFiringWebDriver eFWDriver = new EventFiringWebDriver(wDSCont.getWebDriver());
                 eFWDriver.register(new NeodymiumWebDriverListener());
                 wDSCont.setWebDriver(eFWDriver);

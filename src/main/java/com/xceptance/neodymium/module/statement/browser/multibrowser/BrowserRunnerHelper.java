@@ -42,6 +42,7 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.configurati
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.TestEnvironment;
 import com.xceptance.neodymium.util.Neodymium;
+import com.xceptance.neodymium.util.NeodymiumConfiguration;
 
 public final class BrowserRunnerHelper
 {
@@ -180,22 +181,23 @@ public final class BrowserRunnerHelper
      * 
      * @param config
      *            {@link BrowserConfiguration} that describes the desired browser instance
-     * @return {@link WebDriver} the instance of the browser described in {@link BrowserConfiguration}
+     * @return {@link WebDriverStateContainer} the instance of the browser described in {@link BrowserConfiguration} and
+     *         in {@link NeodymiumConfiguration}
      * @throws MalformedURLException
      *             if <a href="https://github.com/Xceptance/neodymium-library/wiki/Selenium-grid">Selenium grid</a> is
      *             used and the given grid URL is invalid
      */
-    public static WebDriverStateContainer createWebdriver(final BrowserConfiguration config) throws MalformedURLException
+    public static WebDriverStateContainer createWebDriverStateContainer(final BrowserConfiguration config) throws MalformedURLException
     {
         final MutableCapabilities capabilities = config.getCapabilities();
-        final WebDriverStateContainer container = new WebDriverStateContainer();
+        final WebDriverStateContainer wDSC = new WebDriverStateContainer();
 
         if (Neodymium.configuration().useLocalProxy())
         {
             BrowserUpProxy proxy = setupEmbeddedProxy();
 
             // set the Proxy for later usage
-            container.setProxy(proxy);
+            wDSC.setProxy(proxy);
 
             // configure the proxy via capabilities
             capabilities.setCapability(CapabilityType.PROXY, ClientUtil.createSeleniumProxy(proxy));
@@ -225,7 +227,7 @@ public final class BrowserRunnerHelper
                     options.addArguments(config.getArguments());
                 }
 
-                container.setWebDriver(new ChromeDriver(options));
+                wDSC.setWebDriver(new ChromeDriver(options));
             }
             else if (firefoxBrowsers.contains(browserName))
             {
@@ -238,7 +240,7 @@ public final class BrowserRunnerHelper
                     options.addArguments(config.getArguments());
                 }
 
-                container.setWebDriver(new FirefoxDriver(options));
+                wDSC.setWebDriver(new FirefoxDriver(options));
             }
             else if (internetExplorerBrowsers.contains(browserName))
             {
@@ -252,25 +254,25 @@ public final class BrowserRunnerHelper
                     }
                 }
 
-                container.setWebDriver(new InternetExplorerDriver(options));
+                wDSC.setWebDriver(new InternetExplorerDriver(options));
             }
             else if (safariBrowsers.contains(browserName))
             {
                 final SafariOptions options = (SafariOptions) capabilities;
-                container.setWebDriver(new SafariDriver(options));
+                wDSC.setWebDriver(new SafariDriver(options));
             }
             else
             {
-                container.setWebDriver(new RemoteWebDriver(capabilities));
+                wDSC.setWebDriver(new RemoteWebDriver(capabilities));
             }
         }
         else
         {
             // establish connection to target website
-            container.setWebDriver(new RemoteWebDriver(createGridExecutor(testEnvironment), capabilities));
+            wDSC.setWebDriver(new RemoteWebDriver(createGridExecutor(testEnvironment), capabilities));
         }
 
-        return container;
+        return wDSC;
     }
 
     private static BrowserUpProxy setupEmbeddedProxy()
