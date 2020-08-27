@@ -53,22 +53,25 @@ public class SelenideAddonsTest
         $("#search-container .search-field").should(SelenideAddons.matchAttribute("placeholder", "\\D+"));
     }
 
-    @Test(expected = ElementShould.class)
+    @Test
     public void testMatchAttributeConditionError()
     {
         Selenide.open("https://blog.xceptance.com/");
         $("#masthead .search-toggle").click();
 
-        $("#search-container .search-field").should(SelenideAddons.matchAttribute("placeholder", "\\d+"));
+        Assert.assertThrows(ElementShould.class, () -> {
+            $("#search-container .search-field").should(SelenideAddons.matchAttribute("placeholder", "\\d+"));
+        });
     }
 
-    @Test(expected = ElementShould.class)
+    @Test
     public void testMatchAttributeConditionErrorMissingAttribute()
     {
         Selenide.open("https://blog.xceptance.com/");
         $("#masthead .search-toggle").click();
-
-        $("#search-container .search-field").should(SelenideAddons.matchAttribute("foo", "bar"));
+        Assert.assertThrows(ElementShould.class, () -> {
+            $("#search-container .search-field").should(SelenideAddons.matchAttribute("foo", "bar"));
+        });
     }
 
     @Test
@@ -92,14 +95,15 @@ public class SelenideAddonsTest
         $("#content .search-field").should(SelenideAddons.matchValue("\\D+"));
     }
 
-    @Test(expected = ElementShould.class)
+    @Test
     public void testMatchValueConditionError()
     {
         Selenide.open("https://blog.xceptance.com/");
         $("#masthead .search-toggle").click();
         $("#search-container .search-field").val("searchphrase").submit();
-
-        $("#content .search-field").should(SelenideAddons.matchValue("\\d+"));
+        Assert.assertThrows(ElementShould.class, () -> {
+            $("#content .search-field").should(SelenideAddons.matchValue("\\d+"));
+        });
     }
 
     @Test()
@@ -111,12 +115,14 @@ public class SelenideAddonsTest
         });
     }
 
-    @Test(expected = UIAssertionError.class)
+    @Test
     public void testWrapAssertionError()
     {
         Selenide.open("https://blog.xceptance.com/");
-        SelenideAddons.wrapAssertionError(() -> {
-            Assert.assertEquals("MyPageTitle", Selenide.title());
+        Assert.assertThrows(UIAssertionError.class, () -> {
+            SelenideAddons.wrapAssertionError(() -> {
+                Assert.assertEquals("MyPageTitle", Selenide.title());
+            });
         });
     }
 
@@ -530,5 +536,15 @@ public class SelenideAddonsTest
         // Example: create a special method to move until a given text
         SelenideAddons.dragAndDropUntilCondition(elementToMove, elementToCheck, horizontalMovement, 0, 3000, 10,
                                                  Condition.attribute(sliderValueAttributeName, moveUntil));
+    }
+
+    @Test
+    public void testOpenHtmlContentWithCurrentWebDriver()
+    {
+        final String text = "Hi\n\nHow are you?)\n\nBye";
+        final String textHtml = "<div dir=\"auto\">Hi<div dir=\"auto\"><br></div><div dir=\"auto\">How are you?)</div><div dir=\"auto\"><br></div><div dir=\"auto\">Bye</div></div>";
+
+        SelenideAddons.openHtmlContentWithCurrentWebDriver(textHtml);
+        Assert.assertEquals(text, $("body").getText());
     }
 }

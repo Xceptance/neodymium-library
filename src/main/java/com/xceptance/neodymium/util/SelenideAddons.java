@@ -1,7 +1,10 @@
 package com.xceptance.neodymium.util;
 
 import static com.codeborne.selenide.Selenide.$$;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.sleep;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -440,8 +443,20 @@ public class SelenideAddons
                 });
             }
             dragAndDrop(elementToMove, horizontalMovement, verticalMovement);
-            Selenide.sleep(pauseBetweenMovements);
+            sleep(pauseBetweenMovements);
             counter++;
         }
+    }
+
+    /**
+     * Open the supplied HTML content with the current web driver.
+     * 
+     * @param htmlContent
+     *            a String containing the HTML that should be opened in the current web driver
+     */
+    public static void openHtmlContentWithCurrentWebDriver(String htmlContent)
+    {
+        String encodedStuff = Base64.getEncoder().encodeToString(htmlContent.getBytes());
+        open("data:text/html;charset=utf-8;base64," + encodedStuff);
     }
 }

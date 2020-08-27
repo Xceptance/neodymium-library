@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
@@ -68,7 +67,7 @@ public class DebugUtilsTest
     public void testWaiting()
     {
         NeodymiumWebDriverTestListener eventListener = new NeodymiumWebDriverTestListener();
-        ((EventFiringWebDriver) Neodymium.getDriver()).register(eventListener);
+        Neodymium.getEventFiringWebdriver().register(eventListener);
 
         Neodymium.configuration().setProperty("neodymium.debugUtils.highlight", "true");
 
@@ -109,6 +108,8 @@ public class DebugUtilsTest
         Neodymium.configuration().setProperty("neodymium.debugUtils.highlight.duration", "750");
 
         Selenide.open("https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_select");
+        $("#snigel-cmp-framework #accept-choices").click();
+
         Neodymium.getDriver().switchTo().frame("iframeResult");
 
         SelenideElement body = $("body");

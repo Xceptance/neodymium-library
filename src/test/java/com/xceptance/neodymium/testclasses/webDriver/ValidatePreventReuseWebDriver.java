@@ -23,6 +23,10 @@ import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 import com.xceptance.neodymium.util.WebDriverUtils;
 
+/*
+ * Validate that the reuse of a web driver could be prevented programmatically.
+ * Validate that the other web driver is not reused.
+ */
 @RunWith(NeodymiumRunner.class)
 public class ValidatePreventReuseWebDriver
 {
@@ -108,7 +112,7 @@ public class ValidatePreventReuseWebDriver
         Assert.assertNotNull(proxy1);
         Assert.assertNotEquals(proxy1, proxy2);
 
-        Assert.assertEquals(0, WebDriverCache.instance.getAllWebDriverAndProxy().size());
+        Assert.assertEquals(0, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
     }
 
     @Test
@@ -125,7 +129,7 @@ public class ValidatePreventReuseWebDriver
         Assert.assertNotNull(proxy2);
         Assert.assertNotEquals(proxy1, proxy2);
 
-        Assert.assertEquals(0, WebDriverCache.instance.getAllWebDriverAndProxy().size());
+        Assert.assertEquals(0, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
     }
 
     @Test
@@ -146,12 +150,13 @@ public class ValidatePreventReuseWebDriver
         Assert.assertNotEquals(proxy1, proxy2);
         Assert.assertEquals(proxy2, proxy3);
 
-        Assert.assertEquals(0, WebDriverCache.instance.getAllWebDriverAndProxy().size());
+        Assert.assertEquals(0, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
     }
 
     @After
     public void after()
     {
+        // prevent the reuse of the web driver after the first the method was executed
         if (webDriver2 == null)
         {
             WebDriverUtils.preventReuseAndTearDown();
@@ -169,8 +174,9 @@ public class ValidatePreventReuseWebDriver
         NeodymiumWebDriverTest.assertProxyAlive(proxy2);
         NeodymiumWebDriverTest.assertProxyAlive(proxy3);
 
-        Assert.assertEquals(1, WebDriverCache.instance.getAllWebDriverAndProxy().size());
+        Assert.assertEquals(1, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
 
+        WebDriverCache.quitCachedBrowsers();
         NeodymiumTest.deleteTempFile(tempConfigFile);
     }
 }

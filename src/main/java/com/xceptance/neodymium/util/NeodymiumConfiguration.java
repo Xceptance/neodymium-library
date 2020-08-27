@@ -212,6 +212,10 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("false")
     public boolean reuseWebDriver();
 
+    @Key("neodymium.webDriver.maxReuse")
+    @DefaultValue("-1")
+    public int maxWebDriverReuse();
+
     @Key("neodymium.webDriver.keepBrowserOpen")
     @DefaultValue("false")
     public boolean keepBrowserOpen();
