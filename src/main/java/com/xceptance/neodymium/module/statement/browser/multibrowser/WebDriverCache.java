@@ -113,7 +113,7 @@ public class WebDriverCache
      *            an instance of {@link WebDriver}
      * @return {@link Boolean} which indicates if the {@link WebDriver} was found and removed from cache.
      */
-    public boolean removeWebDriverStateContainerByBrowserTagByWebDriver(WebDriver driver)
+    public boolean removeWebDriverStateContainerByWebDriver(WebDriver driver)
     {
         synchronized (cache)
         {
