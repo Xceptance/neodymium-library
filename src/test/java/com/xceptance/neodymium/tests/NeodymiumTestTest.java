@@ -24,6 +24,8 @@ public class NeodymiumTestTest extends NeodymiumTest
         final String errorMessage = "This is RuntimeException 1";
         Result result = createResult(1, 0, new HashMap<String, Throwable>()
         {
+            private static final long serialVersionUID = 1L;
+
             {
                 this.put(name.getMethodName() + "1", new RuntimeException(errorMessage));
             }
@@ -37,6 +39,8 @@ public class NeodymiumTestTest extends NeodymiumTest
         final String errorMessage = "This is RuntimeException 1";
         Result result = createResult(2, 0, new HashMap<String, Throwable>()
         {
+            private static final long serialVersionUID = 2L;
+
             {
                 this.put(name.getMethodName() + "1", new RuntimeException("This is RuntimeException 1"));
             }
@@ -49,6 +53,8 @@ public class NeodymiumTestTest extends NeodymiumTest
     {
         Result result = createResult(2, 0, new HashMap<String, Throwable>()
         {
+            private static final long serialVersionUID = 3L;
+
             {
                 this.put(name.getMethodName() + "1", new RuntimeException("This is RuntimeException 1"));
                 this.put(name.getMethodName() + "2", new RuntimeException("This is RuntimeException 1"));
@@ -64,6 +70,8 @@ public class NeodymiumTestTest extends NeodymiumTest
     {
         Result result = createResult(2, 0, new HashMap<String, Throwable>()
         {
+            private static final long serialVersionUID = 4L;
+
             {
                 this.put(name.getMethodName() + "1", new RuntimeException("This is RuntimeException 1"));
                 this.put(name.getMethodName() + "2", new RuntimeException("This is RuntimeException 1"));
@@ -79,6 +87,8 @@ public class NeodymiumTestTest extends NeodymiumTest
     {
         Result result = createResult(2, 0, new HashMap<String, Throwable>()
         {
+            private static final long serialVersionUID = 5L;
+
             {
                 this.put(name.getMethodName() + "1", new RuntimeException("This is RuntimeException 1"));
                 this.put(name.getMethodName() + "2", new RuntimeException("This is RuntimeException 2"));
@@ -86,6 +96,8 @@ public class NeodymiumTestTest extends NeodymiumTest
         });
         HashMap<String, String> expectedFailureMessages = new HashMap<String, String>()
         {
+            private static final long serialVersionUID = 6L;
+
             {
                 this.put(name.getMethodName() + "1", "This is RuntimeException 1");
                 this.put(name.getMethodName() + "2", "This is RuntimeException 2");
@@ -101,6 +113,8 @@ public class NeodymiumTestTest extends NeodymiumTest
         final String errorMessage = "This is RuntimeException 1";
         Result result = createResult(2, 1, new HashMap<String, Throwable>()
         {
+            private static final long serialVersionUID = 7L;
+
             {
                 this.put(name.getMethodName() + "1", new RuntimeException(errorMessage));
             }
