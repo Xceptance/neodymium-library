@@ -298,7 +298,6 @@
 			<groupId>com.browserup</groupId>
 			<artifactId>browserup-proxy-mitm</artifactId>
 			<version>2.1.1</version>
-			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 </project>
