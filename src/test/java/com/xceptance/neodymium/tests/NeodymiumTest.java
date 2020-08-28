@@ -73,7 +73,7 @@ public abstract class NeodymiumTest
         }
         catch (AssertionError e)
         {
-            throw new RuntimeException("Assertion failed. " + e.getMessage() + " Stack trace: " + stackTrace, e);
+            Assert.fail("Assertion failed. " + e.getMessage() + " Stack trace: " + stackTrace);
         }
     }
 
