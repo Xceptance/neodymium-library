@@ -22,7 +22,7 @@ public class NeodymiumTestSelfTest extends NeodymiumTest
     public void testCheckFailedOneFromOne() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
         final String errorMessage = "This is RuntimeException 1";
-        Result result = createResult(1, 0, new HashMap<String, Throwable>()
+        final Result result = createResult(1, 0, new HashMap<String, Throwable>()
         {
             private static final long serialVersionUID = 1L;
 
@@ -37,7 +37,7 @@ public class NeodymiumTestSelfTest extends NeodymiumTest
     public void testCheckFailedOneFromTwo() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
         final String errorMessage = "This is RuntimeException 1";
-        Result result = createResult(2, 0, new HashMap<String, Throwable>()
+        final Result result = createResult(2, 0, new HashMap<String, Throwable>()
         {
             private static final long serialVersionUID = 2L;
 
@@ -51,7 +51,7 @@ public class NeodymiumTestSelfTest extends NeodymiumTest
     @Test
     public void testCheckFailedTwoFromTwoNumber() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
-        Result result = createResult(2, 0, new HashMap<String, Throwable>()
+        final Result result = createResult(2, 0, new HashMap<String, Throwable>()
         {
             private static final long serialVersionUID = 3L;
 
@@ -68,7 +68,7 @@ public class NeodymiumTestSelfTest extends NeodymiumTest
     @Test
     public void testCheckFailedTwoFromTwoOneFailureMessage() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
-        Result result = createResult(2, 0, new HashMap<String, Throwable>()
+        final Result result = createResult(2, 0, new HashMap<String, Throwable>()
         {
             private static final long serialVersionUID = 4L;
 
@@ -85,7 +85,7 @@ public class NeodymiumTestSelfTest extends NeodymiumTest
     @Test
     public void testCheckFailedTwoFromTwoTwoFailureMessages() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
-        Result result = createResult(2, 0, new HashMap<String, Throwable>()
+        final Result result = createResult(2, 0, new HashMap<String, Throwable>()
         {
             private static final long serialVersionUID = 5L;
 
@@ -94,7 +94,7 @@ public class NeodymiumTestSelfTest extends NeodymiumTest
                 this.put(name.getMethodName() + "2", new RuntimeException("This is RuntimeException 2"));
             }
         });
-        HashMap<String, String> expectedFailureMessages = new HashMap<String, String>()
+        final HashMap<String, String> expectedFailureMessages = new HashMap<String, String>()
         {
             private static final long serialVersionUID = 6L;
 
@@ -111,7 +111,7 @@ public class NeodymiumTestSelfTest extends NeodymiumTest
     public void testCheckOneFailedOneIgnoredFromTwo() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
         final String errorMessage = "This is RuntimeException 1";
-        Result result = createResult(2, 1, new HashMap<String, Throwable>()
+        final Result result = createResult(2, 1, new HashMap<String, Throwable>()
         {
             private static final long serialVersionUID = 7L;
 
@@ -126,31 +126,31 @@ public class NeodymiumTestSelfTest extends NeodymiumTest
     @Test
     public void testCheckPassedOneFromOne() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
-        Result result = createResult(1, 0, null);
+        final Result result = createResult(1, 0, null);
         checkPass(result, 1, 0);
     }
 
     @Test
     public void testCheckPassedTwoFromTwo() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
-        Result result = createResult(2, 0, null);
+        final Result result = createResult(2, 0, null);
         checkPass(result, 2, 0);
     }
 
     @Test
     public void testCheckOnePassedOneIgnoredFromTwo() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
-        Result result = createResult(2, 1, null);
+        final Result result = createResult(2, 1, null);
         checkPass(result, 2, 1);
     }
 
     private Result createResult(int runCount, int ignoreCount, Map<String, Throwable> failureCauses)
         throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
-        Result result = new Result();
-        Field countField = Result.class.getDeclaredField("count");
-        Field ignoreCountField = Result.class.getDeclaredField("ignoreCount");
-        Field failuresField = Result.class.getDeclaredField("failures");
+        final Result result = new Result();
+        final Field countField = Result.class.getDeclaredField("count");
+        final Field ignoreCountField = Result.class.getDeclaredField("ignoreCount");
+        final Field failuresField = Result.class.getDeclaredField("failures");
 
         countField.setAccessible(true);
         ignoreCountField.setAccessible(true);
@@ -161,10 +161,10 @@ public class NeodymiumTestSelfTest extends NeodymiumTest
 
         if (failureCauses != null)
         {
-            CopyOnWriteArrayList<Failure> failures = new CopyOnWriteArrayList<>();
-            for (String testMethodName : failureCauses.keySet())
+            final CopyOnWriteArrayList<Failure> failures = new CopyOnWriteArrayList<>();
+            for (final String testMethodName : failureCauses.keySet())
             {
-                Failure failure = new Failure(Description.createTestDescription(getClass(), testMethodName), failureCauses.get(testMethodName));
+                final Failure failure = new Failure(Description.createTestDescription(getClass(), testMethodName), failureCauses.get(testMethodName));
                 failures.add(failure);
             }
             failuresField.set(result, failures);
