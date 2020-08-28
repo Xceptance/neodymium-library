@@ -22,14 +22,7 @@ public class NeodymiumTestSelfTest extends NeodymiumTest
     public void testCheckFailedOneFromOne() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
         final String errorMessage = "This is RuntimeException 1";
-        final Result result = createResult(1, 0, new HashMap<String, Throwable>()
-        {
-            private static final long serialVersionUID = 1L;
-
-            {
-                this.put(name.getMethodName() + "1", new RuntimeException(errorMessage));
-            }
-        });
+        final Result result = createResult(1, 0, Map.of(name.getMethodName().concat("1"), new RuntimeException(errorMessage)));
         checkFail(result, 1, 0, 1, errorMessage);
     }
 
