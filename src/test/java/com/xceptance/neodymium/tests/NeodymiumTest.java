@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.AfterClass;
@@ -56,11 +57,8 @@ public abstract class NeodymiumTest
     public void check(Result result, boolean expectedSuccessful, int expectedRunCount, int expectedIgnoreCount, int expectedFailCount,
                       Map<String, String> expectedFailureMessages)
     {
-        String stackTrace = "";
-        for (Failure failue : result.getFailures())
-        {
-            stackTrace += failue.getTrace();
-        }
+        final Optional<String> accumulatedTrace = result.getFailures().stream().map(Failure::getTrace).reduce(String::concat);
+        final String stackTrace = accumulatedTrace.orElse("n/a");
         try
         {
             Assert.assertEquals("Test successful", expectedSuccessful, result.wasSuccessful());
