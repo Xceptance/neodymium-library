@@ -60,6 +60,8 @@ public final class BrowserRunnerHelper
 
     private static List<String> safariBrowsers = new LinkedList<String>();
 
+    private final static Object mutex = new Object();
+
     static
     {
         chromeBrowsers.add(BrowserType.ANDROID);
@@ -282,7 +284,7 @@ public final class BrowserRunnerHelper
 
         if (Neodymium.configuration().useLocalProxyWithSelfSignedCertificate())
         {
-            final CertificateAndKeySource rootCertificateSource = getLocalProxyRootCertSource();
+            final CertificateAndKeySource rootCertificateSource = createLocalProxyRootCertSource();
             final ImpersonatingMitmManager mitmManager = ImpersonatingMitmManager.builder().rootCertificateSource(rootCertificateSource).build();
             proxy.setMitmManager(mitmManager);
         }
@@ -307,22 +309,25 @@ public final class BrowserRunnerHelper
         return proxy;
     }
 
-    private static CertificateAndKeySource getLocalProxyRootCertSource()
+    private static CertificateAndKeySource createLocalProxyRootCertSource()
     {
         if (Neodymium.configuration().localProxyGenerateSelfSignedCertificate())
         {
-            final File certFile = new File("./config/embeddedLocalProxySelfSignedRootCertificate.p12");
-            if (certFile.canRead())
+            synchronized (mutex)
             {
-                return new KeyStoreFileCertificateSource(CERT_FORMAT, certFile, CERT_NAME, CERT_PASSWORD);
-            }
-            else
-            {
-                // create a dynamic CA root certificate generator using default settings (2048-bit RSA keys)
-                final RootCertificateGenerator rootCertificateGenerator = RootCertificateGenerator.builder().build();
-                // save the dynamically-generated CA root certificate for installation in a browser
-                rootCertificateGenerator.saveRootCertificateAndKey(CERT_FORMAT, certFile, CERT_NAME, CERT_PASSWORD);
-                return rootCertificateGenerator;
+                final File certFile = new File("./config/embeddedLocalProxySelfSignedRootCertificate.p12");
+                if (certFile.canRead())
+                {
+                    return new KeyStoreFileCertificateSource(CERT_FORMAT, certFile, CERT_NAME, CERT_PASSWORD);
+                }
+                else
+                {
+                    // create a dynamic CA root certificate generator using default settings (2048-bit RSA keys)
+                    final RootCertificateGenerator rootCertificateGenerator = RootCertificateGenerator.builder().build();
+                    // save the dynamically-generated CA root certificate for installation in a browser
+                    rootCertificateGenerator.saveRootCertificateAndKey(CERT_FORMAT, certFile, CERT_NAME, CERT_PASSWORD);
+                    return rootCertificateGenerator;
+                }
             }
         }
         else
