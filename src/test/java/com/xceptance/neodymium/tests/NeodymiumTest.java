@@ -85,10 +85,10 @@ public abstract class NeodymiumTest
     }
 
     /**
-     * Assert all tests in run were successful
+     * Assert that all tests have passed.
      * 
      * @param result
-     *            test result to make assertions on
+     *            test result to validate
      * @param expectedRunCount
      *            expected number of run tests (including ignored)
      * @param expectedIgnoreCount
@@ -100,10 +100,10 @@ public abstract class NeodymiumTest
     }
 
     /**
-     * Assert the are one or more failed tests in run
+     * Assert that at least one test has failed.
      * 
      * @param result
-     *            test result to make assertions on
+     *            test result to validate
      * @param expectedRunCount
      *            expected number of run tests (including ignored)
      * @param expectedIgnoreCount
@@ -117,10 +117,10 @@ public abstract class NeodymiumTest
     }
 
     /**
-     * Assert the are one or more failed tests in run
+     * Assert that at least one test has failed.
      * 
      * @param result
-     *            test result to make assertions on
+     *            test result to validate
      * @param expectedRunCount
      *            expected number of run tests (including ignored)
      * @param expectedIgnoreCount
@@ -128,7 +128,7 @@ public abstract class NeodymiumTest
      * @param expectedFailCount
      *            expected number of failed tests
      * @param expectedFailureMessage
-     *            expected failure message for all failures
+     *            expected message of all failures (same message for each failure)
      */
     public void checkFail(final Result result, final int expectedRunCount, final int expectedIgnoreCount, final int expectedFailCount,
                           final String expectedFailureMessage)
@@ -142,10 +142,10 @@ public abstract class NeodymiumTest
     }
 
     /**
-     * Assert the are one or more failed tests in run
+     * Assert that at least one test has failed.
      * 
      * @param result
-     *            test result to make assertions on
+     *            test result to validate
      * @param expectedRunCount
      *            expected number of run tests (including ignored)
      * @param expectedIgnoreCount
@@ -153,7 +153,7 @@ public abstract class NeodymiumTest
      * @param expectedFailCount
      *            expected number of failed tests
      * @param expectedFailureMessages
-     *            Map with test method name as key and corresponding expected failure message as value
+     *            expected failures messages mapped by name of test method
      */
     public void checkFail(final Result result, final int expectedRunCount, final int expectedIgnoreCount, final int expectedFailCount,
                           final Map<String, String> expectedFailureMessages)
