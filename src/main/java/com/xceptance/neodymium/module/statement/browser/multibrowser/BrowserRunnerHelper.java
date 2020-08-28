@@ -316,6 +316,7 @@ public final class BrowserRunnerHelper
             synchronized (mutex)
             {
                 final File certFile = new File("./config/embeddedLocalProxySelfSignedRootCertificate.p12");
+                certFile.deleteOnExit();
                 if (certFile.canRead())
                 {
                     return new KeyStoreFileCertificateSource(CERT_FORMAT, certFile, CERT_NAME, CERT_PASSWORD);
