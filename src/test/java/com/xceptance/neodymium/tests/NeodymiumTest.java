@@ -38,7 +38,7 @@ public abstract class NeodymiumTest
     /**
      * delete a temporary test file
      */
-    public static void deleteTempFile(File tempFile)
+    public static void deleteTempFile(final File tempFile)
     {
         if (tempFile.exists())
         {
@@ -54,8 +54,9 @@ public abstract class NeodymiumTest
         }
     }
 
-    public void check(Result result, boolean expectedSuccessful, int expectedRunCount, int expectedIgnoreCount, int expectedFailCount,
-                      Map<String, String> expectedFailureMessages)
+    public void check(final Result result, final boolean expectedSuccessful, final int expectedRunCount, final int expectedIgnoreCount,
+                      final int expectedFailCount,
+                      final Map<String, String> expectedFailureMessages)
     {
         final Optional<String> accumulatedTrace = result.getFailures().stream().map(Failure::getTrace).reduce(String::concat);
         final String stackTrace = accumulatedTrace.orElse("n/a");
@@ -65,14 +66,17 @@ public abstract class NeodymiumTest
             Assert.assertEquals("Method run count", expectedRunCount, result.getRunCount());
             Assert.assertEquals("Method ignore count", expectedIgnoreCount, result.getIgnoreCount());
             Assert.assertEquals("Method fail count", expectedFailCount, result.getFailureCount());
+
             if (expectedFailureMessages != null)
             {
-                for (int i = 0; i < result.getFailures().size(); i++)
+                final int failureCount = result.getFailureCount();
+                for (int i = 0; i < failureCount; i++)
                 {
-                    String methodName = result.getFailures().get(i).getDescription().getMethodName();
+                    final String methodName = result.getFailures().get(i).getDescription().getMethodName();
                     Assert.assertEquals("Failure message", expectedFailureMessages.get(methodName), result.getFailures().get(i).getMessage());
                 }
             }
+
         }
         catch (AssertionError e)
         {
@@ -90,7 +94,7 @@ public abstract class NeodymiumTest
      * @param expectedIgnoreCount
      *            expected number of ignored tests
      */
-    public void checkPass(Result result, int expectedRunCount, int expectedIgnoreCount)
+    public void checkPass(final Result result, final int expectedRunCount, final int expectedIgnoreCount)
     {
         check(result, true, expectedRunCount, expectedIgnoreCount, 0, null);
     }
@@ -107,7 +111,7 @@ public abstract class NeodymiumTest
      * @param expectedFailCount
      *            expected number of failed tests
      */
-    public void checkFail(Result result, int expectedRunCount, int expectedIgnoreCount, int expectedFailCount)
+    public void checkFail(final Result result, final int expectedRunCount, final int expectedIgnoreCount, final int expectedFailCount)
     {
         check(result, false, expectedRunCount, expectedIgnoreCount, expectedFailCount, null);
     }
@@ -126,10 +130,10 @@ public abstract class NeodymiumTest
      * @param expectedFailureMessage
      *            expected failure message for all failures
      */
-    public void checkFail(Result result, int expectedRunCount, int expectedIgnoreCount, int expectedFailCount,
-                          String expectedFailureMessage)
+    public void checkFail(final Result result, final int expectedRunCount, final int expectedIgnoreCount, final int expectedFailCount,
+                          final String expectedFailureMessage)
     {
-        HashMap<String, String> expectedFailureMessages = new HashMap<String, String>();
+        final HashMap<String, String> expectedFailureMessages = new HashMap<String, String>();
         for (Failure failure : result.getFailures())
         {
             expectedFailureMessages.put(failure.getDescription().getMethodName(), expectedFailureMessage);
@@ -151,16 +155,16 @@ public abstract class NeodymiumTest
      * @param expectedFailureMessages
      *            Map with test method name as key and corresponding expected failure message as value
      */
-    public void checkFail(Result result, int expectedRunCount, int expectedIgnoreCount, int expectedFailCount,
-                          Map<String, String> expectedFailureMessages)
+    public void checkFail(final Result result, final int expectedRunCount, final int expectedIgnoreCount, final int expectedFailCount,
+                          final Map<String, String> expectedFailureMessages)
     {
         check(result, false, expectedRunCount, expectedIgnoreCount, expectedFailCount, expectedFailureMessages);
     }
 
-    public void checkDescription(Description testDescription, String[] expectedTestDescription)
+    public void checkDescription(final Description testDescription, final String[] expectedTestDescription)
     {
-        ArrayList<Description> testChildren = testDescription.getChildren();
-        String[] actualDescription = new String[testChildren.size()];
+        final ArrayList<Description> testChildren = testDescription.getChildren();
+        final String[] actualDescription = new String[testChildren.size()];
 
         for (int i = 0; i < testChildren.size(); i++)
         {
@@ -172,7 +176,7 @@ public abstract class NeodymiumTest
         Assert.assertArrayEquals(expectedTestDescription, actualDescription);
     }
 
-    public void checkDescription(Class<?> clazz, String[] expectedTestDescription) throws Throwable
+    public void checkDescription(final Class<?> clazz, final String[] expectedTestDescription) throws Throwable
     {
         checkDescription(new NeodymiumRunner(clazz).getDescription(), expectedTestDescription);
     }
@@ -183,15 +187,15 @@ public abstract class NeodymiumTest
      * @param map
      * @param file
      */
-    public static void writeMapToPropertiesFile(Map<String, String> map, File file)
+    public static void writeMapToPropertiesFile(final Map<String, String> map, final File file)
     {
         try
         {
-            String propertiesString = map.keySet().stream()
-                                         .map(key -> key + "=" + map.get(key))
-                                         .collect(Collectors.joining("\r\n"));
+            final String propertiesString = map.keySet().stream()
+                                               .map(key -> key + "=" + map.get(key))
+                                               .collect(Collectors.joining("\r\n"));
 
-            FileOutputStream outputStream = new FileOutputStream(file);
+            final FileOutputStream outputStream = new FileOutputStream(file);
             outputStream.write(propertiesString.getBytes());
             outputStream.close();
         }
