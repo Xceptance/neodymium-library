@@ -65,10 +65,13 @@ public abstract class NeodymiumTest
             Assert.assertEquals("Method run count", expectedRunCount, result.getRunCount());
             Assert.assertEquals("Method ignore count", expectedIgnoreCount, result.getIgnoreCount());
             Assert.assertEquals("Method fail count", expectedFailCount, result.getFailureCount());
-            for (int i = 0; expectedFailureMessages != null && i < result.getFailures().size(); i++)
+            if (expectedFailureMessages != null)
             {
-                String methodName = result.getFailures().get(i).getDescription().getMethodName();
-                Assert.assertEquals("Failure message", expectedFailureMessages.get(methodName), result.getFailures().get(i).getMessage());
+                for (int i = 0; i < result.getFailures().size(); i++)
+                {
+                    String methodName = result.getFailures().get(i).getDescription().getMethodName();
+                    Assert.assertEquals("Failure message", expectedFailureMessages.get(methodName), result.getFailures().get(i).getMessage());
+                }
             }
         }
         catch (AssertionError e)
