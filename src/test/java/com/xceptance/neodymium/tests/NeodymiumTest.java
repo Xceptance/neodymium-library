@@ -1,7 +1,8 @@
 package com.xceptance.neodymium.tests;
 
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.runner.Description;
@@ -105,17 +107,14 @@ public abstract class NeodymiumTest
      */
     public static void writeMapToPropertiesFile(Map<String, String> map, File file)
     {
+        String propertiesString = map.entrySet().stream()
+                                     .map(entry -> entry.getKey() + "=" + entry.getValue())
+                                     .collect(Collectors.joining(System.lineSeparator()));
         try
         {
-            String propertiesString = map.keySet().stream()
-                                         .map(key -> key + "=" + map.get(key))
-                                         .collect(Collectors.joining("\r\n"));
-
-            FileOutputStream outputStream = new FileOutputStream(file);
-            outputStream.write(propertiesString.getBytes());
-            outputStream.close();
+            FileUtils.writeStringToFile(file, propertiesString, StandardCharsets.UTF_8);
         }
-        catch (Exception e)
+        catch (IOException e)
         {
             throw new RuntimeException(e);
         }
