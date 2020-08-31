@@ -60,6 +60,8 @@ public final class BrowserRunnerHelper
 
     private static List<String> safariBrowsers = new LinkedList<String>();
 
+    private final static Object mutex = new Object();
+
     static
     {
         chromeBrowsers.add(BrowserType.ANDROID);
@@ -278,44 +280,12 @@ public final class BrowserRunnerHelper
     private static BrowserUpProxy setupEmbeddedProxy()
     {
         // instantiate the proxy
-        BrowserUpProxy proxy = new BrowserUpProxyServer();
+        final BrowserUpProxy proxy = new BrowserUpProxyServer();
 
         if (Neodymium.configuration().useLocalProxyWithSelfSignedCertificate())
         {
-            ImpersonatingMitmManager mitmManager = null;
-            if (Neodymium.configuration().localProxyGenerateSelfSignedCertificate())
-            {
-                CertificateAndKeySource certSource;
-                File certFile = new File("./config/embeddedLocalProxySelfSignedRootCertificate.p12");
-                if (certFile.canRead())
-                {
-                    certSource = new KeyStoreFileCertificateSource(CERT_FORMAT, certFile, CERT_NAME, CERT_PASSWORD);
-                }
-                else
-                {
-                    // create a dynamic CA root certificate generator using default settings (2048-bit RSA keys)
-                    RootCertificateGenerator rootCertificateGenerator = RootCertificateGenerator.builder().build();
-                    // save the dynamically-generated CA root certificate for installation in a browser
-                    rootCertificateGenerator.saveRootCertificateAndKey(CERT_FORMAT, certFile, CERT_NAME, CERT_PASSWORD);
-                    certSource = rootCertificateGenerator;
-                }
-                // tell the MitmManager to use the root certificate we just generated
-                mitmManager = ImpersonatingMitmManager.builder().rootCertificateSource(certSource).build();
-            }
-            else
-            {
-                // configure the MITM using the provided certificate
-                String type = Neodymium.configuration().localProxyCertificateArchiveType();
-                String file = Neodymium.configuration().localProxyCertificateArchiveFile();
-                String cName = Neodymium.configuration().localProxyCertificateName();
-                String cPassword = Neodymium.configuration().localProxyCertificatePassword();
-                if (StringUtils.isAnyBlank(type, file, cName, cPassword))
-                {
-                    throw new RuntimeException("The local proxy certificate isn't fully configured. Please check: certificate archive type, certificate archive file, certificate name and certificate password.");
-                }
-                KeyStoreFileCertificateSource fileCertificateSource = new KeyStoreFileCertificateSource(type, new File(file), cName, cPassword);
-                mitmManager = ImpersonatingMitmManager.builder().rootCertificateSource(fileCertificateSource).build();
-            }
+            final CertificateAndKeySource rootCertificateSource = createLocalProxyRootCertSource();
+            final ImpersonatingMitmManager mitmManager = ImpersonatingMitmManager.builder().rootCertificateSource(rootCertificateSource).build();
             proxy.setMitmManager(mitmManager);
         }
         else
@@ -328,15 +298,52 @@ public final class BrowserRunnerHelper
         proxy.start();
 
         // default basic authentication via the proxy
-        String host = Neodymium.configuration().host();
-        String bUsername = Neodymium.configuration().basicAuthUsername();
-        String bPassword = Neodymium.configuration().basicAuthPassword();
+        final String host = Neodymium.configuration().host();
+        final String bUsername = Neodymium.configuration().basicAuthUsername();
+        final String bPassword = Neodymium.configuration().basicAuthPassword();
         if (StringUtils.isNoneBlank(host, bUsername, bPassword))
         {
             proxy.autoAuthorization(host, bUsername, bPassword, AuthType.BASIC);
         }
 
         return proxy;
+    }
+
+    private static CertificateAndKeySource createLocalProxyRootCertSource()
+    {
+        if (Neodymium.configuration().localProxyGenerateSelfSignedCertificate())
+        {
+            synchronized (mutex)
+            {
+                final File certFile = new File("./config/embeddedLocalProxySelfSignedRootCertificate.p12");
+                certFile.deleteOnExit();
+                if (certFile.canRead())
+                {
+                    return new KeyStoreFileCertificateSource(CERT_FORMAT, certFile, CERT_NAME, CERT_PASSWORD);
+                }
+                else
+                {
+                    // create a dynamic CA root certificate generator using default settings (2048-bit RSA keys)
+                    final RootCertificateGenerator rootCertificateGenerator = RootCertificateGenerator.builder().build();
+                    // save the dynamically-generated CA root certificate for installation in a browser
+                    rootCertificateGenerator.saveRootCertificateAndKey(CERT_FORMAT, certFile, CERT_NAME, CERT_PASSWORD);
+                    return rootCertificateGenerator;
+                }
+            }
+        }
+        else
+        {
+            // configure the MITM using the provided certificate
+            final String type = Neodymium.configuration().localProxyCertificateArchiveType();
+            final String file = Neodymium.configuration().localProxyCertificateArchiveFile();
+            final String cName = Neodymium.configuration().localProxyCertificateName();
+            final String cPassword = Neodymium.configuration().localProxyCertificatePassword();
+            if (StringUtils.isAnyBlank(type, file, cName, cPassword))
+            {
+                throw new RuntimeException("The local proxy certificate isn't fully configured. Please check: certificate archive type, certificate archive file, certificate name and certificate password.");
+            }
+            return new KeyStoreFileCertificateSource(type, new File(file), cName, cPassword);
+        }
     }
 
     public static Proxy createProxyCapabilities()
