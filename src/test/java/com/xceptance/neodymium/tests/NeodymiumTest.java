@@ -39,6 +39,9 @@ public abstract class NeodymiumTest
 
     /**
      * delete a temporary test file
+     * 
+     * @param tempFile
+     *            the tempFile that should be deleted after test execution
      */
     public static void deleteTempFile(final File tempFile)
     {
@@ -56,15 +59,30 @@ public abstract class NeodymiumTest
         }
     }
 
-    public void check(final Result result, final boolean expectedSuccessful, final int expectedRunCount, final int expectedIgnoreCount,
-                      final int expectedFailCount,
-                      final Map<String, String> expectedFailureMessages)
+    /**
+     * Basic method to perform assertions on a given test result.
+     * 
+     * @param result
+     *            test result to validate
+     * @param expectSuccessful
+     *            the test result should be successful
+     * @param expectedRunCount
+     *            expected number of run tests (including ignored)
+     * @param expectedIgnoreCount
+     *            expected number of ignored tests
+     * @param expectedFailCount
+     *            expected number of failed tests
+     * @param expectedFailureMessages
+     *            expected message of all failures (same message for each failure)
+     */
+    public void check(final Result result, final boolean expectSuccessful, final int expectedRunCount, final int expectedIgnoreCount,
+                      final int expectedFailCount, final Map<String, String> expectedFailureMessages)
     {
         final Optional<String> accumulatedTrace = result.getFailures().stream().map(Failure::getTrace).reduce(String::concat);
         final String stackTrace = accumulatedTrace.orElse("n/a");
         try
         {
-            Assert.assertEquals("Test successful", expectedSuccessful, result.wasSuccessful());
+            Assert.assertEquals("Test successful", expectSuccessful, result.wasSuccessful());
             Assert.assertEquals("Method run count", expectedRunCount, result.getRunCount());
             Assert.assertEquals("Method ignore count", expectedIgnoreCount, result.getIgnoreCount());
             Assert.assertEquals("Method fail count", expectedFailCount, result.getFailureCount());
@@ -78,7 +96,6 @@ public abstract class NeodymiumTest
                     Assert.assertEquals("Failure message", expectedFailureMessages.get(methodName), result.getFailures().get(i).getMessage());
                 }
             }
-
         }
         catch (AssertionError e)
         {
