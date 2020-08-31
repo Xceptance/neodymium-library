@@ -1,7 +1,6 @@
 package com.xceptance.neodymium.tests;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,29 +29,18 @@ public class NeodymiumTestSelfTest extends NeodymiumTest
     public void testCheckFailedOneFromTwo() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
         final String errorMessage = "This is RuntimeException 1";
-        final Result result = createResult(2, 0, new HashMap<String, Throwable>()
-        {
-            private static final long serialVersionUID = 2L;
+        final Result result = createResult(2, 0, Map.of(name.getMethodName().concat("1"), new RuntimeException(errorMessage)));
 
-            {
-                this.put(name.getMethodName() + "1", new RuntimeException("This is RuntimeException 1"));
-            }
-        });
         checkFail(result, 2, 0, 1, errorMessage);
     }
 
     @Test
     public void testCheckFailedTwoFromTwoNumber() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
-        final Result result = createResult(2, 0, new HashMap<String, Throwable>()
-        {
-            private static final long serialVersionUID = 3L;
-
-            {
-                this.put(name.getMethodName() + "1", new RuntimeException("This is RuntimeException 1"));
-                this.put(name.getMethodName() + "2", new RuntimeException("This is RuntimeException 1"));
-            }
-        });
+        final String errorMessage1 = "This is RuntimeException 1";
+        final String errorMessage2 = "This is RuntimeException 2";
+        final Result result = createResult(2, 0, Map.of(name.getMethodName().concat("1"), new RuntimeException(errorMessage1),
+                                                        name.getMethodName().concat("2"), new RuntimeException(errorMessage2)));
 
         // no assertion for failure message, as one is only possible for single fail
         checkFail(result, 2, 0, 2);
@@ -61,41 +49,24 @@ public class NeodymiumTestSelfTest extends NeodymiumTest
     @Test
     public void testCheckFailedTwoFromTwoOneFailureMessage() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
-        final Result result = createResult(2, 0, new HashMap<String, Throwable>()
-        {
-            private static final long serialVersionUID = 4L;
-
-            {
-                this.put(name.getMethodName() + "1", new RuntimeException("This is RuntimeException 1"));
-                this.put(name.getMethodName() + "2", new RuntimeException("This is RuntimeException 1"));
-            }
-        });
+        final String errorMessage = "This is RuntimeException 1";
+        final Result result = createResult(2, 0, Map.of(name.getMethodName().concat("1"), new RuntimeException(errorMessage),
+                                                        name.getMethodName().concat("2"), new RuntimeException(errorMessage)));
 
         // no assertion for failure message, as one is only possible for single fail
-        checkFail(result, 2, 0, 2, "This is RuntimeException 1");
+        checkFail(result, 2, 0, 2, errorMessage);
     }
 
     @Test
     public void testCheckFailedTwoFromTwoTwoFailureMessages() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
-        final Result result = createResult(2, 0, new HashMap<String, Throwable>()
-        {
-            private static final long serialVersionUID = 5L;
+        final String errorMessage1 = "This is RuntimeException 1";
+        final String errorMessage2 = "This is RuntimeException 2";
+        final Result result = createResult(2, 0, Map.of(name.getMethodName().concat("1"), new RuntimeException(errorMessage1),
+                                                        name.getMethodName().concat("2"), new RuntimeException(errorMessage2)));
+        final Map<String, String> expectedFailureMessages = Map.of(name.getMethodName().concat("1"), errorMessage1,
+                                                                   name.getMethodName().concat("2"), errorMessage2);
 
-            {
-                this.put(name.getMethodName() + "1", new RuntimeException("This is RuntimeException 1"));
-                this.put(name.getMethodName() + "2", new RuntimeException("This is RuntimeException 2"));
-            }
-        });
-        final HashMap<String, String> expectedFailureMessages = new HashMap<String, String>()
-        {
-            private static final long serialVersionUID = 6L;
-
-            {
-                this.put(name.getMethodName() + "1", "This is RuntimeException 1");
-                this.put(name.getMethodName() + "2", "This is RuntimeException 2");
-            }
-        };
         // no assertion for failure message, as one is only possible for single fail
         checkFail(result, 2, 0, 2, expectedFailureMessages);
     }
@@ -104,14 +75,7 @@ public class NeodymiumTestSelfTest extends NeodymiumTest
     public void testCheckOneFailedOneIgnoredFromTwo() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
     {
         final String errorMessage = "This is RuntimeException 1";
-        final Result result = createResult(2, 1, new HashMap<String, Throwable>()
-        {
-            private static final long serialVersionUID = 7L;
-
-            {
-                this.put(name.getMethodName() + "1", new RuntimeException(errorMessage));
-            }
-        });
+        final Result result = createResult(2, 1, Map.of(name.getMethodName().concat("1"), new RuntimeException(errorMessage)));
         checkFail(result, 2, 1, 1, errorMessage);
     }
 

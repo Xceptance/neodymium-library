@@ -403,7 +403,6 @@ public class SelenideAddons
      * @param verticalMovement
      *            The offset for the vertical movement
      */
-
     public static void dragAndDrop(SelenideElement elementToMove, int horizontalMovement, int verticalMovement)
     {
         // perform drag and drop via the standard Selenium way
