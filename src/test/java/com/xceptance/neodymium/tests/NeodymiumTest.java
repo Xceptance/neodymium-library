@@ -54,6 +54,7 @@ public abstract class NeodymiumTest
         }
     }
 
+    // TODO JavaDoc
     public void check(final Result result, final boolean expectedSuccessful, final int expectedRunCount, final int expectedIgnoreCount,
                       final int expectedFailCount,
                       final Map<String, String> expectedFailureMessages)
