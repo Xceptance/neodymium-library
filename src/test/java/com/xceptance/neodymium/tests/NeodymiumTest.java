@@ -73,7 +73,7 @@ public abstract class NeodymiumTest
      * @param expectedFailCount
      *            expected number of failed tests
      * @param expectedFailureMessages
-     *            expected message of all failures (same message for each failure)
+     *            expected failure messages mapped by name of test method
      */
     public void check(final Result result, final boolean expectSuccessful, final int expectedRunCount, final int expectedIgnoreCount,
                       final int expectedFailCount, final Map<String, String> expectedFailureMessages)
