@@ -180,6 +180,14 @@ public abstract class NeodymiumTest
         check(result, false, expectedRunCount, expectedIgnoreCount, expectedFailCount, expectedFailureMessages);
     }
 
+    /**
+     * Assert that the test description is valid.
+     * 
+     * @param testDescription
+     *            the test description that should be tested
+     * @param expectedTestDescription
+     *            expected test description as String array
+     */
     public void checkDescription(final Description testDescription, final String[] expectedTestDescription)
     {
         final ArrayList<Description> testChildren = testDescription.getChildren();
@@ -195,6 +203,14 @@ public abstract class NeodymiumTest
         Assert.assertArrayEquals(expectedTestDescription, actualDescription);
     }
 
+    /**
+     * Assert that the test description is valid.
+     * 
+     * @param clazz
+     *            the class whose description should be tested
+     * @param expectedTestDescription
+     *            expected test description as String array
+     */
     public void checkDescription(final Class<?> clazz, final String[] expectedTestDescription) throws Throwable
     {
         checkDescription(new NeodymiumRunner(clazz).getDescription(), expectedTestDescription);
