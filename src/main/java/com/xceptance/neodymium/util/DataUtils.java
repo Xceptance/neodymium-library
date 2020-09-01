@@ -79,9 +79,7 @@ public class DataUtils
     public static JsonObject getDataAsJsonObject()
     {
         final Map<String, String> data = Neodymium.getData();
-
         final JsonObject jsonObject = new JsonObject();
-        final JsonParser parser = new JsonParser();
 
         // iterate over every data entry and parse the entries to prepare complex structures for object mapping
         for (Iterator<String> iterator = data.keySet().iterator(); iterator.hasNext();)
@@ -96,7 +94,7 @@ public class DataUtils
             }
             else if (trimmedValue.startsWith("{") || trimmedValue.startsWith("["))
             {
-                jsonObject.add(key, parser.parse(value));
+                jsonObject.add(key, JsonParser.parseString(value));
             }
             else
             {

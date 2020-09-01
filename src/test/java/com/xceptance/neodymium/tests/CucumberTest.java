@@ -15,27 +15,27 @@ public class CucumberTest extends NeodymiumTest
     public void testSetBrowserViaTestData() throws Exception
     {
         Result result = JUnitCore.runClasses(CucumberSetBrowserViaTestData.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
     public void testSetBrowserViaTestDataFail() throws Exception
     {
         Result result = JUnitCore.runClasses(CucumberSetBrowserViaTestDataFail.class);
-        checkFail(result, 1, 0, 1, null);
+        checkFail(result, 1, 0, 1);
     }
 
     @Test
     public void testSetBrowserViaTag() throws Exception
     {
         Result result = JUnitCore.runClasses(CucumberSetBrowserViaTag.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
     public void testSetBrowserViaTagFail() throws Exception
     {
         Result result = JUnitCore.runClasses(CucumberSetBrowserViaTagFail.class);
-        checkFail(result, 1, 0, 1, null);
+        checkFail(result, 1, 0, 1);
     }
 }

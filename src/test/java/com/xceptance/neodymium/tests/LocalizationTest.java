@@ -152,11 +152,13 @@ public class LocalizationTest extends NeodymiumTest
         Assert.assertEquals("", Neodymium.localizedText("key2"));
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testAssertionErrorWhenKeyIsUnknown()
     {
         Neodymium.configuration().setProperty("neodymium.locale", "default");
-        Neodymium.localizedText("key3");
+        Assert.assertThrows(AssertionError.class, () -> {
+            Neodymium.localizedText("key3");
+        });
     }
 
     @Test

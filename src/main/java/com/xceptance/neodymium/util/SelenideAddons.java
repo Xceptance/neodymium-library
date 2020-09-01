@@ -1,7 +1,10 @@
 package com.xceptance.neodymium.util;
 
 import static com.codeborne.selenide.Selenide.$$;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.sleep;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -11,7 +14,6 @@ import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
 
 import com.codeborne.selenide.AssertionMode;
@@ -392,6 +394,23 @@ public class SelenideAddons
 
     /**
      * Drag and drop an element to a given position. The position will be set by the user. It drags the element and
+     * moves it to a specific position of the respective element.
+     * 
+     * @param elementToMove
+     *            The selector of the slider to drag and drop
+     * @param horizontalMovement
+     *            The offset for the horizontal movement
+     * @param verticalMovement
+     *            The offset for the vertical movement
+     */
+    public static void dragAndDrop(SelenideElement elementToMove, int horizontalMovement, int verticalMovement)
+    {
+        // perform drag and drop via the standard Selenium way
+        new Actions(Neodymium.getDriver()).dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement).build().perform();
+    }
+
+    /**
+     * Drag and drop an element to a given position. The position will be set by the user. It drags the element and
      * moves it to a specific position of the respective slider.
      * 
      * @param elementToMove
@@ -409,12 +428,9 @@ public class SelenideAddons
      * @param condition
      *            The condition for the slider to verify the movement
      */
-
     public static void dragAndDropUntilCondition(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement, int verticalMovement,
                                                  int pauseBetweenMovements, int retryMovements, Condition condition)
     {
-        Actions moveSlider = new Actions(Neodymium.getDriver());
-
         int counter = 0;
         while (!elementToCheck.has(condition))
         {
@@ -425,10 +441,21 @@ public class SelenideAddons
                                       + " times to move the element.", false);
                 });
             }
-            Action action = moveSlider.dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement).build();
-            action.perform();
-            Selenide.sleep(pauseBetweenMovements);
+            dragAndDrop(elementToMove, horizontalMovement, verticalMovement);
+            sleep(pauseBetweenMovements);
             counter++;
         }
+    }
+
+    /**
+     * Open the supplied HTML content with the current web driver.
+     * 
+     * @param htmlContent
+     *            a String containing the HTML that should be opened in the current web driver
+     */
+    public static void openHtmlContentWithCurrentWebDriver(String htmlContent)
+    {
+        String encodedStuff = Base64.getEncoder().encodeToString(htmlContent.getBytes());
+        open("data:text/html;charset=utf-8;base64," + encodedStuff);
     }
 }

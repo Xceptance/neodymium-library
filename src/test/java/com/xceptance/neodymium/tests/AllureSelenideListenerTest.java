@@ -13,13 +13,13 @@ public class AllureSelenideListenerTest extends NeodymiumTest
     public void testAllureSelenideListenerIsActiveForCucumber()
     {
         Result result = JUnitCore.runClasses(CucumberValidateAllureSelenideListenerIsActive.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
     public void testAllureSelenideListenerIsActiveForJava()
     {
         Result result = JUnitCore.runClasses(AllureSelenideListenerIsActiveForJava.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 }

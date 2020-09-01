@@ -51,7 +51,7 @@ public class TestDataStatementTest extends NeodymiumTest
     {
         // test package test data csv is read
         Result result = JUnitCore.runClasses(CanReadPackageDataCSV.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class TestDataStatementTest extends NeodymiumTest
     {
         // test package test data json is read
         Result result = JUnitCore.runClasses(CanReadPackageDataJson.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
@@ -67,7 +67,7 @@ public class TestDataStatementTest extends NeodymiumTest
     {
         // test package test data properties is read
         Result result = JUnitCore.runClasses(CanReadPackageDataProperties.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class TestDataStatementTest extends NeodymiumTest
     {
         // test package test data xml is read
         Result result = JUnitCore.runClasses(CanReadPackageDataXML.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class TestDataStatementTest extends NeodymiumTest
     {
         // test data set csv is read
         Result result = JUnitCore.runClasses(CanReadDataSetCSV.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
@@ -91,7 +91,7 @@ public class TestDataStatementTest extends NeodymiumTest
     {
         // test data set json is read
         Result result = JUnitCore.runClasses(CanReadDataSetJson.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
@@ -99,7 +99,7 @@ public class TestDataStatementTest extends NeodymiumTest
     {
         // test data set xml is read
         Result result = JUnitCore.runClasses(CanReadDataSetXML.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
@@ -107,7 +107,7 @@ public class TestDataStatementTest extends NeodymiumTest
     {
         // test inheritance of package test data
         Result result = JUnitCore.runClasses(PackageTestDataInheritance.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
@@ -115,7 +115,7 @@ public class TestDataStatementTest extends NeodymiumTest
     {
         // test multiple inheritance of package test data
         Result result = JUnitCore.runClasses(GrandChildPackageTestDataInheritance.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
@@ -123,7 +123,7 @@ public class TestDataStatementTest extends NeodymiumTest
     {
         // test that data set overrides package test data
         Result result = JUnitCore.runClasses(DataSetOverridesPackageData.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class TestDataStatementTest extends NeodymiumTest
     {
         // more than one entry with the same "testId"
         Result result = JUnitCore.runClasses(DuplicateTestId.class);
-        checkPass(result, 6, 0, 0);
+        checkPass(result, 6, 0);
     }
 
     @Test
@@ -140,7 +140,7 @@ public class TestDataStatementTest extends NeodymiumTest
         // special characters in testId
         // parenthesis will be converted to to brackets
         Result result = JUnitCore.runClasses(SpecialCharacterTestId.class);
-        checkPass(result, 7, 0, 0);
+        checkPass(result, 7, 0);
     }
 
     ///////////////////////
@@ -364,7 +364,7 @@ public class TestDataStatementTest extends NeodymiumTest
     {
         // test package test data csv is read
         Result result = JUnitCore.runClasses(com.xceptance.neodymium.testclasses.data.file.json.CanReadDataSetJson.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test

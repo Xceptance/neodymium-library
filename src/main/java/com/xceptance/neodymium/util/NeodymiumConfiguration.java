@@ -176,7 +176,11 @@ public interface NeodymiumConfiguration extends Mutable
 
     @Key("neodymium.localproxy.certificate")
     @DefaultValue("false")
-    public boolean useLocalWithSelfSignedCertificate();
+    public boolean useLocalProxyWithSelfSignedCertificate();
+
+    @Key("neodymium.localproxy.certificate.generate")
+    @DefaultValue("true")
+    public boolean localProxyGenerateSelfSignedCertificate();
 
     @Key("neodymium.localproxy.certificate.archiveFile")
     @DefaultValue("./config/Certificates.p12")
@@ -207,6 +211,10 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.webDriver.reuseDriver")
     @DefaultValue("false")
     public boolean reuseWebDriver();
+
+    @Key("neodymium.webDriver.maxReuse")
+    @DefaultValue("-1")
+    public int maxWebDriverReuse();
 
     @Key("neodymium.webDriver.keepBrowserOpen")
     @DefaultValue("false")

@@ -25,13 +25,9 @@ public abstract class StatementBuilder extends Statement
     {
         try
         {
-            return clazz.newInstance();
+            return clazz.getDeclaredConstructor().newInstance();
         }
-        catch (InstantiationException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
+        catch (ReflectiveOperationException e)
         {
             throw new RuntimeException(e);
         }
@@ -56,7 +52,7 @@ public abstract class StatementBuilder extends Statement
             {
                 annotations.addAll(Arrays.asList((T[]) annotation.getClass().getMethod("value").invoke(annotation)));
             }
-            catch (Exception e)
+            catch (ReflectiveOperationException e)
             {
                 throw new RuntimeException(e);
             }
@@ -92,7 +88,7 @@ public abstract class StatementBuilder extends Statement
             {
                 annotations.addAll(Arrays.asList((T[]) annotation.getClass().getMethod("value").invoke(annotation)));
             }
-            catch (Exception e)
+            catch (ReflectiveOperationException e)
             {
                 throw new RuntimeException(e);
             }

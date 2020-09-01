@@ -17,10 +17,15 @@ import org.openqa.selenium.WebDriver;
 import com.browserup.bup.BrowserUpProxy;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
 import com.xceptance.neodymium.tests.NeodymiumTest;
 import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
+/*
+ * Validate that web driver instances are closed after the test finished.
+ * Validate that the web driver is not reused.
+ */
 @RunWith(NeodymiumRunner.class)
 public class ValidateWebDriverClosed
 {
@@ -121,6 +126,8 @@ public class ValidateWebDriverClosed
     @AfterClass
     public static void afterClass()
     {
+        Assert.assertEquals(0, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
+
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver2);
 

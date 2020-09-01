@@ -22,6 +22,17 @@ import com.xceptance.neodymium.tests.NeodymiumTest;
 import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
+/*
+ * Validate that the web driver cache can be cleared manually. 
+ * 
+ * Scenario: 
+ *   setup and use the driver 
+ *   reuse the first driver
+ *   create another driver
+ *   validate that the two drivers are in the cache
+ *   clear the cache
+ *   validate the cache is empty
+ */
 @RunWith(NeodymiumRunner.class)
 public class ValidateClearReuseWebDriverCache
 {
@@ -94,6 +105,17 @@ public class ValidateClearReuseWebDriverCache
         Assert.assertNotNull(proxy1);
     }
 
+    @Test
+    @Browser("Chrome_1500x1000_headless")
+    public void test3()
+    {
+        Assert.assertNotEquals(webDriver1, Neodymium.getDriver());
+        Assert.assertNotNull(webDriver1);
+
+        Assert.assertNotEquals(proxy1, Neodymium.getLocalProxy());
+        Assert.assertNotNull(proxy1);
+    }
+
     @After
     public void after()
     {
@@ -104,9 +126,9 @@ public class ValidateClearReuseWebDriverCache
     @AfterClass
     public static void afterClass()
     {
-        Assert.assertEquals(1, WebDriverCache.instance.getAllWebDriverAndProxy().size());
+        Assert.assertEquals(2, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
         WebDriverCache.quitCachedBrowsers();
-        Assert.assertEquals(0, WebDriverCache.instance.getAllWebDriverAndProxy().size());
+        Assert.assertEquals(0, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
 
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
         NeodymiumWebDriverTest.assertProxyStopped(proxy1);

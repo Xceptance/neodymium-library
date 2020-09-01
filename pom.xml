@@ -51,12 +51,12 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source.version>1.8</maven.compiler.source.version>
-		<maven.compiler.target.version>1.8</maven.compiler.target.version>
+		<maven.compiler.source.version>11</maven.compiler.source.version>
+		<maven.compiler.target.version>11</maven.compiler.target.version>
 		<surefire.version>2.22.2</surefire.version>
-		<allure.version>2.13.2</allure.version>
-		<cucumber.version>5.6.0</cucumber.version>
-		<log4j.version>2.13.1</log4j.version>
+		<allure.version>2.13.5</allure.version>
+		<cucumber.version>5.7.0</cucumber.version>
+		<log4j.version>2.13.3</log4j.version>
 	</properties>
 
 	<repositories>
@@ -135,6 +135,7 @@
 				</executions>
 				<configuration>
 					<source>8</source>
+					<detectJavaApiLink>false</detectJavaApiLink>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -197,7 +198,7 @@
 		<dependency>
 			<groupId>org.aeonbits.owner</groupId>
 			<artifactId>owner</artifactId>
-			<version>1.0.10</version>
+			<version>1.0.12</version>
 		</dependency>
 		<dependency>
 			<groupId>org.yaml</groupId>
@@ -245,11 +246,6 @@
 			<version>${allure.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>28.2-jre</version>
-		</dependency>
-		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
 			<artifactId>json-path</artifactId>
 			<version>2.4.0</version>
@@ -257,7 +253,7 @@
 		<dependency>
 			<groupId>com.codeborne</groupId>
 			<artifactId>selenide</artifactId>
-			<version>5.10.0</version>
+			<version>5.14.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -267,12 +263,12 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-text</artifactId>
-			<version>1.8</version>
+			<version>1.9</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.10</version>
+			<version>3.11</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -297,19 +293,12 @@
 		<dependency>
 			<groupId>com.browserup</groupId>
 			<artifactId>browserup-proxy-core</artifactId>
-			<version>2.0.1</version>
+			<version>2.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.browserup</groupId>
 			<artifactId>browserup-proxy-mitm</artifactId>
-			<version>2.0.1</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>xyz.rogfam</groupId>
-			<artifactId>littleproxy</artifactId>
-			<version>2.0.0-beta-5</version>
-			<scope>compile</scope>
+			<version>2.1.1</version>
 		</dependency>
 	</dependencies>
 </project>

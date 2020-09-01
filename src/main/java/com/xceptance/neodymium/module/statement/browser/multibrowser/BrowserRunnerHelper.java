@@ -33,16 +33,25 @@ import org.openqa.selenium.safari.SafariOptions;
 import com.browserup.bup.BrowserUpProxy;
 import com.browserup.bup.BrowserUpProxyServer;
 import com.browserup.bup.client.ClientUtil;
+import com.browserup.bup.mitm.CertificateAndKeySource;
 import com.browserup.bup.mitm.KeyStoreFileCertificateSource;
+import com.browserup.bup.mitm.RootCertificateGenerator;
 import com.browserup.bup.mitm.manager.ImpersonatingMitmManager;
 import com.browserup.bup.proxy.auth.AuthType;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.TestEnvironment;
 import com.xceptance.neodymium.util.Neodymium;
+import com.xceptance.neodymium.util.NeodymiumConfiguration;
 
 public final class BrowserRunnerHelper
 {
+    private static final String CERT_PASSWORD = "xceptance";
+
+    private static final String CERT_NAME = "MITMProxy";
+
+    private static final String CERT_FORMAT = "PKCS12";
+
     private static List<String> chromeBrowsers = new LinkedList<String>();
 
     private static List<String> firefoxBrowsers = new LinkedList<String>();
@@ -50,6 +59,8 @@ public final class BrowserRunnerHelper
     private static List<String> internetExplorerBrowsers = new LinkedList<String>();
 
     private static List<String> safariBrowsers = new LinkedList<String>();
+
+    private final static Object mutex = new Object();
 
     static
     {
@@ -77,7 +88,7 @@ public final class BrowserRunnerHelper
      *            The {@link TestEnvironment} to the grid
      * @return {@link HttpCommandExecutor} to Selenium grid augmented with credentials
      * @throws MalformedURLException
-     *             if the given gridUrl is invalid
+     *             if the given grid URL is invalid
      */
     protected static HttpCommandExecutor createGridExecutor(String testEnvironment) throws MalformedURLException
 
@@ -172,56 +183,23 @@ public final class BrowserRunnerHelper
      * 
      * @param config
      *            {@link BrowserConfiguration} that describes the desired browser instance
-     * @return {@link WebDriver} the instance of the browser described in {@link BrowserConfiguration}
+     * @return {@link WebDriverStateContainer} the instance of the browser described in {@link BrowserConfiguration} and
+     *         in {@link NeodymiumConfiguration}
      * @throws MalformedURLException
      *             if <a href="https://github.com/Xceptance/neodymium-library/wiki/Selenium-grid">Selenium grid</a> is
-     *             used
+     *             used and the given grid URL is invalid
      */
-    public static CachingContainer createWebdriver(final BrowserConfiguration config) throws MalformedURLException
+    public static WebDriverStateContainer createWebDriverStateContainer(final BrowserConfiguration config) throws MalformedURLException
     {
         final MutableCapabilities capabilities = config.getCapabilities();
-        final CachingContainer container = new CachingContainer();
+        final WebDriverStateContainer wDSC = new WebDriverStateContainer();
 
         if (Neodymium.configuration().useLocalProxy())
         {
-            // instantiate the proxy
-            BrowserUpProxy proxy = new BrowserUpProxyServer();
-
-            if (Neodymium.configuration().useLocalWithSelfSignedCertificate())
-            {
-                // configure the MITM using the provided certificate
-                String type = Neodymium.configuration().localProxyCertificateArchiveType();
-                String file = Neodymium.configuration().localProxyCertificateArchiveFile();
-                String cName = Neodymium.configuration().localProxyCertificateName();
-                String cPassword = Neodymium.configuration().localProxyCertificatePassword();
-                if (StringUtils.isAnyBlank(type, file, cName, cPassword))
-                {
-                    throw new RuntimeException("The local proxy certificate isn't fully configured. Please check: certificate archive type, certificate archive file, certificate name and certificate password.");
-                }
-                KeyStoreFileCertificateSource fileCertificateSource = new KeyStoreFileCertificateSource(type, new File(file), cName, cPassword);
-                ImpersonatingMitmManager mitmManager = ImpersonatingMitmManager.builder().rootCertificateSource(fileCertificateSource).build();
-                proxy.setMitmManager(mitmManager);
-            }
-            else
-            {
-                // disable proxy certificate verification
-                proxy.setTrustAllServers(true);
-            }
-
-            // start the proxy
-            proxy.start();
-
-            // default basic authentication via the proxy
-            String host = Neodymium.configuration().host();
-            String bUsername = Neodymium.configuration().basicAuthUsername();
-            String bPassword = Neodymium.configuration().basicAuthPassword();
-            if (StringUtils.isNoneBlank(host, bUsername, bPassword))
-            {
-                proxy.autoAuthorization(host, bUsername, bPassword, AuthType.BASIC);
-            }
+            BrowserUpProxy proxy = setupEmbeddedProxy();
 
             // set the Proxy for later usage
-            container.setProxy(proxy);
+            wDSC.setProxy(proxy);
 
             // configure the proxy via capabilities
             capabilities.setCapability(CapabilityType.PROXY, ClientUtil.createSeleniumProxy(proxy));
@@ -251,7 +229,7 @@ public final class BrowserRunnerHelper
                     options.addArguments(config.getArguments());
                 }
 
-                container.setWebDriver(new ChromeDriver(options));
+                wDSC.setWebDriver(new ChromeDriver(options));
             }
             else if (firefoxBrowsers.contains(browserName))
             {
@@ -264,7 +242,7 @@ public final class BrowserRunnerHelper
                     options.addArguments(config.getArguments());
                 }
 
-                container.setWebDriver(new FirefoxDriver(options));
+                wDSC.setWebDriver(new FirefoxDriver(options));
             }
             else if (internetExplorerBrowsers.contains(browserName))
             {
@@ -278,25 +256,94 @@ public final class BrowserRunnerHelper
                     }
                 }
 
-                container.setWebDriver(new InternetExplorerDriver(options));
+                wDSC.setWebDriver(new InternetExplorerDriver(options));
             }
             else if (safariBrowsers.contains(browserName))
             {
                 final SafariOptions options = (SafariOptions) capabilities;
-                container.setWebDriver(new SafariDriver(options));
+                wDSC.setWebDriver(new SafariDriver(options));
             }
             else
             {
-                container.setWebDriver(new RemoteWebDriver(capabilities));
+                wDSC.setWebDriver(new RemoteWebDriver(capabilities));
             }
         }
         else
         {
             // establish connection to target website
-            container.setWebDriver(new RemoteWebDriver(createGridExecutor(testEnvironment), capabilities));
+            wDSC.setWebDriver(new RemoteWebDriver(createGridExecutor(testEnvironment), capabilities));
         }
 
-        return container;
+        return wDSC;
+    }
+
+    private static BrowserUpProxy setupEmbeddedProxy()
+    {
+        // instantiate the proxy
+        final BrowserUpProxy proxy = new BrowserUpProxyServer();
+
+        if (Neodymium.configuration().useLocalProxyWithSelfSignedCertificate())
+        {
+            final CertificateAndKeySource rootCertificateSource = createLocalProxyRootCertSource();
+            final ImpersonatingMitmManager mitmManager = ImpersonatingMitmManager.builder().rootCertificateSource(rootCertificateSource).build();
+            proxy.setMitmManager(mitmManager);
+        }
+        else
+        {
+            // disable proxy certificate verification
+            proxy.setTrustAllServers(true);
+        }
+
+        // start the proxy
+        proxy.start();
+
+        // default basic authentication via the proxy
+        final String host = Neodymium.configuration().host();
+        final String bUsername = Neodymium.configuration().basicAuthUsername();
+        final String bPassword = Neodymium.configuration().basicAuthPassword();
+        if (StringUtils.isNoneBlank(host, bUsername, bPassword))
+        {
+            proxy.autoAuthorization(host, bUsername, bPassword, AuthType.BASIC);
+        }
+
+        return proxy;
+    }
+
+    private static CertificateAndKeySource createLocalProxyRootCertSource()
+    {
+        if (Neodymium.configuration().localProxyGenerateSelfSignedCertificate())
+        {
+            synchronized (mutex)
+            {
+                final File certFile = new File("./config/embeddedLocalProxySelfSignedRootCertificate.p12");
+                certFile.deleteOnExit();
+                if (certFile.canRead())
+                {
+                    return new KeyStoreFileCertificateSource(CERT_FORMAT, certFile, CERT_NAME, CERT_PASSWORD);
+                }
+                else
+                {
+                    // create a dynamic CA root certificate generator using default settings (2048-bit RSA keys)
+                    final RootCertificateGenerator rootCertificateGenerator = RootCertificateGenerator.builder().build();
+                    // save the dynamically-generated CA root certificate for installation in a browser
+                    rootCertificateGenerator.saveRootCertificateAndKey(CERT_FORMAT, certFile, CERT_NAME, CERT_PASSWORD);
+                    return rootCertificateGenerator;
+                }
+            }
+        }
+        else
+        {
+            // configure the MITM using the provided certificate
+            final String type = Neodymium.configuration().localProxyCertificateArchiveType();
+            final String file = Neodymium.configuration().localProxyCertificateArchiveFile();
+            final String cName = Neodymium.configuration().localProxyCertificateName();
+            final String cPassword = Neodymium.configuration().localProxyCertificatePassword();
+            if (StringUtils.isAnyBlank(type, file, cName, cPassword))
+            {
+                throw new RuntimeException("The local proxy certificate isn't fully configured. Please check: certificate archive type, certificate archive file, certificate name and certificate password.");
+            }
+            return new KeyStoreFileCertificateSource(type, new File(file), cName, cPassword);
+        }
     }
 
     public static Proxy createProxyCapabilities()

@@ -101,7 +101,7 @@ public class EnvironmentAndBrowserConfigurationTest extends NeodymiumTest
     {
         // test environment configuration
         Result result = JUnitCore.runClasses(EnvironmentAndBrowserConfiguration.class);
-        checkPass(result, 5, 0, 0);
+        checkPass(result, 5, 0);
     }
 
     @Test
@@ -109,7 +109,7 @@ public class EnvironmentAndBrowserConfigurationTest extends NeodymiumTest
     {
         // test environment configuration
         Result result = JUnitCore.runClasses(BadProxyEnvironmentConfiguration.class);
-        checkPass(result, 3, 0, 0);
+        checkPass(result, 3, 0);
     }
 
     @Test

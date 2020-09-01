@@ -18,10 +18,16 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
 import com.xceptance.neodymium.tests.NeodymiumTest;
 import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
+/*
+ * Validate that the web driver is kept open after an error occurred.
+ * Validate that the web driver is not reused.
+ * Attention: this test needs to use browsers that are not headless.
+ */
 @RunWith(NeodymiumRunner.class)
 @Browser("Chrome_1024x768")
 public class ValidateKeepWebDriverOpenOnFailure
@@ -146,6 +152,8 @@ public class ValidateKeepWebDriverOpenOnFailure
     @AfterClass
     public static void afterClass()
     {
+        Assert.assertEquals(0, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
+
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver2);
         webDriver2.quit();
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);

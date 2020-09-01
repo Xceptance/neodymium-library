@@ -4,15 +4,13 @@ import org.openqa.selenium.WebDriver;
 
 import com.browserup.bup.BrowserUpProxy;
 
-public class CachingContainer
+public class WebDriverStateContainer
 {
+    private int usedCount = 0;
+
     private WebDriver webDriver;
 
     private BrowserUpProxy proxy;
-
-    public CachingContainer()
-    {
-    }
 
     public WebDriver getWebDriver()
     {
@@ -32,5 +30,15 @@ public class CachingContainer
     public BrowserUpProxy getProxy()
     {
         return proxy;
+    }
+
+    public int getUsedCount()
+    {
+        return usedCount;
+    }
+
+    public void incrementUsedCount()
+    {
+        usedCount++;
     }
 }
