@@ -1,7 +1,6 @@
 package com.xceptance.neodymium.util;
 
 import static com.codeborne.selenide.Condition.exist;
-import static com.codeborne.selenide.Condition.hidden;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
@@ -525,9 +524,6 @@ public class SelenideAddonsTest
     private void openSliderPage()
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
-        $("#onetrust-accept-btn-handler").shouldBe(visible).click();
-        $("#onetrust-consent-sdk .onetrust-pc-dark-filter").waitUntil(hidden, Neodymium.configuration().selenideTimeout());
-        Selenide.refresh();
     }
 
     private void leftHorizontalDragAndDropUntilAttribute(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement,
