@@ -396,5 +396,4 @@ public class Neodymium
         }
         return false;
     }
-
 }
