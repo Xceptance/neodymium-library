@@ -14,7 +14,7 @@ public class DataUtilsTest extends NeodymiumTest
     {
         // test the data utils
         Result result = JUnitCore.runClasses(DataUtilsTests.class);
-        checkPass(result, 9, 0);
+        checkPass(result, 10, 0);
     }
 
     @Test
@@ -22,6 +22,6 @@ public class DataUtilsTest extends NeodymiumTest
     {
         // test the data utils
         Result result = JUnitCore.runClasses(DataUtilsTestsXml.class);
-        checkPass(result, 9, 0);
+        checkPass(result, 10, 0);
     }
 }

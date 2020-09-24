@@ -152,6 +152,18 @@ public class DataUtils
     }
 
     /**
+     * Check if a certain key exist within the data set
+     * 
+     * @param key
+     *            Name of the test data key
+     * @return true if the key was found and false otherwise
+     */
+    public static boolean exists(String key)
+    {
+        return Neodymium.dataValue(key) != null;
+    }
+
+    /**
      * Get a test data value as {@link String}
      * 
      * @param key

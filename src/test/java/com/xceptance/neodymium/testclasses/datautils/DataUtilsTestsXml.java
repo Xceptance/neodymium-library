@@ -18,6 +18,14 @@ public class DataUtilsTestsXml
 
     @Test
     @DataSet(id = "asString")
+    public void testExists() throws Exception
+    {
+        Assert.assertTrue(DataUtils.exists("value"));
+        Assert.assertFalse(DataUtils.exists("notInDataSet"));
+    }
+
+    @Test
+    @DataSet(id = "asString")
     public void testAsString() throws Exception
     {
         // expect IllegalArgumentException
