@@ -1,6 +1,7 @@
 package com.xceptance.neodymium.util;
 
 import static com.codeborne.selenide.Condition.exist;
+import static com.codeborne.selenide.Condition.hidden;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
@@ -18,6 +19,7 @@ import org.openqa.selenium.StaleElementReferenceException;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.ex.ElementNotFound;
 import com.codeborne.selenide.ex.ElementShould;
 import com.codeborne.selenide.ex.UIAssertionError;
 import com.codeborne.selenide.logevents.LogEvent;
@@ -524,6 +526,22 @@ public class SelenideAddonsTest
     private void openSliderPage()
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
+        boolean overlayIsVisible = true;
+        try
+        {
+            $("#onetrust-accept-btn-handler").shouldBe(visible);
+        }
+        catch (ElementNotFound e)
+        {
+            overlayIsVisible = false;
+        }
+
+        if (overlayIsVisible)
+        {
+            $("#onetrust-accept-btn-handler").click();
+            $("#onetrust-consent-sdk .onetrust-pc-dark-filter").waitUntil(hidden, Neodymium.configuration().selenideTimeout());
+            Selenide.refresh();
+        }
     }
 
     private void leftHorizontalDragAndDropUntilAttribute(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement,
