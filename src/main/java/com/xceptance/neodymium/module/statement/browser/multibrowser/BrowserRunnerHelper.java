@@ -353,7 +353,6 @@ public final class BrowserRunnerHelper
         final Proxy webdriverProxy = new Proxy();
         webdriverProxy.setHttpProxy(proxyHost);
         webdriverProxy.setSslProxy(proxyHost);
-        webdriverProxy.setFtpProxy(proxyHost);
         if (!StringUtils.isAllEmpty(Neodymium.configuration().getProxySocketUsername(), Neodymium.configuration().getProxySocketPassword())
             || Neodymium.configuration().getProxySocketVersion() != null)
         {

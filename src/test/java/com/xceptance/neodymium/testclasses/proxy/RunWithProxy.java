@@ -6,9 +6,9 @@ import static com.codeborne.selenide.Selenide.$;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.WebDriverException;
 
 import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.ex.ElementNotFound;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 
@@ -20,9 +20,8 @@ public class RunWithProxy
     @Test
     public void testProxyConfiguration()
     {
-        Selenide.open("https://www.xceptance.de");
-        Assert.assertThrows(ElementNotFound.class, () -> {
-            $("#page #navigation").shouldBe(visible);
+        Assert.assertThrows(WebDriverException.class, () -> {
+            Selenide.open("https://github.com/Xceptance/neodymium-library/");
         });
     }
 

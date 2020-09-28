@@ -19,7 +19,7 @@ public class ProxyConfigurationTest extends NeodymiumTest
 {
     private static final String HOST = "bemylittleproxydarling.se";
 
-    private static final String PORT = "0815";
+    private static final String PORT = "1323";
 
     private static final String BYPASS = "www.xceptance.com";
 
