@@ -2,6 +2,7 @@ package com.xceptance.neodymium.testclasses.multibrowser;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.selenium.remote.CapabilityType;
 
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
@@ -67,11 +68,29 @@ public class EnvironmentAndBrowserConfiguration
     }
 
     @Test
-    public void testOverridingBrowsers()
+    public void testOverridingBrowsers1()
     {
         BrowserConfiguration configuration = MultibrowserConfiguration.getInstance().getBrowserProfiles().get("Galaxy_Note3_Emulation");
 
         Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.BROWSERNAME, configuration.getName());
         Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.ENVIRONMENTNAME, configuration.getTestEnvironment());
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.GLOBALHEADLESS, configuration.isHeadless());
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.GLOBALACCEPTINSECURECERTIFICATES,
+                            configuration.getCapabilities().getCapability(CapabilityType.ACCEPT_INSECURE_CERTS));
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.GLOBALPAGELOADSTRATEGY,
+                            configuration.getCapabilities().getCapability(CapabilityType.PAGE_LOAD_STRATEGY));
+    }
+
+    @Test
+    public void testOverridingBrowsers2()
+    {
+        BrowserConfiguration configuration = MultibrowserConfiguration.getInstance().getBrowserProfiles().get("Galaxy_Note4_Emulation");
+
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.BROWSER2NAME, configuration.getName());
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.BROWSER2HEADLESS, configuration.isHeadless());
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.BROWSER2ACCEPTINSECURECERTIFICATES,
+                            configuration.getCapabilities().getCapability(CapabilityType.ACCEPT_INSECURE_CERTS));
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.BROWSER2PAGELOADSTRATEGY,
+                            configuration.getCapabilities().getCapability(CapabilityType.PAGE_LOAD_STRATEGY));
     }
 }

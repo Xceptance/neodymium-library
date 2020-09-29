@@ -48,6 +48,20 @@ public class EnvironmentAndBrowserConfigurationTest extends NeodymiumTest
 
     public static final String PROXYPASSWORD2 = "password2";
 
+    public static final Boolean GLOBALHEADLESS = true;
+
+    public static final Boolean GLOBALACCEPTINSECURECERTIFICATES = true;
+
+    public static final String GLOBALPAGELOADSTRATEGY = "eager";
+
+    public static final String BROWSER2NAME = "My new name for Samsung S4";;
+
+    public static final Boolean BROWSER2HEADLESS = !GLOBALHEADLESS;
+
+    public static final Boolean BROWSER2ACCEPTINSECURECERTIFICATES = !GLOBALACCEPTINSECURECERTIFICATES;
+
+    public static final String BROWSER2PAGELOADSTRATEGY = "none";
+
     @BeforeClass
     public static void beforeClass() throws IOException
     {
@@ -89,8 +103,15 @@ public class EnvironmentAndBrowserConfigurationTest extends NeodymiumTest
         tempFiles.add(tempConfigFile2);
 
         Map<String, String> properties3 = new HashMap<>();
+        properties3.put("browserprofile.global.headless", GLOBALHEADLESS.toString());
+        properties3.put("browserprofile.global.acceptInsecureCertificates", GLOBALACCEPTINSECURECERTIFICATES.toString());
+        properties3.put("browserprofile.global.pageLoadStrategy", GLOBALPAGELOADSTRATEGY);
         properties3.put("browserprofile.Galaxy_Note3_Emulation.name", BROWSERNAME);
         properties3.put("browserprofile.Galaxy_Note3_Emulation.testEnvironment", ENVIRONMENTNAME);
+        properties3.put("browserprofile.Galaxy_Note4_Emulation.name", BROWSER2NAME);
+        properties3.put("browserprofile.Galaxy_Note4_Emulation.headless", BROWSER2HEADLESS.toString());
+        properties3.put("browserprofile.Galaxy_Note4_Emulation.acceptInsecureCertificates", BROWSER2ACCEPTINSECURECERTIFICATES.toString());
+        properties3.put("browserprofile.Galaxy_Note4_Emulation.pageLoadStrategy", BROWSER2PAGELOADSTRATEGY);
         File tempConfigFile3 = new File("./config/dev-browser.properties");
         writeMapToPropertiesFile(properties3, tempConfigFile3);
         tempFiles.add(tempConfigFile3);
@@ -101,7 +122,7 @@ public class EnvironmentAndBrowserConfigurationTest extends NeodymiumTest
     {
         // test environment configuration
         Result result = JUnitCore.runClasses(EnvironmentAndBrowserConfiguration.class);
-        checkPass(result, 5, 0);
+        checkPass(result, 6, 0);
     }
 
     @Test

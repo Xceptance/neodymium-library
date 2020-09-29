@@ -64,7 +64,8 @@ public class BrowserConfigurationMapper
 
     private static final String ORIENTATION = "orientation";
 
-    public BrowserConfiguration map(Map<String, String> browserProfileConfiguration)
+    public BrowserConfiguration map(Map<String, String> browserProfileConfiguration, String globalHeadless, String globalAcceptIncecureCertificates,
+                                    String globalPageLoadStrategy)
     {
         BrowserConfiguration browserConfiguration = new BrowserConfiguration();
 
@@ -266,16 +267,30 @@ public class BrowserConfigurationMapper
         String pageLoadStrategy = browserProfileConfiguration.get(PAGE_LOAD_STRATEGY);
         if (!StringUtils.isEmpty(pageLoadStrategy))
             capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, pageLoadStrategy);
+        else if (!StringUtils.isEmpty(globalPageLoadStrategy))
+        {
+            capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, globalPageLoadStrategy);
+        }
 
         // accept insecure certificates
         String acceptInsecureCerts = browserProfileConfiguration.get(ACCEPT_INSECURE_CERTS);
         if (!StringUtils.isEmpty(acceptInsecureCerts))
             capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.parseBoolean(acceptInsecureCerts));
+        else if (!StringUtils.isEmpty(globalAcceptIncecureCertificates))
+        {
+            capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.parseBoolean(globalAcceptIncecureCertificates));
+        }
 
         // headless
         String headless = browserProfileConfiguration.get(HEADLESS);
         if (!StringUtils.isEmpty(headless))
+        {
             browserConfiguration.setHeadless(Boolean.valueOf(headless));
+        }
+        else if (!StringUtils.isEmpty(globalHeadless))
+        {
+            browserConfiguration.setHeadless(Boolean.valueOf(globalHeadless));
+        }
 
         // additional browser arguments
         String arguments = browserProfileConfiguration.get(ARGUMENTS);

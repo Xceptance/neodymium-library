@@ -33,6 +33,12 @@ public class MultibrowserConfiguration
 
     private static final String DEVELOPMENT_BROWSER_PROFILE_FILE = "./config/dev-browser.properties";
 
+    private static final String BROWSER_GLOBAL_HEADLESS = BROWSER_PROFILE_PREFIX + "global.headless";
+
+    private static final String BROWSER_GLOBAL_ACCEPT_INSECURE_CERTIFICATES = BROWSER_PROFILE_PREFIX + "global.acceptInsecureCertificates";
+
+    private static final String BROWSER_GLOBAL_PAGE_LOAD_STRATEGY = BROWSER_PROFILE_PREFIX + "global.pageLoadStrategy";
+
     private Map<String, TestEnvironment> testEnvironments;
 
     private Map<String, BrowserConfiguration> browserProfiles;
@@ -79,6 +85,10 @@ public class MultibrowserConfiguration
 
         BrowserConfigurationMapper mapper = new BrowserConfigurationMapper();
 
+        String globalHeadless = browserProfileProperties.getProperty(BROWSER_GLOBAL_HEADLESS);
+        String globalAcceptIncecureCertificates = browserProfileProperties.getProperty(BROWSER_GLOBAL_ACCEPT_INSECURE_CERTIFICATES);
+        String globalPageLoadStrategy = browserProfileProperties.getProperty(BROWSER_GLOBAL_PAGE_LOAD_STRATEGY);
+
         for (String browserProfile : browserProfileKeys)
         {
             Set<String> subkeysForPrefix = getSubkeysForPrefix(browserProfileProperties, BROWSER_PROFILE_PREFIX + browserProfile + ".");
@@ -89,7 +99,8 @@ public class MultibrowserConfiguration
                 String value = (String) browserProfileProperties.get(BROWSER_PROFILE_PREFIX + browserProfile + "." + subkey);
                 browserProfileConfiguration.put(subkey, value);
             }
-            browserProfiles.put(browserProfile, mapper.map(browserProfileConfiguration));
+            browserProfiles.put(browserProfile,
+                                mapper.map(browserProfileConfiguration, globalHeadless, globalAcceptIncecureCertificates, globalPageLoadStrategy));
         }
     }
 
