@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.aeonbits.owner.ConfigFactory;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
@@ -95,6 +96,12 @@ public class NeodymiumContextTest extends NeodymiumTest
     {
         Result result = JUnitCore.runClasses(OverrideNeodymiumConfiguration.class);
         checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void testNeodymiumVersionPreBuild()
+    {
+        Assert.assertEquals("?.?.?", Neodymium.getNeodymiumVersion());
     }
 
     @Test

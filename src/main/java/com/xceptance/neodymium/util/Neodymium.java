@@ -396,4 +396,10 @@ public class Neodymium
         }
         return false;
     }
+
+    public static String getNeodymiumVersion()
+    {
+        final String buildVersion = getContext().getClass().getPackage().getImplementationVersion();
+        return buildVersion == null ? "?.?.?" : buildVersion;
+    }
 }
