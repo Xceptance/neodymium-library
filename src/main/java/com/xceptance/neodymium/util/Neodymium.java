@@ -397,6 +397,11 @@ public class Neodymium
         return false;
     }
 
+    /**
+     * Returns the version of the currently used Neodymium library.
+     * 
+     * @return build version of Neodymium library
+     */
     public static String getNeodymiumVersion()
     {
         final String buildVersion = getContext().getClass().getPackage().getImplementationVersion();
