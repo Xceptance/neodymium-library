@@ -84,7 +84,10 @@ public class Neodymium
     }
 
     /**
-     * Shortcut for localized text access. Will fail with an assertion if the key cannot be found
+     * Shortcut for localized text access. Will fail with an assertion if the key cannot be found.<br/>
+     * <br/>
+     * Looks up the key in the localization setup starting the configured full locale e.g. 'en_US', falls back to the
+     * language 'en' if not found, fallback to default, and finally break with an assertion if the key can't be found.
      *
      * @param key
      *            key to lookup
@@ -96,7 +99,10 @@ public class Neodymium
     }
 
     /**
-     * Shortcut for localized text access. Will fail with an assertion if the key cannot be found
+     * Shortcut for localized text access. Will fail with an assertion if the key cannot be found.<br/>
+     * <br/>
+     * Looks up the key in the localization setup starting the configured full locale e.g. 'en_US', falls back to the
+     * language 'en' if not found, fallback to default, and finally break with an assertion if the key can't be found.
      *
      * @param key
      *            key to lookup
