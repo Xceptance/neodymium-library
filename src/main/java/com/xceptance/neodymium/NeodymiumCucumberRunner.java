@@ -13,7 +13,7 @@ import io.cucumber.junit.NeodymiumCucumberWrapper;
 
 public class NeodymiumCucumberRunner extends NeodymiumCucumberWrapper
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumRunner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumCucumberRunner.class);
 
     public NeodymiumCucumberRunner(Class<?> clazz) throws InitializationError, IOException
     {
