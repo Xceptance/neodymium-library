@@ -43,6 +43,7 @@ package com.xceptance.neodymium.visual.ai.machine_learning;
 import java.io.Serializable;
 import java.util.Random;
 
+import com.xceptance.neodymium.util.Neodymium;
 import com.xceptance.neodymium.visual.ai.core.FloatRange;
 
 /**
@@ -70,7 +71,7 @@ public class Neuron implements Serializable
     /**
      * Random number generator.
      */
-    protected Random r = new Random();
+    protected Random r = Neodymium.getRandom();
 
     /**
      * Random generator range. Sets the range of random generator. Affects initial values of neuron's weight. Default

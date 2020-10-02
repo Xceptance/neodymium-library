@@ -3,6 +3,7 @@ package com.xceptance.neodymium.util;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.WeakHashMap;
 
 import org.aeonbits.owner.ConfigFactory;
@@ -84,8 +85,7 @@ public class Neodymium
     }
 
     /**
-     * Shortcut for localized text access. Will fail with an assertion if the key cannot be found.<br/>
-     * <br/>
+     * Shortcut for localized text access. Will fail with an assertion if the key cannot be found.<br>
      * Looks up the key in the localization setup starting the configured full locale e.g. 'en_US', falls back to the
      * language 'en' if not found, fallback to default, and finally break with an assertion if the key can't be found.
      *
@@ -99,8 +99,7 @@ public class Neodymium
     }
 
     /**
-     * Shortcut for localized text access. Will fail with an assertion if the key cannot be found.<br/>
-     * <br/>
+     * Shortcut for localized text access. Will fail with an assertion if the key cannot be found.<br>
      * Looks up the key in the localization setup starting the configured full locale e.g. 'en_US', falls back to the
      * language 'en' if not found, fallback to default, and finally break with an assertion if the key can't be found.
      *
@@ -135,6 +134,11 @@ public class Neodymium
     public static NeodymiumConfiguration configuration()
     {
         return getContext().configuration;
+    }
+
+    public static Random getRandom()
+    {
+        return NeodymiumRandom.getNeodymiumRandom();
     }
 
     public static void setWebDriverStateContainer(WebDriverStateContainer webDriverStateContainer)
