@@ -114,6 +114,11 @@ public class Neodymium
         return getContext().localization.getText(key, locale);
     }
 
+    /**
+     * Get the complete test data set
+     * 
+     * @return dataMap
+     */
     public static Map<String, String> getData()
     {
         return getContext().data;
@@ -131,63 +136,128 @@ public class Neodymium
         return getData().get(key);
     }
 
+    /**
+     * Get the current NeodymiumConfiguration instance
+     * 
+     * @return neodymiumConfiguration
+     */
     public static NeodymiumConfiguration configuration()
     {
         return getContext().configuration;
     }
 
+    /**
+     * Get access to the current Random instance of Neodymium. This can be used to have a fixed random setup to repeat
+     * runs from CI executions.
+     * 
+     * @return random
+     */
     public static Random getRandom()
     {
         return NeodymiumRandom.getNeodymiumRandom();
     }
 
-    public static void setWebDriverStateContainer(WebDriverStateContainer webDriverStateContainer)
-    {
-        getContext().webDriverStateContainer = webDriverStateContainer;
-    }
-
+    /**
+     * Get the current state container for the WebDriver state objects.
+     * 
+     * @return webDriverStateContainer
+     */
     public static WebDriverStateContainer getWebDriverStateContainer()
     {
         return getContext().webDriverStateContainer;
     }
 
+    /**
+     * Set the current state container for the WebDriver state objects.<br>
+     * <b>Attention:</b> This function is mainly used to set information within the context internally.
+     * 
+     * @param webDriverStateContainer
+     */
+    public static void setWebDriverStateContainer(WebDriverStateContainer webDriverStateContainer)
+    {
+        getContext().webDriverStateContainer = webDriverStateContainer;
+    }
+
+    /**
+     * Get the current WebDriver
+     * 
+     * @return webDriver
+     */
     public static WebDriver getDriver()
     {
         final WebDriverStateContainer wDSC = getContext().webDriverStateContainer;
         return wDSC == null ? null : wDSC.getWebDriver();
     }
 
+    /**
+     * Get the current WebDriver as EventFiringWebDriver
+     *
+     * @return eventFiringWebDriver
+     */
     public static EventFiringWebDriver getEventFiringWebdriver()
     {
         return (EventFiringWebDriver) getDriver();
     }
 
+    /**
+     * Get the current WebDriver as RemoteWebDriver
+     *
+     * @return remoteWebDriver
+     */
     public static RemoteWebDriver getRemoteWebDriver()
     {
         return (RemoteWebDriver) getEventFiringWebdriver().getWrappedDriver();
     }
 
+    /**
+     * Get the embedded local proxy if configured else null.<br>
+     * Can be used to manipulate headers or retrieve har archives.
+     * 
+     * @return browserUpProxy
+     */
     public static BrowserUpProxy getLocalProxy()
     {
         final WebDriverStateContainer wDSC = getContext().webDriverStateContainer;
         return wDSC == null ? null : wDSC.getProxy();
     }
 
+    /**
+     * Name of the current browser profile
+     * 
+     * @return browser profile name
+     */
     public static String getBrowserProfileName()
     {
         return getContext().browserProfileName;
     }
 
+    /**
+     * Set the name of the current browser profile.<br>
+     * <b>Attention:</b> This function is mainly used to set information within the context internally.
+     * 
+     * @param browserProfileName
+     */
     public static void setBrowserProfileName(String browserProfileName)
     {
         getContext().browserProfileName = browserProfileName;
     }
 
+    /**
+     * Name of the current browser
+     * 
+     * @return browser name
+     */
     public static String getBrowserName()
     {
         return getContext().browserName;
     }
 
+    /**
+     * Set the name of the current browser.<br>
+     * <b>Attention:</b> This function is mainly used to set information within the context internally.
+     * 
+     * @param browserName
+     */
     public static void setBrowserName(String browserName)
     {
         getContext().browserName = browserName;
