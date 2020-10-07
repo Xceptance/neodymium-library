@@ -26,7 +26,6 @@ import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.ex.UIAssertionError;
 import com.codeborne.selenide.impl.Html;
 import com.codeborne.selenide.impl.WebElementsCollectionWrapper;
-import com.codeborne.selenide.logevents.SelenideLog;
 import com.codeborne.selenide.logevents.SelenideLogger;
 
 /**
@@ -384,7 +383,7 @@ public class SelenideAddons
                 wrapper.setStackTrace(e.getStackTrace());
                 e = wrapper;
             }
-            SelenideLogger.commitStep(new SelenideLog("Assertion error", message), e);
+            SelenideLogger.commitStep(SelenideLogger.beginStep("Assertion error", message), e);
             if (!driver.config().assertionMode().equals(AssertionMode.SOFT))
             {
                 throw UIAssertionError.wrap(driver, e, 0);
