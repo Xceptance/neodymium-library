@@ -243,8 +243,9 @@ public class NeodymiumRandom
 
     public static InternalRandom getNeodymiumRandom()
     {
-        AllureAddons.addToReport("NeodymiumRandom iniialized with seed: " + getSeed(), null);
-        LOGGER.info("NeodymiumRandom iniialized with seed:" + getSeed());
+        String initText = "NeodymiumRandom initialized with seed: " + getSeed();
+        AllureAddons.addToReport(initText, null);
+        LOGGER.info(initText);
         return random.get();
     }
 
