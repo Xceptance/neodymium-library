@@ -294,7 +294,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     protected Description describeChild(FrameworkMethod method)
     {
         return childDescriptions.computeIfAbsent(method, (m) -> {
-            return Description.createTestDescription(getTestClass().getJavaClass(), m.getName());
+            return Description.createTestDescription(getTestClass().getJavaClass(), m.getName(), m.getAnnotations());
         });
     }
 
