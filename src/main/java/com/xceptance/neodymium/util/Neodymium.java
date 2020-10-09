@@ -172,6 +172,7 @@ public class Neodymium
      * <b>Attention:</b> This function is mainly used to set information within the context internally.
      * 
      * @param webDriverStateContainer
+     *            contains the state objects belonging to the current WebDriver
      */
     public static void setWebDriverStateContainer(WebDriverStateContainer webDriverStateContainer)
     {
@@ -236,6 +237,7 @@ public class Neodymium
      * <b>Attention:</b> This function is mainly used to set information within the context internally.
      * 
      * @param browserProfileName
+     *            the name of the current browser profile
      */
     public static void setBrowserProfileName(String browserProfileName)
     {
@@ -257,6 +259,7 @@ public class Neodymium
      * <b>Attention:</b> This function is mainly used to set information within the context internally.
      * 
      * @param browserName
+     *            the name of the current browser
      */
     public static void setBrowserName(String browserName)
     {
