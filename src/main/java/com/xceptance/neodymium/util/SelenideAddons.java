@@ -273,7 +273,7 @@ public class SelenideAddons
      */
     public static Condition matchesValue(String text)
     {
-        return matchValue(text);
+        return matchValue(".*" + text + ".*");
     }
 
     /**
@@ -291,7 +291,7 @@ public class SelenideAddons
      */
     public static Condition matchValue(final String regex)
     {
-        return matchesAttribute("value", regex);
+        return Condition.attributeMatching("value", regex);
     }
 
     /**
@@ -301,6 +301,8 @@ public class SelenideAddons
      * Sample: <code>$("input").waitWhile(matchesValue("foo"), 12000)</code>
      * </p>
      * 
+     * @deprecated Not needed anymore since it's supported by Selenide. Will be removed with the next major version. Use
+     *             com.codeborne.selenide.Condition.attributeMatching instead.
      * @param attributeName
      *            The name of the attribute that should contain the text
      * @param text
@@ -308,6 +310,7 @@ public class SelenideAddons
      * @return a Selenide {@link Condition}
      * @see #matchAttribute(String, String)
      */
+    @Deprecated
     public static Condition matchesAttribute(String attributeName, String text)
     {
         return matchAttribute(attributeName, text);
@@ -320,7 +323,9 @@ public class SelenideAddons
      * Sample: Assert that given element's value attribute matches given regular expression
      * <code>$("input").should(matchValue("Hello\s*John"))</code>
      * </p>
-     *
+     * 
+     * @deprecated Not needed anymore since it's supported by Selenide. Will be removed with the next major version. Use
+     *             com.codeborne.selenide.Condition.attributeMatching instead.
      * @param attributeName
      *            The name of the attribute that should be matched with the regex
      * @param regex
@@ -328,6 +333,7 @@ public class SelenideAddons
      *            etc.
      * @return a Selenide {@link Condition}
      */
+    @Deprecated
     public static Condition matchAttribute(final String attributeName, final String regex)
     {
         return new Condition("match " + attributeName)
