@@ -1,5 +1,6 @@
 package com.xceptance.neodymium.testclasses.browser.methodonly;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -14,6 +15,12 @@ public class OneBrowserOneMethodBrowserSuppressed
     @Browser("chrome")
     @SuppressBrowsers
     public void first() throws Exception
+    {
+    }
+
+    @Test
+    @Ignore("This should be visible")
+    public void second() throws Exception
     {
     }
 }

@@ -355,6 +355,11 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         return globalTestDescription;
     }
 
+    public Map<FrameworkMethod, Description> getChildDescriptions()
+    {
+        return childDescriptions;
+    }
+
     @Override
     protected String testName(FrameworkMethod method)
     {

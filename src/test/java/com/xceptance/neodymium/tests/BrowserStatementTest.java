@@ -2,8 +2,10 @@ package com.xceptance.neodymium.tests;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -172,9 +174,28 @@ public class BrowserStatementTest extends NeodymiumTest
         // a browser definition on a method and a suppress browser
         String[] expected = new String[]
         {
-          "first"
+          "first",
+          "second"
         };
         checkDescription(OneBrowserOneMethodBrowserSuppressed.class, expected);
+    }
+
+    @Test
+    public void testAnnotationsCorrect() throws Throwable
+    {
+        Map<String, List<String>> expectedAnnotations = new HashMap<String, List<String>>();
+        List<String> anno1 = new ArrayList<String>();
+        anno1.add("@org.junit.Test(timeout=0, expected=org.junit.Test$None.class)");
+        anno1.add("@com.xceptance.neodymium.module.statement.browser.multibrowser.Browser(value=\"chrome\")");
+        anno1.add("@com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowsers()");
+        expectedAnnotations.put("first", anno1);
+
+        List<String> anno2 = new ArrayList<String>();
+        anno2.add("@org.junit.Test(timeout=0, expected=org.junit.Test$None.class)");
+        anno2.add("@org.junit.Ignore(value=\"This should be visible\")");
+        expectedAnnotations.put("second", anno2);
+
+        checkAnnotations(OneBrowserOneMethodBrowserSuppressed.class, expectedAnnotations);
     }
 
     @Test

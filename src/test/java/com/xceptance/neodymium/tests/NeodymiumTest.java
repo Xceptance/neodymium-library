@@ -2,6 +2,7 @@ package com.xceptance.neodymium.tests;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.MessageFormat;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -20,6 +22,7 @@ import org.junit.Assert;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
+import org.junit.runners.model.FrameworkMethod;
 
 import com.xceptance.neodymium.NeodymiumRunner;
 
@@ -214,6 +217,57 @@ public abstract class NeodymiumTest
     public void checkDescription(final Class<?> clazz, final String[] expectedTestDescription) throws Throwable
     {
         checkDescription(new NeodymiumRunner(clazz).getDescription(), expectedTestDescription);
+    }
+
+    public void checkAnnotations(final Class<?> clazz, final Map<String, List<String>> expectedAnnotations) throws Throwable
+    {
+        final Map<FrameworkMethod, Description> compDescriptions = new NeodymiumRunner(clazz).getChildDescriptions();
+        boolean matching = true;
+
+        for (Entry<String, List<String>> entry : expectedAnnotations.entrySet())
+        {
+            String methodName = entry.getKey();
+            List<String> expAnnotations = entry.getValue();
+
+            final List<String> compAnnotations = getAnnotationsForMethod(compDescriptions, methodName);
+            // TODO delete me
+            System.out.println("E: " + expAnnotations.toString());
+            System.out.println("C: " + compAnnotations.toString());
+
+            for (String expAnnotation : expAnnotations)
+            {
+                boolean expAnnotationFound = false;
+                for (String compAnnotation : compAnnotations)
+                {
+                    if (compAnnotation.equals(expAnnotation))
+                    {
+                        expAnnotationFound = true;
+                        break;
+                    }
+                }
+                matching &= expAnnotationFound;
+            }
+        }
+        Assert.assertTrue(matching);
+    }
+
+    private List<String> getAnnotationsForMethod(final Map<FrameworkMethod, Description> compDescriptions, final String methodName)
+    {
+        List<String> resultList = new ArrayList<String>();
+        for (Entry<FrameworkMethod, Description> entry : compDescriptions.entrySet())
+        {
+            Description description = entry.getValue();
+            String descMethodName = description.getMethodName();
+            if (descMethodName.equals(methodName))
+            {
+                for (Annotation annotation : description.getAnnotations())
+                {
+                    resultList.add(annotation.toString());
+                }
+                break;
+            }
+        }
+        return resultList;
     }
 
     /**
