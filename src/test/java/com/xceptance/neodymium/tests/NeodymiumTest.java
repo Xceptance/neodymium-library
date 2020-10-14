@@ -219,6 +219,15 @@ public abstract class NeodymiumTest
         checkDescription(new NeodymiumRunner(clazz).getDescription(), expectedTestDescription);
     }
 
+    /**
+     * Assert that the test method annotations are valid.
+     * 
+     * @param clazz
+     *            the class whose methods annotations should be tested
+     * @param expectedAnnotations
+     *            expected test methods annotations as Map of method names as key and List of String containing the
+     *            toString output of the annotations
+     */
     public void checkAnnotations(final Class<?> clazz, final Map<String, List<String>> expectedAnnotations) throws Throwable
     {
         final Map<FrameworkMethod, Description> compDescriptions = new NeodymiumRunner(clazz).getChildDescriptions();
@@ -230,10 +239,6 @@ public abstract class NeodymiumTest
             List<String> expAnnotations = entry.getValue();
 
             final List<String> compAnnotations = getAnnotationsForMethod(compDescriptions, methodName);
-            // TODO delete me
-            System.out.println("E: " + expAnnotations.toString());
-            System.out.println("C: " + compAnnotations.toString());
-
             for (String expAnnotation : expAnnotations)
             {
                 boolean expAnnotationFound = false;
