@@ -302,7 +302,7 @@ public class SelenideAddons
      * </p>
      * 
      * @deprecated Not needed anymore since it's supported by Selenide. Will be removed with the next major version. Use
-     *             com.codeborne.selenide.Condition.attributeMatching instead.
+     *             {@linkplain com.codeborne.selenide.Condition#attributeMatching} instead.
      * @param attributeName
      *            The name of the attribute that should contain the text
      * @param text
@@ -325,7 +325,7 @@ public class SelenideAddons
      * </p>
      * 
      * @deprecated Not needed anymore since it's supported by Selenide. Will be removed with the next major version. Use
-     *             com.codeborne.selenide.Condition.attributeMatching instead.
+     *             {@linkplain com.codeborne.selenide.Condition#attributeMatching} instead.
      * @param attributeName
      *            The name of the attribute that should be matched with the regex
      * @param regex
