@@ -28,8 +28,13 @@ public class DataUtils
                                                                              .mappingProvider(new GsonMappingProvider(GSON)).build();
 
     /**
-     * Returns a random email address using UUID.java
-     *
+     * Returns a random email address. <br>
+     * The random part contains characters that would match the following regular expression: \[a-z0-9]*\<br>
+     * The length of the random part, a prefix and the domain can be configured within neodymium.properties: <br>
+     * neodymium.dataUtils.email.randomCharsAmount = 12<br>
+     * neodymium.dataUtils.email.local.prefix = test<br>
+     * neodymium.dataUtils.email.domain = varmail.de
+     * 
      * @return random email
      */
     public static String randomEmail()
@@ -48,8 +53,14 @@ public class DataUtils
     }
 
     /**
-     * A random password that is strong enough for most services
-     *
+     * A random password that is strong enough for most services <br>
+     * The following parts can be configured within neodymium.properties: <br>
+     * neodymium.dataUtils.password.uppercaseCharAmount = 2 <br>
+     * neodymium.dataUtils.password.lowercaseCharAmount = 5 <br>
+     * neodymium.dataUtils.password.digitAmount = 2 <br>
+     * neodymium.dataUtils.password.specialCharAmount = 2 <br>
+     * neodymium.dataUtils.password.specialChars = +-#$%%&.;,_
+     * 
      * @return a password
      */
     public static String randomPassword()
