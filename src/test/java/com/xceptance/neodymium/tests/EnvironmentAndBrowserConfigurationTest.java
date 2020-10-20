@@ -54,6 +54,8 @@ public class EnvironmentAndBrowserConfigurationTest extends NeodymiumTest
 
     public static final String GLOBALPAGELOADSTRATEGY = "eager";
 
+    public static final String GLOBALBROWSERRESOLUTION = "1200x900";
+
     public static final String BROWSER2NAME = "My new name for Samsung S4";;
 
     public static final Boolean BROWSER2HEADLESS = !GLOBALHEADLESS;
@@ -61,6 +63,8 @@ public class EnvironmentAndBrowserConfigurationTest extends NeodymiumTest
     public static final Boolean BROWSER2ACCEPTINSECURECERTIFICATES = !GLOBALACCEPTINSECURECERTIFICATES;
 
     public static final String BROWSER2PAGELOADSTRATEGY = "none";
+
+    public static final String BROWSER2RESOLUTION = "1024x768";
 
     @BeforeClass
     public static void beforeClass() throws IOException
@@ -106,12 +110,14 @@ public class EnvironmentAndBrowserConfigurationTest extends NeodymiumTest
         properties3.put("browserprofile.global.headless", GLOBALHEADLESS.toString());
         properties3.put("browserprofile.global.acceptInsecureCertificates", GLOBALACCEPTINSECURECERTIFICATES.toString());
         properties3.put("browserprofile.global.pageLoadStrategy", GLOBALPAGELOADSTRATEGY);
+        properties3.put("browserprofile.global.browserResolution", GLOBALBROWSERRESOLUTION);
         properties3.put("browserprofile.Galaxy_Note3_Emulation.name", BROWSERNAME);
         properties3.put("browserprofile.Galaxy_Note3_Emulation.testEnvironment", ENVIRONMENTNAME);
         properties3.put("browserprofile.Galaxy_Note4_Emulation.name", BROWSER2NAME);
         properties3.put("browserprofile.Galaxy_Note4_Emulation.headless", BROWSER2HEADLESS.toString());
         properties3.put("browserprofile.Galaxy_Note4_Emulation.acceptInsecureCertificates", BROWSER2ACCEPTINSECURECERTIFICATES.toString());
         properties3.put("browserprofile.Galaxy_Note4_Emulation.pageLoadStrategy", BROWSER2PAGELOADSTRATEGY);
+        properties3.put("browserprofile.Galaxy_Note4_Emulation.browserResolution", BROWSER2RESOLUTION);
         File tempConfigFile3 = new File("./config/dev-browser.properties");
         writeMapToPropertiesFile(properties3, tempConfigFile3);
         tempFiles.add(tempConfigFile3);

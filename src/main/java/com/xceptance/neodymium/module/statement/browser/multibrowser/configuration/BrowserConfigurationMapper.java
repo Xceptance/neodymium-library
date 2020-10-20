@@ -64,8 +64,8 @@ public class BrowserConfigurationMapper
 
     private static final String ORIENTATION = "orientation";
 
-    public BrowserConfiguration map(Map<String, String> browserProfileConfiguration, String globalHeadless, String globalAcceptIncecureCertificates,
-                                    String globalPageLoadStrategy)
+    public BrowserConfiguration map(Map<String, String> browserProfileConfiguration, String globalHeadless, String globalAcceptInsecureCertificates,
+                                    String globalPageLoadStrategy, String globalBrowserResolution)
     {
         BrowserConfiguration browserConfiguration = new BrowserConfiguration();
 
@@ -249,18 +249,11 @@ public class BrowserConfigurationMapper
         String browserResolution = browserProfileConfiguration.get(BROWSER_RESOLUTION);
         if (!StringUtils.isEmpty(browserResolution))
         {
-            // split the combined resolution string on every 'x', 'X' or ',' and remove all whitespace
-            // e.g: 1920x1080 or 1920, 1080
-
-            String[] browserWidthHeight = browserResolution.replaceAll("[\\s]", "").split("[xX,]");
-            if (!StringUtils.isEmpty(browserWidthHeight[0]))
-            {
-                browserConfiguration.setBrowserWidth(Integer.parseInt(browserWidthHeight[0]));
-            }
-            if (!StringUtils.isEmpty(browserWidthHeight[0]))
-            {
-                browserConfiguration.setBrowserHeight(Integer.parseInt(browserWidthHeight[1]));
-            }
+            setBrowserResolution(browserConfiguration, browserResolution);
+        }
+        else if (!StringUtils.isEmpty(globalBrowserResolution))
+        {
+            setBrowserResolution(browserConfiguration, globalBrowserResolution);
         }
 
         // page load strategy
@@ -276,9 +269,9 @@ public class BrowserConfigurationMapper
         String acceptInsecureCerts = browserProfileConfiguration.get(ACCEPT_INSECURE_CERTS);
         if (!StringUtils.isEmpty(acceptInsecureCerts))
             capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.parseBoolean(acceptInsecureCerts));
-        else if (!StringUtils.isEmpty(globalAcceptIncecureCertificates))
+        else if (!StringUtils.isEmpty(globalAcceptInsecureCertificates))
         {
-            capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.parseBoolean(globalAcceptIncecureCertificates));
+            capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.parseBoolean(globalAcceptInsecureCertificates));
         }
 
         // headless
@@ -312,5 +305,21 @@ public class BrowserConfigurationMapper
         browserConfiguration.setName(browserProfileConfiguration.get("name"));
 
         return browserConfiguration;
+    }
+
+    private void setBrowserResolution(BrowserConfiguration browserConfiguration, String browserResolution)
+    {
+        // split the combined resolution string on every 'x', 'X' or ',' and remove all whitespace
+        // e.g: 1920x1080 or 1920, 1080
+
+        String[] browserWidthHeight = browserResolution.replaceAll("[\\s]", "").split("[xX,]");
+        if (!StringUtils.isEmpty(browserWidthHeight[0]))
+        {
+            browserConfiguration.setBrowserWidth(Integer.parseInt(browserWidthHeight[0]));
+        }
+        if (!StringUtils.isEmpty(browserWidthHeight[0]))
+        {
+            browserConfiguration.setBrowserHeight(Integer.parseInt(browserWidthHeight[1]));
+        }
     }
 }

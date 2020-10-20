@@ -79,6 +79,8 @@ public class EnvironmentAndBrowserConfiguration
                             configuration.getCapabilities().getCapability(CapabilityType.ACCEPT_INSECURE_CERTS));
         Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.GLOBALPAGELOADSTRATEGY,
                             configuration.getCapabilities().getCapability(CapabilityType.PAGE_LOAD_STRATEGY));
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.GLOBALBROWSERRESOLUTION,
+                            configuration.getBrowserWidth() + "x" + configuration.getBrowserHeight());
     }
 
     @Test
@@ -92,5 +94,7 @@ public class EnvironmentAndBrowserConfiguration
                             configuration.getCapabilities().getCapability(CapabilityType.ACCEPT_INSECURE_CERTS));
         Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.BROWSER2PAGELOADSTRATEGY,
                             configuration.getCapabilities().getCapability(CapabilityType.PAGE_LOAD_STRATEGY));
+        Assert.assertEquals(EnvironmentAndBrowserConfigurationTest.BROWSER2RESOLUTION,
+                            configuration.getBrowserWidth() + "x" + configuration.getBrowserHeight());
     }
 }

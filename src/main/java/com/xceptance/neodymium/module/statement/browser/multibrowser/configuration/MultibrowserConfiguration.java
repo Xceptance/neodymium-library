@@ -39,6 +39,8 @@ public class MultibrowserConfiguration
 
     private static final String BROWSER_GLOBAL_PAGE_LOAD_STRATEGY = BROWSER_PROFILE_PREFIX + "global.pageLoadStrategy";
 
+    private static final String BROWSER_GLOBAL_RESOLUTION = BROWSER_PROFILE_PREFIX + "global.browserResolution";
+
     private Map<String, TestEnvironment> testEnvironments;
 
     private Map<String, BrowserConfiguration> browserProfiles;
@@ -86,8 +88,9 @@ public class MultibrowserConfiguration
         BrowserConfigurationMapper mapper = new BrowserConfigurationMapper();
 
         String globalHeadless = browserProfileProperties.getProperty(BROWSER_GLOBAL_HEADLESS);
-        String globalAcceptIncecureCertificates = browserProfileProperties.getProperty(BROWSER_GLOBAL_ACCEPT_INSECURE_CERTIFICATES);
+        String globalAcceptInsecureCertificates = browserProfileProperties.getProperty(BROWSER_GLOBAL_ACCEPT_INSECURE_CERTIFICATES);
         String globalPageLoadStrategy = browserProfileProperties.getProperty(BROWSER_GLOBAL_PAGE_LOAD_STRATEGY);
+        String globalBrowserResolution = browserProfileProperties.getProperty(BROWSER_GLOBAL_RESOLUTION);
 
         for (String browserProfile : browserProfileKeys)
         {
@@ -100,7 +103,8 @@ public class MultibrowserConfiguration
                 browserProfileConfiguration.put(subkey, value);
             }
             browserProfiles.put(browserProfile,
-                                mapper.map(browserProfileConfiguration, globalHeadless, globalAcceptIncecureCertificates, globalPageLoadStrategy));
+                                mapper.map(browserProfileConfiguration, globalHeadless, globalAcceptInsecureCertificates, globalPageLoadStrategy,
+                                           globalBrowserResolution));
         }
     }
 
