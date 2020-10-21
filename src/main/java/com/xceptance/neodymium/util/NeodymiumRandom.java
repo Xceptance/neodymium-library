@@ -212,7 +212,9 @@ public class NeodymiumRandom
     }
 
     /**
-     * @see java.util.Random#nextInt(int)
+     * @see java.util.Random#nextInt(int) <br>
+     *      ATTENTION: A difference to the standard implementation is that we return 0 for n=0 instead of an
+     *      IllegalArgumentException
      * @param n
      *            upper bound (exclusive)
      * @return a random int value
