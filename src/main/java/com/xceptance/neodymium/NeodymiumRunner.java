@@ -79,8 +79,8 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     {
         super(clazz);
         SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
-        LOGGER.info("Running a test using Neodymium Library (version: " + Neodymium.getNeodymiumVersion()
-                    + "), see also https://github.com/Xceptance/neodymium-library");
+        LOGGER.info("This test uses Neodymium Library (version: " + Neodymium.getNeodymiumVersion()
+                    + "), MIT License, more details on https://github.com/Xceptance/neodymium-library");
     }
 
     public enum DescriptionMode

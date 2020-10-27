@@ -18,8 +18,8 @@ public class NeodymiumCucumberRunner extends NeodymiumCucumberWrapper
     public NeodymiumCucumberRunner(Class<?> clazz) throws InitializationError, IOException
     {
         super(clazz);
-        LOGGER.info("Running a test using Neodymium Library (version: " + Neodymium.getNeodymiumVersion()
-                    + "), see also https://github.com/Xceptance/neodymium-library");
+        LOGGER.info("This test uses Neodymium Library (version: " + Neodymium.getNeodymiumVersion()
+                    + "), MIT License, more details on https://github.com/Xceptance/neodymium-library");
     }
 
     @Override
