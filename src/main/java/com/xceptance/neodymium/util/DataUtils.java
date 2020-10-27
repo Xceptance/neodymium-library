@@ -59,7 +59,7 @@ public class DataUtils
      * neodymium.dataUtils.password.lowercaseCharAmount = 5 <br>
      * neodymium.dataUtils.password.digitAmount = 2 <br>
      * neodymium.dataUtils.password.specialCharAmount = 2 <br>
-     * neodymium.dataUtils.password.specialChars = +-#$%%&.;,_
+     * neodymium.dataUtils.password.specialChars = +-#$%&amp;.;,_
      * 
      * @return a password
      */

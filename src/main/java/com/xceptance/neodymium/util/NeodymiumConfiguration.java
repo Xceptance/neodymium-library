@@ -148,7 +148,7 @@ public interface NeodymiumConfiguration extends Mutable
     public int dataUtilsPasswordSpecialCharAmount();
 
     @Key("neodymium.dataUtils.password.specialChars")
-    @DefaultValue("+-#$%%&.;,_")
+    @DefaultValue("+-#$%&.;,_")
     public String dataUtilsPasswordSpecialChars();
 
     @Key("neodymium.junit.viewmode")
