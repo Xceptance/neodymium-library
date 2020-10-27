@@ -235,11 +235,6 @@
 		</dependency>
 		<dependency>
 			<groupId>io.cucumber</groupId>
-			<artifactId>cucumber-java8</artifactId>
-			<version>${cucumber.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-picocontainer</artifactId>
 			<version>${cucumber.version}</version>
 		</dependency>
@@ -251,11 +246,6 @@
 		<dependency>
 			<groupId>io.qameta.allure</groupId>
 			<artifactId>allure-junit4</artifactId>
-			<version>${allure.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.qameta.allure</groupId>
-			<artifactId>allure-cucumber5-jvm</artifactId>
 			<version>${allure.version}</version>
 		</dependency>
 		<dependency>
