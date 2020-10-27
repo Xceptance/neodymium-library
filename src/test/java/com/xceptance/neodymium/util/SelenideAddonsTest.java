@@ -36,10 +36,15 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBro
 @Browser("Chrome_headless")
 public class SelenideAddonsTest
 {
+    private void openBlogPage()
+    {
+        Selenide.open("https://blog.xceptance.com/");
+    }
+
     @Test
     public void testMatchesAttributeCondition()
     {
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         $("#masthead .search-toggle").click();
 
         $("#search-container .search-field").should(SelenideAddons.matchesAttribute("placeholder", "Search"));
@@ -48,7 +53,7 @@ public class SelenideAddonsTest
     @Test
     public void testMatchAttributeCondition()
     {
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         $("#masthead .search-toggle").click();
 
         $("#search-container .search-field").should(SelenideAddons.matchAttribute("placeholder", "^S.a.c.\\s…"));
@@ -58,7 +63,7 @@ public class SelenideAddonsTest
     @Test
     public void testMatchAttributeConditionError()
     {
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         $("#masthead .search-toggle").click();
 
         Assert.assertThrows(ElementShould.class, () -> {
@@ -69,8 +74,9 @@ public class SelenideAddonsTest
     @Test
     public void testMatchAttributeConditionErrorMissingAttribute()
     {
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         $("#masthead .search-toggle").click();
+
         Assert.assertThrows(ElementShould.class, () -> {
             $("#search-container .search-field").should(SelenideAddons.matchAttribute("foo", "bar"));
         });
@@ -79,7 +85,7 @@ public class SelenideAddonsTest
     @Test
     public void testMatchesValueCondition()
     {
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         $("#masthead .search-toggle").click();
         $("#search-container .search-field").val("searchphrase").submit();
 
@@ -89,7 +95,7 @@ public class SelenideAddonsTest
     @Test
     public void testMatchValueCondition()
     {
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         $("#masthead .search-toggle").click();
         $("#search-container .search-field").val("searchphrase").submit();
 
@@ -100,9 +106,10 @@ public class SelenideAddonsTest
     @Test
     public void testMatchValueConditionError()
     {
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         $("#masthead .search-toggle").click();
         $("#search-container .search-field").val("searchphrase").submit();
+
         Assert.assertThrows(ElementShould.class, () -> {
             $("#content .search-field").should(SelenideAddons.matchValue("\\d+"));
         });
@@ -111,7 +118,8 @@ public class SelenideAddonsTest
     @Test()
     public void testWrapAssertion()
     {
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
+
         SelenideAddons.wrapAssertionError(() -> {
             Assert.assertEquals("Passionate Testing | Xceptance Blog", Selenide.title());
         });
@@ -120,7 +128,8 @@ public class SelenideAddonsTest
     @Test
     public void testWrapAssertionError()
     {
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
+
         Assert.assertThrows(UIAssertionError.class, () -> {
             SelenideAddons.wrapAssertionError(() -> {
                 Assert.assertEquals("MyPageTitle", Selenide.title());
@@ -152,7 +161,7 @@ public class SelenideAddonsTest
             }
         });
 
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         Neodymium.softAssertions(true);
         try
         {
@@ -193,7 +202,7 @@ public class SelenideAddonsTest
             }
         });
 
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         Neodymium.softAssertions(true);
         try
         {
@@ -214,7 +223,7 @@ public class SelenideAddonsTest
         final String errMessage = "AssertionError: No error message provided by the Assertion.";
         try
         {
-            Selenide.open("https://blog.xceptance.com/");
+            openBlogPage();
             SelenideAddons.wrapAssertionError(() -> {
                 Assert.assertTrue(Selenide.title().startsWith("MyPageTitle"));
             });
@@ -314,7 +323,7 @@ public class SelenideAddonsTest
         final Iterator<Runnable> iterator = runArray.iterator();
 
         // testing the error path after three exceptions
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         long startTime = new Date().getTime();
         try
         {
