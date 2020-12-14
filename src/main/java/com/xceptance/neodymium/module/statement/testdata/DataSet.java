@@ -24,13 +24,15 @@ import java.lang.annotation.Target;
  */
 @Retention(RUNTIME)
 @Target(
-{
-  TYPE, METHOD
-})
+    {
+      TYPE, METHOD
+    })
 @Repeatable(DataSets.class)
 public @interface DataSet
 {
     int value() default 0;
 
     String id() default "";
+
+    int randomSets() default 0;
 }

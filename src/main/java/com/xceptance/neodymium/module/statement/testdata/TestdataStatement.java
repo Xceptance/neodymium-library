@@ -3,6 +3,7 @@ package com.xceptance.neodymium.module.statement.testdata;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -203,6 +204,7 @@ public class TestdataStatement extends StatementBuilder
         {
             int dataSetIndex = dataSet.value();
             String dataSetId = dataSet.id();
+            int randomSets = dataSet.randomSets();
 
             // take dataSetId (testId) if its set
             if (dataSetId != null && dataSetId.trim().length() > 0)
@@ -225,6 +227,20 @@ public class TestdataStatement extends StatementBuilder
                     String msg = MessageFormat.format("Method ''{0}'' is marked to be run with data set testId ''{1}'', but could not find that data set",
                                                       method.getName(), dataSetId);
                     throw new IllegalArgumentException(msg);
+                }
+            }
+            else if (randomSets > 0)
+            {
+                if (randomSets > iterations.size())
+                {
+                    String msg = MessageFormat.format("Method ''{0}'' is marked to be run with {1} random data sets, but there are only {2}",
+                                                      method.getName(), dataSetIndex, iterations.size());
+                    throw new IllegalArgumentException(msg);
+                }
+                else
+                {
+                    Collections.shuffle(iterations);
+                    fixedIterations.addAll(iterations.subList(0, randomSets));
                 }
             }
             else
