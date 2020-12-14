@@ -234,7 +234,7 @@ public class TestdataStatement extends StatementBuilder
                 if (randomSets > iterations.size())
                 {
                     String msg = MessageFormat.format("Method ''{0}'' is marked to be run with {1} random data sets, but there are only {2}",
-                                                      method.getName(), dataSetIndex, iterations.size());
+                                                      method.getName(), randomSets, iterations.size());
                     throw new IllegalArgumentException(msg);
                 }
                 else
