@@ -134,6 +134,10 @@ public class BrowserConfigurationMapper
         String emulatedDeviceName = browserProfileConfiguration.get(DEVICE_NAME);
         if (!StringUtils.isEmpty(emulatedDeviceName))
             capabilities.setCapability("deviceName", emulatedDeviceName);
+        if (!StringUtils.isEmpty(emulatedDeviceName)) {
+            // BrowserStack
+            capabilities.setCapability("device", emulatedDeviceName);
+        }
 
         String emulatedDeviceOrientation = browserProfileConfiguration.get(DEVICE_ORIENTATION);
         if (!StringUtils.isEmpty(emulatedDeviceOrientation))
@@ -146,6 +150,8 @@ public class BrowserConfigurationMapper
             capabilities.setCapability("screenResolution", emulatedDeviceScreenResolution);
             // TestingBot
             capabilities.setCapability("screen-resolution", emulatedDeviceScreenResolution);
+            // BrowserStack
+            capabilities.setCapability("resolution", emulatedDeviceScreenResolution);
         }
 
         String emulatedMaximumTestDuration = browserProfileConfiguration.get(MAXIMUM_DURATION);
@@ -165,6 +171,7 @@ public class BrowserConfigurationMapper
             capabilities.setCapability("maxDuration", maxDura);
             // TestingBot
             capabilities.setCapability("maxduration", maxDura);
+            // BrowserStack does not support to set this parameter in preference of a fix value of 2 hours
         }
 
         String emulatedIdleTimeout = browserProfileConfiguration.get(IDLE_TIMEOUT);
@@ -180,7 +187,7 @@ public class BrowserConfigurationMapper
                 throw new RuntimeException(IDLE_TIMEOUT + " configured within the browser profiles couldn't be parsed into an int value. Given value: \""
                                            + emulatedIdleTimeout + "\"", e);
             }
-            // SauceLabs
+            // SauceLabs, BrowserStack
             capabilities.setCapability("idleTimeout", idleTim);
             // TestingBot
             capabilities.setCapability("idletimeout", idleTim);
@@ -189,7 +196,7 @@ public class BrowserConfigurationMapper
         String emulatedSeleniumVersion = browserProfileConfiguration.get(SELENIUM_VERSION);
         if (!StringUtils.isEmpty(emulatedSeleniumVersion))
         {
-            // SauceLabs
+            // SauceLabs, BrowserStack
             capabilities.setCapability("seleniumVersion", emulatedSeleniumVersion);
             // TestingBot
             capabilities.setCapability("selenium-version", emulatedSeleniumVersion);
@@ -223,6 +230,11 @@ public class BrowserConfigurationMapper
         String orientation = browserProfileConfiguration.get(ORIENTATION);
         if (!StringUtils.isEmpty(orientation))
             capabilities.setCapability(ORIENTATION, orientation);
+        if (!StringUtils.isEmpty(orientation))
+        {
+            // BrowserStack
+            capabilities.setCapability("deviceOrientation", orientation);
+        }
 
         /*
          * Chrome device emulation
@@ -267,11 +279,16 @@ public class BrowserConfigurationMapper
 
         // accept insecure certificates
         String acceptInsecureCerts = browserProfileConfiguration.get(ACCEPT_INSECURE_CERTS);
-        if (!StringUtils.isEmpty(acceptInsecureCerts))
+        if (!StringUtils.isEmpty(acceptInsecureCerts)) {
             capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.parseBoolean(acceptInsecureCerts));
+            // BrowserStack, helps on iPhone
+            capabilities.setCapability("acceptSslCerts", Boolean.parseBoolean(acceptInsecureCerts));
+        }
         else if (!StringUtils.isEmpty(globalAcceptInsecureCertificates))
         {
             capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.parseBoolean(globalAcceptInsecureCertificates));
+            // BrowserStack
+            capabilities.setCapability("acceptSslCerts", Boolean.parseBoolean(globalAcceptInsecureCertificates));
         }
 
         // headless
