@@ -117,7 +117,7 @@ public class BrowserConfigurationMapper
         }
 
         /*
-         * SauceLabs/TestingBot configuration
+         * SauceLabs/TestingBot/BrowserStack configuration
          */
         String emulatedPlatform = browserProfileConfiguration.get(PLATFORM);
         if (!StringUtils.isEmpty(emulatedPlatform))
@@ -133,8 +133,9 @@ public class BrowserConfigurationMapper
 
         String emulatedDeviceName = browserProfileConfiguration.get(DEVICE_NAME);
         if (!StringUtils.isEmpty(emulatedDeviceName))
+        {
+            // SauceLabs, TestingBot
             capabilities.setCapability("deviceName", emulatedDeviceName);
-        if (!StringUtils.isEmpty(emulatedDeviceName)) {
             // BrowserStack
             capabilities.setCapability("device", emulatedDeviceName);
         }
@@ -171,7 +172,7 @@ public class BrowserConfigurationMapper
             capabilities.setCapability("maxDuration", maxDura);
             // TestingBot
             capabilities.setCapability("maxduration", maxDura);
-            // BrowserStack does not support to set this parameter in preference of a fix value of 2 hours
+            // BrowserStack does not support to set this capability (fix value of 2 hours)
         }
 
         String emulatedIdleTimeout = browserProfileConfiguration.get(IDLE_TIMEOUT);
@@ -229,9 +230,9 @@ public class BrowserConfigurationMapper
 
         String orientation = browserProfileConfiguration.get(ORIENTATION);
         if (!StringUtils.isEmpty(orientation))
-            capabilities.setCapability(ORIENTATION, orientation);
-        if (!StringUtils.isEmpty(orientation))
         {
+            // SauceLabs, TestingBot
+            capabilities.setCapability(ORIENTATION, orientation);
             // BrowserStack
             capabilities.setCapability("deviceOrientation", orientation);
         }
@@ -279,7 +280,8 @@ public class BrowserConfigurationMapper
 
         // accept insecure certificates
         String acceptInsecureCerts = browserProfileConfiguration.get(ACCEPT_INSECURE_CERTS);
-        if (!StringUtils.isEmpty(acceptInsecureCerts)) {
+        if (!StringUtils.isEmpty(acceptInsecureCerts))
+        {
             capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.parseBoolean(acceptInsecureCerts));
             // BrowserStack, helps on iPhone
             capabilities.setCapability("acceptSslCerts", Boolean.parseBoolean(acceptInsecureCerts));
