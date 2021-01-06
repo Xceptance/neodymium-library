@@ -70,6 +70,17 @@ public class BrowserStatementTest extends NeodymiumTest
         properties.put("browserprofile.testEnvironmentFlags.deviceOrientation", "portrait");
         properties.put("browserprofile.testEnvironmentFlags.orientation", "landscape");
 
+        properties.put("browserprofile.testEnvironmentFlags2.name", "Test Environment Browser");
+        properties.put("browserprofile.testEnvironmentFlags2.browser", "chrome");
+        properties.put("browserprofile.testEnvironmentFlags2.idleTimeout", "1234");
+        properties.put("browserprofile.testEnvironmentFlags2.maxDuration", "5678");
+        properties.put("browserprofile.testEnvironmentFlags2.seleniumVersion", "3.1234");
+        properties.put("browserprofile.testEnvironmentFlags2.screenResolution", "800x600");
+        properties.put("browserprofile.testEnvironmentFlags2.platform", "Windows 7");
+        properties.put("browserprofile.testEnvironmentFlags2.platformName", "Windows 10");
+        properties.put("browserprofile.testEnvironmentFlags2.deviceName", "MyDevice");
+        properties.put("browserprofile.testEnvironmentFlags2.deviceOrientation", "portrait");
+
         File tempConfigFile = File.createTempFile("browser", "", new File("./config/"));
         tempFiles.add(tempConfigFile);
         writeMapToPropertiesFile(properties, tempConfigFile);
@@ -211,6 +222,7 @@ public class BrowserStatementTest extends NeodymiumTest
         checkFirefox(browserProfiles.get("firefox"));
         checkMultiFirefox(browserProfiles.get("multiFirefox"));
         checkTestEnvironment(browserProfiles.get("testEnvironmentFlags"));
+        checkTestEnvironment2(browserProfiles.get("testEnvironmentFlags2"));
     }
 
     private void checkChrome(BrowserConfiguration config)
@@ -286,7 +298,29 @@ public class BrowserStatementTest extends NeodymiumTest
         Assert.assertEquals(Platform.VISTA, testCapabilities.getCapability("platform"));
         Assert.assertEquals("Windows 10", testCapabilities.getCapability("platformName"));
         Assert.assertEquals("MyDevice", testCapabilities.getCapability("deviceName"));
-        Assert.assertEquals("portrait", testCapabilities.getCapability("deviceOrientation"));
+        Assert.assertEquals("landscape", testCapabilities.getCapability("deviceOrientation"));
         Assert.assertEquals("landscape", testCapabilities.getCapability("orientation"));
+    }
+
+    private void checkTestEnvironment2(BrowserConfiguration config)
+    {
+        Assert.assertNotNull(config);
+        Assert.assertEquals("testEnvironmentFlags2", config.getConfigTag());
+        Assert.assertEquals("Test Environment Browser", config.getName());
+        MutableCapabilities testCapabilities = config.getCapabilities();
+        Assert.assertEquals("chrome", testCapabilities.getBrowserName());
+        Assert.assertEquals(1234, testCapabilities.getCapability("idleTimeout"));
+        Assert.assertEquals(1234, testCapabilities.getCapability("idletimeout"));
+        Assert.assertEquals(5678, testCapabilities.getCapability("maxDuration"));
+        Assert.assertEquals(5678, testCapabilities.getCapability("maxduration"));
+        Assert.assertEquals("3.1234", testCapabilities.getCapability("seleniumVersion"));
+        Assert.assertEquals("3.1234", testCapabilities.getCapability("selenium-version"));
+        Assert.assertEquals("800x600", testCapabilities.getCapability("screenResolution"));
+        Assert.assertEquals("800x600", testCapabilities.getCapability("screen-resolution"));
+        Assert.assertEquals(Platform.VISTA, testCapabilities.getCapability("platform"));
+        Assert.assertEquals("Windows 10", testCapabilities.getCapability("platformName"));
+        Assert.assertEquals("MyDevice", testCapabilities.getCapability("deviceName"));
+        Assert.assertEquals("portrait", testCapabilities.getCapability("deviceOrientation"));
+        Assert.assertEquals(null, testCapabilities.getCapability("orientation"));
     }
 }

@@ -140,10 +140,6 @@ public class BrowserConfigurationMapper
             capabilities.setCapability("device", emulatedDeviceName);
         }
 
-        String emulatedDeviceOrientation = browserProfileConfiguration.get(DEVICE_ORIENTATION);
-        if (!StringUtils.isEmpty(emulatedDeviceOrientation))
-            capabilities.setCapability("deviceOrientation", emulatedDeviceOrientation);
-
         String emulatedDeviceScreenResolution = browserProfileConfiguration.get(SCREEN_RESOLUTION);
         if (!StringUtils.isEmpty(emulatedDeviceScreenResolution))
         {
@@ -228,12 +224,16 @@ public class BrowserConfigurationMapper
         if (!StringUtils.isEmpty(automationName))
             capabilities.setCapability(AUTOMATION_NAME, automationName);
 
+        String emulatedDeviceOrientation = browserProfileConfiguration.get(DEVICE_ORIENTATION);
+        if (!StringUtils.isEmpty(emulatedDeviceOrientation))
+            capabilities.setCapability("deviceOrientation", emulatedDeviceOrientation);
+
         String orientation = browserProfileConfiguration.get(ORIENTATION);
         if (!StringUtils.isEmpty(orientation))
         {
             // SauceLabs, TestingBot
             capabilities.setCapability(ORIENTATION, orientation);
-            // BrowserStack
+            // BrowserStack, Appium
             capabilities.setCapability("deviceOrientation", orientation);
         }
 
