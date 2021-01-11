@@ -239,7 +239,7 @@ public class TestdataStatement extends StatementBuilder
                 }
                 else
                 {
-                    Collections.shuffle(iterations);
+                    Collections.shuffle(iterations, Neodymium.getRandom());
                     fixedIterations.addAll(iterations.subList(0, randomSets));
                 }
             }
