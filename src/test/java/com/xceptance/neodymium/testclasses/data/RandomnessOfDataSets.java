@@ -30,7 +30,7 @@ public class RandomnessOfDataSets
     public void test2()
     {
         boolean changedOrder = false;
-        for (int i = 0; i < datasets.size(); i++)
+        for (int i = 1; i < datasets.size(); i++)
         {
             if (!datasets.get(i).equals("val" + (i + 1)))
             {
