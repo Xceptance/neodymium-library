@@ -351,7 +351,7 @@ public class TestDataStatementTest extends NeodymiumTest
     {
         Result result = JUnitCore.runClasses(ForceOfNoneDataSets.class);
         checkFail(result, 1, 0, 1,
-                  "java.lang.IllegalArgumentException: Method 'test1' is marked to be run with data set index 2, but there are only 0");
+                  "java.lang.IllegalArgumentException: Method 'test1' is marked to be run with data set index 2, but there are only 0 available");
     }
 
     @Test

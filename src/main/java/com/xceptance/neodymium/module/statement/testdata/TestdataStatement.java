@@ -255,7 +255,7 @@ public class TestdataStatement extends StatementBuilder
                 {
                     if (dataSetIndex > iterations.size())
                     {
-                        String msg = MessageFormat.format("Method ''{0}'' is marked to be run with data set index {1}, but there are only {2}",
+                        String msg = MessageFormat.format("Method ''{0}'' is marked to be run with data set index {1}, but there are only {2} available",
                                                           method.getName(), dataSetIndex, iterations.size());
                         throw new IllegalArgumentException(msg);
                     }
