@@ -24,9 +24,9 @@ import java.lang.annotation.Target;
  */
 @Retention(RUNTIME)
 @Target(
-    {
-      TYPE, METHOD
-    })
+{
+  TYPE, METHOD
+})
 @Repeatable(DataSets.class)
 public @interface DataSet
 {

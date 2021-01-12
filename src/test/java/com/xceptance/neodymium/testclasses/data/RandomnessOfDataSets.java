@@ -17,16 +17,15 @@ public class RandomnessOfDataSets
 {
     private static List<String> datasets = new ArrayList<String>();
 
-    @DataSet(
-             randomSets = 4)
     @Test
+    @DataSet(randomSets = 4)
     public void test1()
     {
         datasets.add(DataUtils.asString("key1"));
     }
 
-    @SuppressDataSets
     @Test
+    @SuppressDataSets
     public void test2()
     {
         boolean changedOrder = false;

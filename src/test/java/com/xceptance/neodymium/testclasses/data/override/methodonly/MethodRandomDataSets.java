@@ -9,9 +9,8 @@ import com.xceptance.neodymium.module.statement.testdata.DataSet;
 @RunWith(NeodymiumRunner.class)
 public class MethodRandomDataSets
 {
-    @DataSet(
-             randomSets = 4)
     @Test
+    @DataSet(randomSets = 4)
     public void test()
     {
     }

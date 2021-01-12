@@ -11,15 +11,14 @@ import com.xceptance.neodymium.util.DataUtils;
 @RunWith(NeodymiumRunner.class)
 public class MixRandomAndValueDataSets
 {
-    @DataSet(
-             randomSets = 1)
     @Test
+    @DataSet(randomSets = 1)
     public void testWithRandomDataSet()
     {
     }
 
-    @DataSet(2)
     @Test
+    @DataSet(2)
     public void testWithExplicitDataSet()
     {
         Assert.assertEquals("val2", DataUtils.asString("key1"));

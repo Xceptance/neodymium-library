@@ -204,7 +204,7 @@ public class TestdataStatement extends StatementBuilder
         {
             int dataSetIndex = dataSet.value();
             String dataSetId = dataSet.id();
-            int randomSets = dataSet.randomSets();
+            int randomSetAmount = dataSet.randomSets();
 
             // take dataSetId (testId) if its set
             if (dataSetId != null && dataSetId.trim().length() > 0)
@@ -229,18 +229,18 @@ public class TestdataStatement extends StatementBuilder
                     throw new IllegalArgumentException(msg);
                 }
             }
-            else if (randomSets > 0)
+            else if (randomSetAmount > 0)
             {
-                if (randomSets > iterations.size())
+                if (randomSetAmount > iterations.size())
                 {
-                    String msg = MessageFormat.format("Method ''{0}'' is marked to be run with {1} random data sets, but there are only {2}",
-                                                      method.getName(), randomSets, iterations.size());
+                    String msg = MessageFormat.format("Method ''{0}'' is marked to be run with {1} random data sets, but there are only {2} available",
+                                                      method.getName(), randomSetAmount, iterations.size());
                     throw new IllegalArgumentException(msg);
                 }
                 else
                 {
                     Collections.shuffle(iterations, Neodymium.getRandom());
-                    fixedIterations.addAll(iterations.subList(0, randomSets));
+                    fixedIterations.addAll(iterations.subList(0, randomSetAmount));
                 }
             }
             else
