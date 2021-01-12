@@ -413,6 +413,6 @@ public class TestDataStatementTest extends NeodymiumTest
     {
         Result result = JUnitCore.runClasses(RandomDataSetsException.class);
         checkFail(result, 1, 0, 1,
-                  "java.lang.IllegalArgumentException: Method 'test' is marked to be run with 4 random data sets, but there are only 2");
+                  "java.lang.IllegalArgumentException: Method 'test' is marked to be run with 4 random data sets, but there are only 2 available");
     }
 }
