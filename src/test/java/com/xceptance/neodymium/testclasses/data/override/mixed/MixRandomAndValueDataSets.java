@@ -15,6 +15,8 @@ public class MixRandomAndValueDataSets
     @DataSet(randomSets = 1)
     public void testWithRandomDataSet()
     {
+        // assert test data is available for the test
+        Assert.assertTrue(DataUtils.asString("key1").contains("val"));
     }
 
     @Test

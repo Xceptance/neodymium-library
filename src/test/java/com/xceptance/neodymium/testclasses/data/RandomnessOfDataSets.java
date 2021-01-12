@@ -21,6 +21,8 @@ public class RandomnessOfDataSets
     @DataSet(randomSets = 4)
     public void test1()
     {
+        // assert test data is available for the test
+        Assert.assertTrue(DataUtils.asString("key1").contains("val"));
         datasets.add(DataUtils.asString("key1"));
     }
 
