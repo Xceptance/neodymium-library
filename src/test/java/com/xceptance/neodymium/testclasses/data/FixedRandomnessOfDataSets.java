@@ -30,6 +30,7 @@ public class FixedRandomnessOfDataSets
     @SuppressDataSets
     public void test2()
     {
+        Assert.assertEquals(4, datasets.size());
         Assert.assertEquals("val2", datasets.get(0));
         Assert.assertEquals("val4", datasets.get(1));
         Assert.assertEquals("val1", datasets.get(2));
