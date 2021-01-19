@@ -2,11 +2,11 @@ package com.xceptance.neodymium.util;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.RandomStringGenerator;
+import org.apache.commons.text.TextRandomProvider;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,18 +28,24 @@ public class DataUtils
                                                                              .mappingProvider(new GsonMappingProvider(GSON)).build();
 
     /**
-     * Returns a random email address using UUID.java
-     *
+     * Returns a random email address. <br>
+     * The random part contains characters that would match the following regular expression: \[a-z0-9]*\<br>
+     * The length of the random part, a prefix and the domain can be configured within neodymium.properties: <br>
+     * neodymium.dataUtils.email.randomCharsAmount = 12<br>
+     * neodymium.dataUtils.email.local.prefix = test<br>
+     * neodymium.dataUtils.email.domain = varmail.de
+     * 
      * @return random email
      */
     public static String randomEmail()
     {
-        final String uuid = UUID.randomUUID().toString();
-        final String data = uuid.replaceAll("-", "");
-        final StringBuilder sb = new StringBuilder(42);
+        final String randomPart = new RandomStringGenerator.Builder().usingRandom((TextRandomProvider) Neodymium.getRandom())
+                                                                     .selectFrom("abcdefghijklmnopqrstuvwxyz0123456789".toCharArray()).build()
+                                                                     .generate(Neodymium.configuration().dataUtilsEmailRandomCharsAmount());
 
+        final StringBuilder sb = new StringBuilder(42);
         sb.append(Neodymium.configuration().dataUtilsEmailLocalPrefix());
-        sb.append(data.concat(data).substring(0, 12));
+        sb.append(randomPart);
         sb.append("@");
         sb.append(Neodymium.configuration().dataUtilsEmailDomain());
 
@@ -47,26 +53,38 @@ public class DataUtils
     }
 
     /**
-     * A random password that is strong enough for most services
-     *
+     * A random password that is strong enough for most services <br>
+     * The following parts can be configured within neodymium.properties: <br>
+     * neodymium.dataUtils.password.uppercaseCharAmount = 2 <br>
+     * neodymium.dataUtils.password.lowercaseCharAmount = 5 <br>
+     * neodymium.dataUtils.password.digitAmount = 2 <br>
+     * neodymium.dataUtils.password.specialCharAmount = 2 <br>
+     * neodymium.dataUtils.password.specialChars = +-#$%&amp;.;,_
+     * 
      * @return a password
      */
     public static String randomPassword()
     {
-        final String upper = new RandomStringGenerator.Builder().selectFrom("abcdefghijklmnopqrstuvwxyz".toUpperCase().toCharArray()).build()
+        TextRandomProvider textRandomProvider = (TextRandomProvider) Neodymium.getRandom();
+
+        final String upper = new RandomStringGenerator.Builder().usingRandom(textRandomProvider)
+                                                                .selectFrom("abcdefghijklmnopqrstuvwxyz".toUpperCase().toCharArray()).build()
                                                                 .generate(Neodymium.configuration().dataUtilsPasswordUppercaseCharAmount());
 
-        final String lower = new RandomStringGenerator.Builder().selectFrom("abcdefghijklmnopqrstuvwxyz".toCharArray()).build()
+        final String lower = new RandomStringGenerator.Builder().usingRandom(textRandomProvider)
+                                                                .selectFrom("abcdefghijklmnopqrstuvwxyz".toCharArray()).build()
                                                                 .generate(Neodymium.configuration().dataUtilsPasswordLowercaseCharAmount());
 
-        final String number = new RandomStringGenerator.Builder().selectFrom("0123456789".toCharArray()).build()
+        final String number = new RandomStringGenerator.Builder().usingRandom(textRandomProvider)
+                                                                 .selectFrom("0123456789".toCharArray()).build()
                                                                  .generate(Neodymium.configuration().dataUtilsPasswordDigitAmount());
 
-        final String special = new RandomStringGenerator.Builder().selectFrom(Neodymium.configuration().dataUtilsPasswordSpecialChars().toCharArray()).build()
+        final String special = new RandomStringGenerator.Builder().usingRandom(textRandomProvider)
+                                                                  .selectFrom(Neodymium.configuration().dataUtilsPasswordSpecialChars().toCharArray()).build()
                                                                   .generate(Neodymium.configuration().dataUtilsPasswordSpecialCharAmount());
 
         final char[] all = (upper + lower + number + special).toCharArray();
-        ArrayUtils.shuffle(all);
+        ArrayUtils.shuffle(all, Neodymium.getRandom());
 
         return new String(all);
     }
@@ -149,6 +167,18 @@ public class DataUtils
         {
             return null;
         }
+    }
+
+    /**
+     * Check if a certain key exist within the data set
+     * 
+     * @param key
+     *            Name of the test data key
+     * @return true if the key was found and false otherwise
+     */
+    public static boolean exists(String key)
+    {
+        return Neodymium.dataValue(key) != null;
     }
 
     /**

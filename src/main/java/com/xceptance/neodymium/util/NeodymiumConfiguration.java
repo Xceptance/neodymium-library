@@ -116,6 +116,9 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("1200")
     public int xlargeDeviceBreakpoint();
 
+    @Key("neodymium.context.random.initialValue")
+    public Long initialRandomValue();
+
     @Key("neodymium.dataUtils.email.domain")
     @DefaultValue("varmail.de")
     public String dataUtilsEmailDomain();
@@ -123,6 +126,10 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.dataUtils.email.local.prefix")
     @DefaultValue("test")
     public String dataUtilsEmailLocalPrefix();
+
+    @Key("neodymium.dataUtils.email.randomCharsAmount")
+    @DefaultValue("12")
+    public int dataUtilsEmailRandomCharsAmount();
 
     @Key("neodymium.dataUtils.password.uppercaseCharAmount")
     @DefaultValue("2")
@@ -141,7 +148,7 @@ public interface NeodymiumConfiguration extends Mutable
     public int dataUtilsPasswordSpecialCharAmount();
 
     @Key("neodymium.dataUtils.password.specialChars")
-    @DefaultValue("+-#$%%&.;,_")
+    @DefaultValue("+-#$%&.;,_")
     public String dataUtilsPasswordSpecialChars();
 
     @Key("neodymium.junit.viewmode")
@@ -212,6 +219,10 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("false")
     public boolean reuseWebDriver();
 
+    @Key("neodymium.webDriver.maxReuse")
+    @DefaultValue("-1")
+    public int maxWebDriverReuse();
+
     @Key("neodymium.webDriver.keepBrowserOpen")
     @DefaultValue("false")
     public boolean keepBrowserOpen();
@@ -246,4 +257,5 @@ public interface NeodymiumConfiguration extends Mutable
 
     @Key("neodymium.webDriver.opera.pathToBrowser")
     public String getOperaBrowserPath();
+
 }

@@ -1,5 +1,6 @@
 package com.xceptance.neodymium.util;
 
+import static com.codeborne.selenide.Condition.attribute;
 import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.hidden;
 import static com.codeborne.selenide.Condition.visible;
@@ -19,6 +20,7 @@ import org.openqa.selenium.StaleElementReferenceException;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.ex.ElementNotFound;
 import com.codeborne.selenide.ex.ElementShould;
 import com.codeborne.selenide.ex.UIAssertionError;
 import com.codeborne.selenide.logevents.LogEvent;
@@ -34,10 +36,15 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBro
 @Browser("Chrome_headless")
 public class SelenideAddonsTest
 {
+    private void openBlogPage()
+    {
+        Selenide.open("https://blog.xceptance.com/");
+    }
+
     @Test
     public void testMatchesAttributeCondition()
     {
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         $("#masthead .search-toggle").click();
 
         $("#search-container .search-field").should(SelenideAddons.matchesAttribute("placeholder", "Search"));
@@ -46,35 +53,39 @@ public class SelenideAddonsTest
     @Test
     public void testMatchAttributeCondition()
     {
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         $("#masthead .search-toggle").click();
 
         $("#search-container .search-field").should(SelenideAddons.matchAttribute("placeholder", "^S.a.c.\\s…"));
         $("#search-container .search-field").should(SelenideAddons.matchAttribute("placeholder", "\\D+"));
     }
 
-    @Test(expected = ElementShould.class)
+    @Test
     public void testMatchAttributeConditionError()
     {
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         $("#masthead .search-toggle").click();
 
-        $("#search-container .search-field").should(SelenideAddons.matchAttribute("placeholder", "\\d+"));
+        Assert.assertThrows(ElementShould.class, () -> {
+            $("#search-container .search-field").should(SelenideAddons.matchAttribute("placeholder", "\\d+"));
+        });
     }
 
-    @Test(expected = ElementShould.class)
+    @Test
     public void testMatchAttributeConditionErrorMissingAttribute()
     {
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         $("#masthead .search-toggle").click();
 
-        $("#search-container .search-field").should(SelenideAddons.matchAttribute("foo", "bar"));
+        Assert.assertThrows(ElementShould.class, () -> {
+            $("#search-container .search-field").should(SelenideAddons.matchAttribute("foo", "bar"));
+        });
     }
 
     @Test
     public void testMatchesValueCondition()
     {
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         $("#masthead .search-toggle").click();
         $("#search-container .search-field").val("searchphrase").submit();
 
@@ -84,7 +95,7 @@ public class SelenideAddonsTest
     @Test
     public void testMatchValueCondition()
     {
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         $("#masthead .search-toggle").click();
         $("#search-container .search-field").val("searchphrase").submit();
 
@@ -92,31 +103,37 @@ public class SelenideAddonsTest
         $("#content .search-field").should(SelenideAddons.matchValue("\\D+"));
     }
 
-    @Test(expected = ElementShould.class)
+    @Test
     public void testMatchValueConditionError()
     {
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         $("#masthead .search-toggle").click();
         $("#search-container .search-field").val("searchphrase").submit();
 
-        $("#content .search-field").should(SelenideAddons.matchValue("\\d+"));
+        Assert.assertThrows(ElementShould.class, () -> {
+            $("#content .search-field").should(SelenideAddons.matchValue("\\d+"));
+        });
     }
 
     @Test()
     public void testWrapAssertion()
     {
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
+
         SelenideAddons.wrapAssertionError(() -> {
             Assert.assertEquals("Passionate Testing | Xceptance Blog", Selenide.title());
         });
     }
 
-    @Test(expected = UIAssertionError.class)
+    @Test
     public void testWrapAssertionError()
     {
-        Selenide.open("https://blog.xceptance.com/");
-        SelenideAddons.wrapAssertionError(() -> {
-            Assert.assertEquals("MyPageTitle", Selenide.title());
+        openBlogPage();
+
+        Assert.assertThrows(UIAssertionError.class, () -> {
+            SelenideAddons.wrapAssertionError(() -> {
+                Assert.assertEquals("MyPageTitle", Selenide.title());
+            });
         });
     }
 
@@ -144,7 +161,7 @@ public class SelenideAddonsTest
             }
         });
 
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         Neodymium.softAssertions(true);
         try
         {
@@ -185,7 +202,7 @@ public class SelenideAddonsTest
             }
         });
 
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         Neodymium.softAssertions(true);
         try
         {
@@ -206,7 +223,7 @@ public class SelenideAddonsTest
         final String errMessage = "AssertionError: No error message provided by the Assertion.";
         try
         {
-            Selenide.open("https://blog.xceptance.com/");
+            openBlogPage();
             SelenideAddons.wrapAssertionError(() -> {
                 Assert.assertTrue(Selenide.title().startsWith("MyPageTitle"));
             });
@@ -306,7 +323,7 @@ public class SelenideAddonsTest
         final Iterator<Runnable> iterator = runArray.iterator();
 
         // testing the error path after three exceptions
-        Selenide.open("https://blog.xceptance.com/");
+        openBlogPage();
         long startTime = new Date().getTime();
         try
         {
@@ -413,9 +430,9 @@ public class SelenideAddonsTest
         openSliderPage();
 
         SelenideElement slider = $(".balSlider a[role=slider]");
+        slider.shouldHave(attribute("aria-valuenow", "-10"));
         SelenideAddons.dragAndDropUntilCondition(slider, slider, 40, 0, 3000, 23, Condition.attribute("aria-valuenow", "8"));
-
-        Assert.assertEquals("8", slider.getAttribute("aria-valuenow"));
+        slider.shouldHave(attribute("aria-valuenow", "8"));
     }
 
     @Test()
@@ -424,9 +441,9 @@ public class SelenideAddonsTest
         openSliderPage();
 
         SelenideElement slider = $(".balSlider a[role=slider]");
+        slider.shouldHave(attribute("aria-valuenow", "-10"));
         SelenideAddons.dragAndDropUntilCondition(slider, slider, -40, 0, 3000, 23, Condition.attribute("aria-valuenow", "-8"));
-
-        Assert.assertEquals("-8", slider.getAttribute("aria-valuenow"));
+        slider.shouldHave(attribute("aria-valuenow", "-8"));
     }
 
     @Test()
@@ -435,9 +452,9 @@ public class SelenideAddonsTest
         openSliderPage();
 
         SelenideElement slider = $("#equalizer .k-slider-vertical:first-child a");
+        slider.shouldHave(attribute("aria-valuenow", "10"));
         SelenideAddons.dragAndDropUntilCondition(slider, slider, 0, -10, 3000, 23, Condition.attribute("aria-valuenow", "16"));
-
-        Assert.assertEquals("16", slider.getAttribute("aria-valuenow"));
+        slider.shouldHave(attribute("aria-valuenow", "16"));
     }
 
     @Test()
@@ -446,9 +463,9 @@ public class SelenideAddonsTest
         openSliderPage();
 
         SelenideElement slider = $("#equalizer .k-slider-vertical:first-child a");
+        slider.shouldHave(attribute("aria-valuenow", "10"));
         SelenideAddons.dragAndDropUntilCondition(slider, slider, 0, 10, 3000, 23, Condition.attribute("aria-valuenow", "-6"));
-
-        Assert.assertEquals("-6", slider.getAttribute("aria-valuenow"));
+        slider.shouldHave(attribute("aria-valuenow", "-6"));
     }
 
     @Test()
@@ -457,9 +474,9 @@ public class SelenideAddonsTest
         openSliderPage();
 
         SelenideElement slider = $(".balSlider a[role=slider]");
+        slider.shouldHave(attribute("aria-valuenow", "-10"));
         leftHorizontalDragAndDropUntilAttribute(slider, slider, -40, "aria-valuenow", "-8");
-
-        Assert.assertEquals("-8", slider.getAttribute("aria-valuenow"));
+        slider.shouldHave(attribute("aria-valuenow", "-8"));
     }
 
     @Test()
@@ -468,6 +485,8 @@ public class SelenideAddonsTest
         openSliderPage();
 
         SelenideElement slider = $(".balSlider a[role=slider]");
+        slider.shouldHave(attribute("aria-valuenow", "-10"));
+
         Assert.assertThrows(UIAssertionError.class, () -> {
             SelenideAddons.dragAndDropUntilCondition(slider, slider, -10, 0, 3000, -1, Condition.attribute("aria-valuenow", "-16"));
         });
@@ -479,8 +498,9 @@ public class SelenideAddonsTest
         openSliderPage();
 
         SelenideElement slider = $(".balSlider a[role=slider]");
+        slider.shouldHave(attribute("aria-valuenow", "-10"));
         SelenideAddons.dragAndDrop(slider, 32, 0);
-        Assert.assertEquals("2", slider.getAttribute("aria-valuenow"));
+        slider.shouldHave(attribute("aria-valuenow", "2"));
     }
 
     @Test()
@@ -489,9 +509,9 @@ public class SelenideAddonsTest
         openSliderPage();
 
         SelenideElement slider = $(".balSlider a[role=slider]");
+        slider.shouldHave(attribute("aria-valuenow", "-10"));
         SelenideAddons.dragAndDrop(slider, -32, 0);
-
-        Assert.assertEquals("-2", slider.getAttribute("aria-valuenow"));
+        slider.shouldHave(attribute("aria-valuenow", "-2"));
     }
 
     @Test()
@@ -500,9 +520,9 @@ public class SelenideAddonsTest
         openSliderPage();
 
         SelenideElement slider = $("#equalizer .k-slider-vertical:first-child a");
+        slider.shouldHave(attribute("aria-valuenow", "10"));
         SelenideAddons.dragAndDrop(slider, 0, 12);
-
-        Assert.assertEquals("6", slider.getAttribute("aria-valuenow"));
+        slider.shouldHave(attribute("aria-valuenow", "6"));
     }
 
     @Test()
@@ -511,17 +531,30 @@ public class SelenideAddonsTest
         openSliderPage();
 
         SelenideElement slider = $("#equalizer .k-slider-vertical:first-child a");
+        slider.shouldHave(attribute("aria-valuenow", "10"));
         SelenideAddons.dragAndDrop(slider, 0, -12);
-
-        Assert.assertEquals("14", slider.getAttribute("aria-valuenow"));
+        slider.shouldHave(attribute("aria-valuenow", "14"));
     }
 
     private void openSliderPage()
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
-        $("#onetrust-accept-btn-handler").shouldBe(visible).click();
-        $("#onetrust-consent-sdk .onetrust-pc-dark-filter").waitUntil(hidden, Neodymium.configuration().selenideTimeout());
-        Selenide.refresh();
+        boolean overlayIsVisible = true;
+        try
+        {
+            $("#onetrust-accept-btn-handler").shouldBe(visible);
+        }
+        catch (ElementNotFound e)
+        {
+            overlayIsVisible = false;
+        }
+
+        if (overlayIsVisible)
+        {
+            $("#onetrust-accept-btn-handler").click();
+            $("#onetrust-consent-sdk .onetrust-pc-dark-filter").shouldBe(hidden);
+            Selenide.refresh();
+        }
     }
 
     private void leftHorizontalDragAndDropUntilAttribute(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement,
@@ -530,5 +563,15 @@ public class SelenideAddonsTest
         // Example: create a special method to move until a given text
         SelenideAddons.dragAndDropUntilCondition(elementToMove, elementToCheck, horizontalMovement, 0, 3000, 10,
                                                  Condition.attribute(sliderValueAttributeName, moveUntil));
+    }
+
+    @Test
+    public void testOpenHtmlContentWithCurrentWebDriver()
+    {
+        final String text = "Hi\n\nHow are you?)\n\nBye";
+        final String textHtml = "<div dir=\"auto\">Hi<div dir=\"auto\"><br></div><div dir=\"auto\">How are you?)</div><div dir=\"auto\"><br></div><div dir=\"auto\">Bye</div></div>";
+
+        SelenideAddons.openHtmlContentWithCurrentWebDriver(textHtml);
+        Assert.assertEquals(text, $("body").getText());
     }
 }

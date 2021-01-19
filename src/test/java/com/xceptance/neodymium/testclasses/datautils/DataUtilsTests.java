@@ -18,6 +18,14 @@ public class DataUtilsTests
 
     @Test
     @DataSet(id = "asString")
+    public void testExists() throws Exception
+    {
+        Assert.assertTrue(DataUtils.exists("value"));
+        Assert.assertFalse(DataUtils.exists("notInDataSet"));
+    }
+
+    @Test
+    @DataSet(id = "asString")
     public void testAsString() throws Exception
     {
         // expect IllegalArgumentException
@@ -210,7 +218,7 @@ public class DataUtilsTests
         Assert.assertEquals("1234567890", testCompound.getClubCardNumber());
         Assert.assertEquals(null, testCompound.getNotSet());
         Assert.assertEquals(null, testCompound.getNullValue());
-        Assert.assertEquals(new Double(12.34), testCompound.getNumberValue());
+        Assert.assertEquals(Double.valueOf(12.34), testCompound.getNumberValue());
         Assert.assertEquals("containing strange things like spaces and äüø", testCompound.getDescription());
         Assert.assertEquals("4111111111111111", testCompound.getCreditCard().getCardNumber());
         Assert.assertEquals("123", testCompound.getCreditCard().getCcv());
@@ -235,7 +243,7 @@ public class DataUtilsTests
     public void testGetByPath() throws Exception
     {
         Double numberValue = DataUtils.get("$.numberValue", Double.class);
-        Assert.assertEquals(new Double(12.34), numberValue);
+        Assert.assertEquals(Double.valueOf(12.34), numberValue);
 
         String description = DataUtils.get("$.description", String.class);
         Assert.assertEquals("containing strange things like spaces and äüø", description);
@@ -276,7 +284,7 @@ public class DataUtilsTests
         Assert.assertEquals("1234567890", testCompound.getClubCardNumber());
         Assert.assertEquals(null, testCompound.getNotSet());
         Assert.assertEquals(null, testCompound.getNullValue());
-        Assert.assertEquals(new Double(12.34), testCompound.getNumberValue());
+        Assert.assertEquals(Double.valueOf(12.34), testCompound.getNumberValue());
         Assert.assertEquals("containing strange things like spaces and äüø", testCompound.getDescription());
         Assert.assertEquals("4111111111111111", testCompound.getCreditCard().getCardNumber());
         Assert.assertEquals("123", testCompound.getCreditCard().getCcv());

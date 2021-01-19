@@ -17,10 +17,16 @@ import org.openqa.selenium.WebDriver;
 import com.browserup.bup.BrowserUpProxy;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
 import com.xceptance.neodymium.tests.NeodymiumTest;
 import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
+/*
+ * Validate that the web driver is kept open after the test is finished.
+ * Validate that the web driver is not reused.
+ * Attention: this test needs to use browsers that are not headless.
+ */
 @RunWith(NeodymiumRunner.class)
 public class ValidateKeepWebDriverOpen
 {
@@ -121,6 +127,8 @@ public class ValidateKeepWebDriverOpen
     @AfterClass
     public static void afterClass()
     {
+        Assert.assertEquals(0, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
+
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver1);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver2);
         webDriver1.quit();

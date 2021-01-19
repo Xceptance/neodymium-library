@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.aeonbits.owner.ConfigFactory;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
@@ -50,7 +51,7 @@ public class NeodymiumContextTest extends NeodymiumTest
     {
         // test the isSite function
         Result result = JUnitCore.runClasses(IsSiteTests.class);
-        checkPass(result, 10, 0, 0);
+        checkPass(result, 10, 0);
     }
 
     @Test
@@ -58,7 +59,7 @@ public class NeodymiumContextTest extends NeodymiumTest
     {
         // test that NeodymiumRunner clears the context before each run
         Result result = JUnitCore.runClasses(ContextGetsCleared.class);
-        checkPass(result, 2, 0, 0);
+        checkPass(result, 2, 0);
     }
 
     @Test
@@ -66,35 +67,41 @@ public class NeodymiumContextTest extends NeodymiumTest
     {
         // test that NeodymiumCucumberRunListener clears the context before each run
         Result result = JUnitCore.runClasses(CucumberContextGetsCleared.class);
-        checkPass(result, 2, 0, 0);
+        checkPass(result, 2, 0);
     }
 
     @Test
     public void testBrowserContextSetup() throws Exception
     {
         Result result = JUnitCore.runClasses(BrowserContextSetup.class);
-        checkPass(result, 1, 0, 0);
+        checkPass(result, 1, 0);
     }
 
     @Test
     public void testDefaultSelenideConfigurationCheck() throws Exception
     {
         Result result = JUnitCore.runClasses(DefaultSelenideConfiguration.class);
-        checkPass(result, 2, 0, 0);
+        checkPass(result, 2, 0);
     }
 
     @Test
     public void testSelenideConfigurationShortcuts() throws Exception
     {
         Result result = JUnitCore.runClasses(SelenideConfigurationShortcuts.class);
-        checkPass(result, 4, 0, 0);
+        checkPass(result, 4, 0);
     }
 
     @Test
     public void testOverridingNeodymiumConfiguration() throws Exception
     {
         Result result = JUnitCore.runClasses(OverrideNeodymiumConfiguration.class);
-        checkPass(result, 2, 0, 0);
+        checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void testNeodymiumVersionPreBuild()
+    {
+        Assert.assertEquals("?.?.?", Neodymium.getNeodymiumVersion());
     }
 
     @Test
@@ -137,6 +144,6 @@ public class NeodymiumContextTest extends NeodymiumTest
 
         // checks Neodymium functions for different browser sizes
         Result result = JUnitCore.runClasses(WindowSizeTests.class);
-        checkPass(result, 5, 0, 0);
+        checkPass(result, 5, 0);
     }
 }

@@ -24,7 +24,7 @@ public class UseSoftAssertions
     @Rule
     public SoftAsserts softAsserts = new SoftAsserts();
 
-    @Test(expected = ElementNotFound.class)
+    @Test
     public void validateSoftAssertion()
     {
         Neodymium.softAssertions(true);
@@ -35,9 +35,8 @@ public class UseSoftAssertions
         $("#notFound2").should(exist);
         $("#masthead .search-toggle").click();
         $("#notFound3").should(exist);
-        $("#notFound4").click();
-
-        // This should not be called since
-        throw new NullPointerException();
+        Assert.assertThrows(ElementNotFound.class, () -> {
+            $("#notFound4").click();
+        });
     }
 }

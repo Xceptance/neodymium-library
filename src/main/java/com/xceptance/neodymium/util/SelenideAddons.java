@@ -1,7 +1,10 @@
 package com.xceptance.neodymium.util;
 
 import static com.codeborne.selenide.Selenide.$$;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.sleep;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -23,7 +26,6 @@ import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.ex.UIAssertionError;
 import com.codeborne.selenide.impl.Html;
 import com.codeborne.selenide.impl.WebElementsCollectionWrapper;
-import com.codeborne.selenide.logevents.SelenideLog;
 import com.codeborne.selenide.logevents.SelenideLogger;
 
 /**
@@ -271,7 +273,7 @@ public class SelenideAddons
      */
     public static Condition matchesValue(String text)
     {
-        return matchValue(text);
+        return matchValue(".*" + text + ".*");
     }
 
     /**
@@ -289,7 +291,7 @@ public class SelenideAddons
      */
     public static Condition matchValue(final String regex)
     {
-        return matchesAttribute("value", regex);
+        return Condition.attributeMatching("value", regex);
     }
 
     /**
@@ -299,6 +301,8 @@ public class SelenideAddons
      * Sample: <code>$("input").waitWhile(matchesValue("foo"), 12000)</code>
      * </p>
      * 
+     * @deprecated Not needed anymore since it's supported by Selenide. Will be removed with the next major version. Use
+     *             {@linkplain com.codeborne.selenide.Condition#attributeMatching} instead.
      * @param attributeName
      *            The name of the attribute that should contain the text
      * @param text
@@ -306,6 +310,7 @@ public class SelenideAddons
      * @return a Selenide {@link Condition}
      * @see #matchAttribute(String, String)
      */
+    @Deprecated
     public static Condition matchesAttribute(String attributeName, String text)
     {
         return matchAttribute(attributeName, text);
@@ -318,7 +323,9 @@ public class SelenideAddons
      * Sample: Assert that given element's value attribute matches given regular expression
      * <code>$("input").should(matchValue("Hello\s*John"))</code>
      * </p>
-     *
+     * 
+     * @deprecated Not needed anymore since it's supported by Selenide. Will be removed with the next major version. Use
+     *             {@linkplain com.codeborne.selenide.Condition#attributeMatching} instead.
      * @param attributeName
      *            The name of the attribute that should be matched with the regex
      * @param regex
@@ -326,6 +333,7 @@ public class SelenideAddons
      *            etc.
      * @return a Selenide {@link Condition}
      */
+    @Deprecated
     public static Condition matchAttribute(final String attributeName, final String regex)
     {
         return new Condition("match " + attributeName)
@@ -381,7 +389,7 @@ public class SelenideAddons
                 wrapper.setStackTrace(e.getStackTrace());
                 e = wrapper;
             }
-            SelenideLogger.commitStep(new SelenideLog("Assertion error", message), e);
+            SelenideLogger.commitStep(SelenideLogger.beginStep("Assertion error", message), e);
             if (!driver.config().assertionMode().equals(AssertionMode.SOFT))
             {
                 throw UIAssertionError.wrap(driver, e, 0);
@@ -400,7 +408,6 @@ public class SelenideAddons
      * @param verticalMovement
      *            The offset for the vertical movement
      */
-
     public static void dragAndDrop(SelenideElement elementToMove, int horizontalMovement, int verticalMovement)
     {
         // perform drag and drop via the standard Selenium way
@@ -440,8 +447,20 @@ public class SelenideAddons
                 });
             }
             dragAndDrop(elementToMove, horizontalMovement, verticalMovement);
-            Selenide.sleep(pauseBetweenMovements);
+            sleep(pauseBetweenMovements);
             counter++;
         }
+    }
+
+    /**
+     * Open the supplied HTML content with the current web driver.
+     * 
+     * @param htmlContent
+     *            a String containing the HTML that should be opened in the current web driver
+     */
+    public static void openHtmlContentWithCurrentWebDriver(String htmlContent)
+    {
+        String encodedStuff = Base64.getEncoder().encodeToString(htmlContent.getBytes());
+        open("data:text/html;charset=utf-8;base64," + encodedStuff);
     }
 }

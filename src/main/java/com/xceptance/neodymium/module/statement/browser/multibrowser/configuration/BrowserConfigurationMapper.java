@@ -64,7 +64,8 @@ public class BrowserConfigurationMapper
 
     private static final String ORIENTATION = "orientation";
 
-    public BrowserConfiguration map(Map<String, String> browserProfileConfiguration)
+    public BrowserConfiguration map(Map<String, String> browserProfileConfiguration, String globalHeadless, String globalAcceptInsecureCertificates,
+                                    String globalPageLoadStrategy, String globalBrowserResolution)
     {
         BrowserConfiguration browserConfiguration = new BrowserConfiguration();
 
@@ -116,7 +117,7 @@ public class BrowserConfigurationMapper
         }
 
         /*
-         * SauceLabs/TestingBot configuration
+         * SauceLabs/TestingBot/BrowserStack configuration
          */
         String emulatedPlatform = browserProfileConfiguration.get(PLATFORM);
         if (!StringUtils.isEmpty(emulatedPlatform))
@@ -132,11 +133,12 @@ public class BrowserConfigurationMapper
 
         String emulatedDeviceName = browserProfileConfiguration.get(DEVICE_NAME);
         if (!StringUtils.isEmpty(emulatedDeviceName))
+        {
+            // SauceLabs, TestingBot
             capabilities.setCapability("deviceName", emulatedDeviceName);
-
-        String emulatedDeviceOrientation = browserProfileConfiguration.get(DEVICE_ORIENTATION);
-        if (!StringUtils.isEmpty(emulatedDeviceOrientation))
-            capabilities.setCapability("deviceOrientation", emulatedDeviceOrientation);
+            // BrowserStack
+            capabilities.setCapability("device", emulatedDeviceName);
+        }
 
         String emulatedDeviceScreenResolution = browserProfileConfiguration.get(SCREEN_RESOLUTION);
         if (!StringUtils.isEmpty(emulatedDeviceScreenResolution))
@@ -145,6 +147,8 @@ public class BrowserConfigurationMapper
             capabilities.setCapability("screenResolution", emulatedDeviceScreenResolution);
             // TestingBot
             capabilities.setCapability("screen-resolution", emulatedDeviceScreenResolution);
+            // BrowserStack
+            capabilities.setCapability("resolution", emulatedDeviceScreenResolution);
         }
 
         String emulatedMaximumTestDuration = browserProfileConfiguration.get(MAXIMUM_DURATION);
@@ -164,6 +168,7 @@ public class BrowserConfigurationMapper
             capabilities.setCapability("maxDuration", maxDura);
             // TestingBot
             capabilities.setCapability("maxduration", maxDura);
+            // BrowserStack does not support to set this capability (fix value of 2 hours)
         }
 
         String emulatedIdleTimeout = browserProfileConfiguration.get(IDLE_TIMEOUT);
@@ -179,7 +184,7 @@ public class BrowserConfigurationMapper
                 throw new RuntimeException(IDLE_TIMEOUT + " configured within the browser profiles couldn't be parsed into an int value. Given value: \""
                                            + emulatedIdleTimeout + "\"", e);
             }
-            // SauceLabs
+            // SauceLabs, BrowserStack
             capabilities.setCapability("idleTimeout", idleTim);
             // TestingBot
             capabilities.setCapability("idletimeout", idleTim);
@@ -188,7 +193,7 @@ public class BrowserConfigurationMapper
         String emulatedSeleniumVersion = browserProfileConfiguration.get(SELENIUM_VERSION);
         if (!StringUtils.isEmpty(emulatedSeleniumVersion))
         {
-            // SauceLabs
+            // SauceLabs, BrowserStack
             capabilities.setCapability("seleniumVersion", emulatedSeleniumVersion);
             // TestingBot
             capabilities.setCapability("selenium-version", emulatedSeleniumVersion);
@@ -219,9 +224,18 @@ public class BrowserConfigurationMapper
         if (!StringUtils.isEmpty(automationName))
             capabilities.setCapability(AUTOMATION_NAME, automationName);
 
+        String emulatedDeviceOrientation = browserProfileConfiguration.get(DEVICE_ORIENTATION);
+        if (!StringUtils.isEmpty(emulatedDeviceOrientation))
+            capabilities.setCapability("deviceOrientation", emulatedDeviceOrientation);
+
         String orientation = browserProfileConfiguration.get(ORIENTATION);
         if (!StringUtils.isEmpty(orientation))
+        {
+            // SauceLabs, TestingBot
             capabilities.setCapability(ORIENTATION, orientation);
+            // BrowserStack, Appium
+            capabilities.setCapability("deviceOrientation", orientation);
+        }
 
         /*
          * Chrome device emulation
@@ -248,34 +262,47 @@ public class BrowserConfigurationMapper
         String browserResolution = browserProfileConfiguration.get(BROWSER_RESOLUTION);
         if (!StringUtils.isEmpty(browserResolution))
         {
-            // split the combined resolution string on every 'x', 'X' or ',' and remove all whitespace
-            // e.g: 1920x1080 or 1920, 1080
-
-            String[] browserWidthHeight = browserResolution.replaceAll("[\\s]", "").split("[xX,]");
-            if (!StringUtils.isEmpty(browserWidthHeight[0]))
-            {
-                browserConfiguration.setBrowserWidth(Integer.parseInt(browserWidthHeight[0]));
-            }
-            if (!StringUtils.isEmpty(browserWidthHeight[0]))
-            {
-                browserConfiguration.setBrowserHeight(Integer.parseInt(browserWidthHeight[1]));
-            }
+            setBrowserResolution(browserConfiguration, browserResolution);
+        }
+        else if (!StringUtils.isEmpty(globalBrowserResolution))
+        {
+            setBrowserResolution(browserConfiguration, globalBrowserResolution);
         }
 
         // page load strategy
         String pageLoadStrategy = browserProfileConfiguration.get(PAGE_LOAD_STRATEGY);
         if (!StringUtils.isEmpty(pageLoadStrategy))
             capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, pageLoadStrategy);
+        else if (!StringUtils.isEmpty(globalPageLoadStrategy))
+        {
+            capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, globalPageLoadStrategy);
+        }
 
         // accept insecure certificates
         String acceptInsecureCerts = browserProfileConfiguration.get(ACCEPT_INSECURE_CERTS);
         if (!StringUtils.isEmpty(acceptInsecureCerts))
+        {
             capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.parseBoolean(acceptInsecureCerts));
+            // BrowserStack, helps on iPhone
+            capabilities.setCapability("acceptSslCerts", Boolean.parseBoolean(acceptInsecureCerts));
+        }
+        else if (!StringUtils.isEmpty(globalAcceptInsecureCertificates))
+        {
+            capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.parseBoolean(globalAcceptInsecureCertificates));
+            // BrowserStack
+            capabilities.setCapability("acceptSslCerts", Boolean.parseBoolean(globalAcceptInsecureCertificates));
+        }
 
         // headless
         String headless = browserProfileConfiguration.get(HEADLESS);
         if (!StringUtils.isEmpty(headless))
+        {
             browserConfiguration.setHeadless(Boolean.valueOf(headless));
+        }
+        else if (!StringUtils.isEmpty(globalHeadless))
+        {
+            browserConfiguration.setHeadless(Boolean.valueOf(globalHeadless));
+        }
 
         // additional browser arguments
         String arguments = browserProfileConfiguration.get(ARGUMENTS);
@@ -297,5 +324,21 @@ public class BrowserConfigurationMapper
         browserConfiguration.setName(browserProfileConfiguration.get("name"));
 
         return browserConfiguration;
+    }
+
+    private void setBrowserResolution(BrowserConfiguration browserConfiguration, String browserResolution)
+    {
+        // split the combined resolution string on every 'x', 'X' or ',' and remove all whitespace
+        // e.g: 1920x1080 or 1920, 1080
+
+        String[] browserWidthHeight = browserResolution.replaceAll("[\\s]", "").split("[xX,]");
+        if (!StringUtils.isEmpty(browserWidthHeight[0]))
+        {
+            browserConfiguration.setBrowserWidth(Integer.parseInt(browserWidthHeight[0]));
+        }
+        if (!StringUtils.isEmpty(browserWidthHeight[0]))
+        {
+            browserConfiguration.setBrowserHeight(Integer.parseInt(browserWidthHeight[1]));
+        }
     }
 }

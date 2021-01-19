@@ -4,14 +4,22 @@ import java.io.IOException;
 
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.xceptance.neodymium.util.Neodymium;
 
 import io.cucumber.junit.NeodymiumCucumberWrapper;
 
 public class NeodymiumCucumberRunner extends NeodymiumCucumberWrapper
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumCucumberRunner.class);
+
     public NeodymiumCucumberRunner(Class<?> clazz) throws InitializationError, IOException
     {
         super(clazz);
+        LOGGER.info("This test uses Neodymium Library (version: " + Neodymium.getNeodymiumVersion()
+                    + "), MIT License, more details on https://github.com/Xceptance/neodymium-library");
     }
 
     @Override

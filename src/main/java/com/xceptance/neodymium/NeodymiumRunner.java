@@ -16,6 +16,8 @@ import org.junit.runners.JUnit4;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
 import com.xceptance.neodymium.module.EnhancedMethod;
@@ -69,15 +71,19 @@ import io.qameta.allure.selenide.AllureSelenide;
  */
 public class NeodymiumRunner extends BlockJUnit4ClassRunner
 {
-    public static final String LISTENER_NAME_2 = "allure-neodymium-java";
+    private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumRunner.class);
 
     public static final String LISTENER_NAME = "allure-selenide-java";
 
-    public NeodymiumRunner(Class<?> klass) throws InitializationError
+    public static final String LISTENER_NAME_2 = "allure-neodymium-java";
+
+    public NeodymiumRunner(Class<?> clazz) throws InitializationError
     {
-        super(klass);
+        super(clazz);
         SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
         SelenideLogger.addListener(LISTENER_NAME_2, new AllureNeodymium());
+        LOGGER.info("This test uses Neodymium Library (version: " + Neodymium.getNeodymiumVersion()
+                    + "), MIT License, more details on https://github.com/Xceptance/neodymium-library");
     }
 
     public enum DescriptionMode
@@ -291,7 +297,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     protected Description describeChild(FrameworkMethod method)
     {
         return childDescriptions.computeIfAbsent(method, (m) -> {
-            return Description.createTestDescription(getTestClass().getJavaClass(), m.getName());
+            return Description.createTestDescription(getTestClass().getJavaClass(), m.getName(), m.getAnnotations());
         });
     }
 
@@ -350,6 +356,11 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     public Description getDescription()
     {
         return globalTestDescription;
+    }
+
+    public Map<FrameworkMethod, Description> getChildDescriptions()
+    {
+        return childDescriptions;
     }
 
     @Override

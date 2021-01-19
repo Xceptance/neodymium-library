@@ -3,6 +3,7 @@ package com.xceptance.neodymium.module.statement.testdata;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -203,6 +204,7 @@ public class TestdataStatement extends StatementBuilder
         {
             int dataSetIndex = dataSet.value();
             String dataSetId = dataSet.id();
+            int randomSetAmount = dataSet.randomSets();
 
             // take dataSetId (testId) if its set
             if (dataSetId != null && dataSetId.trim().length() > 0)
@@ -227,6 +229,20 @@ public class TestdataStatement extends StatementBuilder
                     throw new IllegalArgumentException(msg);
                 }
             }
+            else if (randomSetAmount > 0)
+            {
+                if (randomSetAmount > iterations.size())
+                {
+                    String msg = MessageFormat.format("Method ''{0}'' is marked to be run with {1} random data sets, but there are only {2} available",
+                                                      method.getName(), randomSetAmount, iterations.size());
+                    throw new IllegalArgumentException(msg);
+                }
+                else
+                {
+                    Collections.shuffle(iterations, Neodymium.getRandom());
+                    fixedIterations.addAll(iterations.subList(0, randomSetAmount));
+                }
+            }
             else
             {
                 // use index
@@ -239,7 +255,7 @@ public class TestdataStatement extends StatementBuilder
                 {
                     if (dataSetIndex > iterations.size())
                     {
-                        String msg = MessageFormat.format("Method ''{0}'' is marked to be run with data set index {1}, but there are only {2}",
+                        String msg = MessageFormat.format("Method ''{0}'' is marked to be run with data set index {1}, but there are only {2} available",
                                                           method.getName(), dataSetIndex, iterations.size());
                         throw new IllegalArgumentException(msg);
                     }

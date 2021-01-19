@@ -3,6 +3,7 @@ package com.xceptance.neodymium.util;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.WeakHashMap;
 
 import org.aeonbits.owner.ConfigFactory;
@@ -15,6 +16,7 @@ import com.browserup.bup.BrowserUpProxy;
 import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverStateContainer;
 
 /**
  * See our Github wiki: <a href="https://github.com/Xceptance/neodymium-library/wiki/Neodymium-context">Neodymium
@@ -27,11 +29,8 @@ public class Neodymium
 {
     private static final Map<Thread, Neodymium> CONTEXTS = Collections.synchronizedMap(new WeakHashMap<>());
 
-    // keep our local proxy if created
-    private BrowserUpProxy browserUpProxy;
-
-    // keep our current driver
-    private WebDriver driver;
+    // keep our current WebDriver state
+    private WebDriverStateContainer webDriverStateContainer;
 
     // keep our current browser profile name
     private String browserProfileName;
@@ -86,7 +85,9 @@ public class Neodymium
     }
 
     /**
-     * Shortcut for localized text access. Will fail with an assertion if the key cannot be found
+     * Shortcut for localized text access. Will fail with an assertion if the key cannot be found.<br>
+     * Looks up the key in the localization setup starting the configured full locale e.g. 'en_US', falls back to the
+     * language 'en' if not found, fallback to default, and finally break with an assertion if the key can't be found.
      *
      * @param key
      *            key to lookup
@@ -98,7 +99,9 @@ public class Neodymium
     }
 
     /**
-     * Shortcut for localized text access. Will fail with an assertion if the key cannot be found
+     * Shortcut for localized text access. Will fail with an assertion if the key cannot be found.<br>
+     * Looks up the key in the localization setup starting the configured full locale e.g. 'en_US', falls back to the
+     * language 'en' if not found, fallback to default, and finally break with an assertion if the key can't be found.
      *
      * @param key
      *            key to lookup
@@ -111,6 +114,11 @@ public class Neodymium
         return getContext().localization.getText(key, locale);
     }
 
+    /**
+     * Get the complete test data set
+     * 
+     * @return dataMap
+     */
     public static Map<String, String> getData()
     {
         return getContext().data;
@@ -128,56 +136,131 @@ public class Neodymium
         return getData().get(key);
     }
 
+    /**
+     * Get the current NeodymiumConfiguration instance
+     * 
+     * @return neodymiumConfiguration
+     */
     public static NeodymiumConfiguration configuration()
     {
         return getContext().configuration;
     }
 
-    public static WebDriver getDriver()
+    /**
+     * Get access to the current Random instance of Neodymium. This can be used to have a fixed random setup to repeat
+     * runs from CI executions.
+     * 
+     * @return random
+     */
+    public static Random getRandom()
     {
-        return getContext().driver;
+        return NeodymiumRandom.getNeodymiumRandom();
     }
 
+    /**
+     * Get the current state container for the WebDriver state objects.
+     * 
+     * @return webDriverStateContainer
+     */
+    public static WebDriverStateContainer getWebDriverStateContainer()
+    {
+        return getContext().webDriverStateContainer;
+    }
+
+    /**
+     * Set the current state container for the WebDriver state objects.<br>
+     * <b>Attention:</b> This function is mainly used to set information within the context internally.
+     * 
+     * @param webDriverStateContainer
+     *            contains the state objects belonging to the current WebDriver
+     */
+    public static void setWebDriverStateContainer(WebDriverStateContainer webDriverStateContainer)
+    {
+        getContext().webDriverStateContainer = webDriverStateContainer;
+    }
+
+    /**
+     * Get the current WebDriver
+     * 
+     * @return webDriver
+     */
+    public static WebDriver getDriver()
+    {
+        final WebDriverStateContainer wDSC = getContext().webDriverStateContainer;
+        return wDSC == null ? null : wDSC.getWebDriver();
+    }
+
+    /**
+     * Get the current WebDriver as EventFiringWebDriver
+     *
+     * @return eventFiringWebDriver
+     */
     public static EventFiringWebDriver getEventFiringWebdriver()
     {
         return (EventFiringWebDriver) getDriver();
     }
 
+    /**
+     * Get the current WebDriver as RemoteWebDriver
+     *
+     * @return remoteWebDriver
+     */
     public static RemoteWebDriver getRemoteWebDriver()
     {
         return (RemoteWebDriver) getEventFiringWebdriver().getWrappedDriver();
     }
 
-    public static void setDriver(WebDriver driver)
-    {
-        getContext().driver = driver;
-    }
-
+    /**
+     * Get the embedded local proxy if configured else null.<br>
+     * Can be used to manipulate headers or retrieve har archives.
+     * 
+     * @return browserUpProxy
+     */
     public static BrowserUpProxy getLocalProxy()
     {
-        return getContext().browserUpProxy;
+        final WebDriverStateContainer wDSC = getContext().webDriverStateContainer;
+        return wDSC == null ? null : wDSC.getProxy();
     }
 
-    public static BrowserUpProxy setLocalProxy(BrowserUpProxy browserUpProxy)
-    {
-        return getContext().browserUpProxy = browserUpProxy;
-    }
-
+    /**
+     * Name of the current browser profile
+     * 
+     * @return browser profile name
+     */
     public static String getBrowserProfileName()
     {
         return getContext().browserProfileName;
     }
 
+    /**
+     * Set the name of the current browser profile.<br>
+     * <b>Attention:</b> This function is mainly used to set information within the context internally.
+     * 
+     * @param browserProfileName
+     *            the name of the current browser profile
+     */
     public static void setBrowserProfileName(String browserProfileName)
     {
         getContext().browserProfileName = browserProfileName;
     }
 
+    /**
+     * Name of the current browser
+     * 
+     * @return browser name
+     */
     public static String getBrowserName()
     {
         return getContext().browserName;
     }
 
+    /**
+     * Set the name of the current browser.<br>
+     * <b>Attention:</b> This function is mainly used to set information within the context internally.
+     * 
+     * @param browserName
+     *            the name of the current browser
+     */
     public static void setBrowserName(String browserName)
     {
         getContext().browserName = browserName;
@@ -395,5 +478,16 @@ public class Neodymium
             }
         }
         return false;
+    }
+
+    /**
+     * Returns the version of the currently used Neodymium library.
+     * 
+     * @return build version of Neodymium library
+     */
+    public static String getNeodymiumVersion()
+    {
+        final String buildVersion = getContext().getClass().getPackage().getImplementationVersion();
+        return buildVersion == null ? "?.?.?" : buildVersion;
     }
 }
