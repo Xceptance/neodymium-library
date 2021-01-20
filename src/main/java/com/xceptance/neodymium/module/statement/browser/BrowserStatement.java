@@ -3,6 +3,7 @@ package com.xceptance.neodymium.module.statement.browser;
 import java.net.MalformedURLException;
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +27,7 @@ import com.xceptance.neodymium.NeodymiumWebDriverListener;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.BrowserRunnerHelper;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.RandomBrowser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowsers;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverStateContainer;
@@ -260,6 +262,8 @@ public class BrowserStatement extends StatementBuilder
         List<Browser> classBrowserAnnotations = findClassBrowserAnnotation(testClass.getJavaClass());
         List<SuppressBrowsers> methodSuppressBrowserAnnotations = getAnnotations(method.getMethod(), SuppressBrowsers.class);
         List<SuppressBrowsers> classSuppressBrowserAnnotations = getAnnotations(testClass.getJavaClass(), SuppressBrowsers.class);
+        List<RandomBrowser> methodRandomBrowserAnnotations = getAnnotations(method.getMethod(), RandomBrowser.class);
+        List<RandomBrowser> classRandomBrowserAnnotation = getAnnotations(testClass.getJavaClass(), RandomBrowser.class);
 
         if (!methodSuppressBrowserAnnotations.isEmpty())
         {
@@ -283,6 +287,17 @@ public class BrowserStatement extends StatementBuilder
         if (classSuppressBrowserAnnotations.isEmpty() && methodBrowserAnnotations.isEmpty())
         {
             browserAnnotations.addAll(classBrowserAnnotations);
+        }
+
+        if (!classRandomBrowserAnnotation.isEmpty() && methodBrowserAnnotations.isEmpty())
+        {
+            Collections.shuffle(browserAnnotations, Neodymium.getRandom());
+            browserAnnotations = browserAnnotations.subList(0, classRandomBrowserAnnotation.get(0).value());
+        }
+        if (!methodRandomBrowserAnnotations.isEmpty())
+        {
+            Collections.shuffle(browserAnnotations, Neodymium.getRandom());
+            browserAnnotations = browserAnnotations.subList(0, methodRandomBrowserAnnotations.get(0).value());
         }
 
         for (Browser b : browserAnnotations)
