@@ -75,13 +75,10 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
     public static final String LISTENER_NAME = "allure-selenide-java";
 
-    public static final String LISTENER_NAME_2 = "allure-neodymium-java";
-
     public NeodymiumRunner(Class<?> clazz) throws InitializationError
     {
         super(clazz);
         SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
-        SelenideLogger.addListener(LISTENER_NAME_2, new AllureNeodymium());
         LOGGER.info("This test uses Neodymium Library (version: " + Neodymium.getNeodymiumVersion()
                     + "), MIT License, more details on https://github.com/Xceptance/neodymium-library");
     }

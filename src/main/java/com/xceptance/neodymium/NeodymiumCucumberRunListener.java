@@ -17,8 +17,6 @@ import io.qameta.allure.selenide.AllureSelenide;
 
 public class NeodymiumCucumberRunListener extends RunListener
 {
-    public static final String LISTENER_NAME_2 = "allure-neodymium-cucumber";
-
     public static final String LISTENER_NAME = "allure-selenide-cucumber";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NeodymiumCucumberRunListener.class);
@@ -28,7 +26,6 @@ public class NeodymiumCucumberRunListener extends RunListener
     public NeodymiumCucumberRunListener()
     {
         SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
-        SelenideLogger.addListener(LISTENER_NAME_2, new AllureNeodymium());
     }
 
     @Override
