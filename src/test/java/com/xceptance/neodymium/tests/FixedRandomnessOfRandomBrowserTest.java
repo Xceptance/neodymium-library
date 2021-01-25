@@ -34,7 +34,7 @@ public class FixedRandomnessOfRandomBrowserTest extends NeodymiumTest
     @Test
     public void testFixedRandomnessOfRandomBrowser()
     {
-        // test fixed random data sets support
+        // test fixed random browser support
         Result result = JUnitCore.runClasses(FixedRandomnessOfRandomBrowser.class);
         checkPass(result, 3, 0);
     }
