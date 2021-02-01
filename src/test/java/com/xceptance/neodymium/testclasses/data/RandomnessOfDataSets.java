@@ -22,7 +22,7 @@ public class RandomnessOfDataSets
 
     @Test
     @DataSet(randomSets = 10)
-    public void test1()
+    public void testChoosingRandomDataSets()
     {
         // assert test data is available for the test
         Assert.assertTrue(DataUtils.asString("key1").contains("val"));
