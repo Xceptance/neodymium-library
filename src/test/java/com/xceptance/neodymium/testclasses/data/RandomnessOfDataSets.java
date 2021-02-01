@@ -31,7 +31,7 @@ public class RandomnessOfDataSets
 
     @Test
     @SuppressDataSets
-    public void test2()
+    public void testOrderOfChosenDataSetsHasChanged()
     {
         // assert that at least one of data sets is not on the same position as it stays in the test data sheet
         boolean changedOrder = false;
