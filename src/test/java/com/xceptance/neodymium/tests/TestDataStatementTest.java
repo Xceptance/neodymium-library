@@ -405,7 +405,7 @@ public class TestDataStatementTest extends NeodymiumTest
     public void testRandomnessOfDataSetsTest()
     {
         Result result = JUnitCore.runClasses(RandomnessOfDataSets.class);
-        checkPass(result, 5, 0);
+        checkPass(result, 11, 0);
     }
 
     @Test
