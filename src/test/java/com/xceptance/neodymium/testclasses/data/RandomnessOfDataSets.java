@@ -12,9 +12,9 @@ import com.xceptance.neodymium.module.statement.testdata.DataSet;
 import com.xceptance.neodymium.module.statement.testdata.SuppressDataSets;
 import com.xceptance.neodymium.util.DataUtils;
 
-import io.qameta.allure.junit4.Tag;
-
-@Tag("This test may fail but the probability for it is very low")
+/**
+ * This test may fail but the probability for it is very low
+ */
 @RunWith(NeodymiumRunner.class)
 public class RandomnessOfDataSets
 {
