@@ -78,7 +78,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     public NeodymiumRunner(Class<?> clazz) throws InitializationError
     {
         super(clazz);
-        SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
+        SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide().saveScreenShotsWhenPassed(Neodymium.configuration().screenshotPerStep()));
         LOGGER.info("This test uses Neodymium Library (version: " + Neodymium.getNeodymiumVersion()
                     + "), MIT License, more details on https://github.com/Xceptance/neodymium-library");
     }
