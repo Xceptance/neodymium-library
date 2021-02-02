@@ -20,6 +20,7 @@ import org.openqa.selenium.remote.CapabilityType;
 
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
+import com.xceptance.neodymium.testclasses.browser.DisableRandomBrowserAnnotation;
 import com.xceptance.neodymium.testclasses.browser.classonly.ClassBrowserSuppressed;
 import com.xceptance.neodymium.testclasses.browser.classonly.ClassBrowserSuppressedNoBrowserAnnotation;
 import com.xceptance.neodymium.testclasses.browser.classonly.OneClassBrowserOneMethod;
@@ -150,6 +151,17 @@ public class BrowserStatementTest extends NeodymiumTest
           "first"
         };
         checkDescription(ClassBrowserSuppressed.class, expected);
+    }
+
+    @Test
+    public void testDisableRandomBrowserAnnotation() throws Throwable
+    {
+        //
+        String[] expected = new String[]
+        {
+          "test1"
+        };
+        checkDescription(DisableRandomBrowserAnnotation.class, expected);
     }
 
     @Test
