@@ -19,7 +19,7 @@ public class RandomnessOfRandomBrowserTest extends NeodymiumTest
     public static void beforeClass() throws IOException
     {
         Map<String, String> properties = new HashMap<>();
-        for (int i = 1; i < 41; i++)
+        for (int i = 1; i < 101; i++)
         {
             properties.put("browserprofile.browser" + i + ".name", "browser" + i);
             properties.put("browserprofile.browser" + i + ".browser", "chrome");
@@ -39,6 +39,6 @@ public class RandomnessOfRandomBrowserTest extends NeodymiumTest
     public void testRandomnessOfRandomBrowser()
     {
         Result result = JUnitCore.runClasses(RandomnessOfRandomBrowser.class);
-        checkPass(result, 3, 0);
+        checkPass(result, 11, 0);
     }
 }
