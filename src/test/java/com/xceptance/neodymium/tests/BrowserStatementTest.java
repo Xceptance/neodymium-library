@@ -22,13 +22,16 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.configurati
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.testclasses.browser.classonly.ClassBrowserSuppressed;
 import com.xceptance.neodymium.testclasses.browser.classonly.ClassBrowserSuppressedNoBrowserAnnotation;
-import com.xceptance.neodymium.testclasses.browser.classonly.EmptyBrowser;
 import com.xceptance.neodymium.testclasses.browser.classonly.OneClassBrowserOneMethod;
+import com.xceptance.neodymium.testclasses.browser.classonly.RandomBrowserClassLevel;
 import com.xceptance.neodymium.testclasses.browser.classonly.TwoClassBrowserOneMethod;
 import com.xceptance.neodymium.testclasses.browser.classonly.TwoSameClassBrowserOneMethod;
 import com.xceptance.neodymium.testclasses.browser.methodonly.MethodBrowserSuppressNoBrowserAnnotation;
 import com.xceptance.neodymium.testclasses.browser.methodonly.OneBrowserOneMethodBrowserSuppressed;
+import com.xceptance.neodymium.testclasses.browser.methodonly.RandomBrowserMethodLevel;
 import com.xceptance.neodymium.testclasses.browser.mixed.ClassAndMethodSameBrowserOneMethod;
+import com.xceptance.neodymium.testclasses.browser.mixed.MethodBrowserAnnotationOverwritesClassRandomBrowser;
+import com.xceptance.neodymium.testclasses.browser.mixed.RandomBrowserMixed;
 import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserStatementTest extends NeodymiumTest
@@ -96,11 +99,35 @@ public class BrowserStatementTest extends NeodymiumTest
     }
 
     @Test
-    public void testEmptyBrowser()
+    public void testRandomBrowserClassLevel()
     {
         // an empty browser tag (@Browser({""})) should raise an error
-        Result result = JUnitCore.runClasses(EmptyBrowser.class);
-        checkFail(result, 1, 0, 1, "java.lang.IllegalArgumentException: Can not find browser configuration with tag: ");
+        Result result = JUnitCore.runClasses(RandomBrowserClassLevel.class);
+        checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void testRandomBrowserMethodLevel()
+    {
+        // an empty browser tag (@Browser({""})) should raise an error
+        Result result = JUnitCore.runClasses(RandomBrowserMethodLevel.class);
+        checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void testMethodBrowserAnnotationOverwritesClassRandomBrowser()
+    {
+        // an empty browser tag (@Browser({""})) should raise an error
+        Result result = JUnitCore.runClasses(MethodBrowserAnnotationOverwritesClassRandomBrowser.class);
+        checkPass(result, 3, 0);
+    }
+
+    @Test
+    public void testRandomBrowserMixed()
+    {
+        // an empty browser tag (@Browser({""})) should raise an error
+        Result result = JUnitCore.runClasses(RandomBrowserMixed.class);
+        checkPass(result, 2, 0);
     }
 
     @Test

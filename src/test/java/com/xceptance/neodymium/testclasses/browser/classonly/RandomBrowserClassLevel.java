@@ -9,8 +9,8 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.RandomBrows
 
 @Browser("Chrome_1024x768")
 @Browser("Chrome_1500x1000")
-@Browser("Firefox_1024x768")
-@Browser("Firefox_1500x1000")
+@Browser("FF_1024x768")
+@Browser("FF_1500x1000")
 @RandomBrowser(2)
 @RunWith(NeodymiumRunner.class)
 public class RandomBrowserClassLevel
