@@ -21,6 +21,8 @@ import org.openqa.selenium.remote.CapabilityType;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.testclasses.browser.DisableRandomBrowserAnnotation;
+import com.xceptance.neodymium.testclasses.browser.RandomBrowsersClassInitialisationException;
+import com.xceptance.neodymium.testclasses.browser.RandomBrowsersMethodInitialisationException;
 import com.xceptance.neodymium.testclasses.browser.classonly.ClassBrowserSuppressed;
 import com.xceptance.neodymium.testclasses.browser.classonly.ClassBrowserSuppressedNoBrowserAnnotation;
 import com.xceptance.neodymium.testclasses.browser.classonly.OneClassBrowserOneMethod;
@@ -129,6 +131,26 @@ public class BrowserStatementTest extends NeodymiumTest
         // an empty browser tag (@Browser({""})) should raise an error
         Result result = JUnitCore.runClasses(RandomBrowserMixed.class);
         checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void testRandomBrowsersMethodInitialisationException()
+    {
+        // test method, marked to be run with more random browsers, that it's annotated with @Browser annotations,
+        // should throw exception with the corresponding error message
+        Result result = JUnitCore.runClasses(RandomBrowsersMethodInitialisationException.class);
+        checkFail(result, 1, 0, 1,
+                  "java.lang.IllegalArgumentException: Method 'test1' is marked to be run with 9 random browsers, but there are only 4 available");
+    }
+
+    @Test
+    public void testRandomBrowsersClassInitialisationException()
+    {
+        // test class, marked to be run with more random browsers, that it's annotated with @Browser annotations,
+        // should throw exception with the corresponding error message
+        Result result = JUnitCore.runClasses(RandomBrowsersClassInitialisationException.class);
+        checkFail(result, 1, 0, 1,
+                  "java.lang.IllegalArgumentException: Method 'test1' is marked to be run with 9 random browsers, but there are only 4 available");
     }
 
     @Test

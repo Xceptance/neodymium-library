@@ -294,6 +294,12 @@ public class BrowserStatement extends StatementBuilder
         // doesn't have one
         if (!classRandomBrowsersAnnotation.isEmpty() && methodBrowserAnnotations.isEmpty())
         {
+            if (classRandomBrowsersAnnotation.get(0).value() > browserAnnotations.size())
+            {
+                String msg = MessageFormat.format("Method ''{0}'' is marked to be run with {1} random browsers, but there are only {2} available",
+                                                  method.getName(), classRandomBrowsersAnnotation.get(0).value(), browserAnnotations.size());
+                throw new IllegalArgumentException(msg);
+            }
             Collections.shuffle(browserAnnotations, Neodymium.getRandom());
             browserAnnotations = browserAnnotations.subList(0, classRandomBrowsersAnnotation.get(0).value());
         }
@@ -301,6 +307,12 @@ public class BrowserStatement extends StatementBuilder
         // overwrite random browser annotation from the class level with the one from method level
         if (!methodRandomBrowsersAnnotations.isEmpty())
         {
+            if (methodRandomBrowsersAnnotations.get(0).value() > browserAnnotations.size())
+            {
+                String msg = MessageFormat.format("Method ''{0}'' is marked to be run with {1} random browsers, but there are only {2} available",
+                                                  method.getName(), methodRandomBrowsersAnnotations.get(0).value(), browserAnnotations.size());
+                throw new IllegalArgumentException(msg);
+            }
             Collections.shuffle(browserAnnotations, Neodymium.getRandom());
             browserAnnotations = browserAnnotations.subList(0, methodRandomBrowsersAnnotations.get(0).value());
         }
