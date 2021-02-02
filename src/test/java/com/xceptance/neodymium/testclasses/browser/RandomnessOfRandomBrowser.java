@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.RandomBrowser;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.RandomBrowsers;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowsers;
 import com.xceptance.neodymium.util.Neodymium;
 
@@ -52,7 +52,7 @@ import com.xceptance.neodymium.util.Neodymium;
 @Browser("browser38")
 @Browser("browser39")
 @Browser("browser40")
-@RandomBrowser(2)
+@RandomBrowsers(2)
 @RunWith(NeodymiumRunner.class)
 public class RandomnessOfRandomBrowser
 {

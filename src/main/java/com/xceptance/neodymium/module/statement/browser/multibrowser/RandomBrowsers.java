@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 {
   ElementType.TYPE, ElementType.METHOD
 })
-public @interface RandomBrowser
+public @interface RandomBrowsers
 {
     int value() default 1;
 }

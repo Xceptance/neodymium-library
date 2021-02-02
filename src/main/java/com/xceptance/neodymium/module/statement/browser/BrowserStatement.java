@@ -27,7 +27,7 @@ import com.xceptance.neodymium.NeodymiumWebDriverListener;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.BrowserRunnerHelper;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.RandomBrowser;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.RandomBrowsers;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowsers;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverStateContainer;
@@ -262,8 +262,8 @@ public class BrowserStatement extends StatementBuilder
         List<Browser> classBrowserAnnotations = findClassBrowserAnnotation(testClass.getJavaClass());
         List<SuppressBrowsers> methodSuppressBrowserAnnotations = getAnnotations(method.getMethod(), SuppressBrowsers.class);
         List<SuppressBrowsers> classSuppressBrowserAnnotations = getAnnotations(testClass.getJavaClass(), SuppressBrowsers.class);
-        List<RandomBrowser> methodRandomBrowserAnnotations = getAnnotations(method.getMethod(), RandomBrowser.class);
-        List<RandomBrowser> classRandomBrowserAnnotation = getAnnotations(testClass.getJavaClass(), RandomBrowser.class);
+        List<RandomBrowsers> methodRandomBrowsersAnnotations = getAnnotations(method.getMethod(), RandomBrowsers.class);
+        List<RandomBrowsers> classRandomBrowsersAnnotation = getAnnotations(testClass.getJavaClass(), RandomBrowsers.class);
 
         if (!methodSuppressBrowserAnnotations.isEmpty())
         {
@@ -292,17 +292,17 @@ public class BrowserStatement extends StatementBuilder
         // select random browsers for the class level if needed
         // to prevent overwriting of simple browser annotation in the method level, only do the selection if the method
         // doesn't have one
-        if (!classRandomBrowserAnnotation.isEmpty() && methodBrowserAnnotations.isEmpty())
+        if (!classRandomBrowsersAnnotation.isEmpty() && methodBrowserAnnotations.isEmpty())
         {
             Collections.shuffle(browserAnnotations, Neodymium.getRandom());
-            browserAnnotations = browserAnnotations.subList(0, classRandomBrowserAnnotation.get(0).value());
+            browserAnnotations = browserAnnotations.subList(0, classRandomBrowsersAnnotation.get(0).value());
         }
         // select random browsers for the method level if needed
         // overwrite random browser annotation from the class level with the one from method level
-        if (!methodRandomBrowserAnnotations.isEmpty())
+        if (!methodRandomBrowsersAnnotations.isEmpty())
         {
             Collections.shuffle(browserAnnotations, Neodymium.getRandom());
-            browserAnnotations = browserAnnotations.subList(0, methodRandomBrowserAnnotations.get(0).value());
+            browserAnnotations = browserAnnotations.subList(0, methodRandomBrowsersAnnotations.get(0).value());
         }
 
         for (Browser b : browserAnnotations)
