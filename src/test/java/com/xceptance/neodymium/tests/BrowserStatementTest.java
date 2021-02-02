@@ -29,6 +29,7 @@ import com.xceptance.neodymium.testclasses.browser.classonly.OneClassBrowserOneM
 import com.xceptance.neodymium.testclasses.browser.classonly.RandomBrowserClassLevel;
 import com.xceptance.neodymium.testclasses.browser.classonly.TwoClassBrowserOneMethod;
 import com.xceptance.neodymium.testclasses.browser.classonly.TwoSameClassBrowserOneMethod;
+import com.xceptance.neodymium.testclasses.browser.inheritance.RandomBrowsersChild;
 import com.xceptance.neodymium.testclasses.browser.methodonly.MethodBrowserSuppressNoBrowserAnnotation;
 import com.xceptance.neodymium.testclasses.browser.methodonly.OneBrowserOneMethodBrowserSuppressed;
 import com.xceptance.neodymium.testclasses.browser.methodonly.RandomBrowserMethodLevel;
@@ -130,6 +131,15 @@ public class BrowserStatementTest extends NeodymiumTest
     {
         // an empty browser tag (@Browser({""})) should raise an error
         Result result = JUnitCore.runClasses(RandomBrowserMixed.class);
+        checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void testRandomBrowsersInheritance()
+    {
+        // the test from RandomBrowserChild should be run 2 times, as the corresponding annotaions should be inherited
+        // from the RandomBrowserParent class
+        Result result = JUnitCore.runClasses(RandomBrowsersChild.class);
         checkPass(result, 2, 0);
     }
 
