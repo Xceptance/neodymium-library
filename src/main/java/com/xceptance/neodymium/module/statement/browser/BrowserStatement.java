@@ -289,11 +289,16 @@ public class BrowserStatement extends StatementBuilder
             browserAnnotations.addAll(classBrowserAnnotations);
         }
 
+        // select random browsers for the class level if needed
+        // to prevent overwriting of simple browser annotation in the method level, only do the selection if the method
+        // doesn't have one
         if (!classRandomBrowserAnnotation.isEmpty() && methodBrowserAnnotations.isEmpty())
         {
             Collections.shuffle(browserAnnotations, Neodymium.getRandom());
             browserAnnotations = browserAnnotations.subList(0, classRandomBrowserAnnotation.get(0).value());
         }
+        // select random browsers for the method level if needed
+        // overwrite random browser annotation from the class level with the one from method level
         if (!methodRandomBrowserAnnotations.isEmpty())
         {
             Collections.shuffle(browserAnnotations, Neodymium.getRandom());
