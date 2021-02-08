@@ -536,6 +536,70 @@ public class SelenideAddonsTest
         slider.shouldHave(attribute("aria-valuenow", "14"));
     }
 
+    @Test()
+    public void testRightwardDragAndDropOutOfBounds()
+    {
+        openSliderPage();
+
+        SelenideElement slider = $(".balSlider a[role=slider]");
+        slider.shouldHave(attribute("aria-valuenow", "-10"));
+        AssertionError exception = Assert.assertThrows(AssertionError.class, () -> {
+            SelenideAddons.dragAndDrop(slider, 3200, 0);
+        });
+        String expectedMessage = "Target out of bounds. Try to decrease the absolute value of 'horizontalMovement' parameter";
+        String actualMessage = exception.getMessage();
+        Assert.assertTrue(String.format("The exception message %s doesn't contain the expected message %s", actualMessage, expectedMessage),
+                          actualMessage.contains(expectedMessage));
+    }
+
+    @Test()
+    public void testLeftwardDragAndDropOutOfBounds()
+    {
+        openSliderPage();
+
+        SelenideElement slider = $(".balSlider a[role=slider]");
+        slider.shouldHave(attribute("aria-valuenow", "-10"));
+        AssertionError exception = Assert.assertThrows(AssertionError.class, () -> {
+            SelenideAddons.dragAndDrop(slider, -3200, 0);
+        });
+        String expectedMessage = "Target out of bounds. Try to decrease the absolute value of 'horizontalMovement' parameter";
+        String actualMessage = exception.getMessage();
+        Assert.assertTrue(String.format("The exception message %s doesn't contain the expected message %s", actualMessage, expectedMessage),
+                          actualMessage.contains(expectedMessage));
+    }
+
+    @Test()
+    public void testUpwardDragAndDropOutOfBounds()
+    {
+        openSliderPage();
+
+        SelenideElement slider = $("#equalizer .k-slider-vertical:first-child a");
+        slider.shouldHave(attribute("aria-valuenow", "10"));
+        AssertionError exception = Assert.assertThrows(AssertionError.class, () -> {
+            SelenideAddons.dragAndDrop(slider, 0, -1200);
+        });
+        String expectedMessage = "Target out of bounds. Try to decrease the absolute value of 'verticalMovement' parameter";
+        String actualMessage = exception.getMessage();
+        Assert.assertTrue(String.format("The exception message %s doesn't contain the expected message %s", actualMessage, expectedMessage),
+                          actualMessage.contains(expectedMessage));
+    }
+
+    @Test()
+    public void testDownwardDragAndDropOutOfBounds()
+    {
+        openSliderPage();
+
+        SelenideElement slider = $("#equalizer .k-slider-vertical:first-child a");
+        slider.shouldHave(attribute("aria-valuenow", "10"));
+        AssertionError exception = Assert.assertThrows(AssertionError.class, () -> {
+            SelenideAddons.dragAndDrop(slider, 0, 1200);
+        });
+        String expectedMessage = "Target out of bounds. Try to decrease the absolute value of 'verticalMovement' parameter";
+        String actualMessage = exception.getMessage();
+        Assert.assertTrue(String.format("The exception message %s doesn't contain the expected message %s", actualMessage, expectedMessage),
+                          actualMessage.contains(expectedMessage));
+    }
+
     private void openSliderPage()
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");

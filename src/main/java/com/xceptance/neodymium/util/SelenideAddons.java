@@ -15,6 +15,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
 import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Condition;
@@ -410,8 +411,21 @@ public class SelenideAddons
      */
     public static void dragAndDrop(SelenideElement elementToMove, int horizontalMovement, int verticalMovement)
     {
-        // perform drag and drop via the standard Selenium way
-        new Actions(Neodymium.getDriver()).dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement).build().perform();
+        try
+        {
+            // perform drag and drop via the standard Selenium way
+            new Actions(Neodymium.getDriver()).dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement).build().perform();
+        }
+        catch (MoveTargetOutOfBoundsException targetOutOfBound)
+        {
+            String parameterMessage = horizontalMovement != 0 ? (verticalMovement != 0 ? "'horizontalMovement' and 'verticalMovement'" : "'horizontalMovement'")
+                                                              : "'verticalMovement'";
+
+            throw UIAssertionError.wrap(WebDriverRunner.driver(),
+                                        new AssertionError("Target out of bounds. Try to decrease the absolute value of " + parameterMessage
+                                                           + " parameter", targetOutOfBound),
+                                        0);
+        }
     }
 
     /**
