@@ -33,7 +33,7 @@ public class FixedRandomnessOfRandomBrowser
     public void test2()
     {
         Assert.assertEquals(2, browsers.size());
-        Assert.assertEquals("Chrome_1500x100", browsers.get(0));
+        Assert.assertEquals("Chrome_1500x1000", browsers.get(0));
         Assert.assertEquals("FF_1500x1000", browsers.get(1));
     }
 }
