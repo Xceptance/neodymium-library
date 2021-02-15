@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.aeonbits.owner.ConfigFactory;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
@@ -13,6 +15,7 @@ import org.junit.runner.Result;
 
 import com.xceptance.neodymium.testclasses.browser.FixedRandomnessOfRandomBrowser;
 import com.xceptance.neodymium.util.Neodymium;
+import com.xceptance.neodymium.util.NeodymiumRandom;
 
 public class FixedRandomnessOfRandomBrowserTest extends NeodymiumTest
 {
@@ -29,6 +32,12 @@ public class FixedRandomnessOfRandomBrowserTest extends NeodymiumTest
 
         writeMapToPropertiesFile(properties, tempConfigFile);
         ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
+    }
+
+    @Before
+    public void checkPreconditions()
+    {
+        Assert.assertEquals(1323, NeodymiumRandom.getSeed());
     }
 
     @Test
