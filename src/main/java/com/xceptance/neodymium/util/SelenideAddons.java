@@ -26,6 +26,7 @@ import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.ex.UIAssertionError;
 import com.codeborne.selenide.impl.Html;
+import com.codeborne.selenide.impl.WebElementWrapper;
 import com.codeborne.selenide.impl.WebElementsCollectionWrapper;
 import com.codeborne.selenide.logevents.SelenideLogger;
 
@@ -419,7 +420,8 @@ public class SelenideAddons
         catch (MoveTargetOutOfBoundsException targetOutOfBound)
         {
             String message = "Performing drag and drop with an element moved the element out of the viewport. Try to scroll the element completely into the view port or to decrease the absolute values of your movements.";
-
+            SelenideLogger.commitStep(SelenideLogger.beginStep("slider", message),
+                                      targetOutOfBound);
             throw UIAssertionError.wrap(WebDriverRunner.driver(),
                                         new AssertionError(message, targetOutOfBound),
                                         0);
