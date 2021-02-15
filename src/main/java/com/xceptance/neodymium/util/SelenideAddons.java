@@ -418,12 +418,10 @@ public class SelenideAddons
         }
         catch (MoveTargetOutOfBoundsException targetOutOfBound)
         {
-            String parameterMessage = horizontalMovement != 0 ? (verticalMovement != 0 ? "'horizontalMovement' and 'verticalMovement'" : "'horizontalMovement'")
-                                                              : "'verticalMovement'";
+            String message = "Performing drag and drop with an element moved the element out of the viewport. Try to scroll the element completely into the view port or to decrease the absolute values of your movements.";
 
             throw UIAssertionError.wrap(WebDriverRunner.driver(),
-                                        new AssertionError("Target out of bounds. Try to decrease the absolute value of " + parameterMessage
-                                                           + " parameter", targetOutOfBound),
+                                        new AssertionError(message, targetOutOfBound),
                                         0);
         }
     }
