@@ -546,9 +546,9 @@ public class SelenideAddonsTest
         AssertionError exception = Assert.assertThrows(AssertionError.class, () -> {
             SelenideAddons.dragAndDrop(slider, 3200, 0);
         });
-        String expectedMessage = "Target out of bounds. Try to decrease the absolute value of 'horizontalMovement' parameter";
+        String expectedMessage = "Performing drag and drop with an element moved the element out of the viewport. Try to scroll the element completely into the view port or to decrease the absolute values of your movements.";
         String actualMessage = exception.getMessage();
-        Assert.assertTrue(String.format("The exception message %s doesn't contain the expected message %s", actualMessage, expectedMessage),
+        Assert.assertTrue(String.format("The exception message '%s' doesn't contain the expected message '%s'", actualMessage, expectedMessage),
                           actualMessage.contains(expectedMessage));
     }
 
@@ -562,7 +562,7 @@ public class SelenideAddonsTest
         AssertionError exception = Assert.assertThrows(AssertionError.class, () -> {
             SelenideAddons.dragAndDrop(slider, -3200, 0);
         });
-        String expectedMessage = "Target out of bounds. Try to decrease the absolute value of 'horizontalMovement' parameter";
+        String expectedMessage = "Performing drag and drop with an element moved the element out of the viewport. Try to scroll the element completely into the view port or to decrease the absolute values of your movements.";
         String actualMessage = exception.getMessage();
         Assert.assertTrue(String.format("The exception message %s doesn't contain the expected message %s", actualMessage, expectedMessage),
                           actualMessage.contains(expectedMessage));
@@ -578,7 +578,7 @@ public class SelenideAddonsTest
         AssertionError exception = Assert.assertThrows(AssertionError.class, () -> {
             SelenideAddons.dragAndDrop(slider, 0, -1200);
         });
-        String expectedMessage = "Target out of bounds. Try to decrease the absolute value of 'verticalMovement' parameter";
+        String expectedMessage = "Performing drag and drop with an element moved the element out of the viewport. Try to scroll the element completely into the view port or to decrease the absolute values of your movements.";
         String actualMessage = exception.getMessage();
         Assert.assertTrue(String.format("The exception message %s doesn't contain the expected message %s", actualMessage, expectedMessage),
                           actualMessage.contains(expectedMessage));
@@ -594,7 +594,7 @@ public class SelenideAddonsTest
         AssertionError exception = Assert.assertThrows(AssertionError.class, () -> {
             SelenideAddons.dragAndDrop(slider, 0, 1200);
         });
-        String expectedMessage = "Target out of bounds. Try to decrease the absolute value of 'verticalMovement' parameter";
+        String expectedMessage = "Performing drag and drop with an element moved the element out of the viewport. Try to scroll the element completely into the view port or to decrease the absolute values of your movements.";
         String actualMessage = exception.getMessage();
         Assert.assertTrue(String.format("The exception message %s doesn't contain the expected message %s", actualMessage, expectedMessage),
                           actualMessage.contains(expectedMessage));
