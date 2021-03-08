@@ -4,10 +4,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.module.statement.testdata.DataSet;
+import com.xceptance.neodymium.module.statement.testdata.RandomDataSets;
 
 @RunWith(NeodymiumRunner.class)
-@DataSet(randomSets = 4)
+@RandomDataSets(4)
 public class RandomDataSetsException
 {
     @Test

@@ -9,21 +9,20 @@ import com.xceptance.neodymium.module.statement.testdata.DataSet;
 import com.xceptance.neodymium.module.statement.testdata.RandomDataSets;
 import com.xceptance.neodymium.util.DataUtils;
 
+@DataSet(2)
+@DataSet(4)
+@DataSet(6)
+@DataSet(8)
 @RunWith(NeodymiumRunner.class)
-public class MixRandomAndValueDataSets
+public class MixRandomDataSetsFromRange
 {
     @Test
-    @RandomDataSets(1)
-    public void testWithRandomDataSet()
+    @RandomDataSets(4)
+    public void test()
     {
         // assert test data is available for the test
-        Assert.assertTrue(DataUtils.asString("key1").contains("val"));
-    }
-
-    @Test
-    @DataSet(2)
-    public void testWithExplicitDataSet()
-    {
-        Assert.assertEquals("val2", DataUtils.asString("key1"));
+        String key = DataUtils.asString("key1");
+        Assert.assertTrue("Unexpected test data", key.contains("val"));
+        Assert.assertTrue("Random data set is not selected from range", Integer.valueOf(key.replace("val", "")) % 2 == 0);
     }
 }

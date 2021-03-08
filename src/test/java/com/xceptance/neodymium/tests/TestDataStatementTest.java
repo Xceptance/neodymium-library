@@ -18,6 +18,7 @@ import com.xceptance.neodymium.testclasses.data.override.classonly.ClassDefaultV
 import com.xceptance.neodymium.testclasses.data.override.classonly.ClassExplicitDefaultValueTwoDataSets;
 import com.xceptance.neodymium.testclasses.data.override.classonly.ClassMultipleSameDataSet;
 import com.xceptance.neodymium.testclasses.data.override.classonly.ClassRandomDataSets;
+import com.xceptance.neodymium.testclasses.data.override.classonly.ClassRandomDataSetsFromRange;
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodDefaultEmptyDataSets;
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodDefaultNoDataSets;
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodDefaultOneDataSet;
@@ -25,9 +26,11 @@ import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodDefaul
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodExplicitDefaultTwoDataSets;
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodMultipleSameDataSet;
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodRandomDataSets;
+import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodRandomDataSetsFromRange;
 import com.xceptance.neodymium.testclasses.data.override.mixed.ClassWithoutTwoMethodsOneForced;
 import com.xceptance.neodymium.testclasses.data.override.mixed.ForceOfNoneDataSets;
 import com.xceptance.neodymium.testclasses.data.override.mixed.MixRandomAndValueDataSets;
+import com.xceptance.neodymium.testclasses.data.override.mixed.MixRandomDataSetsFromRange;
 import com.xceptance.neodymium.testclasses.data.override.mixed.OneDataSetTwoMethodsOneWithout;
 import com.xceptance.neodymium.testclasses.data.override.mixed.OnlyImplicitOneDataSet;
 import com.xceptance.neodymium.testclasses.data.override.mixed.TwoDataSetsTwoMethodsOneForced;
@@ -399,6 +402,27 @@ public class TestDataStatementTest extends NeodymiumTest
     {
         Result result = JUnitCore.runClasses(MixRandomAndValueDataSets.class);
         checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void testClassRandomDataSetSelectedFromRange()
+    {
+        Result result = JUnitCore.runClasses(ClassRandomDataSetsFromRange.class);
+        checkPass(result, 4, 0);
+    }
+
+    @Test
+    public void testMethodRandomDataSetSelectedFromRange()
+    {
+        Result result = JUnitCore.runClasses(MethodRandomDataSetsFromRange.class);
+        checkPass(result, 4, 0);
+    }
+
+    @Test
+    public void testMixRandomAndValueDataSetsSelectedFromRange()
+    {
+        Result result = JUnitCore.runClasses(MixRandomDataSetsFromRange.class);
+        checkPass(result, 4, 0);
     }
 
     @Test

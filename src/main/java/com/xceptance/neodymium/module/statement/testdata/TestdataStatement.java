@@ -191,20 +191,18 @@ public class TestdataStatement extends StatementBuilder
             dataSetAnnotations = classDataSetAnnotations;
         }
 
-        if (dataSetAnnotations.isEmpty())
-        {
-            // so there is nothing to suppress and nothing to override. Go ahead with all data sets
-            return iterations;
-        }
-
         // we've gathered some instructions to override
 
         List<Object> fixedIterations = new LinkedList<>();
+        if (dataSetAnnotations.isEmpty())
+        {
+            // so there is nothing to suppress and nothing to override. Go ahead with all data sets
+            fixedIterations.addAll(iterations);
+        }
         for (DataSet dataSet : dataSetAnnotations)
         {
             int dataSetIndex = dataSet.value();
             String dataSetId = dataSet.id();
-            int randomSetAmount = dataSet.randomSets();
 
             // take dataSetId (testId) if its set
             if (dataSetId != null && dataSetId.trim().length() > 0)
@@ -229,20 +227,6 @@ public class TestdataStatement extends StatementBuilder
                     throw new IllegalArgumentException(msg);
                 }
             }
-            else if (randomSetAmount > 0)
-            {
-                if (randomSetAmount > iterations.size())
-                {
-                    String msg = MessageFormat.format("Method ''{0}'' is marked to be run with {1} random data sets, but there are only {2} available",
-                                                      method.getName(), randomSetAmount, iterations.size());
-                    throw new IllegalArgumentException(msg);
-                }
-                else
-                {
-                    Collections.shuffle(iterations, Neodymium.getRandom());
-                    fixedIterations.addAll(iterations.subList(0, randomSetAmount));
-                }
-            }
             else
             {
                 // use index
@@ -265,6 +249,21 @@ public class TestdataStatement extends StatementBuilder
                     }
                 }
             }
+        }
+        RandomDataSets methodRandomDataSetsAnnotation = method.getAnnotation(RandomDataSets.class);
+        RandomDataSets classRandomDataSetsAnnotation = testClass.getAnnotation(RandomDataSets.class);
+        int randomSetAmount = methodRandomDataSetsAnnotation != null ? methodRandomDataSetsAnnotation.value()
+                                                                     : classRandomDataSetsAnnotation != null ? classRandomDataSetsAnnotation.value() : 0;
+        if (randomSetAmount > 0)
+        {
+            Collections.shuffle(fixedIterations, Neodymium.getRandom());
+            if (randomSetAmount > fixedIterations.size())
+            {
+                String msg = MessageFormat.format("Method ''{0}'' is marked to be run with {1} random data sets, but there are only {2} available",
+                                                  method.getName(), randomSetAmount, iterations.size());
+                throw new IllegalArgumentException(msg);
+            }
+            fixedIterations = fixedIterations.subList(0, randomSetAmount);
         }
         return fixedIterations;
     }
