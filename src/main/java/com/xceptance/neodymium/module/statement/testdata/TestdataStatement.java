@@ -191,8 +191,6 @@ public class TestdataStatement extends StatementBuilder
             dataSetAnnotations = classDataSetAnnotations;
         }
 
-        // we've gathered some instructions to override
-
         List<Object> fixedIterations = new LinkedList<>();
         if (dataSetAnnotations.isEmpty())
         {
@@ -250,8 +248,15 @@ public class TestdataStatement extends StatementBuilder
                 }
             }
         }
+
+        // check if the test is annotated with @RandomDataSets and if so, randomize the previously refined list of data
+        // sets and select the desired number of data sets
         RandomDataSets methodRandomDataSetsAnnotation = method.getAnnotation(RandomDataSets.class);
         RandomDataSets classRandomDataSetsAnnotation = testClass.getAnnotation(RandomDataSets.class);
+        
+        // get the desired number of data sets
+        // check for the annotation on the method level first
+        // if the annotation cannot be found there, check on class level
         int randomSetAmount = methodRandomDataSetsAnnotation != null ? methodRandomDataSetsAnnotation.value()
                                                                      : classRandomDataSetsAnnotation != null ? classRandomDataSetsAnnotation.value() : 0;
         if (randomSetAmount > 0)
