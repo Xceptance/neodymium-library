@@ -8,18 +8,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * This annotation can be used to limit and override data set execution for an entire class or at the same time for a
- * single method.
+ * Annotate a class or method with {@link RandomDataSets} to randomly select data sets for the test execution.
  * <p>
- * The <b>value</b> defines the index of the data set that has to be force used for the class or method.
+ * The <b>value</b> defines the number of randomly picked data sets. Please pay attention to the fact, that the value
+ * should not exceed the number of available data sets, otherwise the exception will be thrown. Good to know, that if
+ * the test is also annotated with {@link DataSet} annotations, the random data sets will be selected among the ones
+ * mentioned in that annotations
  * <p>
- * Default is 0 which will not have any effect on execution unless there is a {@link SuppressDataSets} annotation
- * involved. In case a class is annotated with {@link SuppressDataSets} and a test method is annotated @DataSet()
- * or @DataSet(0) then it will override suppression and enforce the method to run with <b>all</b> data sets
+ * Default is 1 which means the test will be executed for the single random data set.
  * <p>
- * Any number above zero will enforce execution with only that data set. First data set would be equal to 1 and so on.
+ * Any value below 1 will deactivate this annotation.
  * 
- * @author m.kaufmann
+ * @author o.omelianchuk
  */
 @Retention(RUNTIME)
 @Target(
@@ -28,5 +28,5 @@ import java.lang.annotation.Target;
 })
 public @interface RandomDataSets
 {
-    int value() default 0;
+    int value() default 1;
 }
