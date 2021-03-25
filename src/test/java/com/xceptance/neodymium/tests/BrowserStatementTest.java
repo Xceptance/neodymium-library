@@ -156,8 +156,11 @@ public class BrowserStatementTest extends NeodymiumTest
     @Test
     public void testFindBrowserRelatedClassAnnotationMethod()
     {
-        Assert.assertEquals("BrowserStatement.findBrowserRelatedClassAnnotation works not as expected", 3,
-                            new BrowserStatement().findBrowserRelatedClassAnnotation(RandomBrowsersOverwritingChild.class, RandomBrowsers.class));
+        List<RandomBrowsers> foundAnnotations = new BrowserStatement().findBrowserRelatedClassAnnotation(RandomBrowsersOverwritingChild.class,
+                                                                                                         RandomBrowsers.class);
+
+        Assert.assertTrue("There should be only one annotaion found", foundAnnotations.size() == 1);
+        Assert.assertEquals("BrowserStatement.findBrowserRelatedClassAnnotation works not as expected", 3, foundAnnotations.get(0).value());
     }
 
     @Test
