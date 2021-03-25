@@ -341,8 +341,12 @@ public class BrowserStatement extends StatementBuilder
                                               method.getName(), randomBrowsersAnnotation.get(0).value(), browserAnnotations.size());
             throw new IllegalArgumentException(msg);
         }
-        Collections.shuffle(browserAnnotations, Neodymium.getRandom());
-        return browserAnnotations.subList(0, randomBrowsersAnnotation.get(0).value());
+        if (randomBrowsersAnnotation.get(0).value() > 0)
+        {
+            Collections.shuffle(browserAnnotations, Neodymium.getRandom());
+            return browserAnnotations.subList(0, randomBrowsersAnnotation.get(0).value());
+        }
+        return browserAnnotations;
     }
 
     public <T extends Annotation> List<T> findBrowserRelatedClassAnnotation(final Class<?> clazz, final Class<T> annotationToFind)
