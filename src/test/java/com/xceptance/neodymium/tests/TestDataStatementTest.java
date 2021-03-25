@@ -33,6 +33,7 @@ import com.xceptance.neodymium.testclasses.data.override.mixed.MixRandomAndValue
 import com.xceptance.neodymium.testclasses.data.override.mixed.MixRandomDataSetsFromRange;
 import com.xceptance.neodymium.testclasses.data.override.mixed.OneDataSetTwoMethodsOneWithout;
 import com.xceptance.neodymium.testclasses.data.override.mixed.OnlyImplicitOneDataSet;
+import com.xceptance.neodymium.testclasses.data.override.mixed.OverrideClassRandomDataSetsOnMethodLevel;
 import com.xceptance.neodymium.testclasses.data.override.mixed.TwoDataSetsTwoMethodsOneForced;
 import com.xceptance.neodymium.testclasses.data.override.mixed.TwoDataSetsTwoMethodsOneWithout;
 import com.xceptance.neodymium.testclasses.data.pkg.csv.CanReadPackageDataCSV;
@@ -423,6 +424,18 @@ public class TestDataStatementTest extends NeodymiumTest
     {
         Result result = JUnitCore.runClasses(MixRandomDataSetsFromRange.class);
         checkPass(result, 4, 0);
+    }
+
+    @Test
+    public void testOverrideClassRandomDataSetsOnMethodLevel() throws Throwable
+    {
+        // One data set, two methods, one method with @Testdata(0)
+        String[] expected = new String[]
+        {
+          "test :: Data set 1 / 2",
+          "test :: Data set 2 / 2",
+        };
+        checkDescription(OverrideClassRandomDataSetsOnMethodLevel.class, expected);
     }
 
     @Test
