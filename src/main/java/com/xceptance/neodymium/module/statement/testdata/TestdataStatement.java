@@ -253,21 +253,24 @@ public class TestdataStatement extends StatementBuilder
         // sets and select the desired number of data sets
         RandomDataSets methodRandomDataSetsAnnotation = method.getAnnotation(RandomDataSets.class);
         RandomDataSets classRandomDataSetsAnnotation = testClass.getAnnotation(RandomDataSets.class);
-        
-        // get the desired number of data sets
-        // check for the annotation on the method level first
-        // if the annotation cannot be found there, check on class level
+
+        // get the desired number of data sets (highest priority on method level)
         int randomSetAmount = methodRandomDataSetsAnnotation != null ? methodRandomDataSetsAnnotation.value()
                                                                      : classRandomDataSetsAnnotation != null ? classRandomDataSetsAnnotation.value() : 0;
+
+        // if the amount is < 1 this annotation has no effect at all
         if (randomSetAmount > 0)
         {
-            Collections.shuffle(fixedIterations, Neodymium.getRandom());
+            // make sure that not more data sets than available are taken
             if (randomSetAmount > fixedIterations.size())
             {
                 String msg = MessageFormat.format("Method ''{0}'' is marked to be run with {1} random data sets, but there are only {2} available",
                                                   method.getName(), randomSetAmount, iterations.size());
                 throw new IllegalArgumentException(msg);
             }
+            // shuffle the order of the data sets first
+            Collections.shuffle(fixedIterations, Neodymium.getRandom());
+            // choose the random data sets [0,randomSetAmount[
             fixedIterations = fixedIterations.subList(0, randomSetAmount);
         }
         return fixedIterations;
