@@ -1,8 +1,10 @@
 package com.xceptance.neodymium.module.statement.browser;
 
+import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +28,7 @@ import com.xceptance.neodymium.NeodymiumWebDriverListener;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.BrowserRunnerHelper;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.RandomBrowsers;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowsers;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverStateContainer;
@@ -257,9 +260,11 @@ public class BrowserStatement extends StatementBuilder
         // get the @Browser annotation from the method to run as well as from the enclosing class
         // if it doesn't exist check the class for a @Browser annotation
         List<Browser> methodBrowserAnnotations = getAnnotations(method.getMethod(), Browser.class);
-        List<Browser> classBrowserAnnotations = findClassBrowserAnnotation(testClass.getJavaClass());
+        List<Browser> classBrowserAnnotations = findBrowserRelatedClassAnnotation(testClass.getJavaClass(), Browser.class);
         List<SuppressBrowsers> methodSuppressBrowserAnnotations = getAnnotations(method.getMethod(), SuppressBrowsers.class);
         List<SuppressBrowsers> classSuppressBrowserAnnotations = getAnnotations(testClass.getJavaClass(), SuppressBrowsers.class);
+        List<RandomBrowsers> methodRandomBrowsersAnnotations = getAnnotations(method.getMethod(), RandomBrowsers.class);
+        List<RandomBrowsers> classRandomBrowsersAnnotation = findBrowserRelatedClassAnnotation(testClass.getJavaClass(), RandomBrowsers.class);
 
         if (!methodSuppressBrowserAnnotations.isEmpty())
         {
@@ -283,6 +288,20 @@ public class BrowserStatement extends StatementBuilder
         if (classSuppressBrowserAnnotations.isEmpty() && methodBrowserAnnotations.isEmpty())
         {
             browserAnnotations.addAll(classBrowserAnnotations);
+        }
+
+        // choose a random set from the available browser annotations
+        if (!methodRandomBrowsersAnnotations.isEmpty())
+        {
+            // evaluate the method level (top priority)
+            browserAnnotations = computeRandomBrowsers(method, methodRandomBrowsersAnnotations, browserAnnotations);
+        }
+        else if (!classRandomBrowsersAnnotation.isEmpty() && methodBrowserAnnotations.isEmpty())
+        {
+            // evaluate the class level (including inheritance)
+            // Note: if browsers are annotated on method level they prohibit the evaluation of the random
+            // browser annotation on class level
+            browserAnnotations = computeRandomBrowsers(method, classRandomBrowsersAnnotation, browserAnnotations);
         }
 
         for (Browser b : browserAnnotations)
@@ -313,7 +332,24 @@ public class BrowserStatement extends StatementBuilder
         return iterations;
     }
 
-    public List<Browser> findClassBrowserAnnotation(Class<?> clazz)
+    private List<Browser> computeRandomBrowsers(final FrameworkMethod method, final List<RandomBrowsers> randomBrowsersAnnotation,
+                                                final List<Browser> browserAnnotations)
+    {
+        if (randomBrowsersAnnotation.get(0).value() > browserAnnotations.size())
+        {
+            String msg = MessageFormat.format("Method ''{0}'' is marked to be run with {1} random browsers, but there are only {2} available",
+                                              method.getName(), randomBrowsersAnnotation.get(0).value(), browserAnnotations.size());
+            throw new IllegalArgumentException(msg);
+        }
+        if (randomBrowsersAnnotation.get(0).value() > 0)
+        {
+            Collections.shuffle(browserAnnotations, Neodymium.getRandom());
+            return browserAnnotations.subList(0, randomBrowsersAnnotation.get(0).value());
+        }
+        return browserAnnotations;
+    }
+
+    public <T extends Annotation> List<T> findBrowserRelatedClassAnnotation(final Class<?> clazz, final Class<T> annotationToFind)
     {
         // this function is used to find the first (!) @Browser annotation on class level in the hierarchy
         // furthermore its not the first but also the first that doesn't have @SuppressBrowsers annotated
@@ -323,12 +359,12 @@ public class BrowserStatement extends StatementBuilder
 
         // check class for browser annotation
         // if class has browser annotation and no suppress browsers its fine, else take the super class and check again
-        List<Browser> browserAnnotations = getDeclaredAnnotations(clazz, Browser.class);
+        List<T> browserAnnotations = getDeclaredAnnotations(clazz, annotationToFind);
         List<SuppressBrowsers> suppressBrowsersAnnotations = getDeclaredAnnotations(clazz, SuppressBrowsers.class);
 
         if (!suppressBrowsersAnnotations.isEmpty() || browserAnnotations.isEmpty())
         {
-            return findClassBrowserAnnotation(clazz.getSuperclass());
+            return findBrowserRelatedClassAnnotation(clazz.getSuperclass(), annotationToFind);
         }
         else
         {
@@ -363,7 +399,7 @@ public class BrowserStatement extends StatementBuilder
         return tags;
     }
 
-    private boolean isWebDriverStillOpen(WebDriver webDriver)
+    private boolean isWebDriverStillOpen(final WebDriver webDriver)
     {
         if (webDriver == null)
         {

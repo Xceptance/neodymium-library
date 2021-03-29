@@ -18,17 +18,27 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
 
+import com.xceptance.neodymium.module.statement.browser.BrowserStatement;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.RandomBrowsers;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
+import com.xceptance.neodymium.testclasses.browser.DisableRandomBrowserAnnotation;
+import com.xceptance.neodymium.testclasses.browser.RandomBrowsersClassInitialisationException;
+import com.xceptance.neodymium.testclasses.browser.RandomBrowsersMethodInitialisationException;
 import com.xceptance.neodymium.testclasses.browser.classonly.ClassBrowserSuppressed;
 import com.xceptance.neodymium.testclasses.browser.classonly.ClassBrowserSuppressedNoBrowserAnnotation;
-import com.xceptance.neodymium.testclasses.browser.classonly.EmptyBrowser;
 import com.xceptance.neodymium.testclasses.browser.classonly.OneClassBrowserOneMethod;
+import com.xceptance.neodymium.testclasses.browser.classonly.RandomBrowserClassLevel;
 import com.xceptance.neodymium.testclasses.browser.classonly.TwoClassBrowserOneMethod;
 import com.xceptance.neodymium.testclasses.browser.classonly.TwoSameClassBrowserOneMethod;
+import com.xceptance.neodymium.testclasses.browser.inheritance.RandomBrowsersChild;
+import com.xceptance.neodymium.testclasses.browser.inheritance.RandomBrowsersOverwritingChild;
 import com.xceptance.neodymium.testclasses.browser.methodonly.MethodBrowserSuppressNoBrowserAnnotation;
 import com.xceptance.neodymium.testclasses.browser.methodonly.OneBrowserOneMethodBrowserSuppressed;
+import com.xceptance.neodymium.testclasses.browser.methodonly.RandomBrowserMethodLevel;
 import com.xceptance.neodymium.testclasses.browser.mixed.ClassAndMethodSameBrowserOneMethod;
+import com.xceptance.neodymium.testclasses.browser.mixed.MethodBrowserAnnotationOverwritesClassRandomBrowser;
+import com.xceptance.neodymium.testclasses.browser.mixed.RandomBrowserMixed;
 import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserStatementTest extends NeodymiumTest
@@ -96,11 +106,81 @@ public class BrowserStatementTest extends NeodymiumTest
     }
 
     @Test
-    public void testEmptyBrowser()
+    public void testRandomBrowserClassLevel()
     {
         // an empty browser tag (@Browser({""})) should raise an error
-        Result result = JUnitCore.runClasses(EmptyBrowser.class);
-        checkFail(result, 1, 0, 1, "java.lang.IllegalArgumentException: Can not find browser configuration with tag: ");
+        Result result = JUnitCore.runClasses(RandomBrowserClassLevel.class);
+        checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void testRandomBrowserMethodLevel()
+    {
+        // an empty browser tag (@Browser({""})) should raise an error
+        Result result = JUnitCore.runClasses(RandomBrowserMethodLevel.class);
+        checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void testMethodBrowserAnnotationOverwritesClassRandomBrowser()
+    {
+        Result result = JUnitCore.runClasses(MethodBrowserAnnotationOverwritesClassRandomBrowser.class);
+        checkPass(result, 3, 0);
+    }
+
+    @Test
+    public void testRandomBrowserMixed()
+    {
+        Result result = JUnitCore.runClasses(RandomBrowserMixed.class);
+        checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void testRandomBrowsersInheritance()
+    {
+        // the test from RandomBrowserChild should be run 2 times, as the corresponding annotations should be inherited
+        // from the RandomBrowserParent class
+        Result result = JUnitCore.runClasses(RandomBrowsersChild.class);
+        checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void testRandomBrowsersOverwriting()
+    {
+        // the test from RandomBrowsersOverwritingChild should be run 3 times, as the corresponding annotations from
+        // RandomBrowserParent class should be overwritten
+        Result result = JUnitCore.runClasses(RandomBrowsersOverwritingChild.class);
+        checkPass(result, 3, 0);
+    }
+
+    @Test
+    public void testFindBrowserRelatedClassAnnotationMethod()
+    {
+        List<RandomBrowsers> foundAnnotations = new BrowserStatement().findBrowserRelatedClassAnnotation(RandomBrowsersOverwritingChild.class,
+                                                                                                         RandomBrowsers.class);
+
+        Assert.assertTrue("There should be only one annotaion found", foundAnnotations.size() == 1);
+        Assert.assertEquals("BrowserStatement.findBrowserRelatedClassAnnotation works not as expected", 3, foundAnnotations.get(0).value());
+    }
+
+    @Test
+    public void testRandomBrowsersMethodInitialisationException()
+    {
+        // test method, marked to be run with more random browsers, that it's annotated with @Browser annotations,
+        // should throw exception with the corresponding error message
+        Result result = JUnitCore.runClasses(RandomBrowsersMethodInitialisationException.class);
+        checkFail(result, 1, 0, 1,
+                  "java.lang.IllegalArgumentException: Method 'test1' is marked to be run with 9 random browsers, but there are only 4 available");
+    }
+
+    @Test
+    public void testRandomBrowsersClassInitialisationException()
+    {
+        // test class, marked to be run with more random browsers, that it's annotated with @Browser annotations,
+        // should throw exception with the corresponding error message
+        Result result = JUnitCore.runClasses(RandomBrowsersClassInitialisationException.class);
+        checkFail(result, 1, 0, 1,
+                  "java.lang.IllegalArgumentException: Method 'test1' is marked to be run with 9 random browsers, but there are only 4 available");
     }
 
     @Test
@@ -123,6 +203,18 @@ public class BrowserStatementTest extends NeodymiumTest
           "first"
         };
         checkDescription(ClassBrowserSuppressed.class, expected);
+    }
+
+    @Test
+    public void testDisableRandomBrowserAnnotation() throws Throwable
+    {
+        //
+        String[] expected = new String[]
+        {
+          "test1 :: Browser Chrome_1024x768",
+          "test1 :: Browser Chrome_1500x1000"
+        };
+        checkDescription(DisableRandomBrowserAnnotation.class, expected);
     }
 
     @Test
