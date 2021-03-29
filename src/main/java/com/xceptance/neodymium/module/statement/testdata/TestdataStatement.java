@@ -191,20 +191,16 @@ public class TestdataStatement extends StatementBuilder
             dataSetAnnotations = classDataSetAnnotations;
         }
 
+        List<Object> fixedIterations = new LinkedList<>();
         if (dataSetAnnotations.isEmpty())
         {
             // so there is nothing to suppress and nothing to override. Go ahead with all data sets
-            return iterations;
+            fixedIterations.addAll(iterations);
         }
-
-        // we've gathered some instructions to override
-
-        List<Object> fixedIterations = new LinkedList<>();
         for (DataSet dataSet : dataSetAnnotations)
         {
             int dataSetIndex = dataSet.value();
             String dataSetId = dataSet.id();
-            int randomSetAmount = dataSet.randomSets();
 
             // take dataSetId (testId) if its set
             if (dataSetId != null && dataSetId.trim().length() > 0)
@@ -229,20 +225,6 @@ public class TestdataStatement extends StatementBuilder
                     throw new IllegalArgumentException(msg);
                 }
             }
-            else if (randomSetAmount > 0)
-            {
-                if (randomSetAmount > iterations.size())
-                {
-                    String msg = MessageFormat.format("Method ''{0}'' is marked to be run with {1} random data sets, but there are only {2} available",
-                                                      method.getName(), randomSetAmount, iterations.size());
-                    throw new IllegalArgumentException(msg);
-                }
-                else
-                {
-                    Collections.shuffle(iterations, Neodymium.getRandom());
-                    fixedIterations.addAll(iterations.subList(0, randomSetAmount));
-                }
-            }
             else
             {
                 // use index
@@ -265,6 +247,31 @@ public class TestdataStatement extends StatementBuilder
                     }
                 }
             }
+        }
+
+        // check if the test is annotated with @RandomDataSets and if so, randomize the previously refined list of data
+        // sets and select the desired number of data sets
+        RandomDataSets methodRandomDataSetsAnnotation = method.getAnnotation(RandomDataSets.class);
+        RandomDataSets classRandomDataSetsAnnotation = testClass.getAnnotation(RandomDataSets.class);
+
+        // get the desired number of data sets (highest priority on method level)
+        int randomSetAmount = methodRandomDataSetsAnnotation != null ? methodRandomDataSetsAnnotation.value()
+                                                                     : classRandomDataSetsAnnotation != null ? classRandomDataSetsAnnotation.value() : 0;
+
+        // if the amount is < 1 this annotation has no effect at all
+        if (randomSetAmount > 0)
+        {
+            // make sure that not more data sets than available are taken
+            if (randomSetAmount > fixedIterations.size())
+            {
+                String msg = MessageFormat.format("Method ''{0}'' is marked to be run with {1} random data sets, but there are only {2} available",
+                                                  method.getName(), randomSetAmount, iterations.size());
+                throw new IllegalArgumentException(msg);
+            }
+            // shuffle the order of the data sets first
+            Collections.shuffle(fixedIterations, Neodymium.getRandom());
+            // choose the random data sets [0,randomSetAmount[
+            fixedIterations = fixedIterations.subList(0, randomSetAmount);
         }
         return fixedIterations;
     }

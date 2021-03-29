@@ -33,6 +33,4 @@ public @interface DataSet
     int value() default 0;
 
     String id() default "";
-
-    int randomSets() default 0;
 }

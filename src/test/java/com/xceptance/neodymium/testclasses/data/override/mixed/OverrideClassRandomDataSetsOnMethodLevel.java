@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.testclasses.data;
+package com.xceptance.neodymium.testclasses.data.override.mixed;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -6,11 +6,12 @@ import org.junit.runner.RunWith;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.testdata.RandomDataSets;
 
-@RunWith(NeodymiumRunner.class)
 @RandomDataSets(4)
-public class RandomDataSetsException
+@RunWith(NeodymiumRunner.class)
+public class OverrideClassRandomDataSetsOnMethodLevel
 {
     @Test
+    @RandomDataSets(0)
     public void test()
     {
     }
