@@ -21,6 +21,7 @@ If you already know what you want to do, you can pick one of the demo test suite
 * [Neodymium Template](https://github.com/Xceptance/neodymium-template): A template to start a new test automation suite quickly either as Cucumber or as pure Java. 
 * [Neodymium Pure Java Example](https://github.com/Xceptance/neodymium-example): A demo test suite against the Xceptance reference demo store [Posters](https://github.com/Xceptance/neodymium-library/wiki/Posters-demo-store) as pure Java version.  
 * [Neodymium Cucumber Example](https://github.com/Xceptance/neodymium-cucumber-example): For the fans of BDD/Cucumber, this is almost the same test suite as before but driven by BDD syntax.
+* [Neodymium Showcase](https://github.com/Xceptance/neodymium-showcase): To get to know Neodymium better, there is this test suite. It contains many examples of different uses.
 
 ## Introductions in other media
 We have an article on [DZone](https://dzone.com/articles/neodymium-an-open-source-framework-for-web-testing) describing the main features of Neodymium.
