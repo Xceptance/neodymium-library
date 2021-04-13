@@ -6,6 +6,7 @@ import static com.codeborne.selenide.Condition.hidden;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -619,6 +620,7 @@ public class SelenideAddonsTest
             $("#onetrust-consent-sdk .onetrust-pc-dark-filter").shouldBe(hidden);
             Selenide.refresh();
         }
+        $(".kd-loader-wrap").shouldBe(hidden, Duration.ofMillis(6000));
     }
 
     private void leftHorizontalDragAndDropUntilAttribute(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement,
