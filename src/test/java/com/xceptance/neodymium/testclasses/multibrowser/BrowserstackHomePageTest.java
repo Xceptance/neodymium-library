@@ -7,6 +7,7 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -15,7 +16,7 @@ import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 
 @RunWith(NeodymiumRunner.class)
-@Browser("safari_remote")
+@Browser("Safari_Browserstack")
 public class BrowserstackHomePageTest
 {
     @Test
@@ -24,6 +25,7 @@ public class BrowserstackHomePageTest
         // Goto the home page
         Selenide.open("https://www.xceptance.com/en/");
 
+        Assert.assertTrue(Selenide.executeJavaScript("return navigator.userAgent.indexOf(\"Safari\")>-1;"));
         // short validation to check that the correct page was opened, should be moved to OpenHomePageFlow
         $("#service-areas").should(exist);
         // basic validation
