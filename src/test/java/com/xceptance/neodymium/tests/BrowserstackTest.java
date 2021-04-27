@@ -23,7 +23,7 @@ public class BrowserstackTest extends NeodymiumTest
         Map<String, String> properties1 = new HashMap<>();
         properties1.put("browserprofile.testEnvironment.browserstack.url", "https://hub-cloud.browserstack.com/wd/hub");
         properties1.put("browserprofile.testEnvironment.browserstack.username", CONFIGURATION.browserstackUsername());
-        properties1.put("browserprofile.testEnvironment.browserstack.password", CONFIGURATION.browserstackApiKey());
+        properties1.put("browserprofile.testEnvironment.browserstack.password", CONFIGURATION.browserstackAccessKey());
         File tempConfigFile1 = new File("./config/credentials.properties");
         writeMapToPropertiesFile(properties1, tempConfigFile1);
         tempFiles.add(tempConfigFile1);
