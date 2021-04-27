@@ -17,6 +17,6 @@ public interface TestConfiguration extends Mutable
     @Key("BROWSERSTACK_USERNAME")
     public String browserstackUsername();
 
-    @Key("BROWSERSTACK_PASSWORD")
-    public String browserstackPassword();
+    @Key("BROWSERSTACK_API_KEY")
+    public String browserstackApiKey();
 }
