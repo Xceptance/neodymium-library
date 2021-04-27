@@ -126,11 +126,13 @@ public class BrowserConfigurationMapper
             // BrowserStack
             capabilities.setCapability("os", emulatedPlatform);
         }
+        
         String emulatedPlatformName = browserProfileConfiguration.get(PLATFORM_NAME);
         if (!StringUtils.isEmpty(emulatedPlatformName))
         {
             capabilities.setCapability(CapabilityType.PLATFORM_NAME, emulatedPlatformName);
         }
+        
         String emulatedVersion = browserProfileConfiguration.get(BROWSER_VERSION);
         if (!StringUtils.isEmpty(emulatedVersion))
         {
@@ -138,6 +140,7 @@ public class BrowserConfigurationMapper
             // BrowserStack
             capabilities.setCapability("browser_version", emulatedVersion);
         }
+        
         String emulatedDeviceName = browserProfileConfiguration.get(DEVICE_NAME);
         if (!StringUtils.isEmpty(emulatedDeviceName))
         {
