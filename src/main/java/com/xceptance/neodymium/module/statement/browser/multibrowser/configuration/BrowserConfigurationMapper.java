@@ -131,6 +131,8 @@ public class BrowserConfigurationMapper
         if (!StringUtils.isEmpty(emulatedPlatformName))
         {
             capabilities.setCapability(CapabilityType.PLATFORM_NAME, emulatedPlatformName);
+            // BrowserStack
+            capabilities.setCapability("os", emulatedPlatformName);
         }
         
         String emulatedVersion = browserProfileConfiguration.get(BROWSER_VERSION);
