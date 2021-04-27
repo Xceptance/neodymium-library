@@ -14,9 +14,9 @@ import org.aeonbits.owner.Mutable;
 })
 public interface TestConfiguration extends Mutable
 {
-    @Key("browserstack_username")
+    @Key("BROWSERSTACK_USERNAME")
     public String browserstackUsername();
 
-    @Key("browserstack_password")
+    @Key("BROWSERSTACK_PASSWORD")
     public String browserstackPassword();
 }
