@@ -25,7 +25,9 @@ public class BrowserstackHomePageTest
         // Goto the home page
         Selenide.open("https://www.xceptance.com/en/");
 
+        // verify the opened browser is safari browser via navigator object, which contains information about the browser
         Assert.assertTrue(Selenide.executeJavaScript("return navigator.userAgent.indexOf(\"Safari\")>-1;"));
+        
         // short validation to check that the correct page was opened, should be moved to OpenHomePageFlow
         $("#service-areas").should(exist);
         // basic validation
