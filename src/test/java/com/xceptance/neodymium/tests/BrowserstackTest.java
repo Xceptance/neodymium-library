@@ -28,16 +28,16 @@ public class BrowserstackTest extends NeodymiumTest
         writeMapToPropertiesFile(properties1, tempConfigFile1);
         tempFiles.add(tempConfigFile1);
 
-        Map<String, String> properties3 = new HashMap<>();
-        properties3.put("browserprofile.Safari_Browserstack.name", "Safari Browserstack");
-        properties3.put("browserprofile.Safari_Browserstack.platform", "OS X");
-        properties3.put("browserprofile.Safari_Browserstack.platformVersion", "Big Sur");
-        properties3.put("browserprofile.Safari_Browserstack.browserName", "Safari");
-        properties3.put("browserprofile.Safari_Browserstack.version", "14.0");
-        properties3.put("browserprofile.Safari_Browserstack.testEnvironment", "browserstack");
-        File tempConfigFile3 = new File("./config/dev-browser.properties");
-        writeMapToPropertiesFile(properties3, tempConfigFile3);
-        tempFiles.add(tempConfigFile3);
+        Map<String, String> properties2 = new HashMap<>();
+        properties2.put("browserprofile.Safari_Browserstack.name", "Safari Browserstack");
+        properties2.put("browserprofile.Safari_Browserstack.platform", "OS X");
+        properties2.put("browserprofile.Safari_Browserstack.platformVersion", "Big Sur");
+        properties2.put("browserprofile.Safari_Browserstack.browserName", "Safari");
+        properties2.put("browserprofile.Safari_Browserstack.version", "14.0");
+        properties2.put("browserprofile.Safari_Browserstack.testEnvironment", "browserstack");
+        File tempConfigFile2 = new File("./config/dev-browser.properties");
+        writeMapToPropertiesFile(properties2, tempConfigFile2);
+        tempFiles.add(tempConfigFile2);
     }
 
     @Test
