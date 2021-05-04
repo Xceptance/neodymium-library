@@ -2,7 +2,10 @@ package com.xceptance.neodymium.module.statement.testdata;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -19,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.statement.testdata.util.TestDataUtils;
+import com.xceptance.neodymium.util.DataUtils;
 import com.xceptance.neodymium.util.Neodymium;
 
 public class TestdataStatement extends StatementBuilder
@@ -29,12 +33,14 @@ public class TestdataStatement extends StatementBuilder
 
     private Statement next;
 
+    private Object testClassInstance;
+
     Map<String, String> testData;
 
-    public TestdataStatement(Statement next, TestdataStatementData parameter)
+    public TestdataStatement(Statement next, TestdataStatementData parameter, Object testClassInstance)
     {
         this.next = next;
-
+        this.testClassInstance = testClassInstance;
         int currentDataSetIndex = parameter.getIndex();
 
         testData = new HashMap<>();
@@ -64,7 +70,48 @@ public class TestdataStatement extends StatementBuilder
     public void evaluate() throws Throwable
     {
         Neodymium.getData().putAll(testData);
+        initializeDataObjects();
         next.evaluate();
+    }
+
+    private void initializeDataObjects() throws IllegalArgumentException, IllegalAccessException
+    {
+        for (Field field :getFieldsFromSuperclasses())
+        {
+            Data dataAnnotation = field.getAnnotation(Data.class);
+            if (dataAnnotation != null)
+            {
+                boolean isFieldAccessable = field.canAccess(testClassInstance);
+                field.setAccessible(true);
+                try
+                {
+                    if (!dataAnnotation.value().equals(""))
+                    {
+                        field.set(testClassInstance, DataUtils.getFromField(field.getType(), dataAnnotation.value()));
+                    }
+                    else
+                    {
+                        field.set(testClassInstance, DataUtils.get(field.getType()));
+                    }
+                }
+                finally
+                {
+                    field.setAccessible(isFieldAccessable);
+                }
+            }
+        }
+    }
+
+    private List<Field> getFieldsFromSuperclasses()
+    {
+        var currentSuperclass = testClassInstance.getClass().getSuperclass();
+        var fields =  new ArrayList<Field>(Arrays.asList(testClassInstance.getClass().getDeclaredFields()));
+        while (!currentSuperclass.equals(Object.class))
+        {
+            fields.addAll(List.of(currentSuperclass.getDeclaredFields()));
+            currentSuperclass = currentSuperclass.getSuperclass();
+        }
+        return fields;
     }
 
     @Override
@@ -279,7 +326,7 @@ public class TestdataStatement extends StatementBuilder
     @Override
     public StatementBuilder createStatement(Object testClassInstance, Statement next, Object parameter)
     {
-        return new TestdataStatement(next, (TestdataStatementData) parameter);
+        return new TestdataStatement(next, (TestdataStatementData) parameter, testClassInstance);
     }
 
     @Override

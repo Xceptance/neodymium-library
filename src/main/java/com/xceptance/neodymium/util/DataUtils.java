@@ -10,6 +10,7 @@ import org.apache.commons.text.TextRandomProvider;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
@@ -134,6 +135,23 @@ public class DataUtils
     public static <T> T get(final Class<T> clazz)
     {
         return GSON.fromJson(getDataAsJsonObject(), clazz);
+    }
+
+    /**
+     * Returns data from JSON field for the requested type
+     * 
+     * @param <T>
+     *            the inferred type
+     * @param clazz
+     *            A reference to an class that should be instantiated and filled from test data
+     * @param field
+     *            JSON field name
+     * @return an instance of the class provided
+     */
+    public static <T> T getFromField(final Class<T> clazz, String field)
+    {
+        JsonElement fieldElement = getDataAsJsonObject().get(field);
+        return GSON.fromJson(fieldElement, clazz);
     }
 
     /**
