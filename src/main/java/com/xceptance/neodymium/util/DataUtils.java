@@ -138,23 +138,6 @@ public class DataUtils
     }
 
     /**
-     * Returns data from JSON field for the requested type
-     * 
-     * @param <T>
-     *            the inferred type
-     * @param clazz
-     *            A reference to an class that should be instantiated and filled from test data
-     * @param field
-     *            JSON field name
-     * @return an instance of the class provided
-     */
-    public static <T> T getFromField(final Class<T> clazz, String field)
-    {
-        JsonElement fieldElement = getDataAsJsonObject().get(field);
-        return GSON.fromJson(fieldElement, clazz);
-    }
-
-    /**
      * <p>
      * Retrieves an element from the JSON representation of current test data using the given JsonPath expression and in
      * case such an element was found, it will be returned as instance of the given class, filled with appropriate

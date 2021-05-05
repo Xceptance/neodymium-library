@@ -85,9 +85,9 @@ public class TestdataStatement extends StatementBuilder
                 field.setAccessible(true);
                 try
                 {
-                    if (!dataAnnotation.value().equals(""))
+                    if (!StringUtils.isBlank(dataAnnotation.value()))
                     {
-                        field.set(testClassInstance, DataUtils.getFromField(field.getType(), dataAnnotation.value()));
+                        field.set(testClassInstance, DataUtils.get(dataAnnotation.value(), field.getType()));
                     }
                     else
                     {
