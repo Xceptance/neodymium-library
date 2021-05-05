@@ -18,6 +18,7 @@ import com.xceptance.neodymium.testclasses.data.override.classonly.ClassDefaultV
 import com.xceptance.neodymium.testclasses.data.override.classonly.ClassExplicitDefaultValueTwoDataSets;
 import com.xceptance.neodymium.testclasses.data.override.classonly.ClassMultipleSameDataSet;
 import com.xceptance.neodymium.testclasses.data.override.classonly.ClassRandomDataSets;
+import com.xceptance.neodymium.testclasses.data.override.classonly.ClassRandomDataSetsFromRange;
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodDefaultEmptyDataSets;
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodDefaultNoDataSets;
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodDefaultOneDataSet;
@@ -25,11 +26,14 @@ import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodDefaul
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodExplicitDefaultTwoDataSets;
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodMultipleSameDataSet;
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodRandomDataSets;
+import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodRandomDataSetsFromRange;
 import com.xceptance.neodymium.testclasses.data.override.mixed.ClassWithoutTwoMethodsOneForced;
 import com.xceptance.neodymium.testclasses.data.override.mixed.ForceOfNoneDataSets;
 import com.xceptance.neodymium.testclasses.data.override.mixed.MixRandomAndValueDataSets;
+import com.xceptance.neodymium.testclasses.data.override.mixed.MixRandomDataSetsFromRange;
 import com.xceptance.neodymium.testclasses.data.override.mixed.OneDataSetTwoMethodsOneWithout;
 import com.xceptance.neodymium.testclasses.data.override.mixed.OnlyImplicitOneDataSet;
+import com.xceptance.neodymium.testclasses.data.override.mixed.OverrideClassRandomDataSetsOnMethodLevel;
 import com.xceptance.neodymium.testclasses.data.override.mixed.TwoDataSetsTwoMethodsOneForced;
 import com.xceptance.neodymium.testclasses.data.override.mixed.TwoDataSetsTwoMethodsOneWithout;
 import com.xceptance.neodymium.testclasses.data.pkg.csv.CanReadPackageDataCSV;
@@ -402,10 +406,43 @@ public class TestDataStatementTest extends NeodymiumTest
     }
 
     @Test
+    public void testClassRandomDataSetSelectedFromRange()
+    {
+        Result result = JUnitCore.runClasses(ClassRandomDataSetsFromRange.class);
+        checkPass(result, 4, 0);
+    }
+
+    @Test
+    public void testMethodRandomDataSetSelectedFromRange()
+    {
+        Result result = JUnitCore.runClasses(MethodRandomDataSetsFromRange.class);
+        checkPass(result, 4, 0);
+    }
+
+    @Test
+    public void testMixRandomAndValueDataSetsSelectedFromRange()
+    {
+        Result result = JUnitCore.runClasses(MixRandomDataSetsFromRange.class);
+        checkPass(result, 4, 0);
+    }
+
+    @Test
+    public void testOverrideClassRandomDataSetsOnMethodLevel() throws Throwable
+    {
+        // One data set, two methods, one method with @Testdata(0)
+        String[] expected = new String[]
+        {
+          "test :: Data set 1 / 2",
+          "test :: Data set 2 / 2",
+        };
+        checkDescription(OverrideClassRandomDataSetsOnMethodLevel.class, expected);
+    }
+
+    @Test
     public void testRandomnessOfDataSetsTest()
     {
         Result result = JUnitCore.runClasses(RandomnessOfDataSets.class);
-        checkPass(result, 5, 0);
+        checkPass(result, 11, 0);
     }
 
     @Test

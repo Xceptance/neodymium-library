@@ -121,16 +121,28 @@ public class BrowserConfigurationMapper
          */
         String emulatedPlatform = browserProfileConfiguration.get(PLATFORM);
         if (!StringUtils.isEmpty(emulatedPlatform))
+        {
             capabilities.setCapability(CapabilityType.PLATFORM, emulatedPlatform);
-
+            // BrowserStack
+            capabilities.setCapability("os", emulatedPlatform);
+        }
+        
         String emulatedPlatformName = browserProfileConfiguration.get(PLATFORM_NAME);
         if (!StringUtils.isEmpty(emulatedPlatformName))
+        {
             capabilities.setCapability(CapabilityType.PLATFORM_NAME, emulatedPlatformName);
-
+            // BrowserStack
+            capabilities.setCapability("os", emulatedPlatformName);
+        }
+        
         String emulatedVersion = browserProfileConfiguration.get(BROWSER_VERSION);
         if (!StringUtils.isEmpty(emulatedVersion))
+        {
             capabilities.setCapability(CapabilityType.VERSION, emulatedVersion);
-
+            // BrowserStack
+            capabilities.setCapability("browser_version", emulatedVersion);
+        }
+        
         String emulatedDeviceName = browserProfileConfiguration.get(DEVICE_NAME);
         if (!StringUtils.isEmpty(emulatedDeviceName))
         {

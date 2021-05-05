@@ -13,11 +13,11 @@ import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
-import com.xceptance.neodymium.testclasses.data.FixedRandomnessOfDataSets;
+import com.xceptance.neodymium.testclasses.browser.FixedRandomnessOfRandomBrowser;
 import com.xceptance.neodymium.util.Neodymium;
 import com.xceptance.neodymium.util.NeodymiumRandom;
 
-public class FixedRandomnessOfDataSetsTests extends NeodymiumTest
+public class FixedRandomnessOfRandomBrowserTest extends NeodymiumTest
 {
     @BeforeClass
     public static void setUpNeodymiumConfiguration() throws IOException
@@ -41,11 +41,10 @@ public class FixedRandomnessOfDataSetsTests extends NeodymiumTest
     }
 
     @Test
-    public void testFixedRandomnessOfDataSets()
+    public void testFixedRandomnessOfRandomBrowser()
     {
-        // test fixed random data sets support
-        Result result = JUnitCore.runClasses(FixedRandomnessOfDataSets.class);
-        checkPass(result, 5, 0);
+        // test fixed random browser support
+        Result result = JUnitCore.runClasses(FixedRandomnessOfRandomBrowser.class);
+        checkPass(result, 3, 0);
     }
 }
-

@@ -15,6 +15,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
 import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Condition;
@@ -410,8 +411,17 @@ public class SelenideAddons
      */
     public static void dragAndDrop(SelenideElement elementToMove, int horizontalMovement, int verticalMovement)
     {
-        // perform drag and drop via the standard Selenium way
-        new Actions(Neodymium.getDriver()).dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement).build().perform();
+        try
+        {
+            // perform drag and drop via the standard Selenium way
+            new Actions(Neodymium.getDriver()).dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement).build().perform();
+        }
+        catch (MoveTargetOutOfBoundsException targetOutOfBound)
+        {
+            String message = "Performing drag and drop with an element moved the element out of the viewport. Try to scroll the element completely into the view port or to decrease the absolute values of your movements.";
+            SelenideLogger.commitStep(SelenideLogger.beginStep("slider", message), targetOutOfBound);
+            throw UIAssertionError.wrap(WebDriverRunner.driver(), new AssertionError(message, targetOutOfBound), 0);
+        }
     }
 
     /**

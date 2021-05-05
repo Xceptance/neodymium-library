@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.module.statement.testdata.DataSet;
+import com.xceptance.neodymium.module.statement.testdata.RandomDataSets;
 import com.xceptance.neodymium.module.statement.testdata.SuppressDataSets;
 import com.xceptance.neodymium.util.DataUtils;
 
@@ -18,7 +18,7 @@ public class FixedRandomnessOfDataSets
     private static List<String> datasets = new ArrayList<String>();
 
     @Test
-    @DataSet(randomSets = 4)
+    @RandomDataSets(4)
     public void test1()
     {
         // assert test data is available for the test
@@ -37,4 +37,3 @@ public class FixedRandomnessOfDataSets
         Assert.assertEquals("val3", datasets.get(3));
     }
 }
-
