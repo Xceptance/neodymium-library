@@ -54,7 +54,7 @@
 		<maven.compiler.source.version>11</maven.compiler.source.version>
 		<maven.compiler.target.version>11</maven.compiler.target.version>
 		<surefire.version>2.22.2</surefire.version>
-		<allure.version>2.13.8</allure.version>
+		<allure.version>2.13.9</allure.version>
 		<selenide.version>5.20.1</selenide.version>
 		<cucumber.version>6.9.1</cucumber.version>
 		<browserup.version>2.1.2</browserup.version>
@@ -252,7 +252,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.qameta.allure</groupId>
-			<artifactId>allure-cucumber6-jvm</artifactId>
+			<artifactId>allure-cucumber4-jvm</artifactId>
 			<version>${allure.version}</version>
 		</dependency>
 		<dependency>
