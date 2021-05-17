@@ -21,6 +21,7 @@ import org.openqa.selenium.StaleElementReferenceException;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.ex.ElementNotFound;
 import com.codeborne.selenide.ex.ElementShould;
 import com.codeborne.selenide.ex.UIAssertionError;
@@ -311,7 +312,8 @@ public class SelenideAddonsTest
                      });
         runArray.add(
                      () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
+                         throw UIAssertionError.wrap(WebDriverRunner.driver(), new AssertionError(" value displayed:StaleElementReferenceException: stale element reference: element is not attached to the page document>StaleElementReferenceException: stale element reference: element is not attached to the page document</StaleElementReferenceException: stale element reference: element is not attached to the page document>'\n" + 
+                             "Actual value: StaleElementReferenceException: stale element refe"), 0);
                      });
         runArray.add(
                      () -> {

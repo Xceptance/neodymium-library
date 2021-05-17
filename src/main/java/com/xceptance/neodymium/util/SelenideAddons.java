@@ -160,7 +160,8 @@ public class SelenideAddons
             }
             catch (final Throwable t)
             {
-                if (isThrowableCausedBy(t, StaleElementReferenceException.class))
+                if (isThrowableCausedBy(t, StaleElementReferenceException.class)
+                    || t.getMessage().contains("Actual value: StaleElementReferenceException: stale element refe"))
                 {
                     retryCounter++;
                     if (retryCounter > maxRetryCount)
@@ -414,7 +415,8 @@ public class SelenideAddons
         try
         {
             // perform drag and drop via the standard Selenium way
-            new Actions(Neodymium.getDriver()).dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement).build().perform();
+            new Actions(Neodymium.getDriver()).dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement)
+                                              .build().perform();
         }
         catch (MoveTargetOutOfBoundsException targetOutOfBound)
         {
@@ -443,8 +445,8 @@ public class SelenideAddons
      * @param condition
      *            The condition for the slider to verify the movement
      */
-    public static void dragAndDropUntilCondition(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement, int verticalMovement,
-                                                 int pauseBetweenMovements, int retryMovements, Condition condition)
+    public static void dragAndDropUntilCondition(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement,
+                                                 int verticalMovement, int pauseBetweenMovements, int retryMovements, Condition condition)
     {
         int counter = 0;
         while (!elementToCheck.has(condition))
