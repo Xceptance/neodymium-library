@@ -167,7 +167,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
             {
                 // for the case, when the property was set accidentally, inform the user about such behavior reason via
                 // warning in logs
-                LOGGER.warn("The test class " + testClassInstance.getClass() + " will not be executed as none of its methods match regex '"
+                LOGGER.error("The test class " +getName()+ " will not be executed as none of its methods match regex '"
                             + testExecutionRegex + "'. In case this is not the behaviour you expected,"
                             + " please check your neodymium.properties for neodymium.testExecutionRegex configuration"
                             + " and your maven surefire settings for the corresponding system property");
