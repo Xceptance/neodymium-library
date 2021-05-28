@@ -224,7 +224,7 @@ public class SelenideAddons
             }
             catch (final Throwable t)
             {
-                if (isThrowableCausedBy(t, StaleElementReferenceException.class))
+                if (isThrowableCausedBy(t, StaleElementReferenceException.class) || t.getMessage().contains("StaleElementReferenceException"))
                 {
                     retryCounter++;
                     if (retryCounter > maxRetryCount)
