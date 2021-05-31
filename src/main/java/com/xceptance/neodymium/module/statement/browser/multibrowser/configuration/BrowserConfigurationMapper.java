@@ -2,6 +2,7 @@ package com.xceptance.neodymium.module.statement.browser.multibrowser.configurat
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -346,13 +347,12 @@ public class BrowserConfigurationMapper
         String downloadDirectory = browserProfileConfiguration.get(DOWNLOAD_DIRECTORY);
         if (!StringUtils.isEmpty(downloadDirectory))
         {
-            Map<String, Object> prefs = new HashMap<>();
-
             // download directory preference for chrome
-            browserConfiguration.addPreference("download.default_directory", downloadDirectory);
+            String downloadDirectoryAbsolute= new File(downloadDirectory).getAbsolutePath();
+            browserConfiguration.addPreference("download.default_directory", downloadDirectoryAbsolute);
 
             // download directory preferences for firefox
-            browserConfiguration.addPreference("browser.download.dir", downloadDirectory);
+            browserConfiguration.addPreference("browser.download.dir", downloadDirectoryAbsolute);
             browserConfiguration.addPreference("browser.helperApps.neverAsk.saveToDisk", popularContentTypes());
             browserConfiguration.addPreference("pdfjs.disabled", true);
             browserConfiguration.addPreference("browser.download.folderList", 2);
