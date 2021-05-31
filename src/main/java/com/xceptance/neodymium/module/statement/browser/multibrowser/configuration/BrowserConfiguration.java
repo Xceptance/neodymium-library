@@ -35,8 +35,6 @@ public class BrowserConfiguration
 
     private Map<String, String> preferencesString;
 
-    private String downloadDirectory;
-
     public String getConfigTag()
     {
         return browserTag;
@@ -166,15 +164,5 @@ public class BrowserConfiguration
     public Map<String, String> getPreferencesString()
     {
         return preferencesString;
-    }
-
-    public String getDownloadDirectory()
-    {
-        return downloadDirectory;
-    }
-
-    public void setDownloadDirectory(String downloadDirectory)
-    {
-        this.downloadDirectory = downloadDirectory;
     }
 }
