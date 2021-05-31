@@ -160,8 +160,7 @@ public class SelenideAddons
             }
             catch (final Throwable t)
             {
-                if (isThrowableCausedBy(t, StaleElementReferenceException.class)
-                    || t.getMessage().contains("StaleElementReferenceException"))
+                if (isThrowableCausedBy(t, StaleElementReferenceException.class))
                 {
                     retryCounter++;
                     if (retryCounter > maxRetryCount)
@@ -224,7 +223,7 @@ public class SelenideAddons
             }
             catch (final Throwable t)
             {
-                if (isThrowableCausedBy(t, StaleElementReferenceException.class) || t.getMessage().contains("StaleElementReferenceException"))
+                if (isThrowableCausedBy(t, StaleElementReferenceException.class))
                 {
                     retryCounter++;
                     if (retryCounter > maxRetryCount)
@@ -252,7 +251,7 @@ public class SelenideAddons
         Throwable t = throwable;
         while (t != null)
         {
-            if (clazz.isInstance(t))
+            if (clazz.isInstance(t) || t.getMessage().contains("StaleElementReferenceException"))
             {
                 return true;
             }
