@@ -36,6 +36,7 @@ import com.codeborne.selenide.logevents.SelenideLogger;
 public class SelenideAddons
 {
     private static final String SERE = StaleElementReferenceException.class.getSimpleName();
+
     /**
      * Returns an supplier that will return exactly one result if any. It will return an element that is found by
      * parentSelector and has a result for subElementSelector. It does NOT return the subelements, it is meant to be a
@@ -171,7 +172,7 @@ public class SelenideAddons
                     }
                     else
                     {
-                        AllureAddons.addToReport(SERE+" catched times: \"" + retryCounter + "\".", retryCounter);
+                        AllureAddons.addToReport(SERE + " catched times: \"" + retryCounter + "\".", retryCounter);
                         Selenide.sleep(Neodymium.configuration().staleElementRetryTimeout());
                     }
                 }
@@ -212,39 +213,10 @@ public class SelenideAddons
      */
     public static void $safe(final Runnable code)
     {
-        final int maxRetryCount = Neodymium.configuration().staleElementRetryCount();
-        int retryCounter = 0;
-
-        while (retryCounter <= maxRetryCount)
-        {
-            try
-            {
-                code.run();
-                break;
-            }
-            catch (final Throwable t)
-            {
-                if (isThrowableCausedBy(t, StaleElementReferenceException.class))
-                {
-                    retryCounter++;
-                    if (retryCounter > maxRetryCount)
-                    {
-                        // fail
-                        throw t;
-                    }
-                    else
-                    {
-                        AllureAddons.addToReport(SERE+" catched times: \"" + retryCounter + "\".", retryCounter);
-                        Selenide.sleep(Neodymium.configuration().staleElementRetryTimeout());
-                    }
-                }
-                else
-                {
-                    // not the kind of error we are looking for
-                    throw t;
-                }
-            }
-        }
+        $safe(()->{
+            code.run();
+            return null;
+        });
     }
 
     private static boolean isThrowableCausedBy(final Throwable throwable, Class<? extends Throwable> clazz)
