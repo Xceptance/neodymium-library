@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Dimension;
@@ -20,6 +21,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.BrowserType;
@@ -229,6 +231,11 @@ public final class BrowserRunnerHelper
                     options.addArguments(config.getArguments());
                 }
 
+                if (config.getPreferences() != null && !config.getPreferences().isEmpty())
+                {
+                    options.setExperimentalOption("prefs", config.getPreferences());
+                }
+
                 wDSC.setWebDriver(new ChromeDriver(options));
             }
             else if (firefoxBrowsers.contains(browserName))
@@ -241,7 +248,22 @@ public final class BrowserRunnerHelper
                 {
                     options.addArguments(config.getArguments());
                 }
-
+                if (config.getPreferences() != null && !config.getPreferences().isEmpty())
+                {
+                    FirefoxProfile profile = new FirefoxProfile();
+                    
+                    // differentiate types of preference values to avoid misunderstanding
+                    if(config.getPreferencesBoolean()!=null && config.getPreferencesBoolean().isEmpty()) {
+                        config.getPreferencesBoolean().forEach((key,val)->profile.setPreference(key, val));
+                    }
+                    if(config.getPreferencesInteger()!=null && config.getPreferencesInteger().isEmpty()) {
+                        config.getPreferencesInteger().forEach((key,val)->profile.setPreference(key, val));
+                    }
+                    if(config.getPreferencesString()!=null && config.getPreferencesString().isEmpty()) {
+                        config.getPreferencesString().forEach((key,val)->profile.setPreference(key, val));
+                    }
+                    options.setProfile(profile);
+                }
                 wDSC.setWebDriver(new FirefoxDriver(options));
             }
             else if (internetExplorerBrowsers.contains(browserName))
@@ -255,7 +277,6 @@ public final class BrowserRunnerHelper
                         options.addCommandSwitches(argument);
                     }
                 }
-
                 wDSC.setWebDriver(new InternetExplorerDriver(options));
             }
             else if (safariBrowsers.contains(browserName))

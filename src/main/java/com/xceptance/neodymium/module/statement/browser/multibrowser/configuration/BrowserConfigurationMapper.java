@@ -1,10 +1,15 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser.configuration;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -14,6 +19,10 @@ import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariOptions;
+import org.yaml.snakeyaml.DumperOptions.ScalarStyle;
+
+import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.FileDownloadMode;
 
 public class BrowserConfigurationMapper
 {
@@ -48,6 +57,10 @@ public class BrowserConfigurationMapper
     private static final String HEADLESS = "headless";
 
     private static final String ARGUMENTS = "arguments";
+
+    private static final String PREFERENCES = "preferences";
+
+    private static final String DOWNLOAD_DIRECTORY = "downloadDirectory";
 
     // Appium specific properties
     private static final String APPIUM_VERSION = "appiumVersion";
@@ -126,7 +139,7 @@ public class BrowserConfigurationMapper
             // BrowserStack
             capabilities.setCapability("os", emulatedPlatform);
         }
-        
+
         String emulatedPlatformName = browserProfileConfiguration.get(PLATFORM_NAME);
         if (!StringUtils.isEmpty(emulatedPlatformName))
         {
@@ -134,7 +147,7 @@ public class BrowserConfigurationMapper
             // BrowserStack
             capabilities.setCapability("os", emulatedPlatformName);
         }
-        
+
         String emulatedVersion = browserProfileConfiguration.get(BROWSER_VERSION);
         if (!StringUtils.isEmpty(emulatedVersion))
         {
@@ -142,7 +155,7 @@ public class BrowserConfigurationMapper
             // BrowserStack
             capabilities.setCapability("browser_version", emulatedVersion);
         }
-        
+
         String emulatedDeviceName = browserProfileConfiguration.get(DEVICE_NAME);
         if (!StringUtils.isEmpty(emulatedDeviceName))
         {
@@ -330,6 +343,51 @@ public class BrowserConfigurationMapper
             browserConfiguration.setArguments(args);
         }
 
+        String downloadDirectory = browserProfileConfiguration.get(DOWNLOAD_DIRECTORY);
+        if (!StringUtils.isEmpty(downloadDirectory))
+        {
+            Map<String, Object> prefs = new HashMap<>();
+
+            // download directory preference for chrome
+            browserConfiguration.addPreference("download.default_directory", downloadDirectory);
+
+            // download directory preferences for firefox
+            browserConfiguration.addPreference("browser.download.dir", downloadDirectory);
+            browserConfiguration.addPreference("browser.helperApps.neverAsk.saveToDisk", popularContentTypes());
+            browserConfiguration.addPreference("pdfjs.disabled", true);
+            browserConfiguration.addPreference("browser.download.folderList", 2);
+
+            Configuration.downloadsFolder = downloadDirectory;
+        }
+
+        String preferences = browserProfileConfiguration.get(PREFERENCES);
+        if (!StringUtils.isEmpty(preferences))
+        {
+            for (String pref : preferences.split(";"))
+            {
+                String[] keyVal = pref.split("=");
+                if (pref.length() > 1)
+                {
+                    String key = keyVal[0].trim();
+                    String val = keyVal[1].trim();
+                    
+                    // differentiate types of preference values to avoid misunderstanding
+                    if (val.equals("true") | val.equals("false"))
+                    {
+                        browserConfiguration.addPreference(key, Boolean.parseBoolean(val));
+                    }
+                    else if (StringUtils.isNumeric(val))
+                    {
+                        browserConfiguration.addPreference(key, Integer.parseInt(val));
+                    }
+                    else
+                    {
+                        browserConfiguration.addPreference(key, val);
+                    }
+                }
+            }
+        }
+
         capabilities.setCapability("name", browserProfileConfiguration.get("name"));
         browserConfiguration.setCapabilities(capabilities);
         browserConfiguration.setConfigTag(browserProfileConfiguration.get("browserTag"));
@@ -351,6 +409,19 @@ public class BrowserConfigurationMapper
         if (!StringUtils.isEmpty(browserWidthHeight[0]))
         {
             browserConfiguration.setBrowserHeight(Integer.parseInt(browserWidthHeight[1]));
+        }
+    }
+
+    private String popularContentTypes()
+    {
+        try
+        {
+            return String.join(";", IOUtils.readLines(getClass().getResourceAsStream("/content-types.properties"), UTF_8));
+        }
+        catch (IOException e)
+        {
+            return "text/plain;text/csv;application/zip;application/pdf;application/octet-stream;" +
+                   "application/msword;application/vnd.ms-excel;text/css;text/html";
         }
     }
 }
