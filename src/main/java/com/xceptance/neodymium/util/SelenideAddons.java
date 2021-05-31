@@ -35,6 +35,7 @@ import com.codeborne.selenide.logevents.SelenideLogger;
  */
 public class SelenideAddons
 {
+    private static final String SERE = StaleElementReferenceException.class.getSimpleName();
     /**
      * Returns an supplier that will return exactly one result if any. It will return an element that is found by
      * parentSelector and has a result for subElementSelector. It does NOT return the subelements, it is meant to be a
@@ -170,7 +171,7 @@ public class SelenideAddons
                     }
                     else
                     {
-                        AllureAddons.addToReport("StaleElementReferenceException catched times: \"" + retryCounter + "\".", retryCounter);
+                        AllureAddons.addToReport(SERE+" catched times: \"" + retryCounter + "\".", retryCounter);
                         Selenide.sleep(Neodymium.configuration().staleElementRetryTimeout());
                     }
                 }
@@ -233,7 +234,7 @@ public class SelenideAddons
                     }
                     else
                     {
-                        AllureAddons.addToReport("StaleElementReferenceException catched times: \"" + retryCounter + "\".", retryCounter);
+                        AllureAddons.addToReport(SERE+" catched times: \"" + retryCounter + "\".", retryCounter);
                         Selenide.sleep(Neodymium.configuration().staleElementRetryTimeout());
                     }
                 }
@@ -251,7 +252,7 @@ public class SelenideAddons
         Throwable t = throwable;
         while (t != null)
         {
-            if (clazz.isInstance(t) || t.getMessage().contains("StaleElementReferenceException"))
+            if (clazz.isInstance(t) || t.getMessage().contains(SERE))
             {
                 return true;
             }
