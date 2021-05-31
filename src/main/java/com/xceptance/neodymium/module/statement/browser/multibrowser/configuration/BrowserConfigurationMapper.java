@@ -347,16 +347,22 @@ public class BrowserConfigurationMapper
         String downloadDirectory = browserProfileConfiguration.get(DOWNLOAD_DIRECTORY);
         if (!StringUtils.isEmpty(downloadDirectory))
         {
+            String downloadDirectoryAbsolute = new File(downloadDirectory).getAbsolutePath();
+
             // download directory preference for chrome
-            String downloadDirectoryAbsolute= new File(downloadDirectory).getAbsolutePath();
-            browserConfiguration.addPreference("download.default_directory", downloadDirectoryAbsolute);
-
+            if ("chrome".equals(browserProfileConfiguration.get(BROWSER)))
+            {
+                browserConfiguration.addPreference("download.default_directory", downloadDirectoryAbsolute);
+            }
+            
             // download directory preferences for firefox
-            browserConfiguration.addPreference("browser.download.dir", downloadDirectoryAbsolute);
-            browserConfiguration.addPreference("browser.helperApps.neverAsk.saveToDisk", popularContentTypes());
-            browserConfiguration.addPreference("pdfjs.disabled", true);
-            browserConfiguration.addPreference("browser.download.folderList", 2);
-
+            if ("firefox".equals(browserProfileConfiguration.get(BROWSER)))
+            {
+                browserConfiguration.addPreference("browser.download.dir", downloadDirectoryAbsolute);
+                browserConfiguration.addPreference("browser.helperApps.neverAsk.saveToDisk", popularContentTypes());
+                browserConfiguration.addPreference("pdfjs.disabled", true);
+                browserConfiguration.addPreference("browser.download.folderList", 2);
+            }
             Configuration.downloadsFolder = downloadDirectory;
         }
 
@@ -370,7 +376,7 @@ public class BrowserConfigurationMapper
                 {
                     String key = keyVal[0].trim();
                     String val = keyVal[1].trim();
-                    
+
                     // differentiate types of preference values to avoid misunderstanding
                     if (val.equals("true") | val.equals("false"))
                     {
@@ -412,11 +418,11 @@ public class BrowserConfigurationMapper
         }
     }
 
-    private String popularContentTypes()
+    public static String popularContentTypes()
     {
         try
         {
-            return String.join(";", IOUtils.readLines(getClass().getResourceAsStream("/content-types.properties"), UTF_8));
+            return String.join(";", IOUtils.readLines(BrowserConfigurationMapper.class.getResourceAsStream("/content-types.properties"), UTF_8));
         }
         catch (IOException e)
         {
