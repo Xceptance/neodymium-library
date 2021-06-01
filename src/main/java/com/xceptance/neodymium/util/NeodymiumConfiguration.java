@@ -258,6 +258,6 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.webDriver.opera.pathToBrowser")
     public String getOperaBrowserPath();
 
-    @Key("neodymium.testExecutionRegex")
-    public String getTestExecutionRegex();
+    @Key("neodymium.testNameFilter")
+    public String getTestNameFilter();
 }

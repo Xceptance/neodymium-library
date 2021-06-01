@@ -23,7 +23,7 @@ public class TestCaseFilteringTest extends NeodymiumTest
 
         Map<String, String> properties = new HashMap<>();
 
-        properties.put("neodymium.testExecutionRegex", ".*#shouldBeExecuted.*::\\\\sexecutable.*");
+        properties.put("neodymium.testNameFilter", ".*#shouldBeExecuted.*::\\\\sexecutable.*");
 
         File tempConfigFile = new File("./" + fileLocation);
         writeMapToPropertiesFile(properties, tempConfigFile);

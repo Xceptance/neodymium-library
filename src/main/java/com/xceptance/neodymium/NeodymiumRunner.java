@@ -154,14 +154,14 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         validateTestMethods(errors);
         if (computeTestMethods().isEmpty())
         {
-            String testExecutionRegex = Neodymium.configuration().getTestExecutionRegex();
+            String testExecutionRegex = Neodymium.configuration().getTestNameFilter();
 
             // only throw exception if test class has no execution methods accidentally
             if (testExecutionRegex == null)
             {
                 errors.add(new Exception("No runnable methods"));
             }
-            // in case the neodymium.testExecutionRegex is set, it's assumes, that the test methods are ignored on
+            // in case the neodymium.testNameFilter is set, it's assumes, that the test methods are ignored on
             // purpose
             else
             {
@@ -169,7 +169,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                 // warning in logs
                 LOGGER.warn("The test class " +getName()+ " will not be executed as none of its methods match regex '"
                             + testExecutionRegex + "'. In case this is not the behaviour you expected,"
-                            + " please check your neodymium.properties for neodymium.testExecutionRegex configuration"
+                            + " please check your neodymium.properties for neodymium.testNameFilter configuration"
                             + " and your maven surefire settings for the corresponding system property");
             }
         }
@@ -235,7 +235,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         }
 
         // filter test methods by regex
-        String testExecutionRegex = Neodymium.configuration().getTestExecutionRegex();
+        String testExecutionRegex = Neodymium.configuration().getTestNameFilter();
         if (testExecutionRegex != null)
         {
             testMethods = testMethods.stream()
