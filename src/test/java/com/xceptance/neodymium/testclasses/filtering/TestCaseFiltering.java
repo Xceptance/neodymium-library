@@ -13,7 +13,6 @@ import io.cucumber.java.it.Data;
 @RunWith(NeodymiumRunner.class)
 public class TestCaseFiltering
 {
-
     @Test
     @Data("id=executable")
     public void shouldBeExecuted()
@@ -34,5 +33,4 @@ public class TestCaseFiltering
         Assert.assertEquals("This test should only be executed for data set with id 'executable'", "executable",
                             DataUtils.asString("testId"));
     }
-
 }

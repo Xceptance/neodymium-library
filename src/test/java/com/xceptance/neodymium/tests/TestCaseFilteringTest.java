@@ -40,5 +40,4 @@ public class TestCaseFilteringTest extends NeodymiumTest
         Result result = JUnitCore.runClasses(TestCaseFiltering.class);
         checkPass(result, 2, 0);
     }
-
 }
