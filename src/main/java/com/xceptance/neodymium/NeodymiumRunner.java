@@ -146,6 +146,9 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         return testClassInstance;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void validateInstanceMethods(List<Throwable> errors)
     {
@@ -167,7 +170,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
             {
                 // for the case, when the property was set accidentally, inform the user about such behavior reason via
                 // warning in logs
-                LOGGER.warn("The test class " +getName()+ " will not be executed as none of its methods match regex '"
+                LOGGER.warn("The test class " + getName() + " will not be executed as none of its methods match regex '"
                             + testExecutionRegex + "'. In case this is not the behaviour you expected,"
                             + " please check your neodymium.properties for neodymium.testNameFilter configuration"
                             + " and your maven surefire settings for the corresponding system property");
