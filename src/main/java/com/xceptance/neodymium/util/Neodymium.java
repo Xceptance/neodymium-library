@@ -481,6 +481,30 @@ public class Neodymium
     }
 
     /**
+     * Validates if the currently configured locale is equal to one or more Strings.
+     * 
+     * @param locales
+     *            Names of the locales
+     * @return boolean value indicating whether the configured locale is matching one of the given Strings
+     * @see Neodymium
+     */
+    public static boolean isLocale(String... locales)
+    {
+        if (Neodymium.configuration().locale() == null)
+        {
+            return false;
+        }
+        for (int i = 0; i < locales.length; i++)
+        {
+            if (Neodymium.configuration().locale().equals(locales[i]))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns the version of the currently used Neodymium library.
      * 
      * @return build version of Neodymium library
