@@ -45,6 +45,14 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("500")
     public int staleElementRetryTimeout();
 
+    @Key("neodymium.selenideAddons.optional.retry.count")
+    @DefaultValue("5")
+    public int optionalElementRetryCount();
+
+    @Key("neodymium.selenideAddons.optional.rety.timeout")
+    @DefaultValue("2000")
+    public int optionalElementRetryTimeout();
+
     @Key("neodymium.javaScriptUtils.timeout")
     @DefaultValue("2000")
     public int javaScriptTimeout();

@@ -5,6 +5,8 @@ import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.hidden;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -639,5 +641,34 @@ public class SelenideAddonsTest
 
         SelenideAddons.openHtmlContentWithCurrentWebDriver(textHtml);
         Assert.assertEquals(text, $("body").getText());
+    }
+
+    @Test
+    public void testOptionalWaitUntil()
+    {
+        openBlogPage();
+        SelenideElement privaceDialog = $("#privacy-message");
+        boolean isVisible = SelenideAddons.optionalWaitUntilCondition(privaceDialog, visible);
+        assertTrue(isVisible);
+        long startTime = new Date().getTime();
+        boolean isHidden = SelenideAddons.optionalWaitUntilCondition(privaceDialog, hidden);
+        long endTime = new Date().getTime();
+        assertFalse(isHidden);
+        Assert.assertTrue(endTime - startTime > Neodymium.configuration().optionalElementRetryTimeout());
+    }
+
+    @Test
+    public void testOptionalWaitWhile()
+    {
+        openBlogPage();
+        SelenideElement privaceDialog = $("#privacy-message").shouldBe(visible);
+        long startTime = new Date().getTime();
+        boolean isHidden = SelenideAddons.optionalWaitWhileCondition(privaceDialog, visible);
+        long endTime = new Date().getTime();
+        assertFalse(isHidden);
+        Assert.assertTrue(endTime - startTime > Neodymium.configuration().optionalElementRetryTimeout());
+        privaceDialog.find(".btn-link").click();
+        isHidden = SelenideAddons.optionalWaitWhileCondition(privaceDialog, visible);
+        assertTrue(isHidden);
     }
 }
