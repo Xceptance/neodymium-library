@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.junit.After;
@@ -242,8 +243,13 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         if (testExecutionRegex != null)
         {
             testMethods = testMethods.stream()
-                                     .filter(testMethod -> (testMethod.getMethod().getDeclaringClass() + "#"
-                                                            + testMethod.getName()).matches(testExecutionRegex))
+                                     .filter(testMethod -> {
+                                         String functionName = testMethod.getMethod().getDeclaringClass().getName() + "#"
+                                                               + testMethod.getName();
+                                         return Pattern.compile(testExecutionRegex)
+                                                       .matcher(functionName)
+                                                       .find();
+                                     })
                                      .collect(Collectors.toList());
         }
 
