@@ -18,6 +18,8 @@ public class TestCaseFiltering
     public void shouldBeExecuted()
     {
         Assert.assertTrue("This test should be executed", true);
+        Assert.assertEquals("This test should only be executed for data set with id 'executable'", "executable",
+                            DataUtils.asString("testId"));
     }
 
     @Test
