@@ -1,14 +1,17 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.MutableCapabilities;
@@ -41,6 +44,7 @@ import com.browserup.bup.mitm.RootCertificateGenerator;
 import com.browserup.bup.mitm.manager.ImpersonatingMitmManager;
 import com.browserup.bup.proxy.auth.AuthType;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfigurationMapper;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.TestEnvironment;
 import com.xceptance.neodymium.util.Neodymium;
@@ -231,9 +235,11 @@ public final class BrowserRunnerHelper
                     options.addArguments(config.getArguments());
                 }
 
-                if (config.getPreferences() != null && !config.getPreferences().isEmpty())
+                if (config.getDownloadDirectory() != null && !config.getDownloadDirectory().isEmpty())
                 {
-                    options.setExperimentalOption("prefs", config.getPreferences());
+                    HashMap<String, Object> prefs= new HashMap<>();
+                    prefs.put("download.default_directory", config.getDownloadDirectory());
+                    options.setExperimentalOption("prefs", prefs);
                 }
 
                 wDSC.setWebDriver(new ChromeDriver(options));
@@ -248,20 +254,14 @@ public final class BrowserRunnerHelper
                 {
                     options.addArguments(config.getArguments());
                 }
-                if (config.getPreferences() != null && !config.getPreferences().isEmpty())
+                if (config.getDownloadDirectory() != null && !config.getDownloadDirectory().isEmpty())
                 {
                     FirefoxProfile profile = new FirefoxProfile();
-                    
-                    // differentiate types of preference values to avoid misunderstanding
-                    if(config.getPreferencesBoolean()!=null && config.getPreferencesBoolean().isEmpty()) {
-                        config.getPreferencesBoolean().forEach((key,val)->profile.setPreference(key, val));
-                    }
-                    if(config.getPreferencesInteger()!=null && config.getPreferencesInteger().isEmpty()) {
-                        config.getPreferencesInteger().forEach((key,val)->profile.setPreference(key, val));
-                    }
-                    if(config.getPreferencesString()!=null && config.getPreferencesString().isEmpty()) {
-                        config.getPreferencesString().forEach((key,val)->profile.setPreference(key, val));
-                    }
+
+                    profile.setPreference("browser.download.dir", config.getDownloadDirectory());
+                    profile.setPreference("browser.helperApps.neverAsk.saveToDisk", popularContentTypes());
+                    profile.setPreference("pdfjs.disabled", true);
+                    profile.setPreference("browser.download.folderList", 2);
                     options.setProfile(profile);
                 }
                 wDSC.setWebDriver(new FirefoxDriver(options));
@@ -392,5 +392,18 @@ public final class BrowserRunnerHelper
 
         webdriverProxy.setNoProxy(Neodymium.configuration().getProxyBypass());
         return webdriverProxy;
+    }
+
+    private static String popularContentTypes()
+    {
+        try
+        {
+            return String.join(";", IOUtils.readLines(BrowserConfigurationMapper.class.getResourceAsStream("/content-types.properties"), UTF_8));
+        }
+        catch (IOException e)
+        {
+            return "text/plain;text/csv;application/zip;application/pdf;application/octet-stream;" +
+                   "application/msword;application/vnd.ms-excel;text/css;text/html";
+        }
     }
 }

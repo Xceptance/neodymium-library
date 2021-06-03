@@ -1,16 +1,11 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser.configuration;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -20,10 +15,8 @@ import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariOptions;
-import org.yaml.snakeyaml.DumperOptions.ScalarStyle;
 
-import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.FileDownloadMode;
+import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserConfigurationMapper
 {
@@ -58,8 +51,6 @@ public class BrowserConfigurationMapper
     private static final String HEADLESS = "headless";
 
     private static final String ARGUMENTS = "arguments";
-
-    private static final String PREFERENCES = "preferences";
 
     private static final String DOWNLOAD_DIRECTORY = "downloadDirectory";
 
@@ -347,54 +338,11 @@ public class BrowserConfigurationMapper
         String downloadDirectory = browserProfileConfiguration.get(DOWNLOAD_DIRECTORY);
         if (!StringUtils.isEmpty(downloadDirectory))
         {
-            String downloadDirectoryAbsolute = new File(downloadDirectory).getAbsolutePath();
-
-            // download directory preference for chrome
-            if ("chrome".equals(browserProfileConfiguration.get(BROWSER)))
-            {
-                browserConfiguration.addPreference("download.default_directory", downloadDirectoryAbsolute);
-            }
-            
-            // download directory preferences for firefox
-            if ("firefox".equals(browserProfileConfiguration.get(BROWSER)))
-            {
-                browserConfiguration.addPreference("browser.download.dir", downloadDirectoryAbsolute);
-                browserConfiguration.addPreference("browser.helperApps.neverAsk.saveToDisk", popularContentTypes());
-                browserConfiguration.addPreference("pdfjs.disabled", true);
-                browserConfiguration.addPreference("browser.download.folderList", 2);
-            }
-            Configuration.downloadsFolder = downloadDirectory;
+            String downloadFolder = new File(downloadDirectory).getAbsolutePath();
+            browserConfiguration.setDownloadDirectory(downloadFolder);
+            Neodymium.downloadFolder(downloadFolder);
         }
 
-        String preferences = browserProfileConfiguration.get(PREFERENCES);
-        if (!StringUtils.isEmpty(preferences))
-        {
-            for (String pref : preferences.split(";"))
-            {
-                String[] keyVal = pref.split("=");
-                if (pref.length() > 1)
-                {
-                    String key = keyVal[0].trim();
-                    String val = keyVal[1].trim();
-
-                    // differentiate types of preference values to avoid misunderstanding
-                    if (val.equals("true") | val.equals("false"))
-                    {
-                        browserConfiguration.addPreference(key, Boolean.parseBoolean(val));
-                    }
-                    else if (StringUtils.isNumeric(val))
-                    {
-                        browserConfiguration.addPreference(key, Integer.parseInt(val));
-                    }
-                    else
-                    {
-                        browserConfiguration.addPreference(key, val);
-                    }
-                }
-            }
-        }
-
-        capabilities.setCapability("name", browserProfileConfiguration.get("name"));
         browserConfiguration.setCapabilities(capabilities);
         browserConfiguration.setConfigTag(browserProfileConfiguration.get("browserTag"));
         browserConfiguration.setName(browserProfileConfiguration.get("name"));
@@ -415,19 +363,6 @@ public class BrowserConfigurationMapper
         if (!StringUtils.isEmpty(browserWidthHeight[0]))
         {
             browserConfiguration.setBrowserHeight(Integer.parseInt(browserWidthHeight[1]));
-        }
-    }
-
-    public static String popularContentTypes()
-    {
-        try
-        {
-            return String.join(";", IOUtils.readLines(BrowserConfigurationMapper.class.getResourceAsStream("/content-types.properties"), UTF_8));
-        }
-        catch (IOException e)
-        {
-            return "text/plain;text/csv;application/zip;application/pdf;application/octet-stream;" +
-                   "application/msword;application/vnd.ms-excel;text/css;text/html";
         }
     }
 }
