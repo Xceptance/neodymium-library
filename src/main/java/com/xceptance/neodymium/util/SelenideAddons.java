@@ -477,13 +477,35 @@ public class SelenideAddons
 
     /**
      * Waits until an optional element matches a condition. This function will return false if the element does not
+     * match the given condition or can not be found in the given timeframe. This method will use the default optional
+     * retry timeout.
+     * <p>
+     * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
+     * </p>
+     * <ul>
+     * <li>*
+     * <li>neodymium.selenideAddons.optional.retry.timeout (default 2000ms pause between retries)</li>
+     * </ul>
+     * 
+     * @param element
+     *            the element to match
+     * @param condition
+     *            the condition for the element
+     * @return if the element did match the condition within the given retries
+     */
+    public static boolean optionalWaitUntilCondition(SelenideElement element, Condition condition)
+    {
+        return optionalWaitUntilCondition(element, condition, Neodymium.configuration().optionalElementRetryTimeout());
+    }
+
+    /**
+     * Waits until an optional element matches a condition. This function will return false if the element does not
      * match the given condition or can not be found in the given timeframe.
      * <p>
      * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
      * </p>
      * <ul>
      * <li>neodymium.selenideAddons.optional.retry.count (default 5 retries)</li>
-     * <li>neodymium.selenideAddons.optional.retry.timeout (default 2000ms pause between retries)</li>
      * </ul>
      *
      * @param element
@@ -513,13 +535,35 @@ public class SelenideAddons
 
     /**
      * Waits while an optional element matches a condition. This function will return false if the element does match
+     * the given condition or can not be found after the given timeframe. This method will use the default optional
+     * retry timeout.
+     * <p>
+     * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
+     * </p>
+     * <ul>
+     * <li>*
+     * <li>neodymium.selenideAddons.optional.retry.timeout (default 2000ms pause between retries)</li>
+     * </ul>
+     * 
+     * @param element
+     *            the element to match
+     * @param condition
+     *            the condition for the element
+     * @return if the element did stop matching the condition within the given retries
+     */
+    public static boolean optionalWaitWhileCondition(SelenideElement element, Condition condition)
+    {
+        return optionalWaitWhileCondition(element, condition, Neodymium.configuration().optionalElementRetryTimeout());
+    }
+
+    /**
+     * Waits while an optional element matches a condition. This function will return false if the element does match
      * the given condition or can not be found after the given timeframe.
      * <p>
      * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
      * </p>
      * <ul>
      * <li>neodymium.selenideAddons.optional.retry.count (default 5 retries)</li>
-     * <li>neodymium.selenideAddons.optional.retry.timeout (default 2000ms pause between retries)</li>
      * </ul>
      *
      * @param element
