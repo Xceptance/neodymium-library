@@ -219,6 +219,7 @@ public class BrowserStatement extends StatementBuilder
     public void teardown(boolean testFailed, boolean preventReuse, WebDriverStateContainer webDriverStateContainer)
     {
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(Neodymium.getBrowserProfileName());
+        // getAnnotations(, KeepBrowserOpen.class);
 
         // keep browser open
         if (keepOpen(testFailed, browserConfiguration))
