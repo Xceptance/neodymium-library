@@ -25,7 +25,6 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
-import com.codeborne.selenide.ex.ElementNotFound;
 import com.codeborne.selenide.ex.UIAssertionError;
 import com.codeborne.selenide.impl.Html;
 import com.codeborne.selenide.impl.WebElementsCollectionWrapper;
@@ -491,27 +490,23 @@ public class SelenideAddons
      *            the element to match
      * @param condition
      *            the condition for the element
+     * @param waitingTime
+     *            the time to wait between retries
      * @return if the element did match the condition within the given retries
      */
-    public static boolean optionalWaitUntilCondition(SelenideElement element, Condition condition)
+    public static boolean optionalWaitUntilCondition(SelenideElement element, Condition condition, long waitingTime)
     {
         boolean result = false;
         int counter = 0;
         while (counter < Neodymium.configuration().optionalElementRetryCount())
         {
             counter++;
-            try
+            if (element.has(condition))
             {
-                if (element.has(condition))
-                {
-                    result = true;
-                    break;
-                }
+                result = true;
+                break;
             }
-            catch (ElementNotFound e)
-            {
-            }
-            Selenide.sleep(Neodymium.configuration().optionalElementRetryTimeout());
+            Selenide.sleep(waitingTime);
         }
         return result;
     }
@@ -531,27 +526,23 @@ public class SelenideAddons
      *            the element to match
      * @param condition
      *            the condition for the element
+     * @param waitingTime
+     *            the time to wait between retries
      * @return if the element did stop matching the condition within the given retries
      */
-    public static boolean optionalWaitWhileCondition(SelenideElement element, Condition condition)
+    public static boolean optionalWaitWhileCondition(SelenideElement element, Condition condition, long waitingTime)
     {
         boolean result = false;
         int counter = 0;
         while (counter < Neodymium.configuration().optionalElementRetryCount())
         {
             counter++;
-            try
+            if (element.has(not(condition)))
             {
-                if (element.has(not(condition)))
-                {
-                    result = true;
-                    break;
-                }
+                result = true;
+                break;
             }
-            catch (ElementNotFound e)
-            {
-            }
-            Selenide.sleep(Neodymium.configuration().optionalElementRetryTimeout());
+            Selenide.sleep(waitingTime);
         }
         return result;
     }
