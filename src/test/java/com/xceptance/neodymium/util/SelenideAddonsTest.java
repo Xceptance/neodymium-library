@@ -656,7 +656,7 @@ public class SelenideAddonsTest
         long endTime = new Date().getTime();
         assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
         int waitingTime = Neodymium.configuration().optionalElementRetryTimeout() * Neodymium.configuration().optionalElementRetryCount();
-        Assert.assertTrue(Range.between(waitingTime, waitingTime + Neodymium.configuration().optionalElementRetryTimeout())
+        Assert.assertTrue("Runtime was shorter than expected", Range.between(waitingTime, waitingTime + Neodymium.configuration().optionalElementRetryTimeout())
                                .contains(Math.toIntExact(endTime - startTime)));
     }
 
@@ -670,7 +670,7 @@ public class SelenideAddonsTest
         long endTime = new Date().getTime();
         assertFalse("the privacy message dialog was unexpectedly during within the timeframe", isHidden);
         int waitingTime = Neodymium.configuration().optionalElementRetryTimeout() * Neodymium.configuration().optionalElementRetryCount();
-        Assert.assertTrue(Range.between(waitingTime, waitingTime + Neodymium.configuration().optionalElementRetryTimeout())
+        Assert.assertTrue("Runtime was shorter than expected", Range.between(waitingTime, waitingTime + Neodymium.configuration().optionalElementRetryTimeout())
                                .contains(Math.toIntExact(endTime - startTime)));
         privaceDialog.find(".btn-link").click();
         isHidden = SelenideAddons.optionalWaitWhileCondition(privaceDialog, visible, Neodymium.configuration().optionalElementRetryTimeout());
