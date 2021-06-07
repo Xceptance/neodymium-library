@@ -30,6 +30,7 @@ import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.CommandInfo;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
@@ -239,6 +240,8 @@ public final class BrowserRunnerHelper
                 {
                     HashMap<String, Object> prefs= new HashMap<>();
                     prefs.put("download.default_directory", config.getDownloadDirectory());
+                    prefs.put("plugins.always_open_pdf_externally", true);
+
                     options.setExperimentalOption("prefs", prefs);
                 }
 
@@ -398,7 +401,9 @@ public final class BrowserRunnerHelper
     {
         try
         {
-            return String.join(";", IOUtils.readLines(BrowserConfigurationMapper.class.getResourceAsStream("/content-types.properties"), UTF_8));
+            List<String> popularContentTypes= IOUtils.readLines(BrowserConfigurationMapper.class.getResourceAsStream("/content-types.properties"), UTF_8);
+            popularContentTypes.add("application/x-download");
+            return String.join(";", popularContentTypes);
         }
         catch (IOException e)
         {
