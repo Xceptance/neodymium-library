@@ -1,6 +1,8 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser.configuration;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openqa.selenium.MutableCapabilities;
 
@@ -26,6 +28,12 @@ public class BrowserConfiguration
     private boolean headless;
 
     private List<String> arguments;
+
+    private Map<String, Boolean> preferencesBoolean;
+
+    private Map<String, Integer> preferencesInteger;
+
+    private Map<String, String> preferencesString;
 
     public String getConfigTag()
     {
@@ -105,5 +113,56 @@ public class BrowserConfiguration
     public void setArguments(List<String> arguments)
     {
         this.arguments = arguments;
+    }
+
+    public Map<String, Object> getPreferences()
+    {
+        Map<String, Object> allPreferences = new HashMap<>();
+        allPreferences.putAll(preferencesBoolean);
+        allPreferences.putAll(preferencesInteger);
+        allPreferences.putAll(preferencesString);
+        return allPreferences;
+    }
+
+    public Map<String, Boolean> getPreferencesBoolean()
+    {
+        return preferencesBoolean;
+    }
+
+    public Map<String, Integer> getPreferencesInteger()
+    {
+        return preferencesInteger;
+    }
+
+    public Map<String, String> getPreferencesString()
+    {
+        return preferencesString;
+    }
+
+    public void addPreference(String key, boolean val)
+    {
+        if (this.preferencesBoolean == null)
+        {
+            this.preferencesBoolean = new HashMap<>();
+        }
+        this.preferencesBoolean.put(key, val);
+    }
+
+    public void addPreference(String key, int val)
+    {
+        if (this.preferencesInteger == null)
+        {
+            this.preferencesInteger = new HashMap<>();
+        }
+        this.preferencesInteger.put(key, val);
+    }
+
+    public void addPreference(String key, String val)
+    {
+        if (this.preferencesString == null)
+        {
+            this.preferencesString = new HashMap<>();
+        }
+        this.preferencesString.put(key, val);
     }
 }

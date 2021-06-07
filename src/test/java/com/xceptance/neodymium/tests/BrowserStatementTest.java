@@ -55,10 +55,14 @@ public class BrowserStatementTest extends NeodymiumTest
         properties.put("browserprofile.chrome.testEnvironment", "local");
         properties.put("browserprofile.chrome.acceptInsecureCertificates", "true");
         properties.put("browserprofile.chrome.arguments", "headless");
+        properties.put("browserprofile.chrome.preferences",
+                       "homepage=https://www.xceptance.com ; geolocation.enabled=true ; renderer.memory_cache.size=120000");
 
         properties.put("browserprofile.firefox.name", "Mozilla Firefox");
         properties.put("browserprofile.firefox.browser", "firefox");
         properties.put("browserprofile.firefox.arguments", "headless");
+        properties.put("browserprofile.firefox.preferences",
+                       "media.navigator.permission.disabled=true ; browser.startup.homepage=https://www.xceptance.com ; app.update.backgroundMaxErrors=1");
 
         properties.put("browserprofile.multiFirefox.name", "Multi Argument Firefox");
         properties.put("browserprofile.multiFirefox.browser", "firefox");
@@ -329,6 +333,18 @@ public class BrowserStatementTest extends NeodymiumTest
         LinkedList<String> list = new LinkedList<>();
         list.add("headless");
         Assert.assertEquals(list, config.getArguments());
+        
+        HashMap<String, Boolean> prefsBoolean = new HashMap<>();
+        prefsBoolean.put("geolocation.enabled", true);
+        Assert.assertEquals(prefsBoolean, config.getPreferencesBoolean());
+
+        HashMap<String, Integer> prefsInteger = new HashMap<>();
+        prefsInteger.put("renderer.memory_cache.size", 120000);
+        Assert.assertEquals(prefsInteger, config.getPreferencesInteger());
+
+        HashMap<String, String> prefsString = new HashMap<>();
+        prefsString.put("homepage", "https://www.xceptance.com");
+        Assert.assertEquals(prefsString, config.getPreferencesString());
     }
 
     private void checkMultiChrome(BrowserConfiguration config)
@@ -356,6 +372,18 @@ public class BrowserStatementTest extends NeodymiumTest
         LinkedList<String> list = new LinkedList<>();
         list.add("headless");
         Assert.assertEquals(list, config.getArguments());
+        
+        HashMap<String, Boolean> prefsBoolean = new HashMap<>();
+        prefsBoolean.put("media.navigator.permission.disabled", true);
+        Assert.assertEquals(prefsBoolean, config.getPreferencesBoolean());
+
+        HashMap<String, Integer> prefsInteger = new HashMap<>();
+        prefsInteger.put("app.update.backgroundMaxErrors", 1);
+        Assert.assertEquals(prefsInteger, config.getPreferencesInteger());
+
+        HashMap<String, String> prefsString = new HashMap<>();
+        prefsString.put("browser.startup.homepage", "https://www.xceptance.com");
+        Assert.assertEquals(prefsString, config.getPreferencesString());
     }
 
     private void checkMultiFirefox(BrowserConfiguration config)
