@@ -576,18 +576,6 @@ public class SelenideAddons
      */
     public static boolean optionalWaitWhileCondition(SelenideElement element, Condition condition, long waitingTime)
     {
-        boolean result = false;
-        int counter = 0;
-        while (counter < Neodymium.configuration().optionalElementRetryCount())
-        {
-            counter++;
-            if (element.has(not(condition)))
-            {
-                result = true;
-                break;
-            }
-            Selenide.sleep(waitingTime);
-        }
-        return result;
+        return optionalWaitUntilCondition(element, not(condition), waitingTime);
     }
 }
