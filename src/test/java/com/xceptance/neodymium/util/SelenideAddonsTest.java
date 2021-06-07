@@ -682,7 +682,7 @@ public class SelenideAddonsTest
         long endTime = new Date().getTime();
 
         // check that the result is false as expected
-        assertFalse("the privacy message dialog was unexpectedly during within the timeframe", isHidden);
+        assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
 
         // check that runtime of the wait while method was as long as expected
         int waitingTime = customWaitingTime * Neodymium.configuration().optionalElementRetryCount();
@@ -733,7 +733,7 @@ public class SelenideAddonsTest
         long endTime = new Date().getTime();
 
         // check that the result is false as expected
-        assertFalse("the privacy message dialog was unexpectedly during within the timeframe", isHidden);
+        assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
 
         // check that runtime of the wait while method was as long as expected
         int waitingTime = Neodymium.configuration().optionalElementRetryTimeout() * Neodymium.configuration().optionalElementRetryCount();
