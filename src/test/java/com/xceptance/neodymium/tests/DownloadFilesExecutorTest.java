@@ -21,7 +21,9 @@ public class DownloadFilesExecutorTest extends NeodymiumTest
         Map<String, String> properties = new HashMap<>();
         properties.put("browserprofile.chrome_download.name", "chrome_download");
         properties.put("browserprofile.chrome_download.browser", "chrome");
-        properties.put("browserprofile.chrome_download.headless", "true");
+        
+        //needed to enable validation of chrome://downloads/ page
+        properties.put("browserprofile.chrome_download.headless", "false");
         properties.put("browserprofile.chrome_download.downloadDirectory", "target");
         
         properties.put("browserprofile.firefox_download.name", "firefox_download");
