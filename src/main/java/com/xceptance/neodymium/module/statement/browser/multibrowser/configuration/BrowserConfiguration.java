@@ -118,9 +118,18 @@ public class BrowserConfiguration
     public Map<String, Object> getPreferences()
     {
         Map<String, Object> allPreferences = new HashMap<>();
-        allPreferences.putAll(preferencesBoolean);
-        allPreferences.putAll(preferencesInteger);
-        allPreferences.putAll(preferencesString);
+        if (preferencesBoolean != null)
+        {
+            allPreferences.putAll(preferencesBoolean);
+        }
+        if (preferencesInteger != null)
+        {
+            allPreferences.putAll(preferencesInteger);
+        }
+        if (preferencesString != null)
+        {
+            allPreferences.putAll(preferencesString);
+        }
         return allPreferences;
     }
 
