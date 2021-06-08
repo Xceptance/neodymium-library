@@ -23,6 +23,7 @@ import com.codeborne.selenide.logevents.SelenideLogger;
 import com.xceptance.neodymium.module.EnhancedMethod;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.order.DefaultStatementRunOrder;
+import com.xceptance.neodymium.module.statement.browser.KeepBrowserOpen;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.util.Neodymium;
 
@@ -303,7 +304,34 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     {
         // clear the context before next child run
         Neodymium.clearThreadContext();
+        List<KeepBrowserOpen> classKeepBrowserOpenAnnotation = StatementBuilder.getAnnotations(method.getMethod(), KeepBrowserOpen.class);
+        List<KeepBrowserOpen> methodKeepBrowserOpenAnnotation = StatementBuilder.getAnnotations(getTestClass().getJavaClass(), KeepBrowserOpen.class);
+
+        if (!classKeepBrowserOpenAnnotation.isEmpty())
+        {
+            setKeepBrowserOpenSettings(classKeepBrowserOpenAnnotation.get(0));
+        }
+
+        if (!methodKeepBrowserOpenAnnotation.isEmpty())
+        {
+            setKeepBrowserOpenSettings(methodKeepBrowserOpenAnnotation.get(0));
+        }
         super.runChild(method, notifier);
+    }
+
+    private void setKeepBrowserOpenSettings(KeepBrowserOpen keepBrowserOpen)
+    {
+        if (keepBrowserOpen.onlyOnFailure())
+        {
+            // we set the settings to keep the browser open only on failure
+            Neodymium.configuration().setProperty("neodymium.webDriver.keepBrowserOpen", "false");
+            Neodymium.configuration().setProperty("neodymium.webDriver.keepBrowserOpenOnFailure", "true");
+        }
+        else
+        {
+            // we set the settings to keep the browser open in any case
+            Neodymium.configuration().setProperty("neodymium.webDriver.keepBrowserOpen", "true");
+        }
     }
 
     private List<FrameworkMethod> buildCrossProduct(Method method, List<StatementBuilder> builderList, List<List<Object>> builderDataList)
