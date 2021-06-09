@@ -42,7 +42,7 @@ public class BrowserStatement extends StatementBuilder
 
     private Statement next;
 
-    private String browserTag;
+    private BrowserMethodData browserMethodData;
 
     Set<String> browser = new LinkedHashSet<>();
 
@@ -93,10 +93,10 @@ public class BrowserStatement extends StatementBuilder
         }
     }
 
-    public BrowserStatement(Statement next, String parameter)
+    public BrowserStatement(Statement next, BrowserMethodData parameter)
     {
         this.next = next;
-        this.browserTag = parameter;
+        this.browserMethodData = parameter;
     }
 
     @Override
@@ -104,8 +104,8 @@ public class BrowserStatement extends StatementBuilder
     {
         boolean testFailed = false;
 
-        LOGGER.debug("setup browser: " + browserTag);
-        setUpTest(browserTag);
+        LOGGER.debug("setup browser: " + browserMethodData);
+        setUpTest(browserMethodData.getBrowserTag());
         try
         {
             next.evaluate();
@@ -130,7 +130,6 @@ public class BrowserStatement extends StatementBuilder
     public void setUpTest(String browserTag)
     {
         wDSCont = null;
-        this.browserTag = browserTag;
         LOGGER.debug("Create browser for name: " + browserTag);
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(browserTag);
 
@@ -198,7 +197,6 @@ public class BrowserStatement extends StatementBuilder
     public void teardown(boolean testFailed, boolean preventReuse, WebDriverStateContainer webDriverStateContainer)
     {
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(Neodymium.getBrowserProfileName());
-        // getAnnotations(, KeepBrowserOpen.class);
 
         // keep browser open
         if (keepOpen(testFailed, browserConfiguration))
@@ -211,7 +209,7 @@ public class BrowserStatement extends StatementBuilder
         {
             LOGGER.debug("Put browser into cache");
             webDriverStateContainer.incrementUsedCount();
-            WebDriverCache.instance.putWebDriverStateContainer(browserTag, webDriverStateContainer);
+            WebDriverCache.instance.putWebDriverStateContainer(browserMethodData.getBrowserTag(), webDriverStateContainer);
         }
         // close the WebDriver
         else
@@ -245,7 +243,8 @@ public class BrowserStatement extends StatementBuilder
     private boolean keepOpen(boolean testFailed, BrowserConfiguration browserConfiguration)
     {
         return (browserConfiguration != null && !browserConfiguration.isHeadless())
-               && ((Neodymium.configuration().keepBrowserOpenOnFailure() && testFailed) || Neodymium.configuration().keepBrowserOpen());
+               && (((Neodymium.configuration().keepBrowserOpenOnFailure() || browserMethodData.isKeepBrowserOpenOnFailure()) && testFailed) ||
+                   (Neodymium.configuration().keepBrowserOpen() || browserMethodData.isKeepBrowserOpen()));
     }
 
     private boolean canReuse(boolean preventReuse, WebDriverStateContainer webDriverStateContainer)
@@ -326,8 +325,44 @@ public class BrowserStatement extends StatementBuilder
                 throw new IllegalArgumentException("Can not find browser configuration with tag: " + browserTag);
             }
 
+            List<KeepBrowserOpen> methodKeepBrowserOpenAnnotations = getAnnotations(method.getMethod(), KeepBrowserOpen.class);
+            List<KeepBrowserOpen> classKeepBrowserOpenAnnotations = getAnnotations(testClass.getJavaClass(), KeepBrowserOpen.class);
+
+            boolean keepOpen = Neodymium.configuration().keepBrowserOpen();
+            boolean keepOpenOnFailure = Neodymium.configuration().keepBrowserOpenOnFailure();
+
+            if (!classKeepBrowserOpenAnnotations.isEmpty())
+            {
+                KeepBrowserOpen keepBrowserOpen = classKeepBrowserOpenAnnotations.get(0);
+                if (keepBrowserOpen.value())
+                {
+                    keepOpen = false;
+                    keepOpenOnFailure = true;
+                }
+                else
+                {
+                    keepOpen = true;
+                    keepOpenOnFailure = false;
+                }
+            }
+
+            if (!methodKeepBrowserOpenAnnotations.isEmpty())
+            {
+                KeepBrowserOpen keepBrowserOpen = methodKeepBrowserOpenAnnotations.get(0);
+                if (keepBrowserOpen.value())
+                {
+                    keepOpen = false;
+                    keepOpenOnFailure = true;
+                }
+                else
+                {
+                    keepOpen = true;
+                    keepOpenOnFailure = false;
+                }
+            }
+
             // create the JUnit children
-            iterations.add(browserTag);
+            iterations.add(new BrowserMethodData(browserTag, keepOpen, keepOpenOnFailure));
         }
 
         return iterations;
@@ -376,13 +411,13 @@ public class BrowserStatement extends StatementBuilder
     @Override
     public StatementBuilder createStatement(Object testClassInstance, Statement next, Object parameter)
     {
-        return new BrowserStatement(next, (String) parameter);
+        return new BrowserStatement(next, (BrowserMethodData) parameter);
     }
 
     @Override
     public String getTestName(Object data)
     {
-        return MessageFormat.format("Browser {0}", (String) data);
+        return MessageFormat.format("Browser {0}", ((BrowserMethodData) data).getBrowserTag());
     }
 
     @Override
