@@ -162,7 +162,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
             String testExecutionRegex = Neodymium.configuration().getTestNameFilter();
 
             // only throw exception if test class has no execution methods accidentally
-            if (testExecutionRegex == null)
+            if (StringUtils.isNotEmpty(testExecutionRegex))
             {
                 errors.add(new Exception("No runnable methods"));
             }
