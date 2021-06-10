@@ -38,6 +38,71 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBro
 @Browser("Chrome_headless")
 public class SelenideAddonsTest
 {
+    private List<Runnable> runArrayWithSEREinMessage = new ArrayList<Runnable>()
+    {
+        {
+            add(
+                () -> {
+                    throw UIAssertionError.wrap(WebDriverRunner.driver(),
+                                                new AssertionError(" value displayed:StaleElementReferenceException: stale element reference: element is not attached to the page document>StaleElementReferenceException: stale element reference: element is not attached to the page document</StaleElementReferenceException: stale element reference: element is not attached to the page document>'\n"
+                                                                   +
+                                                                   "Actual value: StaleElementReferenceException: stale element refe"),
+                                                0);
+                });
+            add(
+                () -> {
+                    throw UIAssertionError.wrap(WebDriverRunner.driver(),
+                                                new AssertionError(" value displayed:StaleElementReferenceException: stale element reference: element is not attached to the page document>StaleElementReferenceException: stale element reference: element is not attached to the page document</StaleElementReferenceException: stale element reference: element is not attached to the page document>'\n"
+                                                                   +
+                                                                   "Actual value: StaleElementReferenceException: stale element refe"),
+                                                0);
+                });
+            add(
+                () -> {
+                    throw UIAssertionError.wrap(WebDriverRunner.driver(),
+                                                new AssertionError(" value displayed:StaleElementReferenceException: stale element reference: element is not attached to the page document>StaleElementReferenceException: stale element reference: element is not attached to the page document</StaleElementReferenceException: stale element reference: element is not attached to the page document>'\n"
+                                                                   +
+                                                                   "Actual value: StaleElementReferenceException: stale element refe"),
+                                                0);
+                });
+            add(
+                () -> {
+                    throw UIAssertionError.wrap(WebDriverRunner.driver(), new AssertionError("You shall pass!"), 0);
+                });
+            add(
+                () -> {
+                    throw UIAssertionError.wrap(WebDriverRunner.driver(),
+                                                new AssertionError("You shall never be seen in StaleElementReferenceException catch function!"), 0);
+                });
+        }
+    };
+
+    List<Runnable> runArrayWithSEREinCause = new ArrayList<Runnable>()
+    {
+        {
+            add(
+                () -> {
+                    throw new StaleElementReferenceException("You shall not pass!");
+                });
+            add(
+                () -> {
+                    throw new StaleElementReferenceException("You shall not pass!");
+                });
+            add(
+                () -> {
+                    throw new StaleElementReferenceException("You shall not pass!");
+                });
+            add(
+                () -> {
+                    throw new StaleElementReferenceException("You shall pass!");
+                });
+            add(
+                () -> {
+                    throw new StaleElementReferenceException("You shall never be seen!");
+                });
+        }
+    };
+
     private void openBlogPage()
     {
         Selenide.open("https://blog.xceptance.com/");
@@ -240,165 +305,42 @@ public class SelenideAddonsTest
     @SuppressBrowsers
     public void testSafeRunnableInCause()
     {
-        // preparing the test setup as kind of generator
-        List<Runnable> runArray = new ArrayList<Runnable>();
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall never be seen!");
-                     });
-        testSafeRunnable(runArray);
+        testSafe(runArrayWithSEREinCause, false);
     }
 
     @Test()
     @SuppressBrowsers
     public void testSafeRunnableInMessage()
     {
-        // preparing the test setup as kind of generator
-        List<Runnable> runArray = new ArrayList<Runnable>();
-        runArray.add(
-                     () -> {
-                         throw UIAssertionError.wrap(WebDriverRunner.driver(),
-                                                     new AssertionError(" value displayed:StaleElementReferenceException: stale element reference: element is not attached to the page document>StaleElementReferenceException: stale element reference: element is not attached to the page document</StaleElementReferenceException: stale element reference: element is not attached to the page document>'\n"
-                                                                        +
-                                                                        "Actual value: StaleElementReferenceException: stale element refe"),
-                                                     0);
-                     });
-        runArray.add(
-                     () -> {
-                         throw UIAssertionError.wrap(WebDriverRunner.driver(),
-                                                     new AssertionError(" value displayed:StaleElementReferenceException: stale element reference: element is not attached to the page document>StaleElementReferenceException: stale element reference: element is not attached to the page document</StaleElementReferenceException: stale element reference: element is not attached to the page document>'\n"
-                                                                        +
-                                                                        "Actual value: StaleElementReferenceException: stale element refe"),
-                                                     0);
-                     });
-        runArray.add(
-                     () -> {
-                         throw UIAssertionError.wrap(WebDriverRunner.driver(),
-                                                     new AssertionError(" value displayed:StaleElementReferenceException: stale element reference: element is not attached to the page document>StaleElementReferenceException: stale element reference: element is not attached to the page document</StaleElementReferenceException: stale element reference: element is not attached to the page document>'\n"
-                                                                        +
-                                                                        "Actual value: StaleElementReferenceException: stale element refe"),
-                                                     0);
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall never be seen!");
-                     });
-        testSafeRunnable(runArray);
+        testSafe(runArrayWithSEREinMessage, false);
     }
 
     @Test()
     public void testSafeSupplierInCause()
     {
-        List<Runnable> runArray = new ArrayList<Runnable>();
-        runArray.add(
-                     () -> {
-                         throw UIAssertionError.wrap(WebDriverRunner.driver(),
-                                                     new AssertionError(" value displayed:StaleElementReferenceException: stale element reference: element is not attached to the page document>StaleElementReferenceException: stale element reference: element is not attached to the page document</StaleElementReferenceException: stale element reference: element is not attached to the page document>'\n"
-                                                                        +
-                                                                        "Actual value: StaleElementReferenceException: stale element refe"),
-                                                     0);
-                     });
-        runArray.add(
-                     () -> {
-                         throw UIAssertionError.wrap(WebDriverRunner.driver(),
-                                                     new AssertionError(" value displayed:StaleElementReferenceException: stale element reference: element is not attached to the page document>StaleElementReferenceException: stale element reference: element is not attached to the page document</StaleElementReferenceException: stale element reference: element is not attached to the page document>'\n"
-                                                                        +
-                                                                        "Actual value: StaleElementReferenceException: stale element refe"),
-                                                     0);
-                     });
-        runArray.add(
-                     () -> {
-                         throw UIAssertionError.wrap(WebDriverRunner.driver(),
-                                                     new AssertionError(" value displayed:StaleElementReferenceException: stale element reference: element is not attached to the page document>StaleElementReferenceException: stale element reference: element is not attached to the page document</StaleElementReferenceException: stale element reference: element is not attached to the page document>'\n"
-                                                                        +
-                                                                        "Actual value: StaleElementReferenceException: stale element refe"),
-                                                     0);
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall never be seen!");
-                     });
-        testSafeSupplier(runArray);
+        testSafe(runArrayWithSEREinCause, true);
     }
 
     @Test()
     public void testSafeSupplierInMessage()
     {
-        List<Runnable> runArray = new ArrayList<Runnable>();
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall never be seen!");
-                     });
-        testSafeSupplier(runArray);
+        testSafe(runArrayWithSEREinMessage, true);
     }
 
-    private void testSafeRunnable(List<Runnable> runArray)
+    private SelenideElement testSupplier(AtomicInteger counter, Iterator<Runnable> iterator)
     {
-        // preparing the test setup as kind of generator
-        AtomicInteger counter = new AtomicInteger(0);
-        final Iterator<Runnable> iterator = runArray.iterator();
+        return SelenideAddons.$safe(() -> {
+            counter.incrementAndGet();
+            if (iterator.hasNext())
+            {
+                iterator.next().run();
+            }
+            return $("body").should(exist);
+        });
+    }
 
-        // testing the error path after three exceptions
-        long startTime = new Date().getTime();
-        try
-        {
-            SelenideAddons.$safe(() -> {
-                counter.incrementAndGet();
-                if (iterator.hasNext())
-                {
-                    iterator.next().run();
-                }
-            });
-        }
-        catch (StaleElementReferenceException e)
-        {
-            Assert.assertTrue(e.getMessage().startsWith("You shall pass!"));
-        }
-        long endTime = new Date().getTime();
-        Assert.assertTrue(endTime - startTime > Neodymium.configuration().staleElementRetryTimeout());
-        Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 1);
-
-        // testing the happy path after one exception
+    private void testRunnable(AtomicInteger counter, Iterator<Runnable> iterator)
+    {
         SelenideAddons.$safe(() -> {
             counter.incrementAndGet();
             if (iterator.hasNext())
@@ -406,10 +348,9 @@ public class SelenideAddonsTest
                 iterator.next().run();
             }
         });
-        Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 3);
     }
 
-    private void testSafeSupplier(List<Runnable> runArray)
+    private void testSafe(List<Runnable> runArray, boolean isSupplier)
     {
         // preparing the test setup as kind of generator
         AtomicInteger counter = new AtomicInteger(0);
@@ -420,34 +361,30 @@ public class SelenideAddonsTest
         long startTime = new Date().getTime();
         try
         {
-            SelenideAddons.$safe(() -> {
-                counter.incrementAndGet();
-                if (iterator.hasNext())
-                {
-                    iterator.next().run();
-                }
-                return $("body").should(exist);
-            });
+            if (isSupplier)
+            {
+                testSupplier(counter, iterator);
+            }
+            else
+            {
+                testRunnable(counter, iterator);
+            }
         }
-        catch (StaleElementReferenceException e)
+        catch (StaleElementReferenceException | UIAssertionError e)
         {
-            Assert.assertTrue(e.getMessage().startsWith("You shall pass!"));
+            Assert.assertTrue(e.getMessage().contains("You shall pass!"));
         }
         long endTime = new Date().getTime();
         Assert.assertTrue(endTime - startTime > Neodymium.configuration().staleElementRetryTimeout());
         Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 1);
 
-        // testing the happy path after one exception
-        SelenideElement element = SelenideAddons.$safe(() -> {
-            counter.incrementAndGet();
-            if (iterator.hasNext())
-            {
-                iterator.next().run();
-            }
-            return $("body");
-        });
-        Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 3);
-        element.shouldBe(visible);
+        if (isSupplier)
+        {
+            // testing the happy path after one exception
+            SelenideElement element = testSupplier(counter, iterator);
+            Assert.assertEquals(Neodymium.configuration().staleElementRetryCount() + 3, counter.get());
+            element.shouldBe(visible);
+        }
     }
 
     @Test()
