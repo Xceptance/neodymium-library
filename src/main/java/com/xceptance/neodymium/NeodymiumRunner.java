@@ -7,7 +7,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runner.notification.RunNotifier;
@@ -143,6 +148,38 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         return testClassInstance;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void validateInstanceMethods(List<Throwable> errors)
+    {
+        validatePublicVoidNoArgMethods(After.class, false, errors);
+        validatePublicVoidNoArgMethods(Before.class, false, errors);
+        validateTestMethods(errors);
+        if (computeTestMethods().isEmpty())
+        {
+            String testExecutionRegex = Neodymium.configuration().getTestNameFilter();
+
+            // only throw exception if test class has no execution methods accidentally
+            if (StringUtils.isNotEmpty(testExecutionRegex))
+            {
+                errors.add(new Exception("No runnable methods"));
+            }
+            // in case the neodymium.testNameFilter is set, it's assumes, that the test methods are ignored on
+            // purpose
+            else
+            {
+                // for the case, when the property was set accidentally, inform the user about such behavior reason via
+                // warning in logs
+                LOGGER.warn("The test class " + getName() + " will not be executed as none of its methods match regex '"
+                            + testExecutionRegex + "'. In case this is not the behaviour you expected,"
+                            + " please check your neodymium.properties for neodymium.testNameFilter configuration"
+                            + " and your maven surefire settings for the corresponding system property");
+            }
+        }
+    }
+
     @Override
     protected List<FrameworkMethod> computeTestMethods()
     {
@@ -200,6 +237,21 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
             // This is the point where multiple test methods are computed for the current processed method.
             testMethods.addAll(buildCrossProduct(testAnnotatedMethod.getMethod(), builderList, builderDataList));
+        }
+
+        // filter test methods by regex
+        String testExecutionRegex = Neodymium.configuration().getTestNameFilter();
+        if (StringUtils.isNotEmpty(testExecutionRegex))
+        {
+            testMethods = testMethods.stream()
+                                     .filter(testMethod -> {
+                                         String functionName = testMethod.getMethod().getDeclaringClass().getName() + "#"
+                                                               + testMethod.getName();
+                                         return Pattern.compile(testExecutionRegex)
+                                                       .matcher(functionName)
+                                                       .find();
+                                     })
+                                     .collect(Collectors.toList());
         }
 
         // this list is now final for class execution so make it unmodifiable
