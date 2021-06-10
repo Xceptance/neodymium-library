@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.Description;
@@ -240,7 +241,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
         // filter test methods by regex
         String testExecutionRegex = Neodymium.configuration().getTestNameFilter();
-        if (testExecutionRegex != null)
+        if (StringUtils.isNoneEmpty(testExecutionRegex))
         {
             testMethods = testMethods.stream()
                                      .filter(testMethod -> {
