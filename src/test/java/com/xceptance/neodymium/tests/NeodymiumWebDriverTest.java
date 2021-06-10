@@ -15,6 +15,10 @@ import com.xceptance.neodymium.testclasses.webDriver.LocalProxyUsingProvidedCert
 import com.xceptance.neodymium.testclasses.webDriver.LocalProxyUsingProvidedCertificatesRuntimeException;
 import com.xceptance.neodymium.testclasses.webDriver.LocalProxyUsingSelfCreatedCertificates;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateClearReuseWebDriverCache;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenAnnotationsClassLevel;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenAnnotationsMethodLevel;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureAnnotationsClassLevel;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureAnnotationsMethodLevel;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpen;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpenOnFailure;
 import com.xceptance.neodymium.testclasses.webDriver.ValidatePreventReuseWebDriver;
@@ -88,6 +92,38 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     {
         // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateKeepWebDriverOpenOnFailure.class);
+        checkFail(result, 3, 0, 1);
+    }
+
+    @Test
+    public void testValidateKeepBrowserOpenClassLevel()
+    {
+        // XVFB or a display needed
+        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenAnnotationsClassLevel.class);
+        checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void testValidateKeepBrowserOpenOnFailureClassLevel()
+    {
+        // XVFB or a display needed
+        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenOnFailureAnnotationsClassLevel.class);
+        checkFail(result, 3, 0, 1);
+    }
+
+    @Test
+    public void testValidateKeepBrowserOpenMethodLevel()
+    {
+        // XVFB or a display needed
+        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenAnnotationsMethodLevel.class);
+        checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void testValidateKeepBrowserOpenOnFailureMethodLevel()
+    {
+        // XVFB or a display needed
+        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenOnFailureAnnotationsMethodLevel.class);
         checkFail(result, 3, 0, 1);
     }
 
