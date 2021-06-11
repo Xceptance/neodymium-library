@@ -6,6 +6,7 @@ import static com.codeborne.selenide.Condition.hidden;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
@@ -323,6 +324,13 @@ public class SelenideAddonsTest
     public void testSafeSupplierInMessage()
     {
         testSafe(runArrayWithSEREinMessage, true);
+    }
+
+    @Test()
+    public void testIsThrowableCausedBy()
+    {
+        Throwable causedByIOException = new RuntimeException("This is runtime exception",new AssertionError("this is assertion error", new IOException("this is final cause")));
+        SelenideAddons.isThrowableCausedBy(causedByIOException, IOException.class);
     }
 
     private SelenideElement testSupplier(AtomicInteger counter, Iterator<Runnable> iterator)

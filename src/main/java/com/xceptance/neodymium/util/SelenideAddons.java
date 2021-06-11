@@ -162,7 +162,7 @@ public class SelenideAddons
             }
             catch (final Throwable t)
             {
-                if (isThrowableCausedBy(t, StaleElementReferenceException.class))
+                if (isThrowableCausedBy(t, StaleElementReferenceException.class) || t.getMessage().contains(SERE))
                 {
                     retryCounter++;
                     if (retryCounter > maxRetryCount)
@@ -213,18 +213,18 @@ public class SelenideAddons
      */
     public static void $safe(final Runnable code)
     {
-        $safe(()->{
+        $safe(() -> {
             code.run();
             return null;
         });
     }
 
-    private static boolean isThrowableCausedBy(final Throwable throwable, Class<? extends Throwable> clazz)
+    public static boolean isThrowableCausedBy(final Throwable throwable, Class<? extends Throwable> clazz)
     {
         Throwable t = throwable;
         while (t != null)
         {
-            if (clazz.isInstance(t) || t.getMessage().contains(SERE))
+            if (clazz.isInstance(t))
             {
                 return true;
             }
