@@ -5,8 +5,6 @@ import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.hidden;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -652,17 +650,17 @@ public class SelenideAddonsTest
         openBlogPage();
 
         // wait until the optional privacy dialog is visible
-        SelenideElement privaceDialog = $("#privacy-message");
-        boolean isVisible = SelenideAddons.optionalWaitUntilCondition(privaceDialog, visible, customWaitingTime);
-        assertTrue("the privacy message dialog was not found within the timeframe", isVisible);
+        SelenideElement privacyDialog = $("#privacy-message");
+        boolean isVisible = SelenideAddons.optionalWaitUntilCondition(privacyDialog, visible, customWaitingTime);
+        Assert.assertTrue("the privacy message dialog was not found within the timeframe", isVisible);
 
         // try wait until the optional privacy dialog is hidden, which will fail
         long startTime = new Date().getTime();
-        boolean isHidden = SelenideAddons.optionalWaitUntilCondition(privaceDialog, hidden, customWaitingTime);
+        boolean isHidden = SelenideAddons.optionalWaitUntilCondition(privacyDialog, hidden, customWaitingTime);
         long endTime = new Date().getTime();
 
         // check that the is false as is expected
-        assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
+        Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
 
         // check that runtime of the wait until method was as long as expected
         int waitingTime = customWaitingTime * Neodymium.configuration().optionalElementRetryCount();
@@ -676,13 +674,13 @@ public class SelenideAddonsTest
         openBlogPage();
 
         // wait until the optional privacy dialog is not visible anymore, which will fail
-        SelenideElement privaceDialog = $("#privacy-message").shouldBe(visible);
+        SelenideElement privacyDialog = $("#privacy-message").shouldBe(visible);
         long startTime = new Date().getTime();
-        boolean isHidden = SelenideAddons.optionalWaitWhileCondition(privaceDialog, visible, customWaitingTime);
+        boolean isHidden = SelenideAddons.optionalWaitWhileCondition(privacyDialog, visible, customWaitingTime);
         long endTime = new Date().getTime();
 
         // check that the result is false as expected
-        assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
+        Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
 
         // check that runtime of the wait while method was as long as expected
         int waitingTime = customWaitingTime * Neodymium.configuration().optionalElementRetryCount();
@@ -690,11 +688,11 @@ public class SelenideAddonsTest
                                .contains(Math.toIntExact(endTime - startTime)));
 
         // click the opt out button
-        privaceDialog.find(".btn-link").click();
+        privacyDialog.find(".btn-link").click();
 
         // wait until the privacy dialog is hidden
-        isHidden = SelenideAddons.optionalWaitWhileCondition(privaceDialog, visible, customWaitingTime);
-        assertTrue("the privacy message dialog remained visible during the timeframe", isHidden);
+        isHidden = SelenideAddons.optionalWaitWhileCondition(privacyDialog, visible, customWaitingTime);
+        Assert.assertTrue("the privacy message dialog remained visible during the timeframe", isHidden);
     }
 
     @Test
@@ -703,17 +701,17 @@ public class SelenideAddonsTest
         openBlogPage();
 
         // wait until the optional privacy dialog is visible
-        SelenideElement privaceDialog = $("#privacy-message");
-        boolean isVisible = SelenideAddons.optionalWaitUntilCondition(privaceDialog, visible);
-        assertTrue("the privacy message dialog was not found within the timeframe", isVisible);
+        SelenideElement privacyDialog = $("#privacy-message");
+        boolean isVisible = SelenideAddons.optionalWaitUntilCondition(privacyDialog, visible);
+        Assert.assertTrue("the privacy message dialog was not found within the timeframe", isVisible);
 
         // try wait until the optional privacy dialog is hidden, which will fail
         long startTime = new Date().getTime();
-        boolean isHidden = SelenideAddons.optionalWaitUntilCondition(privaceDialog, hidden, Neodymium.configuration().optionalElementRetryTimeout());
+        boolean isHidden = SelenideAddons.optionalWaitUntilCondition(privacyDialog, hidden, Neodymium.configuration().optionalElementRetryTimeout());
         long endTime = new Date().getTime();
 
         // check that the is false as is expected
-        assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
+        Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
 
         // check that runtime of the wait until method was as long as expected
         int waitingTime = Neodymium.configuration().optionalElementRetryTimeout() * Neodymium.configuration().optionalElementRetryCount();
@@ -727,13 +725,13 @@ public class SelenideAddonsTest
         openBlogPage();
 
         // wait until the optional privacy dialog is not visible anymore, which will fail
-        SelenideElement privaceDialog = $("#privacy-message").shouldBe(visible);
+        SelenideElement privacyDialog = $("#privacy-message").shouldBe(visible);
         long startTime = new Date().getTime();
-        boolean isHidden = SelenideAddons.optionalWaitWhileCondition(privaceDialog, visible);
+        boolean isHidden = SelenideAddons.optionalWaitWhileCondition(privacyDialog, visible);
         long endTime = new Date().getTime();
 
         // check that the result is false as expected
-        assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
+        Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
 
         // check that runtime of the wait while method was as long as expected
         int waitingTime = Neodymium.configuration().optionalElementRetryTimeout() * Neodymium.configuration().optionalElementRetryCount();
@@ -741,10 +739,10 @@ public class SelenideAddonsTest
                                                                     .contains(Math.toIntExact(endTime - startTime)));
 
         // click the opt out button
-        privaceDialog.find(".btn-link").click();
+        privacyDialog.find(".btn-link").click();
 
         // wait until the privacy dialog is hidden
-        isHidden = SelenideAddons.optionalWaitWhileCondition(privaceDialog, visible, Neodymium.configuration().optionalElementRetryTimeout());
-        assertTrue("the privacy message dialog remained visible during the timeframe", isHidden);
+        isHidden = SelenideAddons.optionalWaitWhileCondition(privacyDialog, visible, Neodymium.configuration().optionalElementRetryTimeout());
+        Assert.assertTrue("the privacy message dialog remained visible during the timeframe", isHidden);
     }
 }
