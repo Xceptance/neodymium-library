@@ -44,30 +44,26 @@ public class SelenideAddonsTest
             add(
                 () -> {
                     throw UIAssertionError.wrap(WebDriverRunner.driver(),
-                                                new AssertionError(" value displayed:StaleElementReferenceException: stale element reference: element is not attached to the page document>StaleElementReferenceException: stale element reference: element is not attached to the page document</StaleElementReferenceException: stale element reference: element is not attached to the page document>'\n"
-                                                                   +
-                                                                   "Actual value: StaleElementReferenceException: stale element refe"),
+                                                new AssertionError("StaleElementReferenceException"),
                                                 0);
                 });
             add(
                 () -> {
                     throw UIAssertionError.wrap(WebDriverRunner.driver(),
-                                                new AssertionError(" value displayed:StaleElementReferenceException: stale element reference: element is not attached to the page document>StaleElementReferenceException: stale element reference: element is not attached to the page document</StaleElementReferenceException: stale element reference: element is not attached to the page document>'\n"
-                                                                   +
-                                                                   "Actual value: StaleElementReferenceException: stale element refe"),
+                                                new AssertionError("WeCanStillSpotTheStaleElementReferenceExceptionEvenIfItTriesToHide"),
                                                 0);
                 });
             add(
                 () -> {
                     throw UIAssertionError.wrap(WebDriverRunner.driver(),
-                                                new AssertionError(" value displayed:StaleElementReferenceException: stale element reference: element is not attached to the page document>StaleElementReferenceException: stale element reference: element is not attached to the page document</StaleElementReferenceException: stale element reference: element is not attached to the page document>'\n"
-                                                                   +
-                                                                   "Actual value: StaleElementReferenceException: stale element refe"),
+                                                new AssertionError("We think this was caused by an :StaleElementReferenceException"),
                                                 0);
                 });
             add(
                 () -> {
-                    throw UIAssertionError.wrap(WebDriverRunner.driver(), new AssertionError("You shall pass!"), 0);
+                    throw UIAssertionError.wrap(WebDriverRunner.driver(),
+                                                new AssertionError("You shall pass! Even though you contain the word StaleElementReferenceException that we are searching for."),
+                                                0);
                 });
             add(
                 () -> {
