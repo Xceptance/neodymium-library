@@ -40,6 +40,7 @@ public class SelenideAddonsTest
 {
     private List<Runnable> runArrayWithSEREinMessage = new ArrayList<Runnable>()
     {
+        private static final long serialVersionUID = 1L;
         {
             add(
                 () -> {
@@ -75,6 +76,7 @@ public class SelenideAddonsTest
 
     List<Runnable> runArrayWithSEREinCause = new ArrayList<Runnable>()
     {
+        private static final long serialVersionUID = 2L;
         {
             add(
                 () -> {
