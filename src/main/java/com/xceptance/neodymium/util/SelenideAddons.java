@@ -239,7 +239,8 @@ public class SelenideAddons
             boolean containsMessage = false;
             for (String message : phrasesHintingErrorToCatch)
             {
-                if (t.getMessage().contains(message))
+                String messageText = t.getMessage();
+                if (messageText!=null && messageText.contains(message))
                 {
                     containsMessage = true;
                     break;
