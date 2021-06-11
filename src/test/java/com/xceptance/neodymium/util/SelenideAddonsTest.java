@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.lang3.Range;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -386,17 +387,21 @@ public class SelenideAddonsTest
         }
         catch (StaleElementReferenceException | UIAssertionError e)
         {
-            Assert.assertTrue(e.getMessage().contains("You shall pass!"));
+            Assert.assertTrue(e.getMessage() + " doesn't contain phrase 'You shall pass!'", e.getMessage().contains("You shall pass!"));
         }
         long endTime = new Date().getTime();
-        Assert.assertTrue(endTime - startTime > Neodymium.configuration().staleElementRetryTimeout());
-        Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 1);
+        Assert.assertTrue("Wating time taken to catch SERE (" + (endTime - startTime) + ") is less than " + Neodymium.configuration().staleElementRetryTimeout()
+                          + " milliseconds as expected",
+                          endTime - startTime > Neodymium.configuration().staleElementRetryTimeout());
+        Assert.assertEquals("SERE was catched " + counter.get() + " times instead of " + (Neodymium.configuration().staleElementRetryCount() + 1),
+                            Neodymium.configuration().staleElementRetryCount() + 1, counter.get());
 
         if (isSupplier)
         {
             // testing the happy path after one exception
             SelenideElement element = testSupplier(counter, iterator);
-            Assert.assertEquals(Neodymium.configuration().staleElementRetryCount() + 3, counter.get());
+            Assert.assertEquals("SERE was catched " + counter.get() + " times instead of " + (Neodymium.configuration().staleElementRetryCount() + 3),
+                                Neodymium.configuration().staleElementRetryCount() + 3, counter.get());
             element.shouldBe(visible);
         }
     }
