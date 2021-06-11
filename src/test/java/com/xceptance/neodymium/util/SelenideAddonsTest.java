@@ -329,8 +329,16 @@ public class SelenideAddonsTest
     @Test()
     public void testIsThrowableCausedBy()
     {
-        Throwable causedByIOException = new RuntimeException("This is runtime exception",new AssertionError("this is assertion error", new IOException("this is final cause")));
-        SelenideAddons.isThrowableCausedBy(causedByIOException, IOException.class);
+        Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new IOException("this is final cause")));
+        Assert.assertTrue("Throwable has unexpected cause", SelenideAddons.isThrowableCausedBy(causedByIOException, IOException.class));
+    }
+
+    @Test()
+    public void testIsThrowableCausedByMessage()
+    {
+        Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new IOException("this is final cause")));
+        Assert.assertTrue("Throwable has unexpected cause",
+                          SelenideAddons.isThrowableCausedBy(causedByIOException, IOException.class, "this is assertion error"));
     }
 
     private SelenideElement testSupplier(AtomicInteger counter, Iterator<Runnable> iterator)

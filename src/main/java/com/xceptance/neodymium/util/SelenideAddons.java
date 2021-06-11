@@ -162,7 +162,7 @@ public class SelenideAddons
             }
             catch (final Throwable t)
             {
-                if (isThrowableCausedBy(t, StaleElementReferenceException.class) || t.getMessage().contains(SERE))
+                if (isThrowableCausedBy(t, StaleElementReferenceException.class, SERE))
                 {
                     retryCounter++;
                     if (retryCounter > maxRetryCount)
@@ -219,12 +219,21 @@ public class SelenideAddons
         });
     }
 
-    public static boolean isThrowableCausedBy(final Throwable throwable, Class<? extends Throwable> clazz)
+    public static boolean isThrowableCausedBy(final Throwable throwable, Class<? extends Throwable> clazz, String... stringContainsMessage)
     {
         Throwable t = throwable;
         while (t != null)
         {
-            if (clazz.isInstance(t))
+            boolean containsMessage = false;
+            for (String message : stringContainsMessage)
+            {
+                containsMessage = t.getMessage().contains(message);
+                if (containsMessage)
+                {
+                    break;
+                }
+            }
+            if (clazz.isInstance(t) || containsMessage)
             {
                 return true;
             }
