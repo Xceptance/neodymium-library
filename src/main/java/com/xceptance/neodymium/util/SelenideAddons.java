@@ -219,13 +219,25 @@ public class SelenideAddons
         });
     }
 
-    public static boolean isThrowableCausedBy(final Throwable throwable, Class<? extends Throwable> clazz, String... stringContainsMessage)
+    /**
+     * Recursively checks if the throwable is caused by exception of the specific class or contains one of the messages
+     * listed in the {@code phrasesHintingErrorToCatch}
+     * 
+     * @param throwable
+     *            throwable to check
+     * @param clazz
+     *            class of the expected throwable cause
+     * @param phrasesHintingErrorToCatch
+     *            optional parameters, error messages of expected throwable or its causes
+     * @return result of the check as boolean value
+     */
+    public static boolean isThrowableCausedBy(final Throwable throwable, Class<? extends Throwable> clazz, String... phrasesHintingErrorToCatch)
     {
         Throwable t = throwable;
         while (t != null)
         {
             boolean containsMessage = false;
-            for (String message : stringContainsMessage)
+            for (String message : phrasesHintingErrorToCatch)
             {
                 containsMessage = t.getMessage().contains(message);
                 if (containsMessage)
