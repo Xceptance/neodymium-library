@@ -3,14 +3,17 @@ package com.xceptance.neodymium.testclasses.data.annotation.inheritance;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.xceptance.neodymium.util.DataUtils;
+import com.xceptance.neodymium.module.statement.testdata.DataItem;
 
 public class ChildInheritingDtoFromAnnotation extends ParentClassWithDtoFromAnnotation
 {
+    @DataItem
+    private String testId;
+
     @Test
     public void test1()
     {
-        Assert.assertEquals("john" + DataUtils.asString("testId") + "@varmail.de", user.getEmail());
-        Assert.assertEquals("neodymium" + DataUtils.asString("testId"), user.getPassword());
+        Assert.assertEquals("john" + testId + "@varmail.de", user.getEmail());
+        Assert.assertEquals("neodymium" + testId, user.getPassword());
     }
 }
