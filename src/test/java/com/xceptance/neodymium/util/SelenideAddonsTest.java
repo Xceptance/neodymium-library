@@ -662,9 +662,14 @@ public class SelenideAddonsTest
         // check that the is false as is expected
         Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
 
+        validateTimeWithinRange(startTime, endTime);
+    }
+
+    private void validateTimeWithinRange(long startTime, long endTime)
+    {
         // check that runtime of the wait until method was as long as expected
         int waitingTime = customWaitingTime * Neodymium.configuration().optionalElementRetryCount();
-        Assert.assertTrue("Runtime was shorter than expected", Range.between(waitingTime, waitingTime + customWaitingTime)
+        Assert.assertTrue("Runtime was not within the expected range", Range.between(waitingTime, waitingTime + customWaitingTime)
                                .contains(Math.toIntExact(endTime - startTime)));
     }
 
@@ -682,10 +687,7 @@ public class SelenideAddonsTest
         // check that the result is false as expected
         Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
 
-        // check that runtime of the wait while method was as long as expected
-        int waitingTime = customWaitingTime * Neodymium.configuration().optionalElementRetryCount();
-        Assert.assertTrue("Runtime was shorter than expected", Range.between(waitingTime, waitingTime + customWaitingTime)
-                               .contains(Math.toIntExact(endTime - startTime)));
+        validateTimeWithinRange(startTime, endTime);
 
         // click the opt out button
         privacyDialog.find(".btn-link").click();
@@ -713,10 +715,7 @@ public class SelenideAddonsTest
         // check that the is false as is expected
         Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
 
-        // check that runtime of the wait until method was as long as expected
-        int waitingTime = Neodymium.configuration().optionalElementRetryTimeout() * Neodymium.configuration().optionalElementRetryCount();
-        Assert.assertTrue("Runtime was shorter than expected", Range.between(waitingTime, waitingTime + Neodymium.configuration().optionalElementRetryTimeout())
-                                                                    .contains(Math.toIntExact(endTime - startTime)));
+        validateTimeWithinRange(startTime, endTime);
     }
 
     @Test
@@ -733,10 +732,7 @@ public class SelenideAddonsTest
         // check that the result is false as expected
         Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
 
-        // check that runtime of the wait while method was as long as expected
-        int waitingTime = Neodymium.configuration().optionalElementRetryTimeout() * Neodymium.configuration().optionalElementRetryCount();
-        Assert.assertTrue("Runtime was shorter than expected", Range.between(waitingTime, waitingTime + Neodymium.configuration().optionalElementRetryTimeout())
-                                                                    .contains(Math.toIntExact(endTime - startTime)));
+        validateTimeWithinRange(startTime, endTime);
 
         // click the opt out button
         privacyDialog.find(".btn-link").click();
