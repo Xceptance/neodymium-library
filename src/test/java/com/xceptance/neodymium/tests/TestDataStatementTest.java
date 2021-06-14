@@ -468,7 +468,7 @@ public class TestDataStatementTest extends NeodymiumTest
     public void canInstantiateDtoViaJsonPathInAnnotation()
     {
         Result result = JUnitCore.runClasses(InstantiateDtoViaJsonPathInAnnotation.class);
-        checkPass(result, 2, 0);
+        checkPass(result, 4, 0);
     }
 
     @Test
