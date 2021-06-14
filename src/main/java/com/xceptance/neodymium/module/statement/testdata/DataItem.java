@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 {
   ElementType.FIELD
 })
-public @interface Data
+public @interface DataItem
 {
     String value() default "";
 }

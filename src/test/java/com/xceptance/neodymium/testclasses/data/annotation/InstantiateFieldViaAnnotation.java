@@ -5,13 +5,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.module.statement.testdata.Data;
+import com.xceptance.neodymium.module.statement.testdata.DataItem;
 import com.xceptance.neodymium.util.DataUtils;
 
 @RunWith(NeodymiumRunner.class)
 public class InstantiateFieldViaAnnotation
 {
-    @Data("$.name")
+    @DataItem("$.name")
     private String name;
 
     @Test

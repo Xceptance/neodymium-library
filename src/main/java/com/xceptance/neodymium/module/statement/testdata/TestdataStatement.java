@@ -78,7 +78,7 @@ public class TestdataStatement extends StatementBuilder
     {
         for (Field field :getFieldsFromSuperclasses())
         {
-            Data dataAnnotation = field.getAnnotation(Data.class);
+            DataItem dataAnnotation = field.getAnnotation(DataItem.class);
             if (dataAnnotation != null)
             {
                 boolean isFieldAccessable = field.canAccess(testClassInstance);
