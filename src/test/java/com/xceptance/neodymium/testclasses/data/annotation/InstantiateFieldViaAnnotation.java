@@ -11,7 +11,7 @@ import com.xceptance.neodymium.util.DataUtils;
 @RunWith(NeodymiumRunner.class)
 public class InstantiateFieldViaAnnotation
 {
-    @DataItem("$.name")
+    @DataItem
     private String name;
 
     @Test

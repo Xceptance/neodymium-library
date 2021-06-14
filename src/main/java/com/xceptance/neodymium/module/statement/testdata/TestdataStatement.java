@@ -76,7 +76,7 @@ public class TestdataStatement extends StatementBuilder
 
     private void initializeDataObjects() throws IllegalArgumentException, IllegalAccessException
     {
-        for (Field field :getFieldsFromSuperclasses())
+        for (Field field : getFieldsFromSuperclasses())
         {
             DataItem dataAnnotation = field.getAnnotation(DataItem.class);
             if (dataAnnotation != null)
@@ -89,10 +89,18 @@ public class TestdataStatement extends StatementBuilder
                     {
                         field.set(testClassInstance, DataUtils.get(dataAnnotation.value(), field.getType()));
                     }
+                    else if (DataUtils.exists(field.getName()))
+                    {
+                        field.set(testClassInstance, DataUtils.get("$." + field.getName(), field.getType()));
+                    }
                     else
                     {
                         field.set(testClassInstance, DataUtils.get(field.getType()));
                     }
+                }
+                catch (Exception e)
+                {
+                    throw new RuntimeException("Something went wrong while test data value injection", e);
                 }
                 finally
                 {
@@ -105,7 +113,7 @@ public class TestdataStatement extends StatementBuilder
     private List<Field> getFieldsFromSuperclasses()
     {
         var currentSuperclass = testClassInstance.getClass().getSuperclass();
-        var fields =  new ArrayList<Field>(Arrays.asList(testClassInstance.getClass().getDeclaredFields()));
+        var fields = new ArrayList<Field>(Arrays.asList(testClassInstance.getClass().getDeclaredFields()));
         while (!currentSuperclass.equals(Object.class))
         {
             fields.addAll(List.of(currentSuperclass.getDeclaredFields()));
