@@ -396,7 +396,7 @@ public class SelenideAddonsTest
         // real duration for cause check is mostly only few seconds more than minimal duration, although the duration of
         // message check is always approximately 1000ms more due to UIAssertion wrapping
         long maximalDuration = minimalDuration + 1000;
-        Assert.assertTrue("Wating time taken to catch SERE (" + duration + "ms) is not in range from  " + minimalDuration + " to " + maximalDuration + "ms",
+        Assert.assertTrue("Waiting time taken to catch SERE (" + duration + "ms) is not in range from  " + minimalDuration + " to " + maximalDuration + "ms",
                           Range.between(minimalDuration, maximalDuration).contains(duration));
 
         Assert.assertEquals("SERE was catched " + counter.get() + " times instead of " + (Neodymium.configuration().staleElementRetryCount() + 1),
