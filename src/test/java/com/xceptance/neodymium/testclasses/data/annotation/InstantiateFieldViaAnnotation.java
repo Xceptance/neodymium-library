@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.testdata.DataItem;
-import com.xceptance.neodymium.util.DataUtils;
 
 @RunWith(NeodymiumRunner.class)
 public class InstantiateFieldViaAnnotation
@@ -14,9 +13,12 @@ public class InstantiateFieldViaAnnotation
     @DataItem
     private String name;
 
+    @DataItem
+    private String testId;
+
     @Test
     public void test1()
     {
-        Assert.assertEquals("John" + DataUtils.asString("testId"), name);
+        Assert.assertEquals("John" + testId, name);
     }
 }
