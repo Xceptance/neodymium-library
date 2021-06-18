@@ -319,14 +319,12 @@ public class SelenideAddonsTest
     }
 
     @Test()
-    @SuppressBrowsers
     public void testSafeRunnableInCause()
     {
         testSafe(runArrayWithSEREinCause, false);
     }
 
     @Test()
-    @SuppressBrowsers
     public void testSafeRunnableInMessage()
     {
         testSafe(runArrayWithSEREinMessage, false);
