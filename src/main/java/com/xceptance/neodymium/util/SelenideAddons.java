@@ -512,23 +512,47 @@ public class SelenideAddons
      *            the element to match
      * @param condition
      *            the condition for the element
-     * @param waitingTime
-     *            the time to wait between retries
+     * @param maxWaitingTime
+     *            the maximum amount of time to wait
      * @return if the element did match the condition within the given retries
      */
-    public static boolean optionalWaitUntilCondition(SelenideElement element, Condition condition, long waitingTime)
+    public static boolean optionalWaitUntilCondition(SelenideElement element, Condition condition, long maxWaitingTime)
+    {
+        return optionalWaitUntilCondition(element, condition, maxWaitingTime,
+                                          Neodymium.configuration().optionalElementRetryTimeout() * Neodymium.configuration().optionalElementRetryCount());
+    }
+
+    /**
+     * Waits until an optional element matches a condition. This function will return false if the element does not
+     * match the given condition or can not be found in the given timeframe.
+     * <p>
+     * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
+     * </p>
+     * <ul>
+     * <li>neodymium.selenideAddons.optional.retry.count (default 5 retries)</li>
+     * </ul>
+     *
+     * @param element
+     *            the element to match
+     * @param condition
+     *            the condition for the element
+     * @param maxWaitingTime
+     *            the maximum amount of time to wait
+     * @param pollingInterval
+     *            the amount of time to wait in between retries
+     * @return if the element did match the condition within the given retries
+     */
+    public static boolean optionalWaitUntilCondition(SelenideElement element, Condition condition, long maxWaitingTime, long pollingInterval)
     {
         boolean result = false;
-        int counter = 0;
-        while (counter < Neodymium.configuration().optionalElementRetryCount())
+        long start = System.currentTimeMillis();
+        while (!result && System.currentTimeMillis() - start < maxWaitingTime)
         {
-            counter++;
             if (element.has(condition))
             {
                 result = true;
-                break;
             }
-            Selenide.sleep(waitingTime);
+            Selenide.sleep(pollingInterval);
         }
         return result;
     }
@@ -553,7 +577,8 @@ public class SelenideAddons
      */
     public static boolean optionalWaitWhileCondition(SelenideElement element, Condition condition)
     {
-        return optionalWaitWhileCondition(element, condition, Neodymium.configuration().optionalElementRetryTimeout());
+        return optionalWaitWhileCondition(element, condition,
+                                          Neodymium.configuration().optionalElementRetryTimeout() * Neodymium.configuration().optionalElementRetryCount());
     }
 
     /**
@@ -570,12 +595,37 @@ public class SelenideAddons
      *            the element to match
      * @param condition
      *            the condition for the element
-     * @param waitingTime
-     *            the time to wait between retries
+     * @param maxWaitingTime
+     *            the maximum amount of time to wait
      * @return if the element did stop matching the condition within the given retries
      */
-    public static boolean optionalWaitWhileCondition(SelenideElement element, Condition condition, long waitingTime)
+    public static boolean optionalWaitWhileCondition(SelenideElement element, Condition condition, long maxWaitingTime)
     {
-        return optionalWaitUntilCondition(element, not(condition), waitingTime);
+        return optionalWaitUntilCondition(element, not(condition), maxWaitingTime);
+    }
+
+    /**
+     * Waits while an optional element matches a condition. This function will return false if the element does match
+     * the given condition or can not be found after the given timeframe.
+     * <p>
+     * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
+     * </p>
+     * <ul>
+     * <li>neodymium.selenideAddons.optional.retry.count (default 5 retries)</li>
+     * </ul>
+     *
+     * @param element
+     *            the element to match
+     * @param condition
+     *            the condition for the element
+     * @param maxWaitingTime
+     *            the maximum amount of time to wait
+     * @param pollingInterval
+     *            the amount of time to wait in between retries
+     * @return if the element did stop matching the condition within the given retries
+     */
+    public static boolean optionalWaitWhileCondition(SelenideElement element, Condition condition, long maxWaitingTime, long pollingInterval)
+    {
+        return optionalWaitUntilCondition(element, not(condition), maxWaitingTime, pollingInterval);
     }
 }

@@ -642,7 +642,7 @@ public class SelenideAddonsTest
         Assert.assertEquals(text, $("body").getText());
     }
 
-    private int customWaitingTime = 3000;
+    private int customWaitingTime = 10000;
 
     @Test
     public void testOptionalWaitUntil()
@@ -662,15 +662,14 @@ public class SelenideAddonsTest
         // check that the is false as is expected
         Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
 
-        validateTimeWithinRange(startTime, endTime);
+        validateTimeWithinRange(startTime, endTime, customWaitingTime);
     }
 
-    private void validateTimeWithinRange(long startTime, long endTime)
+    private void validateTimeWithinRange(long startTime, long endTime, long maxWaitingTime)
     {
         // check that runtime of the wait until method was as long as expected
-        int waitingTime = customWaitingTime * Neodymium.configuration().optionalElementRetryCount();
-        Assert.assertTrue("Runtime was not within the expected range", Range.between(waitingTime, waitingTime + customWaitingTime)
-                               .contains(Math.toIntExact(endTime - startTime)));
+        Assert.assertTrue("Runtime was not within the expected range", Range.between(maxWaitingTime, maxWaitingTime * 2)
+                                                                            .contains(endTime - startTime));
     }
 
     @Test
@@ -687,7 +686,7 @@ public class SelenideAddonsTest
         // check that the result is false as expected
         Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
 
-        validateTimeWithinRange(startTime, endTime);
+        validateTimeWithinRange(startTime, endTime, customWaitingTime);
 
         // click the opt out button
         privacyDialog.find(".btn-link").click();
@@ -709,13 +708,14 @@ public class SelenideAddonsTest
 
         // try wait until the optional privacy dialog is hidden, which will fail
         long startTime = new Date().getTime();
-        boolean isHidden = SelenideAddons.optionalWaitUntilCondition(privacyDialog, hidden, Neodymium.configuration().optionalElementRetryTimeout());
+        boolean isHidden = SelenideAddons.optionalWaitUntilCondition(privacyDialog, hidden);
         long endTime = new Date().getTime();
 
         // check that the is false as is expected
         Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
 
-        validateTimeWithinRange(startTime, endTime);
+        validateTimeWithinRange(startTime, endTime,
+                                Neodymium.configuration().optionalElementRetryCount() * Neodymium.configuration().optionalElementRetryTimeout());
     }
 
     @Test
@@ -732,7 +732,8 @@ public class SelenideAddonsTest
         // check that the result is false as expected
         Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
 
-        validateTimeWithinRange(startTime, endTime);
+        validateTimeWithinRange(startTime, endTime,
+                                Neodymium.configuration().optionalElementRetryCount() * Neodymium.configuration().optionalElementRetryTimeout());
 
         // click the opt out button
         privacyDialog.find(".btn-link").click();
