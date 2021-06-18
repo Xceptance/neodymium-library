@@ -311,11 +311,28 @@ public class SelenideAddonsTest
 
     @Test()
     @SuppressBrowsers
+    public void testIsThrowableNotCausedBy()
+    {
+        Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new NullPointerException("this is final cause")));
+        Assert.assertFalse("Throwable has unexpected cause", SelenideAddons.isThrowableCausedBy(causedByIOException, NumberFormatException.class));
+    }
+
+    @Test()
+    @SuppressBrowsers
     public void testIsThrowableCausedByMessage()
     {
         Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new NullPointerException("this is final cause")));
         Assert.assertTrue("Throwable has unexpected cause",
-                          SelenideAddons.isThrowableCausedBy(causedByIOException, NullPointerException.class, "this is assertion error"));
+                          SelenideAddons.isThrowableCausedBy(causedByIOException, NumberFormatException.class, "this is assertion error"));
+    }
+
+    @Test()
+    @SuppressBrowsers
+    public void testIsThrowableNotCausedByMessage()
+    {
+        Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new NullPointerException("this is final cause")));
+        Assert.assertFalse("Throwable has unexpected cause",
+                          SelenideAddons.isThrowableCausedBy(causedByIOException, NumberFormatException.class, "not existing message"));
     }
 
     @Test()
