@@ -302,18 +302,20 @@ public class SelenideAddonsTest
     }
 
     @Test()
+    @SuppressBrowsers
     public void testIsThrowableCausedBy()
     {
-        Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new IOException("this is final cause")));
-        Assert.assertTrue("Throwable has unexpected cause", SelenideAddons.isThrowableCausedBy(causedByIOException, IOException.class));
+        Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new NullPointerException("this is final cause")));
+        Assert.assertTrue("Throwable has unexpected cause", SelenideAddons.isThrowableCausedBy(causedByIOException, NullPointerException.class));
     }
 
     @Test()
+    @SuppressBrowsers
     public void testIsThrowableCausedByMessage()
     {
-        Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new IOException("this is final cause")));
+        Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new NullPointerException("this is final cause")));
         Assert.assertTrue("Throwable has unexpected cause",
-                          SelenideAddons.isThrowableCausedBy(causedByIOException, IOException.class, "this is assertion error"));
+                          SelenideAddons.isThrowableCausedBy(causedByIOException, NullPointerException.class, "this is assertion error"));
     }
 
     @Test()
