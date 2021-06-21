@@ -108,9 +108,15 @@ public class BrowserStatement extends StatementBuilder
 
         LOGGER.debug("setup browser: " + browserTag);
         setUpTest(browserTag);
-        String uuid=UUID.randomUUID().toString();
-        FilmTestExecution.startGifRecording(uuid);
-        FilmTestExecution.startVideoRecording(uuid);
+        String uuid = UUID.randomUUID().toString();
+        if (FilmTestExecution.getContextGif().filmAutomaticaly())
+        {
+            FilmTestExecution.startGifRecording(uuid);
+        }
+        if (FilmTestExecution.getContextVideo().filmAutomaticaly())
+        {
+            FilmTestExecution.startVideoRecording(uuid);
+        }
         try
         {
             next.evaluate();
@@ -122,8 +128,14 @@ public class BrowserStatement extends StatementBuilder
         }
         finally
         {
-            FilmTestExecution.finishGifFilming(uuid, testFailed);
-            FilmTestExecution.finishVideoFilming(uuid, testFailed);
+            if (FilmTestExecution.getContextGif().filmAutomaticaly())
+            {
+                FilmTestExecution.finishGifFilming(uuid, testFailed);
+            }
+            if (FilmTestExecution.getContextVideo().filmAutomaticaly())
+            {
+                FilmTestExecution.finishVideoFilming(uuid, testFailed);
+            }
             teardown(testFailed);
         }
     }

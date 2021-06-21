@@ -12,6 +12,10 @@ public interface VideoRecordingConfigurations extends RecordingConfigurations
     @DefaultValue("false")
     public boolean enableFilming();
 
+    @Key("video.filmAutomaticaly")
+    @DefaultValue("true")
+    public boolean filmAutomaticaly();
+
     @Key("video.oneImagePerMilliseconds")
     @DefaultValue("100")
     public int oneImagePerMilliseconds();

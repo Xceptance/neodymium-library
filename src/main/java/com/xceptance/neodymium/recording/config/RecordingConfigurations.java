@@ -18,6 +18,10 @@ public interface RecordingConfigurations extends Mutable
     @DefaultValue("false")
     public boolean enableFilming();
 
+    @Key("gif.filmAutomaticaly")
+    @DefaultValue("true")
+    public boolean filmAutomaticaly();
+
     @Key("gif.oneImagePerMilliseconds")
     @DefaultValue("500")
     public int oneImagePerMilliseconds();
