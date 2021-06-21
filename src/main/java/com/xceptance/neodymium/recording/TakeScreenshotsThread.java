@@ -42,10 +42,10 @@ public class TakeScreenshotsThread extends Thread
         String testName) throws IOException
     {
         this.recordingConfigurations = recordingConfigurations;
-        fileName = recordingConfigurations.tempFolderToStoreRecoring()
+        fileName = recordingConfigurations.tempFolderToStoreRecording()
                    + testName.replaceAll("\\s", "-").replaceAll(":", "-").replaceAll("/", "_") + "." + recordingConfigurations.format();
         this.writer = Writer.instantiate(writerClass, recordingConfigurations, fileName);
-        File directory = new File(recordingConfigurations.tempFolderToStoreRecoring());
+        File directory = new File(recordingConfigurations.tempFolderToStoreRecording());
         if (!directory.exists())
         {
             directory.mkdir();

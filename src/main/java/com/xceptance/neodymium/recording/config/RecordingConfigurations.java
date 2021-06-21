@@ -26,9 +26,9 @@ public interface RecordingConfigurations extends Mutable
     @DefaultValue("500")
     public int oneImagePerMilliseconds();
 
-    @Key("gif.tempFolderToStoreRecoring")
+    @Key("gif.tempFolderToStoreRecording")
     @DefaultValue("target/gifs/")
-    public String tempFolderToStoreRecoring();
+    public String tempFolderToStoreRecording();
 
     @Key("gif.deleteRecordingsAfterAddingToAllureReport")
     @DefaultValue("true")

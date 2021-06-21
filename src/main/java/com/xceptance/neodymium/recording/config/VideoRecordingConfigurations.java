@@ -20,9 +20,9 @@ public interface VideoRecordingConfigurations extends RecordingConfigurations
     @DefaultValue("100")
     public int oneImagePerMilliseconds();
 
-    @Key("video.tempFolderToStoreRecoring")
+    @Key("video.tempFolderToStoreRecording")
     @DefaultValue("target/videos/")
-    public String tempFolderToStoreRecoring();
+    public String tempFolderToStoreRecording();
 
     @Key("video.deleteRecordingsAfterAddingToAllureReport")
     @DefaultValue("true")

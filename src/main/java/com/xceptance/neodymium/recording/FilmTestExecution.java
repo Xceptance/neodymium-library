@@ -1,7 +1,9 @@
 package com.xceptance.neodymium.recording;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -49,6 +51,26 @@ public class FilmTestExecution
         return CONTEXTS_GIF.computeIfAbsent(Thread.currentThread(), key -> {
             return ConfigFactory.create(GifRecordingConfigurations.class);
         });
+    }
+
+    /**
+     * Gets {@link GifRecordingConfigurations} for current thread
+     * 
+     * @return gif configurations in form of {@link GifRecordingConfigurations} object
+     */
+    public static GifRecordingConfigurations getContextGif()
+    {
+        return (GifRecordingConfigurations) getContext(GifRecordingConfigurations.class);
+    }
+
+    /**
+     * Gets {@link VideoRecordingConfigurations} for current thread
+     * 
+     * @return gif configurations in form of {@link VideoRecordingConfigurations} object
+     */
+    public static VideoRecordingConfigurations getContextVideo()
+    {
+        return (VideoRecordingConfigurations) getContext(VideoRecordingConfigurations.class);
     }
 
     /**
@@ -125,6 +147,30 @@ public class FilmTestExecution
         {
             thread.start();
         }
+    }
+
+    /**
+     * Gets names of all currently running in background {@link TakeScreenshotsThread} for gifs
+     * 
+     * @return {@link List} of the names
+     */
+    public static List<String> getNamesOfAllCurrentGifRecordings()
+    {
+        ArrayList<String> recordingNames = new ArrayList<>();
+        recordingNames.addAll(GIF_THREADS.keySet());
+        return recordingNames;
+    }
+
+    /**
+     * Gets names of all currently running in background {@link TakeScreenshotsThread} for videos
+     * 
+     * @return {@link List} of the names
+     */
+    public static List<String> getNamesOfAllCurrentVideoRecordings()
+    {
+        ArrayList<String> recordingNames = new ArrayList<>();
+        recordingNames.addAll(VIDEO_THREADS.keySet());
+        return recordingNames;
     }
 
     /**
