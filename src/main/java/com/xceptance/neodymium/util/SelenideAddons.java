@@ -35,6 +35,8 @@ import com.codeborne.selenide.logevents.SelenideLogger;
  */
 public class SelenideAddons
 {
+    private static final String SERE = StaleElementReferenceException.class.getSimpleName();
+
     /**
      * Returns an supplier that will return exactly one result if any. It will return an element that is found by
      * parentSelector and has a result for subElementSelector. It does NOT return the subelements, it is meant to be a
@@ -160,7 +162,7 @@ public class SelenideAddons
             }
             catch (final Throwable t)
             {
-                if (isThrowableCausedBy(t, StaleElementReferenceException.class))
+                if (isThrowableCausedBy(t, StaleElementReferenceException.class, SERE))
                 {
                     retryCounter++;
                     if (retryCounter > maxRetryCount)
@@ -170,7 +172,7 @@ public class SelenideAddons
                     }
                     else
                     {
-                        AllureAddons.addToReport("StaleElementReferenceException catched times: \"" + retryCounter + "\".", retryCounter);
+                        AllureAddons.addToReport(SERE + " catched times: \"" + retryCounter + "\".", retryCounter);
                         Selenide.sleep(Neodymium.configuration().staleElementRetryTimeout());
                     }
                 }
@@ -211,47 +213,40 @@ public class SelenideAddons
      */
     public static void $safe(final Runnable code)
     {
-        final int maxRetryCount = Neodymium.configuration().staleElementRetryCount();
-        int retryCounter = 0;
-
-        while (retryCounter <= maxRetryCount)
-        {
-            try
-            {
-                code.run();
-                break;
-            }
-            catch (final Throwable t)
-            {
-                if (isThrowableCausedBy(t, StaleElementReferenceException.class))
-                {
-                    retryCounter++;
-                    if (retryCounter > maxRetryCount)
-                    {
-                        // fail
-                        throw t;
-                    }
-                    else
-                    {
-                        AllureAddons.addToReport("StaleElementReferenceException catched times: \"" + retryCounter + "\".", retryCounter);
-                        Selenide.sleep(Neodymium.configuration().staleElementRetryTimeout());
-                    }
-                }
-                else
-                {
-                    // not the kind of error we are looking for
-                    throw t;
-                }
-            }
-        }
+        $safe(() -> {
+            code.run();
+            return null;
+        });
     }
 
-    private static boolean isThrowableCausedBy(final Throwable throwable, Class<? extends Throwable> clazz)
+    /**
+     * Recursively checks if the throwable is caused by exception of the specific class or contains one of the messages
+     * listed in the {@code phrasesHintingErrorToCatch}
+     * 
+     * @param throwable
+     *            throwable to check
+     * @param clazz
+     *            class of the expected throwable cause
+     * @param phrasesHintingErrorToCatch
+     *            optional parameters, error messages of expected throwable or its causes
+     * @return result of the check as boolean value
+     */
+    public static boolean isThrowableCausedBy(final Throwable throwable, Class<? extends Throwable> clazz, String... phrasesHintingErrorToCatch)
     {
         Throwable t = throwable;
         while (t != null)
         {
-            if (clazz.isInstance(t))
+            boolean containsMessage = false;
+            for (String message : phrasesHintingErrorToCatch)
+            {
+                String messageText = t.getMessage();
+                if (messageText!=null && messageText.contains(message))
+                {
+                    containsMessage = true;
+                    break;
+                }
+            }
+            if (clazz.isInstance(t) || containsMessage)
             {
                 return true;
             }
@@ -414,7 +409,8 @@ public class SelenideAddons
         try
         {
             // perform drag and drop via the standard Selenium way
-            new Actions(Neodymium.getDriver()).dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement).build().perform();
+            new Actions(Neodymium.getDriver()).dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement)
+                                              .build().perform();
         }
         catch (MoveTargetOutOfBoundsException targetOutOfBound)
         {
@@ -443,8 +439,8 @@ public class SelenideAddons
      * @param condition
      *            The condition for the slider to verify the movement
      */
-    public static void dragAndDropUntilCondition(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement, int verticalMovement,
-                                                 int pauseBetweenMovements, int retryMovements, Condition condition)
+    public static void dragAndDropUntilCondition(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement,
+                                                 int verticalMovement, int pauseBetweenMovements, int retryMovements, Condition condition)
     {
         int counter = 0;
         while (!elementToCheck.has(condition))

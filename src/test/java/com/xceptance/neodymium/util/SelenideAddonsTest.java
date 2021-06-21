@@ -6,6 +6,7 @@ import static com.codeborne.selenide.Condition.hidden;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.lang3.Range;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +23,7 @@ import org.openqa.selenium.StaleElementReferenceException;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.ex.ElementNotFound;
 import com.codeborne.selenide.ex.ElementShould;
 import com.codeborne.selenide.ex.UIAssertionError;
@@ -37,6 +40,69 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBro
 @Browser("Chrome_headless")
 public class SelenideAddonsTest
 {
+    private List<Runnable> runArrayWithSEREinMessage = new ArrayList<Runnable>()
+    {
+        private static final long serialVersionUID = 1L;
+        {
+            add(
+                () -> {
+                    throw UIAssertionError.wrap(WebDriverRunner.driver(),
+                                                new AssertionError("StaleElementReferenceException"),
+                                                0);
+                });
+            add(
+                () -> {
+                    throw UIAssertionError.wrap(WebDriverRunner.driver(),
+                                                new AssertionError("WeCanStillSpotTheStaleElementReferenceExceptionEvenIfItTriesToHide"),
+                                                0);
+                });
+            add(
+                () -> {
+                    throw UIAssertionError.wrap(WebDriverRunner.driver(),
+                                                new AssertionError("We think this was caused by an :StaleElementReferenceException"),
+                                                0);
+                });
+            add(
+                () -> {
+                    throw UIAssertionError.wrap(WebDriverRunner.driver(),
+                                                new AssertionError("You shall pass! Even though you contain the word StaleElementReferenceException that we are searching for."),
+                                                0);
+                });
+            add(
+                () -> {
+                    throw UIAssertionError.wrap(WebDriverRunner.driver(),
+                                                new AssertionError("You shall never be seen in StaleElementReferenceException catch function!"), 0);
+                });
+        }
+    };
+
+    private List<Runnable> runArrayWithSEREinCause = new ArrayList<Runnable>()
+    {
+        private static final long serialVersionUID = 2L;
+        {
+            add(
+                () -> {
+                    throw new StaleElementReferenceException("You shall not pass!");
+                });
+            add(
+                () -> {
+                    throw new StaleElementReferenceException("You shall not pass!");
+                });
+            add(
+                () -> {
+                    throw new StaleElementReferenceException("You shall not pass!");
+                });
+            add(
+                () -> {
+                    throw new StaleElementReferenceException("You shall pass!");
+                });
+            add(
+                () -> {
+                    throw new StaleElementReferenceException("You shall never be seen!");
+                });
+        }
+    };
+
     private void openBlogPage()
     {
         Selenide.open("https://blog.xceptance.com/");
@@ -237,54 +303,77 @@ public class SelenideAddonsTest
 
     @Test()
     @SuppressBrowsers
-    public void testSafeRunnable()
+    public void testIsThrowableCausedBy()
     {
-        // preparing the test setup as kind of generator
-        AtomicInteger counter = new AtomicInteger(0);
-        List<Runnable> runArray = new ArrayList<Runnable>();
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall never be seen!");
-                     });
-        final Iterator<Runnable> iterator = runArray.iterator();
+        Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new NullPointerException("this is final cause")));
+        Assert.assertTrue("Throwable has unexpected cause", SelenideAddons.isThrowableCausedBy(causedByIOException, NullPointerException.class));
+    }
 
-        // testing the error path after three exceptions
-        long startTime = new Date().getTime();
-        try
-        {
-            SelenideAddons.$safe(() -> {
-                counter.incrementAndGet();
-                if (iterator.hasNext())
-                {
-                    iterator.next().run();
-                }
-            });
-        }
-        catch (StaleElementReferenceException e)
-        {
-            Assert.assertTrue(e.getMessage().startsWith("You shall pass!"));
-        }
-        long endTime = new Date().getTime();
-        Assert.assertTrue(endTime - startTime > Neodymium.configuration().staleElementRetryTimeout());
-        Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 1);
+    @Test()
+    @SuppressBrowsers
+    public void testIsThrowableNotCausedBy()
+    {
+        Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new NullPointerException("this is final cause")));
+        Assert.assertFalse("Throwable has unexpected cause",
+                           SelenideAddons.isThrowableCausedBy(causedByIOException, NumberFormatException.class, "not existing message"));
+    }
 
-        // testing the happy path after one exception
+    @Test()
+    @SuppressBrowsers
+    public void testIsThrowableCausedByMessage()
+    {
+        Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new NullPointerException("this is final cause")));
+        Assert.assertTrue("Throwable has unexpected cause",
+                          SelenideAddons.isThrowableCausedBy(causedByIOException, NumberFormatException.class, "this is assertion error"));
+    }
+
+    @Test()
+    @SuppressBrowsers
+    public void testIsThrowableNotCausedByMessage()
+    {
+        Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new NullPointerException("this is final cause")));
+        Assert.assertFalse("Throwable has unexpected cause",
+                           SelenideAddons.isThrowableCausedBy(causedByIOException, NumberFormatException.class, "not existing message"));
+    }
+
+    @Test()
+    public void testSafeRunnableInCause()
+    {
+        testSafe(runArrayWithSEREinCause, false);
+    }
+
+    @Test()
+    public void testSafeRunnableInMessage()
+    {
+        testSafe(runArrayWithSEREinMessage, false);
+    }
+
+    @Test()
+    public void testSafeSupplierInCause()
+    {
+        testSafe(runArrayWithSEREinCause, true);
+    }
+
+    @Test()
+    public void testSafeSupplierInMessage()
+    {
+        testSafe(runArrayWithSEREinMessage, true);
+    }
+
+    private SelenideElement testSupplier(AtomicInteger counter, Iterator<Runnable> iterator)
+    {
+        return SelenideAddons.$safe(() -> {
+            counter.incrementAndGet();
+            if (iterator.hasNext())
+            {
+                iterator.next().run();
+            }
+            return $("body").should(exist);
+        });
+    }
+
+    private void testRunnable(AtomicInteger counter, Iterator<Runnable> iterator)
+    {
         SelenideAddons.$safe(() -> {
             counter.incrementAndGet();
             if (iterator.hasNext())
@@ -292,70 +381,53 @@ public class SelenideAddonsTest
                 iterator.next().run();
             }
         });
-        Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 3);
     }
 
-    @Test()
-    public void testSafeSupplier()
+    private void testSafe(List<Runnable> runArray, boolean isSupplier)
     {
         // preparing the test setup as kind of generator
         AtomicInteger counter = new AtomicInteger(0);
-        List<Runnable> runArray = new ArrayList<Runnable>();
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall never be seen!");
-                     });
         final Iterator<Runnable> iterator = runArray.iterator();
 
         // testing the error path after three exceptions
         openBlogPage();
+        String defaultRetryTimeout = Neodymium.configuration().setProperty("neodymium.selenideAddons.staleElement.retry.timeout", "6000");
         long startTime = new Date().getTime();
         try
         {
-            SelenideAddons.$safe(() -> {
-                counter.incrementAndGet();
-                if (iterator.hasNext())
-                {
-                    iterator.next().run();
-                }
-                return $("body").should(exist);
-            });
-        }
-        catch (StaleElementReferenceException e)
-        {
-            Assert.assertTrue(e.getMessage().startsWith("You shall pass!"));
-        }
-        long endTime = new Date().getTime();
-        Assert.assertTrue(endTime - startTime > Neodymium.configuration().staleElementRetryTimeout());
-        Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 1);
-
-        // testing the happy path after one exception
-        SelenideElement element = SelenideAddons.$safe(() -> {
-            counter.incrementAndGet();
-            if (iterator.hasNext())
+            if (isSupplier)
             {
-                iterator.next().run();
+                testSupplier(counter, iterator);
             }
-            return $("body");
-        });
-        Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 3);
-        element.shouldBe(visible);
+            else
+            {
+                testRunnable(counter, iterator);
+            }
+        }
+        catch (StaleElementReferenceException | UIAssertionError e)
+        {
+            Assert.assertTrue(e.getMessage() + " doesn't contain phrase 'You shall pass!'", e.getMessage().contains("You shall pass!"));
+        }
+
+        long duration = new Date().getTime() - startTime;
+        long minimalDuration = Neodymium.configuration().staleElementRetryTimeout() * Neodymium.configuration().staleElementRetryCount();
+
+        // added buffer time to filter out the impact of the execution of passed runnable on the whole execution time
+        long maximalDuration = minimalDuration + Neodymium.configuration().staleElementRetryTimeout() / 2;
+        Assert.assertTrue("Waiting time taken to catch SERE (" + duration + "ms) is not in range from  " + minimalDuration + " to " + maximalDuration + "ms",
+                          Range.between(minimalDuration, maximalDuration).contains(duration));
+
+        Assert.assertEquals("SERE was catched " + counter.get() + " times instead of " + (Neodymium.configuration().staleElementRetryCount() + 1),
+                            Neodymium.configuration().staleElementRetryCount() + 1, counter.get());
+        Neodymium.configuration().setProperty("neodymium.selenideAddons.staleElement.retry.timeout", defaultRetryTimeout);
+        if (isSupplier)
+        {
+            // testing the happy path after one exception
+            SelenideElement element = testSupplier(counter, iterator);
+            Assert.assertEquals("SERE was catched " + counter.get() + " times instead of " + (Neodymium.configuration().staleElementRetryCount() + 3),
+                                Neodymium.configuration().staleElementRetryCount() + 3, counter.get());
+            element.shouldBe(visible);
+        }
     }
 
     @Test()
