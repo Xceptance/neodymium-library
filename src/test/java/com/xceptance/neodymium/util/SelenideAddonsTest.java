@@ -314,7 +314,8 @@ public class SelenideAddonsTest
     public void testIsThrowableNotCausedBy()
     {
         Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new NullPointerException("this is final cause")));
-        Assert.assertFalse("Throwable has unexpected cause", SelenideAddons.isThrowableCausedBy(causedByIOException, NumberFormatException.class));
+        Assert.assertFalse("Throwable has unexpected cause",
+                           SelenideAddons.isThrowableCausedBy(causedByIOException, NumberFormatException.class, "not existing message"));
     }
 
     @Test()
