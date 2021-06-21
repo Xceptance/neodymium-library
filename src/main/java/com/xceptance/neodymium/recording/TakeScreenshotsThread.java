@@ -95,7 +95,8 @@ public class TakeScreenshotsThread extends Thread
                     }
 
                 }
-                AllureAddons.addToReport("avarage videos sequence recording creation duration = " + millis + " / " + turns + "="
+                boolean isGif = recordingConfigurations.format().equals("gif");
+                AllureAddons.addToReport("avarage " + (isGif ? "gif" : "video") + " sequence recording creation duration = " + millis + " / " + turns + "="
                                          + millis / turns, "");
                 writer.stop();
                 try
@@ -103,7 +104,7 @@ public class TakeScreenshotsThread extends Thread
                     if (recordingConfigurations.appendAllRecordingsToReport() || testFailed)
                     {
 
-                        String type = recordingConfigurations.format().equals("mp4") ? "video/mp4" : "image/gif";
+                        String type = isGif ? "image/gif" : "video/mp4";
                         Allure.addAttachment(fileName, type, new FileInputStream(fileName), recordingConfigurations.format());
 
                     }
