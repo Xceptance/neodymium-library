@@ -3,9 +3,9 @@ package com.xceptance.neodymium.recording.config;
 import org.aeonbits.owner.Config.Sources;
 
 @Sources(
-    {
-      "system:env", "system:properties", "file:config/dev-video-recording.properties", "file:config/video-recording.properties"
-    })
+{
+  "system:env", "system:properties", "file:config/dev-video-recording.properties", "file:config/video-recording.properties"
+})
 public interface VideoRecordingConfigurations extends RecordingConfigurations
 {
     @Key("video.enableFilming")
@@ -16,15 +16,15 @@ public interface VideoRecordingConfigurations extends RecordingConfigurations
     @DefaultValue("100")
     public int oneImagePerMilliseconds();
 
-    @Key("video.tempFolderToStoreVideos")
+    @Key("video.tempFolderToStoreRecoring")
     @DefaultValue("target/videos/")
     public String tempFolderToStoreRecoring();
 
-    @Key("video.deleteVideosAfterAddingToAllureReport")
+    @Key("video.deleteRecordingsAfterAddingToAllureReport")
     @DefaultValue("true")
     public boolean deleteRecordingsAfterAddingToAllureReport();
 
-    @Key("video.appendAllVideosToReport")
+    @Key("video.appendAllRecordingsToReport")
     @DefaultValue("false")
     public boolean appendAllRecordingsToReport();
 
