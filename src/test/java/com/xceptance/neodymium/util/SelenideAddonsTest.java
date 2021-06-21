@@ -332,7 +332,7 @@ public class SelenideAddonsTest
     {
         Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new NullPointerException("this is final cause")));
         Assert.assertFalse("Throwable has unexpected cause",
-                          SelenideAddons.isThrowableCausedBy(causedByIOException, NumberFormatException.class, "not existing message"));
+                           SelenideAddons.isThrowableCausedBy(causedByIOException, NumberFormatException.class, "not existing message"));
     }
 
     @Test()
@@ -390,6 +390,7 @@ public class SelenideAddonsTest
 
         // testing the error path after three exceptions
         openBlogPage();
+        String defaultRetryTimeout = Neodymium.configuration().setProperty("neodymium.selenideAddons.staleElement.retry.timeout", "6000");
         long startTime = new Date().getTime();
         try
         {
@@ -408,17 +409,16 @@ public class SelenideAddonsTest
         }
 
         long duration = new Date().getTime() - startTime;
-
         long minimalDuration = Neodymium.configuration().staleElementRetryTimeout() * Neodymium.configuration().staleElementRetryCount();
-        // real duration for cause check is mostly only few seconds more than minimal duration, although the duration of
-        // message check is always approximately 1000ms more due to UIAssertion wrapping
-        long maximalDuration = minimalDuration + 1000;
+
+        // added buffer time to filter out the impact of the execution of passed runnable on the whole execution time
+        long maximalDuration = minimalDuration + Neodymium.configuration().staleElementRetryTimeout() / 2;
         Assert.assertTrue("Waiting time taken to catch SERE (" + duration + "ms) is not in range from  " + minimalDuration + " to " + maximalDuration + "ms",
                           Range.between(minimalDuration, maximalDuration).contains(duration));
 
         Assert.assertEquals("SERE was catched " + counter.get() + " times instead of " + (Neodymium.configuration().staleElementRetryCount() + 1),
                             Neodymium.configuration().staleElementRetryCount() + 1, counter.get());
-
+        Neodymium.configuration().setProperty("neodymium.selenideAddons.staleElement.retry.timeout", defaultRetryTimeout);
         if (isSupplier)
         {
             // testing the happy path after one exception
