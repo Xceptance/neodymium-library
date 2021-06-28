@@ -495,7 +495,7 @@ public class SelenideAddons
      */
     public static boolean optionalWaitUntilCondition(SelenideElement element, Condition condition)
     {
-        return optionalWaitUntilCondition(element, condition, Neodymium.configuration().optionalElementRetryTimeout());
+        return optionalWaitUntilCondition(element, condition, null, null);
     }
 
     /**
@@ -516,10 +516,9 @@ public class SelenideAddons
      *            the maximum amount of time to wait
      * @return if the element did match the condition within the given retries
      */
-    public static boolean optionalWaitUntilCondition(SelenideElement element, Condition condition, long maxWaitingTime)
+    public static boolean optionalWaitUntilCondition(SelenideElement element, Condition condition, int maxWaitingTime)
     {
-        return optionalWaitUntilCondition(element, condition, maxWaitingTime,
-                                          Neodymium.configuration().optionalElementRetryTimeout() * Neodymium.configuration().optionalElementRetryCount());
+        return optionalWaitUntilCondition(element, condition, maxWaitingTime, null);
     }
 
     /**
@@ -542,15 +541,25 @@ public class SelenideAddons
      *            the amount of time to wait in between retries
      * @return if the element did match the condition within the given retries
      */
-    public static boolean optionalWaitUntilCondition(SelenideElement element, Condition condition, long maxWaitingTime, long pollingInterval)
+    public static boolean optionalWaitUntilCondition(SelenideElement element, Condition condition, Integer maxWaitingTime, Integer pollingInterval)
     {
+        if (maxWaitingTime == null)
+        {
+            maxWaitingTime = Neodymium.configuration().optionalElementRetryTimeout();
+        }
+        if (pollingInterval == null)
+        {
+            pollingInterval = Neodymium.configuration().optionalElementRetryPollingIntervall();
+        }
+
         boolean result = false;
-        long start = System.currentTimeMillis();
-        while (!result && System.currentTimeMillis() - start < maxWaitingTime)
+        final long start = System.currentTimeMillis();
+        while (!result && ((System.currentTimeMillis() - start) < maxWaitingTime))
         {
             if (element.has(condition))
             {
                 result = true;
+                break;
             }
             Selenide.sleep(pollingInterval);
         }
@@ -577,8 +586,7 @@ public class SelenideAddons
      */
     public static boolean optionalWaitWhileCondition(SelenideElement element, Condition condition)
     {
-        return optionalWaitWhileCondition(element, condition,
-                                          Neodymium.configuration().optionalElementRetryTimeout() * Neodymium.configuration().optionalElementRetryCount());
+        return optionalWaitUntilCondition(element, not(condition), null, null);
     }
 
     /**
@@ -599,9 +607,9 @@ public class SelenideAddons
      *            the maximum amount of time to wait
      * @return if the element did stop matching the condition within the given retries
      */
-    public static boolean optionalWaitWhileCondition(SelenideElement element, Condition condition, long maxWaitingTime)
+    public static boolean optionalWaitWhileCondition(SelenideElement element, Condition condition, int maxWaitingTime)
     {
-        return optionalWaitUntilCondition(element, not(condition), maxWaitingTime);
+        return optionalWaitUntilCondition(element, not(condition), maxWaitingTime, null);
     }
 
     /**
@@ -624,7 +632,7 @@ public class SelenideAddons
      *            the amount of time to wait in between retries
      * @return if the element did stop matching the condition within the given retries
      */
-    public static boolean optionalWaitWhileCondition(SelenideElement element, Condition condition, long maxWaitingTime, long pollingInterval)
+    public static boolean optionalWaitWhileCondition(SelenideElement element, Condition condition, int maxWaitingTime, int pollingInterval)
     {
         return optionalWaitUntilCondition(element, not(condition), maxWaitingTime, pollingInterval);
     }
