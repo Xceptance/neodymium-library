@@ -642,9 +642,9 @@ public class SelenideAddonsTest
         Assert.assertEquals(text, $("body").getText());
     }
 
-    private static final int CUSTOM_MAX_WAITING_TIME = 20000;
+    private static final long CUSTOM_MAX_WAITING_TIME = 20000;
 
-    private static final int CUSTOM_POLLING_INTERVAL = 5000;
+    private static final long CUSTOM_POLLING_INTERVAL = 5000;
 
     private static final String PRIVACY_DIALOG_SELECTOR = "#privacy-message";
 

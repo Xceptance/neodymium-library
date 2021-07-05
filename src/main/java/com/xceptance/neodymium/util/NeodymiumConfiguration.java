@@ -47,11 +47,11 @@ public interface NeodymiumConfiguration extends Mutable
 
     @Key("neodymium.selenideAddons.optional.retry.pollingIntervall")
     @DefaultValue("3000")
-    public int optionalElementRetryPollingIntervall();
+    public long optionalElementRetryPollingIntervall();
 
     @Key("neodymium.selenideAddons.optional.retry.timeout")
     @DefaultValue("30000")
-    public int optionalElementRetryTimeout();
+    public long optionalElementRetryTimeout();
 
     @Key("neodymium.javaScriptUtils.timeout")
     @DefaultValue("2000")
