@@ -712,4 +712,170 @@ public class SelenideAddonsTest
         SelenideAddons.openHtmlContentWithCurrentWebDriver(textHtml);
         Assert.assertEquals(text, $("body").getText());
     }
+
+    private static final long CUSTOM_MAX_WAITING_TIME = 20000;
+
+    private static final long CUSTOM_POLLING_INTERVAL = 5000;
+
+    private static final String PRIVACY_DIALOG_SELECTOR = "#privacy-message";
+
+    private void validateRuntimeIsExpected(Runnable runnable, long expectedTime, long pollingInterval)
+    {
+        final long startTime = new Date().getTime();
+        runnable.run();
+        final long endTime = new Date().getTime();
+
+        final long runtime = endTime - startTime;
+        // check that runtime of the wait until method was as long as expected
+        Assert.assertTrue("Runtime was not within the expected range", Range.between(expectedTime, expectedTime + pollingInterval / 2)
+                                                                            .contains(runtime));
+    }
+
+    @Test
+    public void testOptionalWaitUntil()
+    {
+        openBlogPage();
+
+        validateRuntimeIsExpected(() -> {
+            // wait until the optional privacy dialog is visible
+            boolean isVisible = SelenideAddons.optionalWaitUntilCondition($(PRIVACY_DIALOG_SELECTOR), visible, CUSTOM_MAX_WAITING_TIME);
+            Assert.assertTrue("the privacy message dialog was not found within the timeframe", isVisible);
+        },
+                                  0,
+                                  Neodymium.configuration().optionalElementRetryPollingIntervall());
+
+        validateRuntimeIsExpected(() -> {
+            // try wait until the optional privacy dialog is hidden, which will fail
+            boolean isHidden = SelenideAddons.optionalWaitUntilCondition($(PRIVACY_DIALOG_SELECTOR), hidden, CUSTOM_MAX_WAITING_TIME);
+            // check that the is false as is expected
+            Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
+        },
+                                  CUSTOM_MAX_WAITING_TIME,
+                                  Neodymium.configuration().optionalElementRetryPollingIntervall());
+    }
+
+    @Test
+    public void testOptionalWaitWhile()
+    {
+        openBlogPage();
+
+        validateRuntimeIsExpected(() -> {
+            // wait until the optional privacy dialog is not visible anymore, which will fail
+            boolean isHidden = SelenideAddons.optionalWaitWhileCondition($(PRIVACY_DIALOG_SELECTOR), visible, CUSTOM_MAX_WAITING_TIME);
+            // check that the result is false as expected
+            Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
+        },
+                                  CUSTOM_MAX_WAITING_TIME,
+                                  Neodymium.configuration().optionalElementRetryPollingIntervall());
+
+        // click the opt out button
+        $(PRIVACY_DIALOG_SELECTOR).find(".btn-link").click();
+
+        validateRuntimeIsExpected(() -> {
+            // wait until the privacy dialog is hidden
+            boolean isHidden = SelenideAddons.optionalWaitWhileCondition($(PRIVACY_DIALOG_SELECTOR), visible, CUSTOM_MAX_WAITING_TIME);
+            Assert.assertTrue("the privacy message dialog remained visible during the timeframe", isHidden);
+        },
+                                  0,
+                                  Neodymium.configuration().optionalElementRetryPollingIntervall());
+    }
+
+    @Test
+    public void testOptionalWaitUntilWithDefaultTimeout()
+    {
+        openBlogPage();
+
+        validateRuntimeIsExpected(() -> {
+            // wait until the optional privacy dialog is visible
+            boolean isVisible = SelenideAddons.optionalWaitUntilCondition($(PRIVACY_DIALOG_SELECTOR), visible);
+            Assert.assertTrue("the privacy message dialog was not found within the timeframe", isVisible);
+        },
+                                  0,
+                                  Neodymium.configuration().optionalElementRetryPollingIntervall());
+
+        validateRuntimeIsExpected(() -> {
+            // try wait until the optional privacy dialog is hidden, which will fail
+            boolean isHidden = SelenideAddons.optionalWaitUntilCondition($(PRIVACY_DIALOG_SELECTOR), hidden);
+            // check that the is false as is expected
+            Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
+        },
+                                  Neodymium.configuration().optionalElementRetryTimeout(),
+                                  Neodymium.configuration().optionalElementRetryPollingIntervall());
+    }
+
+    @Test
+    public void testOptionalWaitWhileWithDefaultTimeout()
+    {
+        openBlogPage();
+
+        validateRuntimeIsExpected(() -> {
+            // wait until the optional privacy dialog is not visible anymore, which will fail
+            boolean isHidden = SelenideAddons.optionalWaitWhileCondition($(PRIVACY_DIALOG_SELECTOR), visible);
+            // check that the result is false as expected
+            Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
+        },
+                                  Neodymium.configuration().optionalElementRetryTimeout(),
+                                  Neodymium.configuration().optionalElementRetryPollingIntervall());
+
+        // click the opt out button
+        $(PRIVACY_DIALOG_SELECTOR).find(".btn-link").click();
+
+        validateRuntimeIsExpected(() -> {
+            // wait until the privacy dialog is hidden
+            boolean isHidden = SelenideAddons.optionalWaitWhileCondition($(PRIVACY_DIALOG_SELECTOR), visible);
+            Assert.assertTrue("the privacy message dialog remained visible during the timeframe", isHidden);
+        },
+                                  0,
+                                  Neodymium.configuration().optionalElementRetryPollingIntervall());
+    }
+
+    @Test
+    public void testOptionalWaitUntilWithTimeoutAndPollingInterval()
+    {
+        openBlogPage();
+
+        validateRuntimeIsExpected(() -> {
+            // wait until the optional privacy dialog is visible
+            boolean isVisible = SelenideAddons.optionalWaitUntilCondition($(PRIVACY_DIALOG_SELECTOR), visible, CUSTOM_MAX_WAITING_TIME,
+                                                                          CUSTOM_POLLING_INTERVAL);
+            Assert.assertTrue("the privacy message dialog was not found within the timeframe", isVisible);
+        },
+                                  0,
+                                  CUSTOM_POLLING_INTERVAL);
+
+        validateRuntimeIsExpected(() -> {
+            // try wait until the optional privacy dialog is hidden, which will fail
+            boolean isHidden = SelenideAddons.optionalWaitUntilCondition($(PRIVACY_DIALOG_SELECTOR), hidden, CUSTOM_MAX_WAITING_TIME, CUSTOM_POLLING_INTERVAL);
+            // check that the is false as is expected
+            Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
+        },
+                                  CUSTOM_MAX_WAITING_TIME,
+                                  CUSTOM_POLLING_INTERVAL);
+    }
+
+    @Test
+    public void testOptionalWaitWhileWithTimeoutAndPollingInterval()
+    {
+        openBlogPage();
+
+        validateRuntimeIsExpected(() -> {
+            // wait until the optional privacy dialog is not visible anymore, which will fail
+            boolean isHidden = SelenideAddons.optionalWaitWhileCondition($(PRIVACY_DIALOG_SELECTOR), visible, CUSTOM_MAX_WAITING_TIME, CUSTOM_POLLING_INTERVAL);
+            // check that the result is false as expected
+            Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
+        },
+                                  CUSTOM_MAX_WAITING_TIME,
+                                  CUSTOM_POLLING_INTERVAL);
+
+        // click the opt out button
+        $(PRIVACY_DIALOG_SELECTOR).find(".btn-link").click();
+
+        validateRuntimeIsExpected(() -> {
+            // wait until the privacy dialog is hidden
+            boolean isHidden = SelenideAddons.optionalWaitWhileCondition($(PRIVACY_DIALOG_SELECTOR), visible, CUSTOM_MAX_WAITING_TIME, CUSTOM_POLLING_INTERVAL);
+            Assert.assertTrue("the privacy message dialog remained visible during the timeframe", isHidden);
+        },
+                                  0,
+                                  CUSTOM_POLLING_INTERVAL);
+    }
 }
