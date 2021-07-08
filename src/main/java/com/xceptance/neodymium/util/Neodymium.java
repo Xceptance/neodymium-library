@@ -455,6 +455,17 @@ public class Neodymium
     {
         Configuration.timeout = timeout;
     }
+    
+    /**
+     * Shortcut to set download folder
+     * 
+     * @param downloadFolder
+     *            the directory where Selenide should store downloaded files
+     */
+    public static void downloadFolder(String downloadFolder)
+    {
+        Configuration.downloadsFolder = downloadFolder;
+    }
 
     /**
      * Validates if the currently configured site is equal to one or more Strings.

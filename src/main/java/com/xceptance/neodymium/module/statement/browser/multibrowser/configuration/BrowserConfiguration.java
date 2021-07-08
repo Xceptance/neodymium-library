@@ -27,6 +27,8 @@ public class BrowserConfiguration
 
     private List<String> arguments;
 
+    private String downloadDirectory;
+
     public String getConfigTag()
     {
         return browserTag;
@@ -105,5 +107,15 @@ public class BrowserConfiguration
     public void setArguments(List<String> arguments)
     {
         this.arguments = arguments;
+    }
+
+    public String getDownloadDirectory()
+    {
+        return downloadDirectory;
+    }
+
+    public void setDownloadDirectory(String downloadDirectory)
+    {
+        this.downloadDirectory = downloadDirectory;
     }
 }
