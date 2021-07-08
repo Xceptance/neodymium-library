@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.module.statement.browser.multibrowser;
+package com.xceptance.neodymium.module.statement.browser;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
@@ -9,10 +9,10 @@ import java.lang.annotation.Target;
 
 @Retention(RUNTIME)
 @Target(
-    {
-        TYPE, METHOD
-    })
-public @interface SuppressBrowsers
 {
-
+  TYPE, METHOD
+})
+public @interface KeepBrowserOpen
+{
+    boolean value() default false;
 }
