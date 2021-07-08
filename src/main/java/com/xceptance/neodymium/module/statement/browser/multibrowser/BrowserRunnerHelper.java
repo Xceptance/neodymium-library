@@ -20,6 +20,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.BrowserType;
@@ -229,6 +230,11 @@ public final class BrowserRunnerHelper
                     options.addArguments(config.getArguments());
                 }
 
+                if (config.getPreferences() != null && !config.getPreferences().isEmpty())
+                {
+                    options.setExperimentalOption("prefs", config.getPreferences());
+                }
+
                 wDSC.setWebDriver(new ChromeDriver(options));
             }
             else if (firefoxBrowsers.contains(browserName))
@@ -240,6 +246,26 @@ public final class BrowserRunnerHelper
                 if (config.getArguments() != null && config.getArguments().size() > 0)
                 {
                     options.addArguments(config.getArguments());
+                }
+
+                if (config.getPreferences() != null && !config.getPreferences().isEmpty())
+                {
+                    FirefoxProfile profile = new FirefoxProfile();
+
+                    // differentiate types of preference values to avoid misunderstanding
+                    if (config.getPreferencesBoolean() != null && config.getPreferencesBoolean().isEmpty())
+                    {
+                        config.getPreferencesBoolean().forEach((key, val) -> profile.setPreference(key, val));
+                    }
+                    if (config.getPreferencesInteger() != null && config.getPreferencesInteger().isEmpty())
+                    {
+                        config.getPreferencesInteger().forEach((key, val) -> profile.setPreference(key, val));
+                    }
+                    if (config.getPreferencesString() != null && config.getPreferencesString().isEmpty())
+                    {
+                        config.getPreferencesString().forEach((key, val) -> profile.setPreference(key, val));
+                    }
+                    options.setProfile(profile);
                 }
 
                 wDSC.setWebDriver(new FirefoxDriver(options));
