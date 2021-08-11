@@ -3,6 +3,7 @@ package com.xceptance.neodymium.module.statement.browser.multibrowser;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,11 +17,14 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerDriverService;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
@@ -28,6 +32,7 @@ import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.safari.SafariDriverService;
 import org.openqa.selenium.safari.SafariOptions;
 
 import com.browserup.bup.BrowserUpProxy;
@@ -41,6 +46,10 @@ import com.browserup.bup.proxy.auth.AuthType;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.TestEnvironment;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.wrappers.ChromeBuilder;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.wrappers.GeckoBuilder;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.wrappers.IEBuilder;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.wrappers.SafariBuilder;
 import com.xceptance.neodymium.util.Neodymium;
 import com.xceptance.neodymium.util.NeodymiumConfiguration;
 
@@ -218,7 +227,7 @@ public final class BrowserRunnerHelper
                 final ChromeOptions options = (ChromeOptions) capabilities;
 
                 // do we have a custom path?
-                final String pathToBrowser = Neodymium.configuration().getChromeBrowserPath();
+                String pathToBrowser = Neodymium.configuration().getChromeBrowserPath();
                 if (StringUtils.isNotBlank(pathToBrowser))
                 {
                     options.setBinary(pathToBrowser);
@@ -229,12 +238,22 @@ public final class BrowserRunnerHelper
                     options.addArguments(config.getArguments());
                 }
 
-                wDSC.setWebDriver(new ChromeDriver(options));
+                ChromeDriverService defaultServer = new ChromeBuilder().createDriverService(createArgsList(Neodymium.configuration()
+                                                                                                                    .getChromeDriverArguments()));
+                if (defaultServer != null)
+                {
+                    wDSC.setWebDriver(new ChromeDriver(defaultServer, options));
+                }
+                else
+                {
+                    wDSC.setWebDriver(new ChromeDriver(options));
+                }
             }
             else if (firefoxBrowsers.contains(browserName))
             {
                 final FirefoxOptions options = new FirefoxOptions();
-                options.setBinary(createFirefoxBinary(Neodymium.configuration().getFirefoxBrowserPath()));
+                var binary = createFirefoxBinary(Neodymium.configuration().getFirefoxBrowserPath());
+                options.setBinary(binary);
                 options.merge(capabilities);
                 options.setHeadless(config.isHeadless());
                 if (config.getArguments() != null && config.getArguments().size() > 0)
@@ -242,7 +261,17 @@ public final class BrowserRunnerHelper
                     options.addArguments(config.getArguments());
                 }
 
-                wDSC.setWebDriver(new FirefoxDriver(options));
+                GeckoDriverService defaultServer = new GeckoBuilder().createDriverService(createArgsList(Neodymium.configuration()
+                                                                                                                  .getFirefoxDriverArguments()));
+
+                if (defaultServer != null)
+                {
+                    wDSC.setWebDriver(new FirefoxDriver(defaultServer, options));
+                }
+                else
+                {
+                    wDSC.setWebDriver(new FirefoxDriver(options));
+                }
             }
             else if (internetExplorerBrowsers.contains(browserName))
             {
@@ -255,13 +284,33 @@ public final class BrowserRunnerHelper
                         options.addCommandSwitches(argument);
                     }
                 }
+                InternetExplorerDriverService defaultServer = new IEBuilder().createDriverService(createArgsList(Neodymium.configuration()
+                                                                                                                          .getIeDriverArguments()));
 
+                if (defaultServer != null)
+                {
+                    wDSC.setWebDriver(new InternetExplorerDriver(defaultServer, options));
+                }
+                else
+                {
+                    wDSC.setWebDriver(new InternetExplorerDriver(options));
+                }
                 wDSC.setWebDriver(new InternetExplorerDriver(options));
             }
             else if (safariBrowsers.contains(browserName))
             {
                 final SafariOptions options = (SafariOptions) capabilities;
-                wDSC.setWebDriver(new SafariDriver(options));
+                SafariDriverService defaultServer = new SafariBuilder().createDriverService(createArgsList(Neodymium.configuration()
+                                                                                                                    .getSafariDriverArguments()));
+
+                if (defaultServer != null)
+                {
+                    wDSC.setWebDriver(new SafariDriver(defaultServer, options));
+                }
+                else
+                {
+                    wDSC.setWebDriver(new SafariDriver(options));
+                }
             }
             else
             {
@@ -270,11 +319,19 @@ public final class BrowserRunnerHelper
         }
         else
         {
+
             // establish connection to target website
             wDSC.setWebDriver(new RemoteWebDriver(createGridExecutor(testEnvironment), capabilities));
         }
 
         return wDSC;
+    }
+
+    private static List<String> createArgsList(String argsString)
+    {
+        var argsList = new ArrayList<>(List.of(argsString.split(";")));
+        argsList.removeIf(arg -> arg == null || arg.trim().equals(""));
+        return argsList;
     }
 
     private static BrowserUpProxy setupEmbeddedProxy()
