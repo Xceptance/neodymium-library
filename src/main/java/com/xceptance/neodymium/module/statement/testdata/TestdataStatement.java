@@ -93,7 +93,7 @@ public class TestdataStatement extends StatementBuilder
                     {
                         field.set(testClassInstance, DataUtils.get("$." + field.getName(), field.getType()));
                     }
-                    else
+                    else if (DataUtils.getDataAsJsonObject().isJsonPrimitive() ==( field.getType().isPrimitive()|| field.getType().equals(String.class)) )
                     {
                         field.set(testClassInstance, DataUtils.get(field.getType()));
                     }
