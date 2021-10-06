@@ -93,14 +93,15 @@ public class TestdataStatement extends StatementBuilder
                     {
                         field.set(testClassInstance, DataUtils.get("$." + field.getName(), field.getType()));
                     }
-                    else if (DataUtils.getDataAsJsonObject().isJsonPrimitive() ==( field.getType().isPrimitive()|| field.getType().equals(String.class)) )
+                    else if (DataUtils.getDataAsJsonObject().isJsonPrimitive() == (field.getType().isPrimitive() || field.getType().equals(String.class)))
                     {
                         field.set(testClassInstance, DataUtils.get(field.getType()));
                     }
                 }
                 catch (Exception e)
                 {
-                    throw new RuntimeException("Something went wrong while test data value injection", e);
+                    throw new RuntimeException("Something went wrong while test data value injection for field:'" + field.getName() + "' in class:'"
+                                               + testClassInstance.getClass().getName() + "'", e);
                 }
                 finally
                 {
