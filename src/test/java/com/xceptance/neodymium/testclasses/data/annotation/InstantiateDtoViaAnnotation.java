@@ -9,7 +9,7 @@ import com.xceptance.neodymium.module.statement.testdata.DataItem;
 import com.xceptance.neodymium.util.DataUtils;
 
 @RunWith(NeodymiumRunner.class)
-public class InstantiateDtoViaAnnotation
+public class InstantiateDtoViaAnnotation extends InstantiateFieldViaAnnotation
 {
     @DataItem
     private User user;
@@ -19,5 +19,6 @@ public class InstantiateDtoViaAnnotation
     {
         Assert.assertEquals("john" + DataUtils.asString("testId") + "@varmail.de", user.getEmail());
         Assert.assertEquals("neodymium" + DataUtils.asString("testId"), user.getPassword());
+        validateDataItemDefaultValues();
     }
 }
