@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.testdata.DataItem;
+import com.xceptance.neodymium.module.statement.testdata.DataSet;
 
 @RunWith(NeodymiumRunner.class)
 public class InstantiateFieldViaAnnotation
@@ -35,7 +36,21 @@ public class InstantiateFieldViaAnnotation
     private boolean booleanDefaultValue;
 
     @Test
+    @DataSet(1)
     public void test1()
+    {
+        Assert.assertEquals("Data injection doesn't work as expected", "John" + testId, name);
+        Assert.assertEquals("Data injection doesn't work as expected", stringDefaultValue, "first");
+        Assert.assertEquals("Data injection doesn't work as expected", intDefaultValue, 1);
+        Assert.assertEquals("Data injection doesn't work as expected", longDefaultValue, 1);
+        Assert.assertEquals("Data injection doesn't work as expected", floatDefaultValue, 1.0f, 0.001f);
+        Assert.assertEquals("Data injection doesn't work as expected", doubleDefaultValue, 1.0, 0.001);
+        Assert.assertTrue("Data injection doesn't work as expected", booleanDefaultValue);
+    }
+
+    @Test
+    @DataSet(2)
+    public void test2()
     {
         Assert.assertEquals("Data injection doesn't work as expected", "John" + testId, name);
         validateDataItemDefaultValues();
