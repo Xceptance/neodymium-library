@@ -6,8 +6,8 @@ import java.util.function.Supplier;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.xceptance.neodymium.module.statement.browser.BrowserStatement;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
+import com.xceptance.neodymium.common.browser.WebDriverCache;
+import com.xceptance.neodymium.junit4.statement.browser.BrowserStatement;
 
 import io.cucumber.java.Scenario;
 

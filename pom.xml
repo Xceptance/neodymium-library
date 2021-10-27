@@ -53,12 +53,15 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source.version>11</maven.compiler.source.version>
 		<maven.compiler.target.version>11</maven.compiler.target.version>
-		<surefire.version>2.22.2</surefire.version>
+		<surefire.version>3.0.0-M5</surefire.version>
 		<allure.version>2.13.9</allure.version>
 		<selenide.version>5.20.1</selenide.version>
 		<cucumber.version>6.9.1</cucumber.version>
 		<browserup.version>2.1.2</browserup.version>
 		<log4j.version>2.14.0</log4j.version>
+		<junit.version>4.13.1</junit.version>
+		<junit.jupiter.version>5.8.0</junit.jupiter.version>
+		<junit.vintage.version>5.8.0</junit.vintage.version>
 	</properties>
 
 	<repositories>
@@ -105,8 +108,8 @@
 					<forkCount>4</forkCount>
 					<reuseForks>false</reuseForks>
 					<includes>
-						<include>com/xceptance/neodymium/tests/**/*Test.java</include>
-						<include>com/xceptance/neodymium/util/**/*Test.java</include>
+						<include>com/xceptance/neodymium/junit5/tests/**/*Test.java</include>
+						<include>com/xceptance/neodymium/common/**/*Test.java</include>
 					</includes>
 				</configuration>
 			</plugin>
@@ -197,6 +200,49 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>junit-4</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<includes>
+								<include>com/xceptance/neodymium/junit4/tests/**/*Test.java</include>
+							</includes>
+							<excludes>
+								<exclude>com/xceptance/neodymium/junit4/tests/visual/**/*Test.java</exclude>
+							</excludes>
+						</configuration>
+						<dependencies>
+							<dependency>
+								<groupId>org.junit.vintage</groupId>
+								<artifactId>junit-vintage-engine</artifactId>
+								<version>${junit.vintage.version}</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>junit-5</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<includes>
+								<include>com/xceptance/neodymium/junit5/tests/**/*Test.java</include>
+								<include>com/xceptance/neodymium/common/**/*Test.java</include>
+							</includes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 
 	<reporting>
@@ -213,7 +259,12 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.13.1</version>
+			<version>${junit.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${junit.jupiter.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.aeonbits.owner</groupId>
@@ -248,6 +299,11 @@
 		<dependency>
 			<groupId>io.qameta.allure</groupId>
 			<artifactId>allure-junit4</artifactId>
+			<version>${allure.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.qameta.allure</groupId>
+			<artifactId>allure-junit5</artifactId>
 			<version>${allure.version}</version>
 		</dependency>
 		<dependency>

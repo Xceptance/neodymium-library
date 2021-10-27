@@ -1,0 +1,1 @@
+{"uuid":"d59a93cc-b417-4359-8497-436cb21f2b55","name":"test2 :: Browser Chrome_1500x1000_headless","children":["73bd4662-88c9-4f8a-837e-68040187a826"],"befores":[{"name":"before","status":"passed","stage":"finished","steps":[],"attachments":[],"parameters":[],"start":1635325233416,"stop":1635325233417}],"afters":[],"links":[],"start":1635325233214,"stop":1635325233420}
