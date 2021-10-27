@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import com.xceptance.neodymium.junit5.testclasses.multibrowser.BrowserWithoutAvailableEnvironment;
 import com.xceptance.neodymium.junit5.testclasses.multibrowser.EnvironmentAndBrowserConfiguration;
 import com.xceptance.neodymium.junit5.tests.utils.NeodymiumTestExecutionSummary;
-import com.codeborne.selenide.Selenide;
 import com.xceptance.neodymium.common.browser.configuration.BadProxyEnvironmentConfiguration;
 
 public class EnvironmentAndBrowserConfigurationTest extends AbstractNeodymiumTest
@@ -48,7 +47,7 @@ public class EnvironmentAndBrowserConfigurationTest extends AbstractNeodymiumTes
 
     public static final String PROXYPASSWORD2 = "password2";
 
-    public static final Boolean GLOBALHEADLESS = true;
+    public static final Boolean GLOBALHEADLESS = false;
 
     public static final Boolean GLOBALACCEPTINSECURECERTIFICATES = true;
 

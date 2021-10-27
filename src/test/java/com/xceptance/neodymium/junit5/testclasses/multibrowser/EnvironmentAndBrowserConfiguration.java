@@ -7,7 +7,7 @@ import com.xceptance.neodymium.junit5.NeodymiumTest;
 import com.xceptance.neodymium.common.browser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.common.browser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.common.browser.configuration.TestEnvironment;
-import com.xceptance.neodymium.junit4.tests.EnvironmentAndBrowserConfigurationTest;
+import com.xceptance.neodymium.junit5.tests.EnvironmentAndBrowserConfigurationTest;
 
 public class EnvironmentAndBrowserConfiguration
 {
