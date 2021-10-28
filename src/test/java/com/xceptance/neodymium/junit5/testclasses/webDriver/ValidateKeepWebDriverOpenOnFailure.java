@@ -19,6 +19,7 @@ import com.xceptance.neodymium.junit5.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.junit5.NeodymiumTest;
 import com.xceptance.neodymium.common.browser.Browser;
 import com.xceptance.neodymium.common.browser.WebDriverCache;
+import com.xceptance.neodymium.common.browser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.util.Neodymium;
 
 /*
@@ -43,6 +44,8 @@ public class ValidateKeepWebDriverOpenOnFailure
 
     private static File tempConfigFile;
 
+    private static File tempBrowserConfigFile;
+
     @BeforeAll
     public static void beforeClass()
     {
@@ -54,6 +57,16 @@ public class ValidateKeepWebDriverOpenOnFailure
         properties.put("neodymium.localproxy", "true");
         AbstractNeodymiumTest.writeMapToPropertiesFile(properties, tempConfigFile);
         ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
+
+        Map<String, String> browserProperties = new HashMap<>();
+        browserProperties.put("browserprofile.Chrome_1024x768.headless", "false");
+
+        tempBrowserConfigFile = new File("./config/temp-ValidateKeepWebDriverOpenOnFailure-browser.properties");
+        AbstractNeodymiumTest.writeMapToPropertiesFile(properties, tempConfigFile);
+
+        // this line is important as we initialize the config from the temporary file we created above
+        MultibrowserConfiguration.clearAllInstances();
+        MultibrowserConfiguration.getInstance(tempConfigFile.getPath());
 
         Assertions.assertNull(webDriver1);
         Assertions.assertNull(Neodymium.getDriver());
@@ -164,5 +177,6 @@ public class ValidateKeepWebDriverOpenOnFailure
         NeodymiumWebDriverTest.assertProxyStopped(proxy3);
 
         AbstractNeodymiumTest.deleteTempFile(tempConfigFile);
+        AbstractNeodymiumTest.deleteTempFile(tempBrowserConfigFile);
     }
 }

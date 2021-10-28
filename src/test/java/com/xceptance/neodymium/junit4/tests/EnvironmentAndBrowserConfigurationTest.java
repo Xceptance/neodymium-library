@@ -48,7 +48,7 @@ public class EnvironmentAndBrowserConfigurationTest extends NeodymiumTest
 
     public static final String PROXYPASSWORD2 = "password2";
 
-    public static final Boolean GLOBALHEADLESS = false;
+    public static final Boolean GLOBALHEADLESS = true;
 
     public static final Boolean GLOBALACCEPTINSECURECERTIFICATES = true;
 
