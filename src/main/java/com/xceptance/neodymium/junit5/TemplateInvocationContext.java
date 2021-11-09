@@ -6,9 +6,9 @@ import java.util.List;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.TestTemplateInvocationContext;
 
+import com.xceptance.neodymium.common.testdata.TestdataContainer;
 import com.xceptance.neodymium.junit5.browser.BrowserExecutionCallback;
 import com.xceptance.neodymium.junit5.testdata.TestdataCallback;
-import com.xceptance.neodymium.junit5.testdata.TestdataContainer;
 
 public class TemplateInvocationContext implements TestTemplateInvocationContext
 {
@@ -40,7 +40,7 @@ public class TemplateInvocationContext implements TestTemplateInvocationContext
         }
         if (dataSet != null)
         {
-            extentions.add(new TestdataCallback(dataSet, methodName));
+            extentions.add(new TestdataCallback(dataSet));
         }
         return extentions;
     }

@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.junit5;
+package com.xceptance.neodymium.common;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Repeatable;

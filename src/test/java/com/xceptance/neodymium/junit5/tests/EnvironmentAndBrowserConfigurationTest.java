@@ -138,11 +138,11 @@ public class EnvironmentAndBrowserConfigurationTest extends AbstractNeodymiumTes
         checkPass(summary, 3, 0);
     }
 
-    // @Test
+     @Test
     public void testRunningABrowserWithoutAEnvironmentConfiguration()
     {
         // test environment configuration
         NeodymiumTestExecutionSummary summary = run(BrowserWithoutAvailableEnvironment.class);
-        checkFail(summary, 1, 0, 1, "No properties found for test environment: \"" + ENVIRONMENTNAME + "\"");
+        checkFail(summary, 1, 0, 1, "java.lang.IllegalArgumentException: No properties found for test environment: \"" + ENVIRONMENTNAME + "\"");
     }
 }

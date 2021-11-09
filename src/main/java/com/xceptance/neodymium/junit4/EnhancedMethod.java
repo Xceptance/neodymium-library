@@ -10,7 +10,7 @@ public class EnhancedMethod extends FrameworkMethod
 {
     private List<Object> data = new LinkedList<>();
 
-    private List<StatementBuilder> builder = new LinkedList<>();
+    private List<StatementBuilder<?>> builder = new LinkedList<>();
 
     public EnhancedMethod(Method method)
     {
@@ -27,12 +27,12 @@ public class EnhancedMethod extends FrameworkMethod
         this.data = data;
     }
 
-    public List<StatementBuilder> getBuilder()
+    public List<StatementBuilder<?>> getBuilder()
     {
         return builder;
     }
 
-    public void setBuilder(List<StatementBuilder> builder)
+    public void setBuilder(List<StatementBuilder<?>> builder)
     {
         this.builder = builder;
     }
@@ -44,7 +44,7 @@ public class EnhancedMethod extends FrameworkMethod
         nameBuilder.append(super.getName());
         for (int i = builder.size() - 1; i >= 0; i--)
         {
-            StatementBuilder statementBuilder = builder.get(i);
+            StatementBuilder<?> statementBuilder = builder.get(i);
             nameBuilder.append(" :: ");
             nameBuilder.append(statementBuilder.getTestName(data.get(i)));
         }
@@ -54,6 +54,7 @@ public class EnhancedMethod extends FrameworkMethod
 
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -68,6 +69,7 @@ public class EnhancedMethod extends FrameworkMethod
 
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override

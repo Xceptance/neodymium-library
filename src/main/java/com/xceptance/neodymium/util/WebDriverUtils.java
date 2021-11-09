@@ -6,19 +6,19 @@ import java.util.function.Supplier;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.xceptance.neodymium.common.browser.BrowserRunner;
 import com.xceptance.neodymium.common.browser.WebDriverCache;
-import com.xceptance.neodymium.junit4.statement.browser.BrowserStatement;
 
 import io.cucumber.java.Scenario;
 
 public class WebDriverUtils
 {
-    private static ThreadLocal<BrowserStatement> browserStatement = ThreadLocal.withInitial(new Supplier<BrowserStatement>()
+    private static ThreadLocal<BrowserRunner> browserHelper = ThreadLocal.withInitial(new Supplier<BrowserRunner>()
     {
         @Override
-        public BrowserStatement get()
+        public BrowserRunner get()
         {
-            return new BrowserStatement();
+            return new BrowserRunner();
         }
     });
 
@@ -35,9 +35,9 @@ public class WebDriverUtils
      **/
     public static void setUp(final String browserProfileName)
     {
-        if (browserStatement.get().getBrowserTags().contains(browserProfileName))
+        if (browserHelper.get().getBrowserTags().contains(browserProfileName))
         {
-            browserStatement.get().setUpTest(browserProfileName);
+            browserHelper.get().setUpTest(browserProfileName);
         }
         else
         {
@@ -59,7 +59,7 @@ public class WebDriverUtils
     public static void setUpWithBrowserTag(Scenario scenario)
     {
         String browserProfileName = getFirstMatchingBrowserTag(scenario);
-        browserStatement.get().setUpTest(browserProfileName);
+        browserHelper.get().setUpTest(browserProfileName);
     }
 
     /**
@@ -79,7 +79,7 @@ public class WebDriverUtils
      **/
     public static void preventReuseAndTearDown()
     {
-        browserStatement.get().teardown(false, true, Neodymium.getWebDriverStateContainer());
+        browserHelper.get().teardown(false, true, Neodymium.getWebDriverStateContainer());
     }
 
     /**
@@ -105,7 +105,7 @@ public class WebDriverUtils
      **/
     public static void tearDown(boolean isFailed)
     {
-        browserStatement.get().teardown(isFailed);
+        browserHelper.get().teardown(isFailed);
     }
 
     /**
@@ -131,7 +131,7 @@ public class WebDriverUtils
     static String getFirstMatchingBrowserTag(Scenario scenario)
     {
         Collection<String> scenarioTags = scenario.getSourceTagNames();
-        List<String> browserTags = browserStatement.get().getBrowserTags();
+        List<String> browserTags = browserHelper.get().getBrowserTags();
 
         String firstBrowserTagFound = "";
         for (String tag : scenarioTags)

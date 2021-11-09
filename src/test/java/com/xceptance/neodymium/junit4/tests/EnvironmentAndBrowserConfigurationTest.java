@@ -132,7 +132,7 @@ public class EnvironmentAndBrowserConfigurationTest extends NeodymiumTest
     }
 
     // TODO create mutal test
-    // @Test
+    @Test
     public void testConfigureBadEnvironmentProxies()
     {
         // test environment configuration

@@ -8,7 +8,6 @@ import java.io.OutputStreamWriter;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.opentest4j.AssertionFailedError;
 
 import com.xceptance.neodymium.junit5.NeodymiumTest;
 import com.xceptance.neodymium.util.Neodymium;

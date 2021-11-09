@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
 import com.xceptance.neodymium.common.browser.Browser;
-import com.xceptance.neodymium.junit4.NeodymiumRunner;
+import com.xceptance.neodymium.junit5.NeodymiumRunner;
 import com.xceptance.neodymium.junit5.NeodymiumTest;
 
 @Browser("Chrome_headless")

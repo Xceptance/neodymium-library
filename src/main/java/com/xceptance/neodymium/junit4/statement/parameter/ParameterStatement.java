@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.xceptance.neodymium.junit4.StatementBuilder;
 
-public class ParameterStatement extends StatementBuilder
+public class ParameterStatement extends StatementBuilder<ParameterStatementData>
 {
     public static Logger LOGGER = LoggerFactory.getLogger(ParameterStatement.class);
 
@@ -48,7 +48,7 @@ public class ParameterStatement extends StatementBuilder
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Object> createIterationData(TestClass testClass, FrameworkMethod method) throws Exception
+    public List<ParameterStatementData> createIterationData(TestClass testClass, FrameworkMethod method) throws Exception
     {
         List<FrameworkMethod> parametersMethods = testClass.getAnnotatedMethods(Parameters.class);
         Iterable<Object> parameter = null;
@@ -92,7 +92,7 @@ public class ParameterStatement extends StatementBuilder
         List<FrameworkField> parameterFrameworkFields = testClass.getAnnotatedFields(Parameter.class);
         LOGGER.debug("Found " + parameterFrameworkFields.size() + " parameter fields");
 
-        List<Object> iterations = new LinkedList<>();
+        List<ParameterStatementData> iterations = new LinkedList<>();
 
         if (parameter != null)
         {
@@ -208,7 +208,7 @@ public class ParameterStatement extends StatementBuilder
     }
 
     @Override
-    public StatementBuilder createStatement(Object testClassInstance, Statement next, Object parameter)
+    public ParameterStatement createStatement(Object testClassInstance, Statement next, Object parameter)
     {
         return new ParameterStatement(next, (ParameterStatementData) parameter, testClassInstance);
     }

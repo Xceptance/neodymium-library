@@ -3,6 +3,10 @@ package com.xceptance.neodymium.junit5.tests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.xceptance.neodymium.junit5.testclasses.data.RandomDataSetsException;
+import com.xceptance.neodymium.junit5.testclasses.data.RandomnessOfDataSets;
+import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.MixRandomDataSetsFromRange;
+import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.OverrideClassRandomDataSetsOnMethodLevel;
 import com.xceptance.neodymium.junit5.testclasses.data.file.json.CanReadDataSetJson;
 import com.xceptance.neodymium.junit5.testclasses.data.file.xml.CanNotReadDataSetXml;
 import com.xceptance.neodymium.junit5.testclasses.data.inheritance.child.PackageTestDataInheritance;
@@ -14,14 +18,19 @@ import com.xceptance.neodymium.junit5.testclasses.data.override.classonly.ClassD
 import com.xceptance.neodymium.junit5.testclasses.data.override.classonly.ClassDefaultValueTwoDataSets;
 import com.xceptance.neodymium.junit5.testclasses.data.override.classonly.ClassExplicitDefaultValueTwoDataSets;
 import com.xceptance.neodymium.junit5.testclasses.data.override.classonly.ClassMultipleSameDataSet;
+import com.xceptance.neodymium.junit5.testclasses.data.override.classonly.ClassRandomDataSets;
+import com.xceptance.neodymium.junit5.testclasses.data.override.classonly.ClassRandomDataSetsFromRange;
 import com.xceptance.neodymium.junit5.testclasses.data.override.methodonly.MethodDefaultEmptyDataSets;
 import com.xceptance.neodymium.junit5.testclasses.data.override.methodonly.MethodDefaultNoDataSets;
 import com.xceptance.neodymium.junit5.testclasses.data.override.methodonly.MethodDefaultOneDataSet;
 import com.xceptance.neodymium.junit5.testclasses.data.override.methodonly.MethodDefaultTwoDataSet;
 import com.xceptance.neodymium.junit5.testclasses.data.override.methodonly.MethodExplicitDefaultTwoDataSets;
 import com.xceptance.neodymium.junit5.testclasses.data.override.methodonly.MethodMultipleSameDataSet;
+import com.xceptance.neodymium.junit5.testclasses.data.override.methodonly.MethodRandomDataSets;
+import com.xceptance.neodymium.junit5.testclasses.data.override.methodonly.MethodRandomDataSetsFromRange;
 import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.ClassWithoutTwoMethodsOneForced;
 import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.ForceOfNoneDataSets;
+import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.MixRandomAndValueDataSets;
 import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.OneDataSetTwoMethodsOneWithout;
 import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.OnlyImplicitOneDataSet;
 import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.TwoDataSetsTwoMethodsOneForced;
@@ -49,88 +58,88 @@ public class TestDataStatementTest extends AbstractNeodymiumTest
     public void testCanReadPackageDataCSV()
     {
         // test package test data csv is read
-        NeodymiumTestExecutionSummary result = run(CanReadPackageDataCSV.class);
-        checkPass(result, 1, 0);
+        NeodymiumTestExecutionSummary summary = run(CanReadPackageDataCSV.class);
+        checkPass(summary, 1, 0);
     }
 
     @Test
     public void testCanReadPackageDataJson()
     {
         // test package test data json is read
-        NeodymiumTestExecutionSummary result = run(CanReadPackageDataJson.class);
-        checkPass(result, 1, 0);
+        NeodymiumTestExecutionSummary summary = run(CanReadPackageDataJson.class);
+        checkPass(summary, 1, 0);
     }
 
     @Test
     public void testCanReadPackageDataProperties()
     {
         // test package test data properties is read
-        NeodymiumTestExecutionSummary result = run(CanReadPackageDataProperties.class);
-        checkPass(result, 1, 0);
+        NeodymiumTestExecutionSummary summary = run(CanReadPackageDataProperties.class);
+        checkPass(summary, 1, 0);
     }
 
     @Test
     public void testCanReadPackageDataXML()
     {
         // test package test data xml is read
-        NeodymiumTestExecutionSummary result = run(CanReadPackageDataXML.class);
-        checkPass(result, 1, 0);
+        NeodymiumTestExecutionSummary summary = run(CanReadPackageDataXML.class);
+        checkPass(summary, 1, 0);
     }
 
     @Test
     public void testCanReadDataSetCSV()
     {
         // test data set csv is read
-        NeodymiumTestExecutionSummary result = run(CanReadDataSetCSV.class);
-        checkPass(result, 1, 0);
+        NeodymiumTestExecutionSummary summary = run(CanReadDataSetCSV.class);
+        checkPass(summary, 1, 0);
     }
 
     @Test
     public void testCanReadDataSetJson()
     {
         // test data set json is read
-        NeodymiumTestExecutionSummary result = run(CanReadDataSetJson.class);
-        checkPass(result, 1, 0);
+        NeodymiumTestExecutionSummary summary = run(CanReadDataSetJson.class);
+        checkPass(summary, 1, 0);
     }
 
     @Test
     public void testCanReadDataSetXML()
     {
         // test data set xml is read
-        NeodymiumTestExecutionSummary result = run(CanReadDataSetXML.class);
-        checkPass(result, 1, 0);
+        NeodymiumTestExecutionSummary summary = run(CanReadDataSetXML.class);
+        checkPass(summary, 1, 0);
     }
 
     @Test
     public void testPackageTestDataInheritance()
     {
         // test inheritance of package test data
-        NeodymiumTestExecutionSummary result = run(PackageTestDataInheritance.class);
-        checkPass(result, 1, 0);
+        NeodymiumTestExecutionSummary summary = run(PackageTestDataInheritance.class);
+        checkPass(summary, 1, 0);
     }
 
     @Test
     public void testGrandChildPackageTestDataInheritance()
     {
         // test multiple inheritance of package test data
-        NeodymiumTestExecutionSummary result = run(GrandChildPackageTestDataInheritance.class);
-        checkPass(result, 1, 0);
+        NeodymiumTestExecutionSummary summary = run(GrandChildPackageTestDataInheritance.class);
+        checkPass(summary, 1, 0);
     }
 
     @Test
     public void testDataSetOverridesPackageData()
     {
         // test that data set overrides package test data
-        NeodymiumTestExecutionSummary result = run(DataSetOverridesPackageData.class);
-        checkPass(result, 1, 0);
+        NeodymiumTestExecutionSummary summary = run(DataSetOverridesPackageData.class);
+        checkPass(summary, 1, 0);
     }
 
     @Test
     public void testDuplicateTestId() throws Exception
     {
         // more than one entry with the same "testId"
-        NeodymiumTestExecutionSummary result = run(DuplicateTestId.class);
-        checkPass(result, 6, 0);
+        NeodymiumTestExecutionSummary summary = run(DuplicateTestId.class);
+        checkPass(summary, 6, 0);
     }
 
     @Test
@@ -138,8 +147,8 @@ public class TestDataStatementTest extends AbstractNeodymiumTest
     {
         // special characters in testId
         // parenthesis will be converted to to brackets
-        NeodymiumTestExecutionSummary result = run(SpecialCharacterTestId.class);
-        checkPass(result, 7, 0);
+        NeodymiumTestExecutionSummary summary = run(SpecialCharacterTestId.class);
+        checkPass(summary, 7, 0);
     }
 
     ///////////////////////
@@ -362,8 +371,8 @@ public class TestDataStatementTest extends AbstractNeodymiumTest
     public void testDataFileAnnotation() throws Exception
     {
         // test package test data csv is read
-        NeodymiumTestExecutionSummary result = run(com.xceptance.neodymium.junit5.testclasses.data.file.json.CanReadDataSetJson.class);
-        checkPass(result, 1, 0);
+        NeodymiumTestExecutionSummary summary = run(com.xceptance.neodymium.junit5.testclasses.data.file.json.CanReadDataSetJson.class);
+        checkPass(summary, 1, 0);
     }
 
     @Test
@@ -372,5 +381,74 @@ public class TestDataStatementTest extends AbstractNeodymiumTest
         NeodymiumTestExecutionSummary summary = run(CanNotReadDataSetXml.class);
         checkFail(summary, 1, 0, 1,
                   "java.lang.RuntimeException: The data file:\"can/not/read/data/set/xml/DoesNotExist.xml\" provided within the test class:\"CanNotReadDataSetXml\" can't be read.");
+    }
+
+    @Test
+    public void testClassRandomDataSet()
+    {
+        NeodymiumTestExecutionSummary summary = run(ClassRandomDataSets.class);
+        checkPass(summary, 4, 0);
+    }
+
+    @Test
+    public void testMethodRandomDataSet()
+    {
+        NeodymiumTestExecutionSummary summary = run(MethodRandomDataSets.class);
+        checkPass(summary, 4, 0);
+    }
+
+    @Test
+    public void testMixRandomAndValueDataSets()
+    {
+        NeodymiumTestExecutionSummary summary = run(MixRandomAndValueDataSets.class);
+        checkPass(summary, 2, 0);
+    }
+
+    @Test
+    public void testClassRandomDataSetSelectedFromRange()
+    {
+        NeodymiumTestExecutionSummary summary = run(ClassRandomDataSetsFromRange.class);
+        checkPass(summary, 4, 0);
+    }
+
+    @Test
+    public void testMethodRandomDataSetSelectedFromRange()
+    {
+        NeodymiumTestExecutionSummary summary = run(MethodRandomDataSetsFromRange.class);
+        checkPass(summary, 4, 0);
+    }
+
+    @Test
+    public void testMixRandomAndValueDataSetsSelectedFromRange()
+    {
+        NeodymiumTestExecutionSummary summary = run(MixRandomDataSetsFromRange.class);
+        checkPass(summary, 4, 0);
+    }
+
+    @Test
+    public void testOverrideClassRandomDataSetsOnMethodLevel() throws Throwable
+    {
+        // One data set, two methods, one method with @Testdata(0)
+        String[] expected = new String[]
+        {
+          "test :: Data set 1 / 2",
+          "test :: Data set 2 / 2",
+        };
+        checkDescription(OverrideClassRandomDataSetsOnMethodLevel.class, expected);
+    }
+
+    @Test
+    public void testRandomnessOfDataSetsTest()
+    {
+        NeodymiumTestExecutionSummary summary = run(RandomnessOfDataSets.class);
+        checkPass(summary, 11, 0);
+    }
+
+    @Test
+    public void testRandomDataSetsException()
+    {
+        NeodymiumTestExecutionSummary summary = run(RandomDataSetsException.class);
+        checkFail(summary, 1, 0, 1,
+                  "java.lang.IllegalArgumentException: Method 'test' is marked to be run with 4 random data sets, but there are only 2 available");
     }
 }

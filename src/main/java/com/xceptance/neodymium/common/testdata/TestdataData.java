@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.junit5.testdata;
+package com.xceptance.neodymium.common.testdata;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -10,13 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.xceptance.neodymium.common.testdata.DataSet;
-import com.xceptance.neodymium.common.testdata.RandomDataSets;
-import com.xceptance.neodymium.common.testdata.SuppressDataSets;
+import com.xceptance.neodymium.common.Data;
 import com.xceptance.neodymium.common.testdata.util.TestDataUtils;
-import com.xceptance.neodymium.junit5.Data;
 import com.xceptance.neodymium.util.Neodymium;
 
 public class TestdataData extends Data
@@ -74,14 +69,12 @@ public class TestdataData extends Data
 
     public List<TestdataContainer> getTestDataForMethod(Method testMethod)
     {
-        List<TestdataContainer> iterations = new LinkedList<>();
-
         List<DataSet> methodDataSetAnnotation = getAnnotations(testMethod, DataSet.class);
         RandomDataSets methodRandomDataSetAnnotation = testMethod.getAnnotation(RandomDataSets.class);
         SuppressDataSets methodSuppressDataSetAnnotation = testMethod.getAnnotation(SuppressDataSets.class);
         if (methodSuppressDataSetAnnotation != null)
         {
-            return iterations;
+            return new LinkedList<>();
         }
         if (methodDataSetAnnotation.isEmpty() && classSuppressDataSetAnnotation != null)
         {
@@ -113,7 +106,7 @@ public class TestdataData extends Data
             if (randomSetAmount > fixedIterations.size())
             {
                 String msg = MessageFormat.format("Method ''{0}'' is marked to be run with {1} random data sets, but there are only {2} available",
-                                                  testMethod.getName(), randomSetAmount, iterations.size());
+                                                  testMethod.getName(), randomSetAmount, fixedIterations.size());
                 throw new IllegalArgumentException(msg);
             }
             // shuffle the order of the data sets first
@@ -215,12 +208,5 @@ public class TestdataData extends Data
         }
 
         return fixedIterations;
-    }
-
-    private String stringifyDataSetAnnotation(DataSet dataSetAnnotation)
-    {
-        String id = dataSetAnnotation.id();
-        int index = dataSetAnnotation.value();
-        return !StringUtils.isBlank(id) ? "id=" + id : index != 0 ? "index=" + index : "";
     }
 }

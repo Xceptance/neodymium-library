@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.junit5.testdata;
+package com.xceptance.neodymium.common.testdata;
 
 import java.util.HashMap;
 import java.util.Map;

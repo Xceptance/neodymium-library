@@ -11,17 +11,17 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 
-public abstract class StatementBuilder extends Statement
+public abstract class StatementBuilder<T> extends Statement
 {
-    public abstract List<Object> createIterationData(TestClass testClass, FrameworkMethod method) throws Throwable;
+    public abstract List<T> createIterationData(TestClass testClass, FrameworkMethod method) throws Throwable;
 
-    public abstract StatementBuilder createStatement(Object testClassInstance, Statement next, Object parameter);
+    public abstract StatementBuilder<T> createStatement(Object testClassInstance, Statement next, Object parameter);
 
     public abstract String getTestName(Object data);
 
     public abstract String getCategoryName(Object data);
 
-    public static <T extends StatementBuilder> T instantiate(Class<T> clazz)
+    public static <R extends StatementBuilder<?>> R instantiate(Class<R> clazz)
     {
         try
         {
@@ -31,42 +31,6 @@ public abstract class StatementBuilder extends Statement
         {
             throw new RuntimeException(e);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T extends Annotation> List<T> getAnnotations(AnnotatedElement object, Class<T> annotationClass)
-    {
-        List<T> annotations = new LinkedList<>();
-        if (object == null || annotationClass == null)
-        {
-            return annotations;
-        }
-
-        // check if the annotation is repeatable
-        Repeatable repeatingAnnotation = annotationClass.getAnnotation(Repeatable.class);
-        Annotation annotation = (repeatingAnnotation == null) ? null : object.getAnnotation(repeatingAnnotation.value());
-
-        if (annotation != null)
-        {
-            try
-            {
-                annotations.addAll(Arrays.asList((T[]) annotation.getClass().getMethod("value").invoke(annotation)));
-            }
-            catch (ReflectiveOperationException e)
-            {
-                throw new RuntimeException(e);
-            }
-        }
-        else
-        {
-            T anno = object.getAnnotation(annotationClass);
-            if (anno != null)
-            {
-                annotations.add(anno);
-            }
-        }
-
-        return annotations;
     }
 
     @SuppressWarnings("unchecked")

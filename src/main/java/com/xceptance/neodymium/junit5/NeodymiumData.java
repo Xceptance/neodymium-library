@@ -7,9 +7,9 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.extension.TestTemplateInvocationContext;
 
-import com.xceptance.neodymium.junit5.browser.BrowserData;
-import com.xceptance.neodymium.junit5.testdata.TestdataContainer;
-import com.xceptance.neodymium.junit5.testdata.TestdataData;
+import com.xceptance.neodymium.common.browser.BrowserData;
+import com.xceptance.neodymium.common.testdata.TestdataContainer;
+import com.xceptance.neodymium.common.testdata.TestdataData;
 
 public class NeodymiumData
 {

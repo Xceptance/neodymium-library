@@ -7,9 +7,9 @@ import com.xceptance.neodymium.junit4.StatementBuilder;
 
 public class StatementRunOrder
 {
-    protected List<Class<? extends StatementBuilder>> runOrder = new LinkedList<>();
+    protected List<Class<? extends StatementBuilder<?>>> runOrder = new LinkedList<>();
 
-    public List<Class<? extends StatementBuilder>> getRunOrder()
+    public List<Class<? extends StatementBuilder<?>>> getRunOrder()
     {
         return runOrder;
     }

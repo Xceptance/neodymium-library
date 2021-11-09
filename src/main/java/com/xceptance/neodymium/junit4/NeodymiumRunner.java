@@ -116,7 +116,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
             EnhancedMethod m = (EnhancedMethod) method;
             for (int i = m.getBuilder().size() - 1; i >= 0; i--)
             {
-                StatementBuilder statementBuilder = m.getBuilder().get(i);
+                StatementBuilder<?> statementBuilder = m.getBuilder().get(i);
                 Object data = m.getData().get(i);
                 methodStatement = statementBuilder.createStatement(testClassInstance, methodStatement, data);
             }
@@ -195,25 +195,25 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
         // Statement run order defines the order of our own statements that will surround the default JUnit statement
         // from methodBlock
-        List<Class<? extends StatementBuilder>> statementRunOrder = new DefaultStatementRunOrder().getRunOrder();
+        List<Class<? extends StatementBuilder<?>>> statementRunOrder = new DefaultStatementRunOrder().getRunOrder();
 
         // super.computeTestMethods will return all methods that are annotated with @Test
         for (FrameworkMethod testAnnotatedMethod : super.computeTestMethods())
         {
             // these lists contain all the builders and data that will be responsible for a particular method
-            List<StatementBuilder> builderList = new LinkedList<>();
-            List<List<Object>> builderDataList = new LinkedList<>();
+            List<StatementBuilder<?>> builderList = new LinkedList<>();
+            List<List<?>> builderDataList = new LinkedList<>();
 
             // iterate over statements defined in the order
-            for (Class<? extends StatementBuilder> statementClass : statementRunOrder)
+            for (Class<? extends StatementBuilder<?>> statementClass : statementRunOrder)
             {
                 // ask each statement builder if this method should be processed
                 // results in a list of parameters for this statement for method multiplication
                 // e.g. for @Browser("A") the data list will contain "A"
 
-                StatementBuilder builder = StatementBuilder.instantiate(statementClass);
+                StatementBuilder<?> builder = StatementBuilder.instantiate(statementClass);
 
-                List<Object> iterationData = null;
+                List<?> iterationData = null;
                 try
                 {
                     iterationData = builder.createIterationData(getTestClass(), testAnnotatedMethod);
@@ -274,7 +274,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         }
     }
 
-    private Description createHierarchicalTestDescription(List<FrameworkMethod> methods)
+    private <T> Description createHierarchicalTestDescription(List<FrameworkMethod> methods)
     {
         Description hierarchicalDescription = Description.createSuiteDescription(getTestClass().getJavaClass());
 
@@ -284,12 +284,12 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
             if (method instanceof EnhancedMethod)
             {
                 EnhancedMethod enhancedMethod = (EnhancedMethod) method;
-                List<StatementBuilder> statementBuilder = enhancedMethod.getBuilder();
-                List<Object> builderData = enhancedMethod.getData();
+                List<StatementBuilder<?>> statementBuilder = enhancedMethod.getBuilder();
+                List<?> builderData = enhancedMethod.getData();
 
                 for (int i = 0; i < statementBuilder.size(); i++)
                 {
-                    StatementBuilder builder = statementBuilder.get(i);
+                    StatementBuilder<?> builder = statementBuilder.get(i);
                     String categoryName = builder.getCategoryName(builderData.get(i));
 
                     // check if hierarchical description has a child with that description
@@ -355,15 +355,16 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         super.runChild(method, notifier);
     }
 
-    private List<FrameworkMethod> buildCrossProduct(Method method, List<StatementBuilder> builderList, List<List<Object>> builderDataList)
+    private <T> List<FrameworkMethod> buildCrossProduct(Method method, List<StatementBuilder<?>> builderList, List<List<?>> builderDataList)
     {
         List<FrameworkMethod> resultingMethods = new LinkedList<>();
         recursiveBuildCrossProduct(method, builderList, builderDataList, 0, resultingMethods, null);
         return resultingMethods;
     }
 
-    private void recursiveBuildCrossProduct(Method method, List<StatementBuilder> builderList, List<List<Object>> builderDataList,
-                                            int currentIndex, List<FrameworkMethod> resultingMethods, EnhancedMethod actualFrameworkMethod)
+    @SuppressWarnings("unchecked")
+    private <T> void recursiveBuildCrossProduct(Method method, List<StatementBuilder<?>> builderList, List<List<?>> builderDataList,
+                                                int currentIndex, List<FrameworkMethod> resultingMethods, EnhancedMethod actualFrameworkMethod)
     {
         if (builderList.isEmpty())
         {
@@ -372,10 +373,10 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         }
         else
         {
-            StatementBuilder builder = builderList.get(currentIndex);
-            List<Object> builderData = builderDataList.get(currentIndex);
+            StatementBuilder<T> builder = (StatementBuilder<T>) builderList.get(currentIndex);
+            List<T> builderData = (List<T>) builderDataList.get(currentIndex);
 
-            for (Object data : builderData)
+            for (T data : builderData)
             {
                 EnhancedMethod newMethod = new EnhancedMethod(method);
                 if (actualFrameworkMethod != null)
