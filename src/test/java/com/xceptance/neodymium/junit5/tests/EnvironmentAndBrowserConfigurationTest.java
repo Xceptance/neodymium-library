@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import com.xceptance.neodymium.junit5.testclasses.multibrowser.BrowserWithoutAvailableEnvironment;
 import com.xceptance.neodymium.junit5.testclasses.multibrowser.EnvironmentAndBrowserConfiguration;
 import com.xceptance.neodymium.junit5.tests.utils.NeodymiumTestExecutionSummary;
-import com.xceptance.neodymium.common.browser.configuration.BadProxyEnvironmentConfiguration;
+import com.xceptance.neodymium.common.browser.configuration.BadProxyEnvironmentConfigurationJunit5;
 
 public class EnvironmentAndBrowserConfigurationTest extends AbstractNeodymiumTest
 {
@@ -134,7 +134,7 @@ public class EnvironmentAndBrowserConfigurationTest extends AbstractNeodymiumTes
     public void testConfigureBadEnvironmentProxies()
     {
         // test environment configuration
-        NeodymiumTestExecutionSummary summary = run(BadProxyEnvironmentConfiguration.class);
+        NeodymiumTestExecutionSummary summary = run(BadProxyEnvironmentConfigurationJunit5.class);
         checkPass(summary, 3, 0);
     }
 

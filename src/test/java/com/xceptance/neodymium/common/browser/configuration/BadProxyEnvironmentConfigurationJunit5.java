@@ -3,11 +3,10 @@ package com.xceptance.neodymium.common.browser.configuration;
 import java.util.Properties;
 
 import org.junit.Assert;
-import org.junit.Test;
 
 import com.xceptance.neodymium.junit5.NeodymiumTest;
 
-public class BadProxyEnvironmentConfiguration
+public class BadProxyEnvironmentConfigurationJunit5
 {
     @NeodymiumTest
     public void testProxyWithoutHost()

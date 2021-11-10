@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
-import com.xceptance.neodymium.common.browser.configuration.BadProxyEnvironmentConfiguration;
+import com.xceptance.neodymium.common.browser.configuration.BadProxyEnvironmentConfigurationJunit4;
 import com.xceptance.neodymium.junit4.testclasses.multibrowser.BrowserWithoutAvailableEnvironment;
 import com.xceptance.neodymium.junit4.testclasses.multibrowser.EnvironmentAndBrowserConfiguration;
 
@@ -131,12 +131,11 @@ public class EnvironmentAndBrowserConfigurationTest extends NeodymiumTest
         checkPass(result, 6, 0);
     }
 
-    // TODO create mutal test
     @Test
     public void testConfigureBadEnvironmentProxies()
     {
         // test environment configuration
-        Result result = JUnitCore.runClasses(BadProxyEnvironmentConfiguration.class);
+        Result result = JUnitCore.runClasses(BadProxyEnvironmentConfigurationJunit4.class);
         checkPass(result, 3, 0);
     }
 
