@@ -244,6 +244,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                                      .filter(testMethod -> {
                                          String functionName = testMethod.getMethod().getDeclaringClass().getName() + "#"
                                                                + testMethod.getName();
+                                         System.out.println(functionName);
                                          return Pattern.compile(testExecutionRegex)
                                                        .matcher(functionName)
                                                        .find();

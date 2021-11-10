@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.TestTemplateInvocationContext;
 
 import com.xceptance.neodymium.common.testdata.TestdataContainer;
 import com.xceptance.neodymium.junit5.browser.BrowserExecutionCallback;
+import com.xceptance.neodymium.junit5.filtering.FilterTestMethodCallback;
 import com.xceptance.neodymium.junit5.testdata.TestdataCallback;
 
 public class TemplateInvocationContext implements TestTemplateInvocationContext
@@ -42,6 +43,7 @@ public class TemplateInvocationContext implements TestTemplateInvocationContext
         {
             extentions.add(new TestdataCallback(dataSet));
         }
+        extentions.add(new FilterTestMethodCallback());
         return extentions;
     }
 };
