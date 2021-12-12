@@ -429,8 +429,8 @@ public class SelenideAddonsTest
     {
         openSliderPage();
 
-        SelenideElement slider = $(".balSlider a[role=slider]");
-        slider.shouldHave(attribute("aria-valuenow", "-10"));
+        SelenideElement slider = $(".balSlider span[role=slider]");
+        slider.shouldHave(attribute("aria-valuenow", "0"));
         SelenideAddons.dragAndDropUntilCondition(slider, slider, 40, 0, 3000, 23, Condition.attribute("aria-valuenow", "8"));
         slider.shouldHave(attribute("aria-valuenow", "8"));
     }
@@ -440,8 +440,8 @@ public class SelenideAddonsTest
     {
         openSliderPage();
 
-        SelenideElement slider = $(".balSlider a[role=slider]");
-        slider.shouldHave(attribute("aria-valuenow", "-10"));
+        SelenideElement slider = $(".balSlider span[role=slider]");
+        slider.shouldHave(attribute("aria-valuenow", "0"));
         SelenideAddons.dragAndDropUntilCondition(slider, slider, -40, 0, 3000, 23, Condition.attribute("aria-valuenow", "-8"));
         slider.shouldHave(attribute("aria-valuenow", "-8"));
     }
@@ -451,7 +451,8 @@ public class SelenideAddonsTest
     {
         openSliderPage();
 
-        SelenideElement slider = $("#equalizer .k-slider-vertical:first-child a");
+        SelenideElement slider = $("#equalizer .k-slider-vertical:first-child span.k-draghandle");
+        slider.scrollIntoView("{'block':'center','inline':'center'}");
         slider.shouldHave(attribute("aria-valuenow", "10"));
         SelenideAddons.dragAndDropUntilCondition(slider, slider, 0, -10, 3000, 23, Condition.attribute("aria-valuenow", "16"));
         slider.shouldHave(attribute("aria-valuenow", "16"));
@@ -462,7 +463,8 @@ public class SelenideAddonsTest
     {
         openSliderPage();
 
-        SelenideElement slider = $("#equalizer .k-slider-vertical:first-child a");
+        SelenideElement slider = $("#equalizer .k-slider-vertical:first-child span.k-draghandle");
+        slider.scrollIntoView("{'block':'center','inline':'center'}");
         slider.shouldHave(attribute("aria-valuenow", "10"));
         SelenideAddons.dragAndDropUntilCondition(slider, slider, 0, 10, 3000, 23, Condition.attribute("aria-valuenow", "-6"));
         slider.shouldHave(attribute("aria-valuenow", "-6"));
@@ -473,8 +475,8 @@ public class SelenideAddonsTest
     {
         openSliderPage();
 
-        SelenideElement slider = $(".balSlider a[role=slider]");
-        slider.shouldHave(attribute("aria-valuenow", "-10"));
+        SelenideElement slider = $(".balSlider span[role=slider]");
+        slider.shouldHave(attribute("aria-valuenow", "0"));
         leftHorizontalDragAndDropUntilAttribute(slider, slider, -40, "aria-valuenow", "-8");
         slider.shouldHave(attribute("aria-valuenow", "-8"));
     }
@@ -484,8 +486,8 @@ public class SelenideAddonsTest
     {
         openSliderPage();
 
-        SelenideElement slider = $(".balSlider a[role=slider]");
-        slider.shouldHave(attribute("aria-valuenow", "-10"));
+        SelenideElement slider = $(".balSlider span[role=slider]");
+        slider.shouldHave(attribute("aria-valuenow", "0"));
 
         Assert.assertThrows(UIAssertionError.class, () -> {
             SelenideAddons.dragAndDropUntilCondition(slider, slider, -10, 0, 3000, -1, Condition.attribute("aria-valuenow", "-16"));
@@ -497,8 +499,8 @@ public class SelenideAddonsTest
     {
         openSliderPage();
 
-        SelenideElement slider = $(".balSlider a[role=slider]");
-        slider.shouldHave(attribute("aria-valuenow", "-10"));
+        SelenideElement slider = $(".balSlider span[role=slider]");
+        slider.shouldHave(attribute("aria-valuenow", "0"));
         SelenideAddons.dragAndDrop(slider, 32, 0);
         slider.shouldHave(attribute("aria-valuenow", "2"));
     }
@@ -508,8 +510,8 @@ public class SelenideAddonsTest
     {
         openSliderPage();
 
-        SelenideElement slider = $(".balSlider a[role=slider]");
-        slider.shouldHave(attribute("aria-valuenow", "-10"));
+        SelenideElement slider = $(".balSlider span[role=slider]");
+        slider.shouldHave(attribute("aria-valuenow", "0"));
         SelenideAddons.dragAndDrop(slider, -32, 0);
         slider.shouldHave(attribute("aria-valuenow", "-2"));
     }
@@ -519,7 +521,8 @@ public class SelenideAddonsTest
     {
         openSliderPage();
 
-        SelenideElement slider = $("#equalizer .k-slider-vertical:first-child a");
+        SelenideElement slider = $("#equalizer .k-slider-vertical:first-child span.k-draghandle");
+        slider.scrollIntoView("{'block':'center','inline':'center'}");
         slider.shouldHave(attribute("aria-valuenow", "10"));
         SelenideAddons.dragAndDrop(slider, 0, 12);
         slider.shouldHave(attribute("aria-valuenow", "6"));
@@ -530,7 +533,8 @@ public class SelenideAddonsTest
     {
         openSliderPage();
 
-        SelenideElement slider = $("#equalizer .k-slider-vertical:first-child a");
+        SelenideElement slider = $("#equalizer .k-slider-vertical:first-child span.k-draghandle");
+        slider.scrollIntoView("{'block':'center','inline':'center'}");
         slider.shouldHave(attribute("aria-valuenow", "10"));
         SelenideAddons.dragAndDrop(slider, 0, -12);
         slider.shouldHave(attribute("aria-valuenow", "14"));
@@ -554,6 +558,12 @@ public class SelenideAddonsTest
             $("#onetrust-accept-btn-handler").click();
             $("#onetrust-consent-sdk .onetrust-pc-dark-filter").shouldBe(hidden);
             Selenide.refresh();
+        }
+        
+        Selenide.sleep(2000);
+        SelenideElement questionaire = $("#qual_ol .qual_x_close");
+        if (questionaire.isDisplayed()) {
+        	questionaire.click();
         }
     }
 
