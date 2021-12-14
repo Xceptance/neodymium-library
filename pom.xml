@@ -58,7 +58,7 @@
 		<selenide.version>5.20.1</selenide.version>
 		<cucumber.version>6.9.1</cucumber.version>
 		<browserup.version>2.1.2</browserup.version>
-		<log4j.version>2.14.0</log4j.version>
+		<log4j.version>2.15.0</log4j.version>
 	</properties>
 
 	<repositories>
