@@ -56,7 +56,7 @@
 		<surefire.version>2.22.2</surefire.version>
 		<allure.version>2.13.6</allure.version>
 		<selenide.version>5.15.1</selenide.version>
-		<cucumber.version>6.9.1</cucumber.version>
+		<cucumber.version>6.8.1</cucumber.version>
 		<browserup.version>2.1.2</browserup.version>
 		<log4j.version>2.16.0</log4j.version>
 	</properties>
