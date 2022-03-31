@@ -10,6 +10,7 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -75,19 +76,7 @@ public class BrowserConfigurationMapper
         if (emulatedBrowser != null)
             emulatedBrowser = emulatedBrowser.toLowerCase();
 
-        if ("iphone".equals(emulatedBrowser))
-        {
-            capabilities = DesiredCapabilities.iphone();
-        }
-        else if ("ipad".equals(emulatedBrowser))
-        {
-            capabilities = DesiredCapabilities.ipad();
-        }
-        else if ("android".equals(emulatedBrowser))
-        {
-            capabilities = DesiredCapabilities.android();
-        }
-        else if ("firefox".equals(emulatedBrowser))
+        if ("firefox".equals(emulatedBrowser))
         {
             capabilities = new FirefoxOptions();
         }
@@ -97,7 +86,7 @@ public class BrowserConfigurationMapper
         }
         else if ("internetexplorer".equals(emulatedBrowser))
         {
-            capabilities = DesiredCapabilities.internetExplorer();
+            capabilities = new InternetExplorerOptions();
         }
         else if ("safari".equals(emulatedBrowser))
         {
@@ -126,7 +115,7 @@ public class BrowserConfigurationMapper
             // BrowserStack
             capabilities.setCapability("os", emulatedPlatform);
         }
-        
+
         String emulatedPlatformName = browserProfileConfiguration.get(PLATFORM_NAME);
         if (!StringUtils.isEmpty(emulatedPlatformName))
         {
@@ -134,7 +123,7 @@ public class BrowserConfigurationMapper
             // BrowserStack
             capabilities.setCapability("os", emulatedPlatformName);
         }
-        
+
         String emulatedVersion = browserProfileConfiguration.get(BROWSER_VERSION);
         if (!StringUtils.isEmpty(emulatedVersion))
         {
@@ -142,7 +131,7 @@ public class BrowserConfigurationMapper
             // BrowserStack
             capabilities.setCapability("browser_version", emulatedVersion);
         }
-        
+
         String emulatedDeviceName = browserProfileConfiguration.get(DEVICE_NAME);
         if (!StringUtils.isEmpty(emulatedDeviceName))
         {

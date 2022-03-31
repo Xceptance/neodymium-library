@@ -22,7 +22,6 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.HttpCommandExecutor;
@@ -43,6 +42,11 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.configurati
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.TestEnvironment;
 import com.xceptance.neodymium.util.Neodymium;
 import com.xceptance.neodymium.util.NeodymiumConfiguration;
+import static org.openqa.selenium.remote.Browser.CHROME;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
+import static org.openqa.selenium.remote.Browser.IE;
+import static org.openqa.selenium.remote.Browser.EDGE;
+import static org.openqa.selenium.remote.Browser.SAFARI;
 
 public final class BrowserRunnerHelper
 {
@@ -64,20 +68,14 @@ public final class BrowserRunnerHelper
 
     static
     {
-        chromeBrowsers.add(BrowserType.ANDROID);
-        chromeBrowsers.add(BrowserType.CHROME);
+        chromeBrowsers.add(CHROME.browserName());
 
-        firefoxBrowsers.add(BrowserType.FIREFOX);
-        firefoxBrowsers.add(BrowserType.FIREFOX_CHROME);
-        firefoxBrowsers.add(BrowserType.FIREFOX_PROXY);
+        firefoxBrowsers.add(FIREFOX.browserName());
 
-        internetExplorerBrowsers.add(BrowserType.IE);
-        internetExplorerBrowsers.add(BrowserType.IE_HTA);
-        internetExplorerBrowsers.add(BrowserType.IEXPLORE);
-        internetExplorerBrowsers.add(BrowserType.IEXPLORE_PROXY);
+        internetExplorerBrowsers.add(IE.browserName());
+        internetExplorerBrowsers.add(EDGE.browserName());
 
-        safariBrowsers.add(BrowserType.SAFARI);
-        safariBrowsers.add(BrowserType.SAFARI_PROXY);
+        safariBrowsers.add(SAFARI.browserName());
     }
 
     /**
@@ -101,8 +99,8 @@ public final class BrowserRunnerHelper
         }
 
         final Map<String, CommandInfo> additionalCommands = new HashMap<String, CommandInfo>(); // just a dummy
-
-        URL gridUrl = new URL(testEnvironmentProperties.getUrl());
+        String[] urlParts = testEnvironmentProperties.getUrl().split("//");
+        URL gridUrl = new URL(urlParts[0] + "//" + testEnvironmentProperties.getUsername() + ":" + testEnvironmentProperties.getPassword() + "@" + urlParts[1]);
         return new HttpCommandExecutor(additionalCommands, gridUrl, new NeodymiumProxyHttpClientFactory(testEnvironmentProperties));
     }
 
@@ -233,9 +231,8 @@ public final class BrowserRunnerHelper
             }
             else if (firefoxBrowsers.contains(browserName))
             {
-                final FirefoxOptions options = new FirefoxOptions();
+                final FirefoxOptions options = new FirefoxOptions().merge(capabilities);
                 options.setBinary(createFirefoxBinary(Neodymium.configuration().getFirefoxBrowserPath()));
-                options.merge(capabilities);
                 options.setHeadless(config.isHeadless());
                 if (config.getArguments() != null && config.getArguments().size() > 0)
                 {
@@ -246,8 +243,7 @@ public final class BrowserRunnerHelper
             }
             else if (internetExplorerBrowsers.contains(browserName))
             {
-                final InternetExplorerOptions options = new InternetExplorerOptions();
-                options.merge(capabilities);
+                final InternetExplorerOptions options = new InternetExplorerOptions().merge(capabilities);
                 if (config.getArguments() != null && config.getArguments().size() > 0)
                 {
                     for (String argument : config.getArguments())

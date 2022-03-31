@@ -1,6 +1,7 @@
 package com.xceptance.neodymium.util;
 
 import static com.codeborne.selenide.Condition.exist;
+import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
@@ -40,7 +41,7 @@ public class DebugUtilsTest
 
         final List<WebElement> list2 = $("body").findElements(By.cssSelector("#content article"));
         DebugUtils.highlightElements(list2, Neodymium.getDriver());
-        $$(".neodymium-highlight-box").shouldHaveSize(10);
+        $$(".neodymium-highlight-box").shouldHave(size(20));
 
         DebugUtils.resetAllHighlight();
         $(".neodymium-highlight-box").shouldNot(exist);
