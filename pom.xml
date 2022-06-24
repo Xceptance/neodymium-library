@@ -25,6 +25,15 @@
 			</roles>
 		</developer>
 		<developer>
+			<name>Olha Omelianchuk</name>
+			<organization>Xceptance Software Technologies GmbH</organization>
+			<organizationUrl>https://www.xceptance.com</organizationUrl>
+			<roles>
+				<role>developer</role>
+				<role>tester</role>
+			</roles>
+		</developer>
+		<developer>
 			<name>Marcel Pfotenhauer</name>
 			<email>neodymium@xceptance.com</email>
 			<organization>Xceptance Software Technologies GmbH</organization>
@@ -32,6 +41,7 @@
 			<roles>
 				<role>architect</role>
 				<role>developer</role>
+				<role>tester</role>
 			</roles>
 		</developer>
 	</developers>
