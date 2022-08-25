@@ -19,6 +19,7 @@ import com.xceptance.neodymium.testclasses.data.override.classonly.ClassExplicit
 import com.xceptance.neodymium.testclasses.data.override.classonly.ClassMultipleSameDataSet;
 import com.xceptance.neodymium.testclasses.data.override.classonly.ClassRandomDataSets;
 import com.xceptance.neodymium.testclasses.data.override.classonly.ClassRandomDataSetsFromRange;
+import com.xceptance.neodymium.testclasses.data.override.classonly.ClassSkipDataSetAnnotations;
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodDefaultEmptyDataSets;
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodDefaultNoDataSets;
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodDefaultOneDataSet;
@@ -27,10 +28,12 @@ import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodExplic
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodMultipleSameDataSet;
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodRandomDataSets;
 import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodRandomDataSetsFromRange;
+import com.xceptance.neodymium.testclasses.data.override.methodonly.MethodSkipDataSetAnnotations;
 import com.xceptance.neodymium.testclasses.data.override.mixed.ClassWithoutTwoMethodsOneForced;
 import com.xceptance.neodymium.testclasses.data.override.mixed.ForceOfNoneDataSets;
 import com.xceptance.neodymium.testclasses.data.override.mixed.MixRandomAndValueDataSets;
 import com.xceptance.neodymium.testclasses.data.override.mixed.MixRandomDataSetsFromRange;
+import com.xceptance.neodymium.testclasses.data.override.mixed.MixedSkipDataSetAnnotations;
 import com.xceptance.neodymium.testclasses.data.override.mixed.OneDataSetTwoMethodsOneWithout;
 import com.xceptance.neodymium.testclasses.data.override.mixed.OnlyImplicitOneDataSet;
 import com.xceptance.neodymium.testclasses.data.override.mixed.OverrideClassRandomDataSetsOnMethodLevel;
@@ -451,5 +454,48 @@ public class TestDataStatementTest extends NeodymiumTest
         Result result = JUnitCore.runClasses(RandomDataSetsException.class);
         checkFail(result, 1, 0, 1,
                   "java.lang.IllegalArgumentException: Method 'test' is marked to be run with 4 random data sets, but there are only 2 available");
+    }
+
+    @Test
+    public void testClassSkipDataSetsAnnotationsTest() throws Throwable
+    {
+        String[] expected = new String[]
+        {
+          "testSomething1 :: Data set 2 / 3",
+          "testSomething3 :: Data set 2 / 3",
+          "testSomething1 :: Data set 3 / 3",
+          "testSomething2 :: Data set 1 / 3",
+        };
+        checkDescription(ClassSkipDataSetAnnotations.class, expected);
+        Result result = JUnitCore.runClasses(ClassSkipDataSetAnnotations.class);
+        checkPass(result, 4, 0);
+    }
+
+    @Test
+    public void testMethodSkipDataSetsAnnotationsTest() throws Throwable
+    {
+        String[] expected = new String[]
+        {
+          "testSomething4 :: Data set 1 / 3",
+          "testSomething4 :: Data set 3 / 3",
+          "testSomething5",
+        };
+        checkDescription(MethodSkipDataSetAnnotations.class, expected);
+        Result result = JUnitCore.runClasses(MethodSkipDataSetAnnotations.class);
+        checkPass(result, 3, 0);
+    }
+
+    @Test
+    public void testMixedSkipDataSetsAnnotationsTest() throws Throwable
+    {
+        String[] expected = new String[]
+        {
+          "testSomething4 :: Data set 1 / 3",
+          "testSomething4 :: Data set 3 / 3",
+          "testSomething5",
+        };
+        checkDescription(MixedSkipDataSetAnnotations.class, expected);
+        Result result = JUnitCore.runClasses(MixedSkipDataSetAnnotations.class);
+        checkPass(result, 3, 0);
     }
 }

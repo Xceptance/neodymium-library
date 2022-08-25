@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.runners.model.FrameworkMethod;
@@ -182,6 +183,28 @@ public class TestdataStatement extends StatementBuilder
 
         // at this point neither the class nor the method could have data sets suppressed
         List<DataSet> classDataSetAnnotations = getAnnotations(testClass.getJavaClass(), DataSet.class);
+        List<SkipDataSet> classSkipDataSetAnnotations = getAnnotations(testClass.getJavaClass(), SkipDataSet.class);
+        List<SkipDataSet> methodSkipDataSetAnnotations = getAnnotations(method.getMethod(), SkipDataSet.class);
+
+        // if class annotation states that the data set should be skipped but the method annotation explicitly declares
+        // that the data set should be used for the execution, the method annotation has a priority
+        if (!methodDataSetAnnotations.isEmpty())
+        {
+            List<SkipDataSet> classSkipDataSetAnnotationsAdjusted = new LinkedList<>();
+
+            for (SkipDataSet skipDataSet : classSkipDataSetAnnotations)
+            {
+                for (DataSet methodDataSet : methodDataSetAnnotations)
+                {
+                    if (!(skipDataSet.id().equals(methodDataSet.id()) || skipDataSet.value() == methodDataSet.value()))
+                    {
+                        classSkipDataSetAnnotationsAdjusted.add(skipDataSet);
+                    }
+                }
+            }
+            classSkipDataSetAnnotations = classSkipDataSetAnnotationsAdjusted;
+        }
+
         if (!methodDataSetAnnotations.isEmpty())
         {
             dataSetAnnotations = methodDataSetAnnotations;
@@ -273,7 +296,51 @@ public class TestdataStatement extends StatementBuilder
             // choose the random data sets [0,randomSetAmount[
             fixedIterations = fixedIterations.subList(0, randomSetAmount);
         }
-        return fixedIterations;
+
+        List<SkipDataSet> skipDataSetAnnotations = new LinkedList<>();
+        if (!methodSkipDataSetAnnotations.isEmpty())
+        {
+            skipDataSetAnnotations.addAll(methodSkipDataSetAnnotations);
+        }
+        else if (!classSkipDataSetAnnotations.isEmpty())
+        {
+            skipDataSetAnnotations.addAll(classSkipDataSetAnnotations);
+        }
+
+        return applyFilterToSkipIterations(skipDataSetAnnotations, fixedIterations);
+    }
+
+    private List<Object> applyFilterToSkipIterations(List<SkipDataSet> skipDataSetAnnotations, List<Object> iterations)
+    {
+
+        class DataObject
+        {
+            int index;
+
+            String id;
+
+            DataObject(int index, String id)
+            {
+                this.index = index;
+                this.id = id;
+            }
+
+            @Override
+            public boolean equals(Object object)
+            {
+                DataObject another = (DataObject) object;
+                return another.index == this.index || (another.id != null && another.id.equals(this.id));
+            }
+        }
+        List<DataObject> skipDataSetObjects = skipDataSetAnnotations.stream().map(dataSet -> new DataObject(dataSet.value(), dataSet.id()))
+                                                                    .collect(Collectors.toList());
+
+        return iterations.stream()
+                         .filter(iteration -> !skipDataSetObjects.contains(new DataObject(((TestdataStatementData) iteration).getIndex()
+                                                                                          + 1, (((TestdataStatementData) iteration).getDataSet() != null ? ((TestdataStatementData) iteration).getDataSet()
+                                                                                                                                                                                              .get(TEST_ID)
+                                                                                                                                                         : null))))
+                         .collect(Collectors.toList());
     }
 
     @Override
