@@ -51,8 +51,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source.version>11</maven.compiler.source.version>
-		<maven.compiler.target.version>11</maven.compiler.target.version>
+		<maven.compiler.source.version>17</maven.compiler.source.version>
+		<maven.compiler.target.version>17</maven.compiler.target.version>
 		<surefire.version>2.22.2</surefire.version>
 		<allure.version>2.13.9</allure.version>
 		<selenide.version>5.20.1</selenide.version>
