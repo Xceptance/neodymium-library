@@ -466,8 +466,8 @@ public class SelenideAddonsTest
         SelenideElement slider = $("#equalizer .k-slider-vertical:first-child span.k-draghandle");
         slider.scrollIntoView("{'block':'center','inline':'center'}");
         slider.shouldHave(attribute("aria-valuenow", "10"));
-        SelenideAddons.dragAndDropUntilCondition(slider, slider, 0, 10, 3000, 23, Condition.attribute("aria-valuenow", "-6"));
-        slider.shouldHave(attribute("aria-valuenow", "-6"));
+        SelenideAddons.dragAndDropUntilCondition(slider, slider, 0, 10, 3000, 23, Condition.attribute("aria-valuenow", "-8"));
+        slider.shouldHave(attribute("aria-valuenow", "-8"));
     }
 
     @Test()
