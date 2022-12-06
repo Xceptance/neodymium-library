@@ -28,12 +28,12 @@ public class UseSoftAssertions
     public void validateSoftAssertion()
     {
         Neodymium.softAssertions(true);
-        Selenide.open("https://blog.xceptance.com/");
+        Selenide.open("https://posters.xceptance.io:8443/posters/");
 
         Assert.assertEquals(Configuration.assertionMode, AssertionMode.SOFT);
         $("#notFound1").should(exist);
         $("#notFound2").should(exist);
-        $("#masthead .search-toggle").click();
+        $("#header-search-trigger").click();
         $("#notFound3").should(exist);
         Assert.assertThrows(ElementNotFound.class, () -> {
             $("#notFound4").click();

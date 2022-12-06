@@ -36,99 +36,100 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBro
 @Browser("Chrome_headless")
 public class SelenideAddonsTest
 {
-    private void openBlogPage()
+    private void openPostersStartPage()
     {
-        Selenide.open("https://blog.xceptance.com/");
+        Selenide.open("https://posters.xceptance.io:8443/posters/");
     }
 
     @Test
     public void testMatchesAttributeCondition()
     {
-        openBlogPage();
-        $("#masthead .search-toggle").click();
+        openPostersStartPage();
+        $("#header-search-trigger").click();
 
-        $("#search-container .search-field").should(SelenideAddons.matchesAttribute("placeholder", "Search"));
+        $("#searchForm input").should(SelenideAddons.matchesAttribute("placeholder", "Search"));
     }
 
     @Test
     public void testMatchAttributeCondition()
     {
-        openBlogPage();
-        $("#masthead .search-toggle").click();
+        openPostersStartPage();
+        $("#header-search-trigger").click();
 
-        $("#search-container .search-field").should(SelenideAddons.matchAttribute("placeholder", "^S.a.c.\\s…"));
-        $("#search-container .search-field").should(SelenideAddons.matchAttribute("placeholder", "\\D+"));
+        $("#searchForm input").should(SelenideAddons.matchAttribute("placeholder", "^S.a.c."));
+        $("#searchForm input").should(SelenideAddons.matchAttribute("placeholder", "\\D+"));
     }
 
     @Test
     public void testMatchAttributeConditionError()
     {
-        openBlogPage();
-        $("#masthead .search-toggle").click();
+        openPostersStartPage();
+        $("#header-search-trigger").click();
 
         Assert.assertThrows(ElementShould.class, () -> {
-            $("#search-container .search-field").should(SelenideAddons.matchAttribute("placeholder", "\\d+"));
+            $("#searchForm input").should(SelenideAddons.matchAttribute("placeholder", "\\d+"));
         });
     }
 
     @Test
     public void testMatchAttributeConditionErrorMissingAttribute()
     {
-        openBlogPage();
-        $("#masthead .search-toggle").click();
+        openPostersStartPage();
+        $("#header-search-trigger").click();
 
         Assert.assertThrows(ElementShould.class, () -> {
-            $("#search-container .search-field").should(SelenideAddons.matchAttribute("foo", "bar"));
+            $("#searchForm input").should(SelenideAddons.matchAttribute("foo", "bar"));
         });
     }
 
     @Test
     public void testMatchesValueCondition()
     {
-        openBlogPage();
-        $("#masthead .search-toggle").click();
-        $("#search-container .search-field").val("searchphrase").submit();
+        openPostersStartPage();
+        $("#header-search-trigger").click();
+        $("#searchForm input").val("bear").submit();
 
-        $("#content .search-field").should(SelenideAddons.matchesValue("earchphras"));
+        // used "#searchForm input" because it has the search term as value
+        $("#searchForm input").should(SelenideAddons.matchesValue("ea"));
     }
 
     @Test
     public void testMatchValueCondition()
     {
-        openBlogPage();
-        $("#masthead .search-toggle").click();
-        $("#search-container .search-field").val("searchphrase").submit();
+        openPostersStartPage();
+        $("#header-search-trigger").click();
+        $("#searchForm input").val("bear").submit();
 
-        $("#content .search-field").should(SelenideAddons.matchValue("^s.a.c.p.r.s.$"));
-        $("#content .search-field").should(SelenideAddons.matchValue("\\D+"));
+        $("#searchForm input").should(SelenideAddons.matchValue("b.a."));
+        $("#searchForm input").should(SelenideAddons.matchValue("\\D+"));
     }
 
     @Test
     public void testMatchValueConditionError()
     {
-        openBlogPage();
-        $("#masthead .search-toggle").click();
-        $("#search-container .search-field").val("searchphrase").submit();
+        openPostersStartPage();
+        $("#header-search-trigger").click();
+        $("#searchForm input").val("bear").submit();
 
         Assert.assertThrows(ElementShould.class, () -> {
-            $("#content .search-field").should(SelenideAddons.matchValue("\\d+"));
+            $("#searchForm input").should(SelenideAddons.matchValue("\\d+"));
         });
     }
 
     @Test()
     public void testWrapAssertion()
     {
-        openBlogPage();
+        openPostersStartPage();
 
         SelenideAddons.wrapAssertionError(() -> {
-            Assert.assertEquals("Passionate Testing | Xceptance Blog", Selenide.title());
+            Assert.assertEquals("Posters - The Ultimate Online Shop", Selenide.title());
         });
     }
 
     @Test
     public void testWrapAssertionError()
     {
-        openBlogPage();
+        openPostersStartPage();
 
         Assert.assertThrows(UIAssertionError.class, () -> {
             SelenideAddons.wrapAssertionError(() -> {
@@ -161,11 +162,10 @@ public class SelenideAddonsTest
             }
         });
 
-        openBlogPage();
+        openPostersStartPage();
         Neodymium.softAssertions(true);
         try
         {
-
             SelenideAddons.wrapAssertionError(() -> {
                 Assert.assertEquals(errMessage, "MyPageTitle", Selenide.title());
             });
@@ -202,7 +202,7 @@ public class SelenideAddonsTest
             }
         });
 
-        openBlogPage();
+        openPostersStartPage();
         Neodymium.softAssertions(true);
         try
         {
@@ -223,7 +223,7 @@ public class SelenideAddonsTest
         final String errMessage = "AssertionError: No error message provided by the Assertion.";
         try
         {
-            openBlogPage();
+            openPostersStartPage();
             SelenideAddons.wrapAssertionError(() -> {
                 Assert.assertTrue(Selenide.title().startsWith("MyPageTitle"));
             });
@@ -323,7 +323,7 @@ public class SelenideAddonsTest
         final Iterator<Runnable> iterator = runArray.iterator();
 
         // testing the error path after three exceptions
-        openBlogPage();
+        openPostersStartPage();
         long startTime = new Date().getTime();
         try
         {
@@ -501,7 +501,7 @@ public class SelenideAddonsTest
 
         SelenideElement slider = $(".balSlider span[role=slider]");
         slider.shouldHave(attribute("aria-valuenow", "0"));
-        SelenideAddons.dragAndDrop(slider, 32, 0);
+        SelenideAddons.dragAndDrop(slider, 42, 0);
         slider.shouldHave(attribute("aria-valuenow", "2"));
     }
 
@@ -512,7 +512,7 @@ public class SelenideAddonsTest
 
         SelenideElement slider = $(".balSlider span[role=slider]");
         slider.shouldHave(attribute("aria-valuenow", "0"));
-        SelenideAddons.dragAndDrop(slider, -32, 0);
+        SelenideAddons.dragAndDrop(slider, -42, 0);
         slider.shouldHave(attribute("aria-valuenow", "-2"));
     }
 

@@ -17,7 +17,7 @@ public class JavaScriptUtilsTest
     public void testWaitingAnimationSelectorUnconfigured()
     {
         Neodymium.configuration().setProperty("neodymium.javaScriptUtils.timeout", "10000");
-        Selenide.open("https://blog.xceptance.com/");
+        Selenide.open("https://posters.xceptance.io:8443/posters/");
         final long start = System.currentTimeMillis();
         JavaScriptUtils.waitForReady();
         final long end = System.currentTimeMillis();
@@ -28,10 +28,10 @@ public class JavaScriptUtilsTest
     @Test
     public void testWaitingAnimationSelectorExistsOnPage()
     {
-        Neodymium.configuration().setProperty("neodymium.javaScriptUtils.loading.animationSelector", "#main-content");
+        Neodymium.configuration().setProperty("neodymium.javaScriptUtils.loading.animationSelector", "#main");
         Neodymium.configuration().setProperty("neodymium.javaScriptUtils.timeout", "10000");
 
-        Selenide.open("https://blog.xceptance.com/");
+        Selenide.open("https://posters.xceptance.io:8443/posters/");
         final long start = System.currentTimeMillis();
         JavaScriptUtils.waitForReady();
         final long end = System.currentTimeMillis();
@@ -46,7 +46,7 @@ public class JavaScriptUtilsTest
         Neodymium.configuration().setProperty("neodymium.javaScriptUtils.loading.animationSelector", ".cantFindThisClass");
         Neodymium.configuration().setProperty("neodymium.javaScriptUtils.timeout", "10000");
 
-        Selenide.open("https://blog.xceptance.com/");
+        Selenide.open("https://posters.xceptance.io:8443/posters/");
         final long start = System.currentTimeMillis();
         JavaScriptUtils.waitForReady();
         final long end = System.currentTimeMillis();
