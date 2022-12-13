@@ -87,10 +87,9 @@ public class SelenideAddonsTest
     {
         openPostersStartPage();
         $("#header-search-trigger").click();
-        $("#searchForm input").val("bear").submit();
+        $("#searchForm input").val("mozzarella").submit();
 
-        // used "#searchForm input" because it has the search term as value
-        $("#searchForm input").should(SelenideAddons.matchesValue("ea"));
+        $("#searchForm input").should(SelenideAddons.matchesValue("ozzarell"));
     }
 
     @Test
@@ -98,9 +97,9 @@ public class SelenideAddonsTest
     {
         openPostersStartPage();
         $("#header-search-trigger").click();
-        $("#searchForm input").val("bear").submit();
+        $("#searchForm input").val("mozzarella").submit();
 
-        $("#searchForm input").should(SelenideAddons.matchValue("b.a."));
+        $("#searchForm input").should(SelenideAddons.matchValue("^m.z.a.e.l.$"));
         $("#searchForm input").should(SelenideAddons.matchValue("\\D+"));
     }
 
@@ -109,7 +108,7 @@ public class SelenideAddonsTest
     {
         openPostersStartPage();
         $("#header-search-trigger").click();
-        $("#searchForm input").val("bear").submit();
+        $("#searchForm input").val("mozzarella").submit();
 
         Assert.assertThrows(ElementShould.class, () -> {
             $("#searchForm input").should(SelenideAddons.matchValue("\\d+"));
