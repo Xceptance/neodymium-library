@@ -27,20 +27,20 @@ public class DebugUtilsTest
     {
         Neodymium.configuration().setProperty("neodymium.debugUtils.highlight.duration", "500");
 
-        Selenide.open("https://blog.xceptance.com/");
+        Selenide.open("https://posters.xceptance.io:8443/posters/");
         DebugUtils.injectJavaScript();
         assertJsSuccessfullyInjected();
 
-        final List<WebElement> list = $("body").findElements(By.cssSelector("#masthead"));
+        final List<WebElement> list = $("body").findElements(By.cssSelector("#globalNavigation"));
         DebugUtils.highlightElements(list, Neodymium.getDriver());
         $(".neodymium-highlight-box").shouldBe(visible);
 
         DebugUtils.resetAllHighlight();
         $(".neodymium-highlight-box").shouldNot(exist);
 
-        final List<WebElement> list2 = $("body").findElements(By.cssSelector("#content article"));
+        final List<WebElement> list2 = $("body").findElements(By.cssSelector("#productList li"));
         DebugUtils.highlightElements(list2, Neodymium.getDriver());
-        $$(".neodymium-highlight-box").shouldHaveSize(10);
+        $$(".neodymium-highlight-box").shouldHaveSize(3);
 
         DebugUtils.resetAllHighlight();
         $(".neodymium-highlight-box").shouldNot(exist);
@@ -51,11 +51,11 @@ public class DebugUtilsTest
     {
         Neodymium.configuration().setProperty("neodymium.debugUtils.highlight.duration", "500");
 
-        Selenide.open("https://blog.xceptance.com/");
+        Selenide.open("https://posters.xceptance.io:8443/posters/");
         DebugUtils.injectJavaScript();
         assertJsSuccessfullyInjected();
 
-        final List<WebElement> list = $("body").findElements(By.cssSelector("#masthead"));
+        final List<WebElement> list = $("body").findElements(By.cssSelector("#globalNavigation"));
         DebugUtils.highlightElements(list, Neodymium.getDriver());
         $(".neodymium-highlight-box").shouldBe(visible);
 
@@ -72,32 +72,32 @@ public class DebugUtilsTest
         Neodymium.configuration().setProperty("neodymium.debugUtils.highlight", "true");
 
         // one wait due to navigation
-        Selenide.open("https://blog.xceptance.com/");
+        Selenide.open("https://posters.xceptance.io:8443/posters/");
         Assert.assertEquals(0, eventListener.implicitWaitCount);
 
         // one wait due to find
-        $("body #masthead").should(exist);
+        $("body #globalNavigation").should(exist);
         Assert.assertEquals(1, eventListener.implicitWaitCount);
         assertJsSuccessfullyInjected();
 
         // two waits due to chain finding
-        $("body").findElements(By.cssSelector("#content article"));
+        $("body").findElements(By.cssSelector("#productList li"));
         Assert.assertEquals(3, eventListener.implicitWaitCount);
 
         // two waits due to find and click
-        $("#text-3 h1").click();
+        $("#titleIndex").click();
         Assert.assertEquals(4, eventListener.implicitWaitCount);
 
         // additional two waits due to find and click
-        $("#masthead .search-toggle").click();
+        $("#header-search-trigger").click();
         Assert.assertEquals(5, eventListener.implicitWaitCount);
 
         // three waits due to find and change value (consumes 2 waits)
-        $("#search-container .search-form input.search-field").val("abc");
+        $("#searchForm input").val("abc");
         Assert.assertEquals(6, eventListener.implicitWaitCount);
 
         // two waits due to find and press enter
-        $("#search-container .search-form input.search-field").pressEnter();
+        $("#searchForm input").pressEnter();
         Assert.assertEquals(7, eventListener.implicitWaitCount);
     }
 

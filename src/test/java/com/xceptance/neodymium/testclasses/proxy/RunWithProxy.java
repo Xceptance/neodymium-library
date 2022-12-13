@@ -25,11 +25,11 @@ public class RunWithProxy
         });
     }
 
-    // the test is expected to run since we configured a bypass for "www.xceptance.com"
+    // the test is expected to run since we configured a bypass for "posters.xceptance.io"
     @Test
     public void testProxyBypassConfiguration()
     {
-        Selenide.open("https://www.xceptance.com");
-        $("#page #navigation").shouldBe(visible);
+        Selenide.open("https://posters.xceptance.io:8443/posters/");
+        $("#header-search-trigger").shouldBe(visible);
     }
 }

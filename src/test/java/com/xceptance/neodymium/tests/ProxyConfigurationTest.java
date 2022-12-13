@@ -21,7 +21,7 @@ public class ProxyConfigurationTest extends NeodymiumTest
 
     private static final String PORT = "1323";
 
-    private static final String BYPASS = "www.xceptance.com";
+    private static final String BYPASS = "posters.xceptance.io";
 
     private static final String SOCKET_USERNAME = "username";
 
