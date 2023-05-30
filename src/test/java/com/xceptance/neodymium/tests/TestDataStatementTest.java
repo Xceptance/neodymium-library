@@ -11,6 +11,7 @@ import com.xceptance.neodymium.testclasses.data.annotation.InstantiateDtoViaAnno
 import com.xceptance.neodymium.testclasses.data.annotation.InstantiateDtoViaJsonPathInAnnotation;
 import com.xceptance.neodymium.testclasses.data.annotation.InstantiateFieldViaAnnotation;
 import com.xceptance.neodymium.testclasses.data.annotation.inheritance.ChildInheritingDtoFromAnnotation;
+import com.xceptance.neodymium.testclasses.data.annotation.inheritance.ChildInheritingValuesFromAnnotation;
 import com.xceptance.neodymium.testclasses.data.file.xml.CanNotReadDataSetXml;
 import com.xceptance.neodymium.testclasses.data.inheritance.child.PackageTestDataInheritance;
 import com.xceptance.neodymium.testclasses.data.inheritance.child.grandchild.GrandChildPackageTestDataInheritance;
@@ -482,6 +483,13 @@ public class TestDataStatementTest extends NeodymiumTest
     public void canInheritDtoViaAnnotation()
     {
         Result result = JUnitCore.runClasses(ChildInheritingDtoFromAnnotation.class);
+        checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void canInheritValuesViaAnnotation()
+    {
+        Result result = JUnitCore.runClasses(ChildInheritingValuesFromAnnotation.class);
         checkPass(result, 2, 0);
     }
 }

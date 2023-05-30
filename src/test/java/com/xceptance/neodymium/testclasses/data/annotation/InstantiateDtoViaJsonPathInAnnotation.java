@@ -6,9 +6,10 @@ import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.testdata.DataItem;
+import com.xceptance.neodymium.util.DataUtils;
 
 @RunWith(NeodymiumRunner.class)
-public class InstantiateDtoViaJsonPathInAnnotation extends InstantiateFieldViaAnnotation
+public class InstantiateDtoViaJsonPathInAnnotation
 {
     @DataItem("$.user")
     private User user;
@@ -19,16 +20,14 @@ public class InstantiateDtoViaJsonPathInAnnotation extends InstantiateFieldViaAn
     @Test
     public void test1()
     {
-        Assert.assertEquals("john" + testId + "@varmail.de", user.getEmail());
-        Assert.assertEquals("neodymium" + testId, user.getPassword());
-        validateDataItemDefaultValues();
+        Assert.assertEquals("john" + DataUtils.asString("testId") + "@varmail.de", user.getEmail());
+        Assert.assertEquals("neodymium" + DataUtils.asString("testId"), user.getPassword());
     }
 
     @Test
     public void test2()
     {
-        Assert.assertEquals("friend.of.john" + testId + "@varmail.de", friend.getEmail());
-        Assert.assertEquals("neodymium_friend_of_john" + testId, friend.getPassword());
-        validateDataItemDefaultValues();
+        Assert.assertEquals("friend.of.john" + DataUtils.asString("testId") + "@varmail.de", friend.getEmail());
+        Assert.assertEquals("neodymium_friend_of_john" + DataUtils.asString("testId"), friend.getPassword());
     }
 }
