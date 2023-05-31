@@ -25,6 +25,9 @@ import com.xceptance.neodymium.module.statement.testdata.util.TestDataUtils;
 import com.xceptance.neodymium.util.DataUtils;
 import com.xceptance.neodymium.util.Neodymium;
 
+/**
+ * JUnit statement to read the test data and multiply tests by data sets
+ */
 public class TestdataStatement extends StatementBuilder
 {
     private static final String TEST_ID = "testId";
