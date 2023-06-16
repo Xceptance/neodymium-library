@@ -54,11 +54,11 @@
 		<maven.compiler.source.version>11</maven.compiler.source.version>
 		<maven.compiler.target.version>11</maven.compiler.target.version>
 		<surefire.version>3.0.0-M5</surefire.version>
-		<allure.version>2.13.9</allure.version>
+		<allure.version>2.13.6</allure.version>
 		<selenide.version>5.20.1</selenide.version>
-		<cucumber.version>6.9.1</cucumber.version>
+		<cucumber.version>6.8.1</cucumber.version>
 		<browserup.version>2.1.2</browserup.version>
-		<log4j.version>2.14.0</log4j.version>
+		<log4j.version>2.17.1</log4j.version>
 		<junit.version>4.13.1</junit.version>
 		<junit.jupiter.version>5.8.0</junit.jupiter.version>
 		<junit.vintage.version>5.8.0</junit.vintage.version>
@@ -274,7 +274,7 @@
 		<dependency>
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
-			<version>1.28</version>
+			<version>1.33</version>
 		</dependency>
 		<dependency>
 			<groupId>io.cucumber</groupId>
@@ -308,7 +308,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.qameta.allure</groupId>
-			<artifactId>allure-cucumber4-jvm</artifactId>
+			<artifactId>allure-cucumber6-jvm</artifactId>
 			<version>${allure.version}</version>
 		</dependency>
 		<dependency>
@@ -319,7 +319,7 @@
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
 			<artifactId>json-path</artifactId>
-			<version>2.5.0</version>
+			<version>2.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.codeborne</groupId>
@@ -329,12 +329,12 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-csv</artifactId>
-			<version>1.8</version>
+			<version>1.9.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-text</artifactId>
-			<version>1.9</version>
+			<version>1.10.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -344,7 +344,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.30</version>
+			<version>1.7.32</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
