@@ -36,6 +36,7 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowsers;
 
 @RunWith(NeodymiumRunner.class)
+// @Browser("Chrome_1024x768")
 @Browser("Chrome_headless")
 public class SelenideAddonsTest
 {
@@ -538,8 +539,8 @@ public class SelenideAddonsTest
         SelenideElement slider = $("#equalizer .k-slider-vertical:first-child span.k-draghandle");
         slider.scrollIntoView("{'block':'center','inline':'center'}");
         slider.shouldHave(attribute("aria-valuenow", "10"));
-        SelenideAddons.dragAndDropUntilCondition(slider, slider, 0, 10, 3000, 23, Condition.attribute("aria-valuenow", "-6"));
-        slider.shouldHave(attribute("aria-valuenow", "-6"));
+        SelenideAddons.dragAndDropUntilCondition(slider, slider, 0, 10, 3000, 42, Condition.attribute("aria-valuenow", "-8"));
+        slider.shouldHave(attribute("aria-valuenow", "-8"));
     }
 
     @Test()
@@ -573,7 +574,7 @@ public class SelenideAddonsTest
 
         SelenideElement slider = $(".balSlider span[role=slider]");
         slider.shouldHave(attribute("aria-valuenow", "0"));
-        SelenideAddons.dragAndDrop(slider, 32, 0);
+        SelenideAddons.dragAndDrop(slider, 48, 0);
         slider.shouldHave(attribute("aria-valuenow", "2"));
     }
 
