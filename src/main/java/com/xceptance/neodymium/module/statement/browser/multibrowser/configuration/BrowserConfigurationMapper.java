@@ -49,6 +49,8 @@ public class BrowserConfigurationMapper
 
     private static final String ARGUMENTS = "arguments";
 
+    private static final String PREFERENCES = "preferences";
+
     // Appium specific properties
     private static final String APPIUM_VERSION = "appiumVersion";
 
@@ -126,7 +128,7 @@ public class BrowserConfigurationMapper
             // BrowserStack
             capabilities.setCapability("os", emulatedPlatform);
         }
-        
+
         String emulatedPlatformName = browserProfileConfiguration.get(PLATFORM_NAME);
         if (!StringUtils.isEmpty(emulatedPlatformName))
         {
@@ -134,7 +136,7 @@ public class BrowserConfigurationMapper
             // BrowserStack
             capabilities.setCapability("os", emulatedPlatformName);
         }
-        
+
         String emulatedVersion = browserProfileConfiguration.get(BROWSER_VERSION);
         if (!StringUtils.isEmpty(emulatedVersion))
         {
@@ -142,7 +144,7 @@ public class BrowserConfigurationMapper
             // BrowserStack
             capabilities.setCapability("browser_version", emulatedVersion);
         }
-        
+
         String emulatedDeviceName = browserProfileConfiguration.get(DEVICE_NAME);
         if (!StringUtils.isEmpty(emulatedDeviceName))
         {
@@ -321,13 +323,42 @@ public class BrowserConfigurationMapper
         if (!StringUtils.isEmpty(arguments))
         {
             List<String> args = new LinkedList<>();
-
+            
             for (String arg : arguments.split(";"))
             {
                 // cut off trailing/leading whitespace because the browsers can't handle it
                 args.add(arg.trim());
             }
             browserConfiguration.setArguments(args);
+        }
+        
+        // additional browser preferences
+        String preferences = browserProfileConfiguration.get(PREFERENCES);
+        if (!StringUtils.isEmpty(preferences))
+        {
+            for (String pref : preferences.split(";"))
+            {
+                String[] keyVal = pref.split("=");
+                if (pref.length() > 1)
+                {
+                    String key = keyVal[0].trim();
+                    String val = keyVal[1].trim();
+
+                    // differentiate types of preference values to avoid misunderstanding
+                    if (val.equals("true") | val.equals("false"))
+                    {
+                        browserConfiguration.addPreference(key, Boolean.parseBoolean(val));
+                    }
+                    else if (StringUtils.isNumeric(val))
+                    {
+                        browserConfiguration.addPreference(key, Integer.parseInt(val));
+                    }
+                    else
+                    {
+                        browserConfiguration.addPreference(key, val);
+                    }
+                }
+            }
         }
 
         capabilities.setCapability("name", browserProfileConfiguration.get("name"));
