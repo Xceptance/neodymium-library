@@ -13,6 +13,10 @@ import org.junit.runner.Result;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.testclasses.webDriver.DownloadFilesInDifferentWays;
 
+/**
+ * Test class that sets up the configuration, executes and evaluates the results of the
+ * {@link DownloadFilesInDifferentWays} test
+ */
 public class DownloadFilesExecutorTest extends NeodymiumTest
 {
     @BeforeClass
@@ -21,11 +25,11 @@ public class DownloadFilesExecutorTest extends NeodymiumTest
         Map<String, String> properties = new HashMap<>();
         properties.put("browserprofile.chrome_download.name", "chrome_download");
         properties.put("browserprofile.chrome_download.browser", "chrome");
-        
-        //needed to enable validation of chrome://downloads/ page
+
+        // needed to enable validation of chrome://downloads/ page
         properties.put("browserprofile.chrome_download.headless", "false");
         properties.put("browserprofile.chrome_download.downloadDirectory", "target");
-        
+
         properties.put("browserprofile.firefox_download.name", "firefox_download");
         properties.put("browserprofile.firefox_download.browser", "firefox");
         properties.put("browserprofile.firefox_download.headless", "true");

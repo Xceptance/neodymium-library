@@ -396,6 +396,14 @@ public final class BrowserRunnerHelper
         return webdriverProxy;
     }
 
+    /**
+     * Gets popular content types from the jdk content-types.properties file. In case the file is not found returns:
+     * </br>
+     * <em>text/plain;text/csv;application/zip;application/pdf;
+     * application/octet-stream;application/msword;application/vnd.ms-excel;text/css;text/html</em>
+     * 
+     * @return popular content types
+     */
     private static String popularContentTypes()
     {
         try

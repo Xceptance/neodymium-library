@@ -21,6 +21,10 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.tests.NeodymiumTest;
 import com.xceptance.neodymium.util.Neodymium;
 
+/**
+ * Class with tests verifying that download folder configuration works for any download type
+ */
+
 @RunWith(NeodymiumRunner.class)
 @Browser("chrome_download")
 @Browser("firefox_download")
@@ -28,6 +32,9 @@ public class DownloadFilesInDifferentWays extends NeodymiumTest
 {
     private File fileName;
 
+    /**
+     * Verify file saved to the correct directory when downloaded via link
+     */
     @Test
     public void downloadViaLink()
     {
@@ -38,6 +45,9 @@ public class DownloadFilesInDifferentWays extends NeodymiumTest
         validateFilePresentInDownloadHistory();
     }
 
+    /**
+     * Verify file saved to the correct directory when downloaded on form submission
+     */
     @Test
     public void downloadOnFormSubmission()
     {
@@ -51,6 +61,9 @@ public class DownloadFilesInDifferentWays extends NeodymiumTest
         validateFilePresentInDownloadHistory();
     }
 
+    /**
+     * Verify file saved to the correct directory when downloaded via link
+     */
     @Test
     public void downloadPerLinkWithSelenide() throws FileNotFoundException
     {
