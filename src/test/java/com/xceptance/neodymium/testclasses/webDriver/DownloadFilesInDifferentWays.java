@@ -1,10 +1,10 @@
 package com.xceptance.neodymium.testclasses.webDriver;
 
+import static com.codeborne.selenide.Condition.attribute;
+import static com.codeborne.selenide.Condition.enabled;
+import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Condition.attribute;
-import static com.codeborne.selenide.Condition.exactText;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,7 +13,6 @@ import java.time.Duration;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.By;
 
 import com.codeborne.selenide.Selectors;
 import com.codeborne.selenide.Selenide;
@@ -42,12 +41,12 @@ public class DownloadFilesInDifferentWays extends NeodymiumTest
     @Test
     public void downloadOnFormSubmission()
     {
-        fileName = new File("target/2020-in-one-picture.pdf");
+        fileName = new File("target/png2pdf.pdf");
         Selenide.open("https://png2pdf.com/");
         $(".cc-dismiss").click();
-        $("#upload-buttons-wrapper input").uploadFile(new File("src/test/resources/2020-in-one-picture.png"));
-        $("#download-all:not(.ui-button-disabled)").shouldBe(visible);
-        $(".plupload_file_button").scrollIntoView(true).click();
+        $("#fileSelector").uploadFile(new File("src/test/resources/2020-in-one-picture.png"));
+        $("button[aria-label='COMBINED']").shouldBe(enabled);
+        $("button[aria-label='COMBINED']").scrollIntoView(true).click();
         waitForFileDownloading();
         validateFilePresentInDownloadHistory();
     }
@@ -78,7 +77,8 @@ public class DownloadFilesInDifferentWays extends NeodymiumTest
         if (Neodymium.getBrowserName().contains("chrome"))
         {
             Selenide.open("chrome://downloads/");
-            $$(Selectors.shadowCss("#title-area", "downloads-manager" ,"#downloadsList downloads-item")).findBy(exactText(fileName.getName())).parent().find("#description").shouldHave(attribute("hidden"));
+            $$(Selectors.shadowCss("#title-area", "downloads-manager", "#downloadsList downloads-item")).findBy(exactText(fileName.getName())).parent()
+                                                                                                        .find("#description").shouldHave(attribute("hidden"));
         }
         else
         {
