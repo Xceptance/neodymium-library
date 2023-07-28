@@ -343,6 +343,7 @@ public class BrowserConfigurationMapper
             Neodymium.downloadFolder(downloadFolder);
         }
 
+        capabilities.setCapability("name", browserProfileConfiguration.get("name"));
         browserConfiguration.setCapabilities(capabilities);
         browserConfiguration.setConfigTag(browserProfileConfiguration.get("browserTag"));
         browserConfiguration.setName(browserProfileConfiguration.get("name"));
