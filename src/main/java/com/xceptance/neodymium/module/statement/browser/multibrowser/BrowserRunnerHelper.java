@@ -15,7 +15,6 @@ import org.openqa.selenium.Proxy;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -29,6 +28,7 @@ import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariOptions;
+import org.testcontainers.containers.BrowserWebDriverContainer;
 
 import com.browserup.bup.BrowserUpProxy;
 import com.browserup.bup.BrowserUpProxyServer;
@@ -229,7 +229,14 @@ public final class BrowserRunnerHelper
                     options.addArguments(config.getArguments());
                 }
 
-                wDSC.setWebDriver(new ChromeDriver(options));
+                BrowserWebDriverContainer container = new BrowserWebDriverContainer()
+                .withCapabilities(options);
+                container.start();
+
+                wDSC.setWebDriver(
+                                  //new ChromeDriver(options)
+                                  new RemoteWebDriver(container.getSeleniumAddress(), options)
+                                  );
             }
             else if (firefoxBrowsers.contains(browserName))
             {
