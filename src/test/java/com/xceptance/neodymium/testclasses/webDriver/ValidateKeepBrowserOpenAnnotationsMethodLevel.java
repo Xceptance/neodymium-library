@@ -5,8 +5,10 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.openqa.selenium.WebDriver;
 
 import com.xceptance.neodymium.NeodymiumRunner;
@@ -16,6 +18,7 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCa
 import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(NeodymiumRunner.class)
 public class ValidateKeepBrowserOpenAnnotationsMethodLevel
 {
