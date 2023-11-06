@@ -3,6 +3,7 @@ package com.xceptance.neodymium.testclasses.softassertion;
 import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Selenide.$;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,5 +39,11 @@ public class UseSoftAssertions
         Assert.assertThrows(ElementNotFound.class, () -> {
             $("#notFound4").click();
         });
+    }
+
+    @After
+    public void after()
+    {
+        System.out.println("after");
     }
 }

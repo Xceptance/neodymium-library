@@ -27,6 +27,9 @@ import com.xceptance.neodymium.testclasses.browser.RandomBrowsersClassInitialisa
 import com.xceptance.neodymium.testclasses.browser.RandomBrowsersMethodInitialisationException;
 import com.xceptance.neodymium.testclasses.browser.classonly.ClassBrowserSuppressed;
 import com.xceptance.neodymium.testclasses.browser.classonly.ClassBrowserSuppressedNoBrowserAnnotation;
+import com.xceptance.neodymium.testclasses.browser.classonly.ClassBrowserSuppressedWithAfter;
+import com.xceptance.neodymium.testclasses.browser.classonly.NewBrowserIsNotStartedForCleanUp;
+import com.xceptance.neodymium.testclasses.browser.classonly.NewBrowserIsStartedForCleanUp;
 import com.xceptance.neodymium.testclasses.browser.classonly.OneClassBrowserOneMethod;
 import com.xceptance.neodymium.testclasses.browser.classonly.RandomBrowserClassLevel;
 import com.xceptance.neodymium.testclasses.browser.classonly.TwoClassBrowserOneMethod;
@@ -37,8 +40,11 @@ import com.xceptance.neodymium.testclasses.browser.methodonly.MethodBrowserSuppr
 import com.xceptance.neodymium.testclasses.browser.methodonly.OneBrowserOneMethodBrowserSuppressed;
 import com.xceptance.neodymium.testclasses.browser.methodonly.RandomBrowserMethodLevel;
 import com.xceptance.neodymium.testclasses.browser.mixed.ClassAndMethodSameBrowserOneMethod;
+import com.xceptance.neodymium.testclasses.browser.mixed.ClassBrowserSuppressedAfterWithBrowser;
 import com.xceptance.neodymium.testclasses.browser.mixed.MethodBrowserAnnotationOverwritesClassRandomBrowser;
+import com.xceptance.neodymium.testclasses.browser.mixed.NewBrowserIsNotStartedForOneOfCleanUps;
 import com.xceptance.neodymium.testclasses.browser.mixed.RandomBrowserMixed;
+import com.xceptance.neodymium.testclasses.browser.mixed.StartBrowserForCleanUp;
 import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserStatementTest extends NeodymiumTest
@@ -181,6 +187,55 @@ public class BrowserStatementTest extends NeodymiumTest
         Result result = JUnitCore.runClasses(RandomBrowsersClassInitialisationException.class);
         checkFail(result, 1, 0, 1,
                   "java.lang.IllegalArgumentException: Method 'test1' is marked to be run with 9 random browsers, but there are only 4 available");
+    }
+
+    @Test
+    public void testStartBrowserForCleanUp()
+    {
+        // by default, new browser is started for each @After
+        Result result = JUnitCore.runClasses(StartBrowserForCleanUp.class);
+        checkPass(result, 1, 0);
+    }
+
+    @Test
+    public void testNewBrowserIsNotStartedForOneOfCleanUps()
+    {
+        // by default, new browser is started for each @After
+        Result result = JUnitCore.runClasses(NewBrowserIsNotStartedForOneOfCleanUps.class);
+        checkPass(result, 1, 0);
+    }
+
+    @Test
+    public void testNewBrowserIsStartedForCleanUp()
+    {
+        // by default, new browser is started for each @After
+        Result result = JUnitCore.runClasses(NewBrowserIsStartedForCleanUp.class);
+        checkPass(result, 1, 0);
+    }
+
+    @Test
+    public void testNewBrowserIsNotStartedForCleanUp()
+    {
+        // if test class is annotated with @@StartNewBrowserForCleanUp(false), no new browser is started for cleanup
+        Result result = JUnitCore.runClasses(NewBrowserIsNotStartedForCleanUp.class);
+        checkPass(result, 1, 0);
+    }
+
+    @Test
+    public void testSupressBrowserWithAfter()
+    {
+        // if test class, marked to run without browser, it should not be started for clean up
+        Result result = JUnitCore.runClasses(ClassBrowserSuppressedWithAfter.class);
+        checkPass(result, 1, 0);
+    }
+
+    @Test
+    public void testClassBrowserSuppressedAfterWithBrowser()
+    {
+        // although test class is marked to be run without browser, if @After method is annotated with @Browser, the
+        // browser should be started for clean up
+        Result result = JUnitCore.runClasses(ClassBrowserSuppressedAfterWithBrowser.class);
+        checkPass(result, 1, 0);
     }
 
     @Test
