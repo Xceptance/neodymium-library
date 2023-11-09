@@ -7,24 +7,22 @@ import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowsers;
 import com.xceptance.neodymium.util.Neodymium;
 
 @RunWith(NeodymiumRunner.class)
 @Browser("chrome")
-@SuppressBrowsers
-public class ClassBrowserSuppressedAfterWithBrowser
+public class OverwriteBrowserForCleanUp
 {
     @Test
     public void first() throws Exception
     {
-        Assert.assertNull("Browser should not be started for the test", Neodymium.getDriver());
+        Assert.assertEquals("chrome", Neodymium.getBrowserProfileName());
     }
 
     @After
-    @Browser("chrome")
+    @Browser("Chrome_headless")
     public void after()
     {
-        Assert.assertNotNull("Browser should be started for cleanup", Neodymium.getDriver());
+        Assert.assertEquals("Chrome_headless", Neodymium.getBrowserProfileName());
     }
 }

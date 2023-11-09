@@ -1,7 +1,7 @@
-package com.xceptance.neodymium.testclasses.browser.mixed;
+package com.xceptance.neodymium.testclasses.browser.classonly;
 
-import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -13,18 +13,16 @@ import com.xceptance.neodymium.util.Neodymium;
 @RunWith(NeodymiumRunner.class)
 @Browser("chrome")
 @SuppressBrowsers
-public class ClassBrowserSuppressedAfterWithBrowser
+public class ClassBrowserSuppressedWithBefore
 {
+    @Before
+    public void before()
+    {
+        Assert.assertNull("Browser should not be started for cleanup", Neodymium.getDriver());
+    }
+
     @Test
     public void first() throws Exception
     {
-        Assert.assertNull("Browser should not be started for the test", Neodymium.getDriver());
-    }
-
-    @After
-    @Browser("chrome")
-    public void after()
-    {
-        Assert.assertNotNull("Browser should be started for cleanup", Neodymium.getDriver());
     }
 }

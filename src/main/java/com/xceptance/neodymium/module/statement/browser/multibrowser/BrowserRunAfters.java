@@ -46,21 +46,19 @@ public class BrowserRunAfters extends RunAfters
         finally
         {
             WebDriverStateContainer oldDriver = Neodymium.getWebDriverStateContainer();
+            BrowserConfiguration oldBrowserConfiguration = MultibrowserConfiguration.getInstance().getBrowserProfiles()
+                                                                                    .get(Neodymium.getBrowserProfileName());
             for (FrameworkMethod each : afters)
             {
                 boolean isSuppressed = isSuppressed(each);
                 boolean startNewBrowserForCleanUp = shouldStartNewBrowser(each) && !isSuppressed;
 
-                BrowserConfiguration browserConfiguration = MultibrowserConfiguration.getInstance().getBrowserProfiles()
-                                                                                     .get(Neodymium.getBrowserProfileName());
+                BrowserConfiguration browserConfiguration = oldBrowserConfiguration;
                 List<Browser> methodBrowserAnnotations = StatementBuilder.getAnnotations(each.getMethod(), Browser.class);
 
-                // if browserConfiguration equals null, this means that no browser was started for the test, let's
-                // check
-                // if browser should be started for @After
                 // if @After method is annotated with @Browser tag, it might need to be executed with another
                 // browser
-                if (browserConfiguration == null && !methodBrowserAnnotations.isEmpty())
+                if (!methodBrowserAnnotations.isEmpty())
                 {
                     browserConfiguration = MultibrowserConfiguration.getInstance().getBrowserProfiles()
                                                                     .get(methodBrowserAnnotations.get(0).value());
@@ -70,10 +68,13 @@ public class BrowserRunAfters extends RunAfters
                 // it means that we should use the same browser for cleanup
                 // as the might have been other @After methods with new browser running previously, let's explicitly set
                 // the driver to original
-                if (!startNewBrowserForCleanUp && !isSuppressed && (Neodymium.getDriver() == null || !Neodymium.getDriver().equals(oldDriver.getWebDriver())))
+                if (!startNewBrowserForCleanUp && !isSuppressed && (Neodymium.getDriver() == null || !Neodymium.getDriver().equals(oldDriver.getWebDriver()))
+                    && oldDriver != null)
                 {
                     WebDriverRunner.setWebDriver(oldDriver.getWebDriver());
                     Neodymium.setWebDriverStateContainer(oldDriver);
+                    Neodymium.setBrowserProfileName(oldBrowserConfiguration.getConfigTag());
+                    Neodymium.setBrowserName(oldBrowserConfiguration.getCapabilities().getBrowserName());
                 }
                 // if we need to start new browser for the clean up and any browser configuration for the @After method
                 // was found, create a new driver
@@ -88,6 +89,17 @@ public class BrowserRunAfters extends RunAfters
                     BrowserRunnerHelper.setBrowserWindowSize(browserConfiguration, wDSCont.getWebDriver());
                     WebDriverRunner.setWebDriver(wDSCont.getWebDriver());
                     Neodymium.setWebDriverStateContainer(wDSCont);
+                    Neodymium.setBrowserProfileName(browserConfiguration.getConfigTag());
+                    Neodymium.setBrowserName(browserConfiguration.getCapabilities().getBrowserName());
+                }
+                else if (!isSuppressed && browserConfiguration == null)
+                {
+                    throw new RuntimeException("No browser setting for @After method '" + each.getName()
+                                               + "' was found. "
+                                               + "If browser was suppressed for the test and is also not required for the clean up,"
+                                               + " please mark the @After method with @DontStartNewBrowserForCleanUp annotation."
+                                               + " If you need to start a browser for the clean up,"
+                                               + " please, use @Browser annotaion to mention what browser should be used exactly for this @After.");
                 }
                 boolean afterFailed = false;
                 try

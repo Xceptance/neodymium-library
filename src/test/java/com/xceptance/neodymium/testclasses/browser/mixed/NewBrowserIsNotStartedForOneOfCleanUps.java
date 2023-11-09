@@ -39,17 +39,17 @@ public class NewBrowserIsNotStartedForOneOfCleanUps
     }
 
     @After
-    @DontStartNewBrowserForCleanUp
     public void after()
     {
-        Assert.assertEquals(webDriver1, Neodymium.getDriver());
+        Assert.assertNotEquals(webDriver1, Neodymium.getDriver());
         webDriver2 = Neodymium.getDriver();
     }
 
     @After
+    @DontStartNewBrowserForCleanUp
     public void after1()
     {
-        Assert.assertNotEquals(webDriver1, Neodymium.getDriver());
+        Assert.assertEquals(webDriver1, Neodymium.getDriver());
         webDriver3 = Neodymium.getDriver();
     }
 

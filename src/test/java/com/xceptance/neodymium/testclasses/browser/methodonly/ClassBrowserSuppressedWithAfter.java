@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.testclasses.browser.classonly;
+package com.xceptance.neodymium.testclasses.browser.methodonly;
 
 import org.junit.After;
 import org.junit.Assert;

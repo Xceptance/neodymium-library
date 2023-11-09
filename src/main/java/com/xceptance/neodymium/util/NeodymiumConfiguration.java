@@ -231,6 +231,10 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("-1")
     public int maxWebDriverReuse();
 
+    @Key("neodymium.webDriver.startNewBrowserForSetUp")
+    @DefaultValue("true")
+    public boolean startNewBrowserForSetUp();
+
     @Key("neodymium.webDriver.startNewBrowserForCleanUp")
     @DefaultValue("true")
     public boolean startNewBrowserForCleanUp();

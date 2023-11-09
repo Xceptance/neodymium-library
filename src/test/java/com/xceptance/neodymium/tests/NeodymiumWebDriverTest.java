@@ -18,7 +18,9 @@ import com.xceptance.neodymium.testclasses.webDriver.ValidateClearReuseWebDriver
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpen;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpenOnFailure;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpenOnFailureInAfter;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpenOnFailureInBefore;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpenOnFailureWithAfter;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpenOnFailureWithBefore;
 import com.xceptance.neodymium.testclasses.webDriver.ValidatePreventReuseWebDriver;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateReuseWebDriver;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateWebDriverClosed;
@@ -106,6 +108,22 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     {
         // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateKeepWebDriverOpenOnFailureInAfter.class);
+        checkFail(result, 2, 0, 1);
+    }
+
+    @Test
+    public void testValidateKeepWebDriverOpenOnFailureWithBefore()
+    {
+        // XVFB or a display needed
+        Result result = JUnitCore.runClasses(ValidateKeepWebDriverOpenOnFailureWithBefore.class);
+        checkFail(result, 2, 0, 1);
+    }
+
+    @Test
+    public void testValidateKeepWebDriverOpenOnFailureInBefore()
+    {
+        // XVFB or a display needed
+        Result result = JUnitCore.runClasses(ValidateKeepWebDriverOpenOnFailureInBefore.class);
         checkFail(result, 2, 0, 1);
     }
 

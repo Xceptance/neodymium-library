@@ -18,6 +18,7 @@ import com.browserup.bup.BrowserUpProxy;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.DontStartNewBrowserForCleanUp;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.DontStartNewBrowserForSetUp;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
 import com.xceptance.neodymium.tests.NeodymiumTest;
 import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
@@ -28,6 +29,7 @@ import com.xceptance.neodymium.util.WebDriverUtils;
  * Validate that the reuse of a web driver could be prevented programmatically.
  * Validate that the other web driver is not reused.
  */
+@DontStartNewBrowserForSetUp
 @DontStartNewBrowserForCleanUp
 @RunWith(NeodymiumRunner.class)
 public class ValidatePreventReuseWebDriver

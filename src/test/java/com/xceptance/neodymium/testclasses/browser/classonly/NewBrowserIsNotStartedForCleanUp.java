@@ -19,37 +19,53 @@ import com.xceptance.neodymium.util.Neodymium;
 @Browser("chrome")
 public class NewBrowserIsNotStartedForCleanUp
 {
-    private static WebDriver webDriver1;
+    private static WebDriver webDriverTest;
+
+    private static WebDriver webDriverAfter;
+
+    private static WebDriver webDriverAfter1;
 
     @BeforeClass
     public static void beforeClass()
     {
-        Assert.assertNull(webDriver1);
+        Assert.assertNull(webDriverTest);
         Assert.assertNull(Neodymium.getDriver());
     }
 
     @Test
     public void test1()
     {
-        webDriver1 = Neodymium.getDriver();
-        Assert.assertEquals(webDriver1, Neodymium.getDriver());
+        webDriverTest = Neodymium.getDriver();
+        Assert.assertEquals(webDriverTest, Neodymium.getDriver());
     }
 
     @After
     public void after()
     {
-        Assert.assertEquals(webDriver1, Neodymium.getDriver());
+        webDriverAfter = Neodymium.getDriver();
+        Assert.assertEquals(webDriverAfter, webDriverTest);
+        if (webDriverAfter1 != null)
+        {
+            Assert.assertEquals(webDriverAfter, webDriverAfter1);
+        }
     }
 
     @After
     public void after1()
     {
-        Assert.assertEquals(webDriver1, Neodymium.getDriver());
+        webDriverAfter1 = Neodymium.getDriver();
+        Assert.assertEquals(webDriverAfter1, webDriverTest);
+        if (webDriverAfter != null)
+        {
+            Assert.assertEquals(webDriverAfter, webDriverAfter1);
+        }
     }
 
     @AfterClass
     public static void afterClass() throws InterruptedException
     {
-        NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
+        NeodymiumWebDriverTest.assertWebDriverClosed(webDriverTest);
+        NeodymiumWebDriverTest.assertWebDriverClosed(webDriverAfter);
+        NeodymiumWebDriverTest.assertWebDriverClosed(webDriverAfter1);
     }
 }
