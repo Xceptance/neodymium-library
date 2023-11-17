@@ -91,7 +91,8 @@ public class DownloadFilesInDifferentWays extends NeodymiumTest
         {
             Selenide.open("chrome://downloads/");
             $$(Selectors.shadowCss("#title-area", "downloads-manager", "#downloadsList downloads-item")).findBy(exactText(fileName.getName())).parent()
-                                                                                                        .find("#description").shouldHave(attribute("hidden"));
+                                                                                                        .find(".description[role='gridcell']")
+                                                                                                        .shouldHave(attribute("hidden"));
         }
         else
         {
