@@ -7,6 +7,8 @@ import java.util.List;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.browserup.bup.BrowserUpProxy;
 import com.codeborne.selenide.WebDriverRunner;
@@ -17,6 +19,8 @@ import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserRunner
 {
+    public static Logger LOGGER = LoggerFactory.getLogger(BrowserRunner.class);
+
     private String browserTag;
 
     private WebDriverStateContainer wDSCont;
@@ -75,7 +79,7 @@ public class BrowserRunner
             }
             else
             {
-                System.out.println("Browser instance served from cache");
+                LOGGER.debug("Browser instance served from cache");
             }
         }
         catch (final MalformedURLException e)
@@ -115,20 +119,20 @@ public class BrowserRunner
         // keep browser open
         if (keepOpen(testFailed, browserConfiguration))
         {
-            System.out.println("Keep browser open");
+            LOGGER.debug("Keep browser open");
             // nothing to do
         }
         // reuse
         else if (canReuse(preventReuse, webDriverStateContainer))
         {
-            System.out.println("Put browser into cache");
+            LOGGER.debug("Put browser into cache");
             webDriverStateContainer.incrementUsedCount();
             WebDriverCache.instance.putWebDriverStateContainer(browserTag, webDriverStateContainer);
         }
         // close the WebDriver
         else
         {
-            System.out.println("Teardown browser");
+            LOGGER.debug("Teardown browser");
             WebDriver webDriver = webDriverStateContainer.getWebDriver();
             if (webDriver != null)
             {
@@ -181,7 +185,7 @@ public class BrowserRunner
         catch (Exception e)
         {
             e.printStackTrace();
-            System.out.println("Couldn't detect if the WebDriver is still open!");
+            LOGGER.debug("Couldn't detect if the WebDriver is still open!");
             return true;
         }
     }

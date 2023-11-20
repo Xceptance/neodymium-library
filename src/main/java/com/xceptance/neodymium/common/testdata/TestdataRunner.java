@@ -1,9 +1,14 @@
 package com.xceptance.neodymium.common.testdata;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.xceptance.neodymium.util.Neodymium;
 
 public class TestdataRunner
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestdataRunner.class);
+
     private TestdataContainer testData;
 
     public TestdataRunner(TestdataContainer testData)
@@ -19,7 +24,7 @@ public class TestdataRunner
         }
         else
         {
-            System.out.println("using no dataset");
+            LOGGER.debug("using no dataset");
         }
     }
 }
