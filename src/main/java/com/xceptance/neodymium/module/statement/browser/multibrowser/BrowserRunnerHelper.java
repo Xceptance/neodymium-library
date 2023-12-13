@@ -1,5 +1,11 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser;
 
+import static org.openqa.selenium.remote.Browser.CHROME;
+import static org.openqa.selenium.remote.Browser.EDGE;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
+import static org.openqa.selenium.remote.Browser.IE;
+import static org.openqa.selenium.remote.Browser.SAFARI;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -42,11 +48,6 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.configurati
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.TestEnvironment;
 import com.xceptance.neodymium.util.Neodymium;
 import com.xceptance.neodymium.util.NeodymiumConfiguration;
-import static org.openqa.selenium.remote.Browser.CHROME;
-import static org.openqa.selenium.remote.Browser.FIREFOX;
-import static org.openqa.selenium.remote.Browser.IE;
-import static org.openqa.selenium.remote.Browser.EDGE;
-import static org.openqa.selenium.remote.Browser.SAFARI;
 
 public final class BrowserRunnerHelper
 {

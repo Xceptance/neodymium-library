@@ -11,7 +11,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerOptions;
-import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariOptions;
@@ -95,10 +94,6 @@ public class BrowserConfigurationMapper
         else if ("edge".equals(emulatedBrowser))
         {
             capabilities = new EdgeOptions();
-        }
-        else if ("opera".equals(emulatedBrowser))
-        {
-            capabilities = new OperaOptions();
         }
         else
         {
