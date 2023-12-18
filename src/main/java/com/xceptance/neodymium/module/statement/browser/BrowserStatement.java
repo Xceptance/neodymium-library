@@ -16,7 +16,6 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.slf4j.Logger;
@@ -63,10 +62,6 @@ public class BrowserStatement extends StatementBuilder
         final String ieDriverPath = Neodymium.configuration().getIeDriverPath();
         final String chromeDriverPath = Neodymium.configuration().getChromeDriverPath();
         final String geckoDriverPath = Neodymium.configuration().getFirefoxDriverPath();
-
-        // shall we run old school firefox?
-        final boolean firefoxLegacy = Neodymium.configuration().useFirefoxLegacy();
-        System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, Boolean.toString(!firefoxLegacy));
 
         if (!StringUtils.isEmpty(ieDriverPath))
         {

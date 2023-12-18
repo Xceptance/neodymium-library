@@ -375,7 +375,7 @@ public class VisualAssertion
     private String getBrowserVersion(final WebDriver webDriver)
     {
         final Capabilities capabilities = ((RemoteWebDriver) webDriver).getCapabilities();
-        final String browserVersion = capabilities.getVersion();
+        final String browserVersion = capabilities.getBrowserVersion();
 
         return browserVersion == null ? "unknown" : browserVersion;
     }

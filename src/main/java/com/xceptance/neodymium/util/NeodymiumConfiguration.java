@@ -219,10 +219,6 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("-1")
     public Integer getWindowHeight();
 
-    @Key("neodymium.webDriver.firefox.legacyMode")
-    @DefaultValue("false")
-    public boolean useFirefoxLegacy();
-
     @Key("neodymium.webDriver.reuseDriver")
     @DefaultValue("false")
     public boolean reuseWebDriver();
@@ -268,4 +264,7 @@ public interface NeodymiumConfiguration extends Mutable
 
     @Key("neodymium.testNameFilter")
     public String getTestNameFilter();
+
+    @Key("neodymium.useTestContainers")
+    public boolean useTestContainers();
 }

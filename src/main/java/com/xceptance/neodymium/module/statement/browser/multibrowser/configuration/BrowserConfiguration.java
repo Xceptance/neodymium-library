@@ -1,5 +1,6 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser.configuration;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.openqa.selenium.MutableCapabilities;
@@ -16,6 +17,8 @@ public class BrowserConfiguration
     private String name;
 
     private MutableCapabilities capabilities;
+
+    private HashMap<String, Object> gridProperties;
 
     private String testEnvironment;
 
@@ -55,6 +58,21 @@ public class BrowserConfiguration
     protected void setCapabilities(MutableCapabilities capabilities)
     {
         this.capabilities = capabilities;
+    }
+
+    public String getBrowserTag()
+    {
+        return browserTag;
+    }
+
+    public HashMap<String, Object> getGridProperties()
+    {
+        return gridProperties;
+    }
+
+    public void setGridProperties(HashMap<String, Object> gridProperties)
+    {
+        this.gridProperties = gridProperties;
     }
 
     public String getTestEnvironment()

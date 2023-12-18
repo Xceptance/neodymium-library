@@ -10,6 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
+
 import com.xceptance.neodymium.testclasses.multibrowser.BrowserstackHomePageTest;
 import com.xceptance.neodymium.util.TestConfiguration;
 

@@ -54,8 +54,6 @@ public class BrowserConfigurationMapper
 
     private static final String BROWSER_NAME = "browserName";
 
-    private static final String PLATFORM_NAME = "platformName";
-
     private static final String PLATFORM_VERSION = "platformVersion";
 
     private static final String APP = "app";
@@ -104,47 +102,40 @@ public class BrowserConfigurationMapper
          * SauceLabs/TestingBot/BrowserStack configuration
          */
         String emulatedPlatform = browserProfileConfiguration.get(PLATFORM);
+        HashMap<String, Object> testEnvironmentProperties = new HashMap<>();
         if (!StringUtils.isEmpty(emulatedPlatform))
         {
-            capabilities.setCapability(CapabilityType.PLATFORM, emulatedPlatform);
-            // BrowserStack
-            capabilities.setCapability("os", emulatedPlatform);
+            testEnvironmentProperties.put("os", emulatedPlatform);
         }
 
-        String emulatedPlatformName = browserProfileConfiguration.get(PLATFORM_NAME);
+        String emulatedPlatformName = browserProfileConfiguration.get(PLATFORM_VERSION);
         if (!StringUtils.isEmpty(emulatedPlatformName))
         {
-            capabilities.setCapability(CapabilityType.PLATFORM_NAME, emulatedPlatformName);
-            // BrowserStack
-            capabilities.setCapability("os", emulatedPlatformName);
+            testEnvironmentProperties.put("osVersion", emulatedPlatformName);
         }
 
         String emulatedVersion = browserProfileConfiguration.get(BROWSER_VERSION);
         if (!StringUtils.isEmpty(emulatedVersion))
         {
-            capabilities.setCapability(CapabilityType.VERSION, emulatedVersion);
-            // BrowserStack
-            capabilities.setCapability("browser_version", emulatedVersion);
+            testEnvironmentProperties.put(CapabilityType.BROWSER_VERSION, emulatedVersion);
         }
 
         String emulatedDeviceName = browserProfileConfiguration.get(DEVICE_NAME);
         if (!StringUtils.isEmpty(emulatedDeviceName))
         {
             // SauceLabs, TestingBot
-            capabilities.setCapability("deviceName", emulatedDeviceName);
-            // BrowserStack
-            capabilities.setCapability("device", emulatedDeviceName);
+            testEnvironmentProperties.put("deviceName", emulatedDeviceName);
         }
 
         String emulatedDeviceScreenResolution = browserProfileConfiguration.get(SCREEN_RESOLUTION);
         if (!StringUtils.isEmpty(emulatedDeviceScreenResolution))
         {
             // SauceLabs
-            capabilities.setCapability("screenResolution", emulatedDeviceScreenResolution);
+            testEnvironmentProperties.put("screenResolution", emulatedDeviceScreenResolution);
             // TestingBot
-            capabilities.setCapability("screen-resolution", emulatedDeviceScreenResolution);
+            testEnvironmentProperties.put("screen-resolution", emulatedDeviceScreenResolution);
             // BrowserStack
-            capabilities.setCapability("resolution", emulatedDeviceScreenResolution);
+            testEnvironmentProperties.put("resolution", emulatedDeviceScreenResolution);
         }
 
         String emulatedMaximumTestDuration = browserProfileConfiguration.get(MAXIMUM_DURATION);
@@ -161,9 +152,9 @@ public class BrowserConfigurationMapper
                                            + emulatedMaximumTestDuration + "\"", e);
             }
             // SauceLabs
-            capabilities.setCapability("maxDuration", maxDura);
+            testEnvironmentProperties.put("maxDuration", maxDura);
             // TestingBot
-            capabilities.setCapability("maxduration", maxDura);
+            testEnvironmentProperties.put("maxduration", maxDura);
             // BrowserStack does not support to set this capability (fix value of 2 hours)
         }
 
@@ -181,58 +172,42 @@ public class BrowserConfigurationMapper
                                            + emulatedIdleTimeout + "\"", e);
             }
             // SauceLabs, BrowserStack
-            capabilities.setCapability("idleTimeout", idleTim);
+            testEnvironmentProperties.put("idleTimeout", idleTim);
             // TestingBot
-            capabilities.setCapability("idletimeout", idleTim);
+            testEnvironmentProperties.put("idletimeout", idleTim);
         }
 
         String emulatedSeleniumVersion = browserProfileConfiguration.get(SELENIUM_VERSION);
         if (!StringUtils.isEmpty(emulatedSeleniumVersion))
         {
             // SauceLabs, BrowserStack
-            capabilities.setCapability("seleniumVersion", emulatedSeleniumVersion);
-            // TestingBot
-            capabilities.setCapability("selenium-version", emulatedSeleniumVersion);
+            testEnvironmentProperties.put("seleniumVersion", emulatedSeleniumVersion);
+            testEnvironmentProperties.put("selenium-version", emulatedSeleniumVersion);
         }
 
         // appium
         String appiumVersion = browserProfileConfiguration.get(APPIUM_VERSION);
         if (!StringUtils.isEmpty(appiumVersion))
-            capabilities.setCapability(APPIUM_VERSION, appiumVersion);
+            testEnvironmentProperties.put(APPIUM_VERSION, appiumVersion);
 
         String browserName = browserProfileConfiguration.get(BROWSER_NAME);
         if (!StringUtils.isEmpty(browserName))
             capabilities.setCapability(BROWSER_NAME, browserName);
 
-        String platformVersion = browserProfileConfiguration.get(PLATFORM_VERSION);
-        if (!StringUtils.isEmpty(platformVersion))
-            capabilities.setCapability(PLATFORM_VERSION, platformVersion);
-
-        String platformName = browserProfileConfiguration.get(PLATFORM_NAME);
-        if (!StringUtils.isEmpty(platformName))
-            capabilities.setCapability(PLATFORM_NAME, platformName);
-
         String app = browserProfileConfiguration.get(APP);
         if (!StringUtils.isEmpty(app))
-            capabilities.setCapability(APP, app);
+            testEnvironmentProperties.put(APP, app);
 
         String automationName = browserProfileConfiguration.get(AUTOMATION_NAME);
         if (!StringUtils.isEmpty(automationName))
-            capabilities.setCapability(AUTOMATION_NAME, automationName);
+            testEnvironmentProperties.put("projectName", automationName);
 
         String emulatedDeviceOrientation = browserProfileConfiguration.get(DEVICE_ORIENTATION);
         if (!StringUtils.isEmpty(emulatedDeviceOrientation))
-            capabilities.setCapability("deviceOrientation", emulatedDeviceOrientation);
-
-        String orientation = browserProfileConfiguration.get(ORIENTATION);
-        if (!StringUtils.isEmpty(orientation))
         {
-            // SauceLabs, TestingBot
-            capabilities.setCapability(ORIENTATION, orientation);
-            // BrowserStack, Appium
-            capabilities.setCapability("deviceOrientation", orientation);
+            testEnvironmentProperties.put("deviceOrientation", emulatedDeviceOrientation);
+            testEnvironmentProperties.put("orientation", emulatedDeviceOrientation);
         }
-
         /*
          * Chrome device emulation
          */
@@ -279,14 +254,10 @@ public class BrowserConfigurationMapper
         if (!StringUtils.isEmpty(acceptInsecureCerts))
         {
             capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.parseBoolean(acceptInsecureCerts));
-            // BrowserStack, helps on iPhone
-            capabilities.setCapability("acceptSslCerts", Boolean.parseBoolean(acceptInsecureCerts));
         }
         else if (!StringUtils.isEmpty(globalAcceptInsecureCertificates))
         {
             capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.parseBoolean(globalAcceptInsecureCertificates));
-            // BrowserStack
-            capabilities.setCapability("acceptSslCerts", Boolean.parseBoolean(globalAcceptInsecureCertificates));
         }
 
         // headless
@@ -314,11 +285,10 @@ public class BrowserConfigurationMapper
             browserConfiguration.setArguments(args);
         }
 
-        capabilities.setCapability("name", browserProfileConfiguration.get("name"));
+        browserConfiguration.setGridProperties(testEnvironmentProperties);
         browserConfiguration.setCapabilities(capabilities);
         browserConfiguration.setConfigTag(browserProfileConfiguration.get("browserTag"));
         browserConfiguration.setName(browserProfileConfiguration.get("name"));
-
         return browserConfiguration;
     }
 

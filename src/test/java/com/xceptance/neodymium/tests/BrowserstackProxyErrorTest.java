@@ -7,12 +7,15 @@ import java.util.Map;
 
 import org.aeonbits.owner.ConfigFactory;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
+
 import com.xceptance.neodymium.testclasses.multibrowser.BrowserstackHomePageTest;
 import com.xceptance.neodymium.util.TestConfiguration;
 
+@Ignore("selenium grid under proxy not working yet")
 public class BrowserstackProxyErrorTest extends NeodymiumTest
 {
     private static final TestConfiguration CONFIGURATION = ConfigFactory.create(TestConfiguration.class);
