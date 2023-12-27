@@ -24,7 +24,7 @@ public class BrowserstackProxyTest extends NeodymiumTest
     public static void beforeClass() throws IOException
     {
         Map<String, String> properties1 = new HashMap<>();
-        properties1.put("browserprofile.testEnvironment.browserstack.url", "https://ondemand.eu-central-1.saucelabs.com:443/wd/hub");
+        properties1.put("browserprofile.testEnvironment.browserstack.url", "https://hub-cloud.browserstack.com/wd/hub");
         properties1.put("browserprofile.testEnvironment.browserstack.username", CONFIGURATION.browserstackUsername());
         properties1.put("browserprofile.testEnvironment.browserstack.password", CONFIGURATION.browserstackAccessKey());
 
