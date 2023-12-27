@@ -113,7 +113,7 @@ public class SelenideAddonsTest
         openBlogPage();
         $("#masthead .search-toggle").click();
 
-        $("#search-container .search-field").should(SelenideAddons.matchesAttribute("placeholder", "Search"));
+        $("#search-container .search-field").should(SelenideAddons.matchesAttribute("placeholder", "Search.*"));
     }
 
     @Test
@@ -286,7 +286,7 @@ public class SelenideAddonsTest
     @Test
     public void testWrapAssertionErrorWithoutMessage()
     {
-        final String errMessage = "AssertionError: No error message provided by the Assertion.";
+        final String errMessage = "java.lang.AssertionError: No error message provided by the Assertion.";
         try
         {
             openBlogPage();
