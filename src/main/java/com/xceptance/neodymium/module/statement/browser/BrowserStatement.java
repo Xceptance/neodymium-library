@@ -35,8 +35,16 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.configurati
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.util.Neodymium;
 
+/**
+ * JUnit 4 statement to compute tests for multi-browsing runs
+ * 
+ * @author olha
+ */
 public class BrowserStatement extends StatementBuilder
 {
+    /**
+     * logger for {@link BrowserStatement} class
+     */
     public static Logger LOGGER = LoggerFactory.getLogger(BrowserStatement.class);
 
     private Statement next;
@@ -53,6 +61,10 @@ public class BrowserStatement extends StatementBuilder
 
     private WebDriverStateContainer wDSCont;
 
+    /**
+     * Don't use this constructor as it's only ment for instantiation of {@link BrowserStatement} objec in
+     * {@link StatementBuilder#instantiate(Class)}
+     */
     public BrowserStatement()
     {
         // that is like a dirty hack to provide testing ability
@@ -88,6 +100,12 @@ public class BrowserStatement extends StatementBuilder
         }
     }
 
+    /**
+     * Add reference to the next statement
+     * 
+     * @param next
+     * @param parameter
+     */
     public BrowserStatement(Statement next, String parameter)
     {
         this.next = next;
@@ -185,11 +203,23 @@ public class BrowserStatement extends StatementBuilder
         Neodymium.clickViaJs(Neodymium.configuration().selenideClickViaJs());
     }
 
+    /**
+     * teardown browser after test
+     * 
+     * @param testFailed
+     */
     public void teardown(boolean testFailed)
     {
         teardown(testFailed, false, wDSCont);
     }
 
+    /**
+     * teardown browser after test
+     * 
+     * @param testFailed
+     * @param preventReuse
+     * @param webDriverStateContainer
+     */
     public void teardown(boolean testFailed, boolean preventReuse, WebDriverStateContainer webDriverStateContainer)
     {
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(Neodymium.getBrowserProfileName());

@@ -30,7 +30,17 @@ import java.lang.annotation.Target;
 @Repeatable(DataSets.class)
 public @interface DataSet
 {
+    /**
+     * get data set index
+     * 
+     * @return
+     */
     int value() default 0;
 
+    /**
+     * get data set id
+     * 
+     * @return
+     */
     String id() default "";
 }

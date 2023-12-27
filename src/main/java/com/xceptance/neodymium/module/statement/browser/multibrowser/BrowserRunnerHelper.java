@@ -51,6 +51,11 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.configurati
 import com.xceptance.neodymium.util.Neodymium;
 import com.xceptance.neodymium.util.NeodymiumConfiguration;
 
+/**
+ * Helper class to create webdriver for the test
+ * 
+ * @author olha
+ */
 public final class BrowserRunnerHelper
 {
     private static final String CERT_PASSWORD = "xceptance";

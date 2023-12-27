@@ -12,11 +12,11 @@ import java.lang.annotation.Target;
  * By default, the JSON objects or primitives with a name matching the name of the variable will be parsed to the
  * variable. In case there are no JSON objects that match the variable name found, the JSON objects or names that match
  * the fields of the variable will be used to instantiate the corresponding fields.
- * <p>
+ * </p>
  * <p>
  * In case you would like to change the path to the JSON used for the variable instantiation, please pass the JSON path
- * to the corresponding JSON to the <b>value<b> of the annotation
- * <p>
+ * to the corresponding JSON to the <b>value</b> of the annotation
+ * </p>
  */
 @Retention(RUNTIME)
 @Target(
@@ -25,5 +25,10 @@ import java.lang.annotation.Target;
 })
 public @interface DataItem
 {
+    /**
+     * get JSON path to data item object
+     * 
+     * @return
+     */
     String value() default "";
 }

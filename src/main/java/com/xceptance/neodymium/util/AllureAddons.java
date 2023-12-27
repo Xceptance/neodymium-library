@@ -81,6 +81,12 @@ public class AllureAddons
         }
     }
 
+    /**
+     * Takes screenshot and converts it to byte stream
+     * 
+     * @param filename
+     * @return
+     */
     @Attachment(type = "image/png", value = "{filename}", fileExtension = ".png")
     public static byte[] attachPNG(final String filename)
     {

@@ -15,6 +15,11 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariOptions;
 
+/**
+ * Class to map browser configurations
+ * 
+ * @author olha
+ */
 public class BrowserConfigurationMapper
 {
     private static final String BROWSER = "browser";
@@ -62,6 +67,16 @@ public class BrowserConfigurationMapper
 
     private static final String ORIENTATION = "orientation";
 
+    /**
+     * Map passed data to {@link BrowserConfiguration} object
+     * 
+     * @param browserProfileConfiguration
+     * @param globalHeadless
+     * @param globalAcceptInsecureCertificates
+     * @param globalPageLoadStrategy
+     * @param globalBrowserResolution
+     * @return created {@link BrowserConfiguration} object
+     */
     public BrowserConfiguration map(Map<String, String> browserProfileConfiguration, String globalHeadless, String globalAcceptInsecureCertificates,
                                     String globalPageLoadStrategy, String globalBrowserResolution)
     {

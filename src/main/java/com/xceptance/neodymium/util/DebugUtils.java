@@ -11,6 +11,11 @@ import org.openqa.selenium.WebElement;
 
 import com.codeborne.selenide.Selenide;
 
+/**
+ * Class with util methods for debugging
+ * 
+ * @author olha
+ */
 public class DebugUtils
 {
     private static final String injectJS;
