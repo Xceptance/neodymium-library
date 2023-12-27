@@ -2,7 +2,10 @@ package com.xceptance.neodymium.module.statement.testdata;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -19,8 +22,12 @@ import org.slf4j.LoggerFactory;
 
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.statement.testdata.util.TestDataUtils;
+import com.xceptance.neodymium.util.DataUtils;
 import com.xceptance.neodymium.util.Neodymium;
 
+/**
+ * JUnit statement to read the test data and multiply tests by data sets
+ */
 public class TestdataStatement extends StatementBuilder
 {
     private static final String TEST_ID = "testId";
@@ -29,12 +36,14 @@ public class TestdataStatement extends StatementBuilder
 
     private Statement next;
 
+    private Object testClassInstance;
+
     Map<String, String> testData;
 
-    public TestdataStatement(Statement next, TestdataStatementData parameter)
+    public TestdataStatement(Statement next, TestdataStatementData parameter, Object testClassInstance)
     {
         this.next = next;
-
+        this.testClassInstance = testClassInstance;
         int currentDataSetIndex = parameter.getIndex();
 
         testData = new HashMap<>();
@@ -64,7 +73,57 @@ public class TestdataStatement extends StatementBuilder
     public void evaluate() throws Throwable
     {
         Neodymium.getData().putAll(testData);
+        initializeDataObjects();
         next.evaluate();
+    }
+
+    private void initializeDataObjects() throws IllegalArgumentException, IllegalAccessException
+    {
+        for (Field field : getFieldsFromSuperclasses())
+        {
+            DataItem dataAnnotation = field.getAnnotation(DataItem.class);
+            if (dataAnnotation != null)
+            {
+                boolean isFieldAccessable = field.canAccess(testClassInstance);
+                field.setAccessible(true);
+                try
+                {
+                    if (!StringUtils.isBlank(dataAnnotation.value()))
+                    {
+                        field.set(testClassInstance, DataUtils.get(dataAnnotation.value(), field.getType()));
+                    }
+                    else if (DataUtils.exists(field.getName()))
+                    {
+                        field.set(testClassInstance, DataUtils.get("$." + field.getName(), field.getType()));
+                    }
+                    else if (DataUtils.getDataAsJsonObject().isJsonPrimitive() == (field.getType().isPrimitive() || field.getType().equals(String.class)))
+                    {
+                        field.set(testClassInstance, DataUtils.get(field.getType()));
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new RuntimeException("Something went wrong while test data value injection for field:'" + field.getName() + "' in class:'"
+                                               + testClassInstance.getClass().getName() + "'", e);
+                }
+                finally
+                {
+                    field.setAccessible(isFieldAccessable);
+                }
+            }
+        }
+    }
+
+    private List<Field> getFieldsFromSuperclasses()
+    {
+        var currentSuperclass = testClassInstance.getClass().getSuperclass();
+        var fields = new ArrayList<Field>(Arrays.asList(testClassInstance.getClass().getDeclaredFields()));
+        while (!currentSuperclass.equals(Object.class))
+        {
+            fields.addAll(List.of(currentSuperclass.getDeclaredFields()));
+            currentSuperclass = currentSuperclass.getSuperclass();
+        }
+        return fields;
     }
 
     @Override
@@ -279,7 +338,7 @@ public class TestdataStatement extends StatementBuilder
     @Override
     public StatementBuilder createStatement(Object testClassInstance, Statement next, Object parameter)
     {
-        return new TestdataStatement(next, (TestdataStatementData) parameter);
+        return new TestdataStatement(next, (TestdataStatementData) parameter, testClassInstance);
     }
 
     @Override

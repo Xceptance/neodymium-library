@@ -7,6 +7,11 @@ import org.junit.runner.Result;
 
 import com.xceptance.neodymium.testclasses.data.RandomDataSetsException;
 import com.xceptance.neodymium.testclasses.data.RandomnessOfDataSets;
+import com.xceptance.neodymium.testclasses.data.annotation.InstantiateDtoViaAnnotation;
+import com.xceptance.neodymium.testclasses.data.annotation.InstantiateDtoViaJsonPathInAnnotation;
+import com.xceptance.neodymium.testclasses.data.annotation.InstantiateFieldViaAnnotation;
+import com.xceptance.neodymium.testclasses.data.annotation.inheritance.ChildInheritingDtoFromAnnotation;
+import com.xceptance.neodymium.testclasses.data.annotation.inheritance.ChildInheritingValuesFromAnnotation;
 import com.xceptance.neodymium.testclasses.data.file.xml.CanNotReadDataSetXml;
 import com.xceptance.neodymium.testclasses.data.inheritance.child.PackageTestDataInheritance;
 import com.xceptance.neodymium.testclasses.data.inheritance.child.grandchild.GrandChildPackageTestDataInheritance;
@@ -451,5 +456,40 @@ public class TestDataStatementTest extends NeodymiumTest
         Result result = JUnitCore.runClasses(RandomDataSetsException.class);
         checkFail(result, 1, 0, 1,
                   "java.lang.IllegalArgumentException: Method 'test' is marked to be run with 4 random data sets, but there are only 2 available");
+    }
+
+    @Test
+    public void canInstantiateFieldViaAnnotation()
+    {
+        Result result = JUnitCore.runClasses(InstantiateFieldViaAnnotation.class);
+        checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void canInstantiateDtoViaJsonPathInAnnotation()
+    {
+        Result result = JUnitCore.runClasses(InstantiateDtoViaJsonPathInAnnotation.class);
+        checkPass(result, 4, 0);
+    }
+
+    @Test
+    public void canInstantiateDtoViaAnnotation()
+    {
+        Result result = JUnitCore.runClasses(InstantiateDtoViaAnnotation.class);
+        checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void canInheritDtoViaAnnotation()
+    {
+        Result result = JUnitCore.runClasses(ChildInheritingDtoFromAnnotation.class);
+        checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void canInheritValuesViaAnnotation()
+    {
+        Result result = JUnitCore.runClasses(ChildInheritingValuesFromAnnotation.class);
+        checkPass(result, 2, 0);
     }
 }
