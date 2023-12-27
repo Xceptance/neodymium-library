@@ -47,6 +47,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source.version>17</maven.compiler.source.version>
     <maven.compiler.target.version>17</maven.compiler.target.version>
+    <maven.compiler.release.version>17</maven.compiler.release.version>
     <surefire.version>2.22.2</surefire.version>
     <allure.version>2.13.6</allure.version>
     <selenide.version>7.0.4</selenide.version>
@@ -83,6 +84,7 @@
         <configuration>
           <source>${maven.compiler.source.version}</source>
           <target>${maven.compiler.target.version}</target>
+          <release>${maven.compiler.target.version}</release>
         </configuration>
       </plugin>
       <plugin>
