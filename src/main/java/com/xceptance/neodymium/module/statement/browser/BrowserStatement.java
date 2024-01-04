@@ -234,6 +234,10 @@ public class BrowserStatement extends StatementBuilder
                     // nothing to do here except for catching error of a second stop of the proxy
                 }
             }
+            if (webDriverStateContainer.getTestcontainer() != null)
+            {
+                webDriverStateContainer.getTestcontainer().stop();
+            }
         }
 
         Neodymium.setWebDriverStateContainer(null);

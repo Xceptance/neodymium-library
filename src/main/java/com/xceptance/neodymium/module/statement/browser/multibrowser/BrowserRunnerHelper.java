@@ -15,6 +15,7 @@ import org.openqa.selenium.Proxy;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -229,14 +230,18 @@ public final class BrowserRunnerHelper
                     options.addArguments(config.getArguments());
                 }
 
-                BrowserWebDriverContainer container = new BrowserWebDriverContainer()
-                .withCapabilities(options);
-                container.start();
-
-                wDSC.setWebDriver(
-                                  //new ChromeDriver(options)
-                                  new RemoteWebDriver(container.getSeleniumAddress(), options)
-                                  );
+                if (Neodymium.configuration().useTestContainers())
+                {
+                    BrowserWebDriverContainer container = new BrowserWebDriverContainer()
+                                                                                         .withCapabilities(options);
+                    container.start();
+                    wDSC.setTestcontainer(container);
+                    wDSC.setWebDriver(new RemoteWebDriver(container.getSeleniumAddress(), options));
+                }
+                else
+                {
+                    wDSC.setWebDriver(new ChromeDriver(options));
+                }
             }
             else if (firefoxBrowsers.contains(browserName))
             {
@@ -249,7 +254,19 @@ public final class BrowserRunnerHelper
                     options.addArguments(config.getArguments());
                 }
 
-                wDSC.setWebDriver(new FirefoxDriver(options));
+                if (Neodymium.configuration().useTestContainers())
+                {
+                    BrowserWebDriverContainer container = new BrowserWebDriverContainer().withCapabilities(options);
+                    container.start();
+
+                    wDSC.setTestcontainer(container);
+                    wDSC.setWebDriver(
+                                      new RemoteWebDriver(container.getSeleniumAddress(), options));
+                }
+                else
+                {
+                    wDSC.setWebDriver(new FirefoxDriver(options));
+                }
             }
             else if (internetExplorerBrowsers.contains(browserName))
             {

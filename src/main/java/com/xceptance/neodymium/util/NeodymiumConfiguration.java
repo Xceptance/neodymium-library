@@ -268,4 +268,8 @@ public interface NeodymiumConfiguration extends Mutable
 
     @Key("neodymium.testNameFilter")
     public String getTestNameFilter();
+
+    @Key("neodymium.useTestContainers")
+    @DefaultValue("false")
+    public boolean useTestContainers();
 }
