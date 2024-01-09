@@ -7,11 +7,9 @@ import static org.openqa.selenium.remote.Browser.IE;
 import static org.openqa.selenium.remote.Browser.SAFARI;
 
 import java.io.File;
-import java.net.Authenticator;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.PasswordAuthentication;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,8 +29,8 @@ import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariOptions;
@@ -261,66 +259,25 @@ public final class BrowserRunnerHelper
                 throw new IllegalArgumentException("No properties found for test environment: \"" + testEnvironment + "\"");
             }
             String testEnvironmentUrl = testEnvironmentProperties.getUrl();
-
-            if (testEnvironmentProperties.useProxy()
-                && StringUtils.isNoneBlank(testEnvironmentProperties.getProxyUsername(), testEnvironmentProperties.getProxyPassword()))
-            {
-                System.getProperties().put("http.proxyHost", testEnvironmentProperties.getProxyHost());
-                System.getProperties().put("http.proxyPort", testEnvironmentProperties.getProxyPort());
-                System.getProperties().put("https.proxyHost", testEnvironmentProperties.getProxyHost());
-                System.getProperties().put("https.proxyPort", testEnvironmentProperties.getProxyPort());
-
-                final String authUser = testEnvironmentProperties.getProxyUsername();
-                final String authPassword = testEnvironmentProperties.getProxyPassword();
-
-                Authenticator.setDefault(new Authenticator()
-                {
-                    @Override
-                    public PasswordAuthentication getPasswordAuthentication()
-                    {
-                        return new PasswordAuthentication(authUser, authPassword.toCharArray());
-                    }
-                });
-
-                System.setProperty("http.proxyUser", authUser);
-                System.setProperty("http.proxyPassword", authPassword);
-                System.setProperty("https.proxyUser", authUser);
-                System.setProperty("https.proxyPassword", authPassword);
-            }
+            ClientConfig configClient = ClientConfig.defaultConfig();
+            configClient = configClient.baseUrl(new URL(testEnvironmentUrl));
+            config.getGridProperties().put("userName", testEnvironmentProperties.getUsername());
+            config.getGridProperties().put("accessKey", testEnvironmentProperties.getPassword());
             if (testEnvironmentUrl.contains("browserstack"))
             {
-                config.getGridProperties().put("userName", testEnvironmentProperties.getUsername());
-                config.getGridProperties().put("accessKey", testEnvironmentProperties.getPassword());
-                ClientConfig configClient = ClientConfig.defaultConfig();
 
-                if (testEnvironmentProperties.useProxy() && StringUtils.isBlank(testEnvironmentProperties.getProxyUsername()))
-                {
-                    configClient = configClient.proxy(new java.net.Proxy(java.net.Proxy.Type.HTTP, new InetSocketAddress(testEnvironmentProperties.getProxyHost(), testEnvironmentProperties.getProxyPort())));
-                }
-                wDSC.setWebDriver(RemoteWebDriver.builder().oneOf(capabilities).setCapability("bstack:options", config.getGridProperties())
-                                                 .address(testEnvironmentProperties.getUrl()).config(configClient).build());
+                capabilities.setCapability("bstack:options", config.getGridProperties());
             }
             else if (testEnvironmentUrl.contains("saucelabs"))
             {
-                config.getGridProperties().put("username", testEnvironmentProperties.getUsername());
-                config.getGridProperties().put("accessKey", testEnvironmentProperties.getPassword());
-                ClientConfig configClient = ClientConfig.defaultConfig();
-                if (testEnvironmentProperties.useProxy() && StringUtils.isBlank(testEnvironmentProperties.getProxyUsername()))
-                {
-                    configClient = configClient.proxy(new java.net.Proxy(java.net.Proxy.Type.HTTP, new InetSocketAddress(testEnvironmentProperties.getProxyHost(), testEnvironmentProperties.getProxyPort())));
-                }
-                wDSC.setWebDriver(RemoteWebDriver.builder().oneOf(capabilities).setCapability("sauce:options", config.getGridProperties())
-                                                 .address(testEnvironmentProperties.getUrl()).config(configClient).build());
+                capabilities.setCapability("sauce:options", config.getGridProperties());
             }
             else
             {
-                String[] urlParts = testEnvironmentUrl.split("//");
-                URL gridUrl = new URL(urlParts[0] + "//" + testEnvironmentProperties.getUsername() + ":" + testEnvironmentProperties.getPassword() + "@"
-                                      + urlParts[1]);
                 String optionsTag = testEnvironmentProperties.getOptionsTag();
-                RemoteWebDriverBuilder remoteWebDriverBuilder = RemoteWebDriver.builder();
                 if (StringUtils.isBlank(optionsTag))
                 {
+                    // TODO proper convert to legacy protocol
                     for (String key : config.getGridProperties().keySet())
                     {
                         capabilities.setCapability(key, config.getGridProperties().get(key));
@@ -328,18 +285,10 @@ public final class BrowserRunnerHelper
                 }
                 else
                 {
-                    remoteWebDriverBuilder = remoteWebDriverBuilder.setCapability(optionsTag, config.getGridProperties());
+                    capabilities.setCapability(optionsTag, config.getGridProperties());
                 }
-                ClientConfig configClient = ClientConfig.defaultConfig();
-                if (testEnvironmentProperties.useProxy())
-                {
-                    if (StringUtils.isBlank(testEnvironmentProperties.getProxyUsername()))
-                    {
-                        configClient = configClient.proxy(new java.net.Proxy(java.net.Proxy.Type.HTTP, new InetSocketAddress(testEnvironmentProperties.getProxyHost(), testEnvironmentProperties.getProxyPort())));
-                    }
-                }
-                wDSC.setWebDriver(remoteWebDriverBuilder.oneOf(capabilities).address(gridUrl).config(configClient).build());
             }
+            wDSC.setWebDriver(new RemoteWebDriver(new HttpCommandExecutor(new HashMap<>(), configClient, new NeodymiumProxyHttpClientFactory(testEnvironmentProperties)), capabilities));
         }
         return wDSC;
     }
