@@ -108,8 +108,7 @@ public class NeoClient implements HttpClient
         {
             url.addQueryParameter(queryParamName, req.getQueryParameter(queryParamName));
         }
-        return url.addQueryParameter("format", "ajax").addQueryParameter("availabilityMsgProductID", "")
-                  .build();
+        return url.build();
     }
 
     @Override
