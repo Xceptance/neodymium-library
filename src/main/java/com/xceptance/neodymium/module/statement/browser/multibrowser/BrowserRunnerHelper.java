@@ -277,7 +277,6 @@ public final class BrowserRunnerHelper
                 String optionsTag = testEnvironmentProperties.getOptionsTag();
                 if (StringUtils.isBlank(optionsTag))
                 {
-                    // TODO proper convert to legacy protocol
                     for (String key : config.getGridProperties().keySet())
                     {
                         capabilities.setCapability(key, config.getGridProperties().get(key));

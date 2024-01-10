@@ -46,8 +46,8 @@ public class NeodymiumProxyHttpClientFactory implements HttpClient.Factory
               .readTimeout(config.readTimeout().toMillis(), MILLISECONDS)
               .connectTimeout(config.connectionTimeout().toMillis(), MILLISECONDS);
 
-        // Neodymium integration to use our test environment settings
-        configureClientWithTestEnvironment(client, config.baseUrl());
+        // Neodymium integration to use proxy
+        configureClientWithProxy(client, config.baseUrl());
 
         // copied from org.openqa.selenium.remote.internal.OkHttpClient.Factory.Builder to prevent big
         // differences in implementation
@@ -61,7 +61,7 @@ public class NeodymiumProxyHttpClientFactory implements HttpClient.Factory
         return new NeoClient(client.build(), config);
     }
 
-    private void configureClientWithTestEnvironment(okhttp3.OkHttpClient.Builder client, URL url)
+    private void configureClientWithProxy(okhttp3.OkHttpClient.Builder client, URL url)
     {
         if (testEnvironment.useProxy())
         {

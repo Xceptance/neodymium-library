@@ -1,13 +1,8 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URLEncoder;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -17,7 +12,9 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 import org.openqa.selenium.remote.http.WebSocket.Listener;
+import org.openqa.selenium.remote.http.jdk.JdkHttpClient;
 
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Request.Builder;
@@ -27,6 +24,8 @@ import okhttp3.Response;
 public class NeoClient implements HttpClient
 {
     private OkHttpClient client;
+
+    private HttpClient jdkClient;
 
     private ClientConfig config;
 
@@ -39,33 +38,39 @@ public class NeoClient implements HttpClient
     @Override
     public HttpResponse execute(HttpRequest req) throws UncheckedIOException
     {
-        String rawUrl = req.getUri().toString();
-        // Add query string if necessary
-        String queryString = StreamSupport.stream(req.getQueryParameterNames().spliterator(), false)
-                                          .map(
-                                               name -> {
-                                                   return StreamSupport.stream(req.getQueryParameters(name).spliterator(), false)
-                                                                       .map(
-                                                                            value -> String.format(
-                                                                                                   "%s=%s",
-                                                                                                   URLEncoder.encode(name, UTF_8),
-                                                                                                   URLEncoder.encode(value, UTF_8)))
-                                                                       .collect(Collectors.joining("&"));
-                                               })
-                                          .collect(Collectors.joining("&"));
+        Builder builder = buildRequest(req);
 
-        if (!queryString.isEmpty())
+        try
         {
-            rawUrl = rawUrl + "?" + queryString;
+            Response response = client.newCall(builder.build()).execute();
+
+            HttpResponse res = new HttpResponse();
+            res.setStatus(response.code());
+            response
+                    .headers()
+                    .forEach(
+                             (pair) -> res.addHeader(pair.component1(), pair.component2()));
+            byte[] responseBody = response.body().bytes();
+            if (responseBody != null)
+            {
+                res.setContent(() -> new ByteArrayInputStream(responseBody));
+            }
+
+            return res;
         }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
 
-        Builder builder = new Request.Builder().url(config.baseUrl() + rawUrl);
+    private Builder buildRequest(HttpRequest req)
+    {
+        Builder builder = new Request.Builder().url(createHttpUrl(req));
 
-        req.forEachHeader(
-                          (name, value) -> {
-                              // This prevents the IllegalArgumentException that states 'restricted header name: ...'
-                              builder.header(name, value);
-                          });
+        req.forEachHeader((name, value) -> {
+            builder.header(name, value);
+        });
 
         if (req.getHeader("User-Agent") == null)
         {
@@ -92,37 +97,26 @@ public class NeoClient implements HttpClient
             default:
                 throw new IllegalArgumentException(String.format("Unsupported request method %s: %s", req.getMethod(), req));
         }
+        return builder;
+    }
 
-        try
+    private HttpUrl createHttpUrl(HttpRequest req)
+    {
+        final HttpUrl.Builder url = HttpUrl.parse(config.baseUrl() + req.getUri()).newBuilder();
+
+        for (String queryParamName : req.getQueryParameterNames())
         {
-            Response response = client.newCall(builder.build()).execute();
-
-            HttpResponse res = new HttpResponse();
-            res.setStatus(response.code());
-            response
-                    .headers()
-                    .forEach(
-                             (pair) -> res.addHeader(pair.component1(), pair.component2()));
-            byte[] responseBody = response.body().bytes();
-            if (responseBody != null)
-            {
-                res.setContent(() -> new ByteArrayInputStream(responseBody));
-            }
-
-            return res;
+            url.addQueryParameter(queryParamName, req.getQueryParameter(queryParamName));
         }
-        catch (IOException e)
-        {
-            // TODO Auto-generated catch block
-            throw new RuntimeException(e);
-        }
+        return url.addQueryParameter("format", "ajax").addQueryParameter("availabilityMsgProductID", "")
+                  .build();
     }
 
     @Override
     public WebSocket openSocket(HttpRequest request, Listener listener)
     {
-        // TODO Auto-generated method stub
-        return null;
+        jdkClient = new JdkHttpClient.Factory().createClient(config);
+        return jdkClient.openSocket(request, listener);
     }
 
 }
