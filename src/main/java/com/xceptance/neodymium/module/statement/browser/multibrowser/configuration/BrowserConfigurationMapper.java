@@ -1,5 +1,6 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser.configuration;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,6 +15,8 @@ import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariOptions;
+
+import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserConfigurationMapper
 {
@@ -48,6 +51,8 @@ public class BrowserConfigurationMapper
     private static final String HEADLESS = "headless";
 
     private static final String ARGUMENTS = "arguments";
+
+    private static final String DOWNLOAD_DIRECTORY = "downloadDirectory";
 
     // Appium specific properties
     private static final String APPIUM_VERSION = "appiumVersion";
@@ -126,7 +131,7 @@ public class BrowserConfigurationMapper
             // BrowserStack
             capabilities.setCapability("os", emulatedPlatform);
         }
-        
+
         String emulatedPlatformName = browserProfileConfiguration.get(PLATFORM_NAME);
         if (!StringUtils.isEmpty(emulatedPlatformName))
         {
@@ -134,7 +139,7 @@ public class BrowserConfigurationMapper
             // BrowserStack
             capabilities.setCapability("os", emulatedPlatformName);
         }
-        
+
         String emulatedVersion = browserProfileConfiguration.get(BROWSER_VERSION);
         if (!StringUtils.isEmpty(emulatedVersion))
         {
@@ -142,7 +147,7 @@ public class BrowserConfigurationMapper
             // BrowserStack
             capabilities.setCapability("browser_version", emulatedVersion);
         }
-        
+
         String emulatedDeviceName = browserProfileConfiguration.get(DEVICE_NAME);
         if (!StringUtils.isEmpty(emulatedDeviceName))
         {
@@ -328,6 +333,14 @@ public class BrowserConfigurationMapper
                 args.add(arg.trim());
             }
             browserConfiguration.setArguments(args);
+        }
+
+        String downloadDirectory = browserProfileConfiguration.get(DOWNLOAD_DIRECTORY);
+        if (!StringUtils.isEmpty(downloadDirectory))
+        {
+            String downloadFolder = new File(downloadDirectory).getAbsolutePath();
+            browserConfiguration.setDownloadDirectory(downloadFolder);
+            Neodymium.downloadFolder(downloadFolder);
         }
 
         capabilities.setCapability("name", browserProfileConfiguration.get("name"));

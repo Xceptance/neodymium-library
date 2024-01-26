@@ -55,10 +55,12 @@ public class BrowserStatementTest extends NeodymiumTest
         properties.put("browserprofile.chrome.testEnvironment", "local");
         properties.put("browserprofile.chrome.acceptInsecureCertificates", "true");
         properties.put("browserprofile.chrome.arguments", "headless");
+        properties.put("browserprofile.chrome.downloadDirectory", "target");
 
         properties.put("browserprofile.firefox.name", "Mozilla Firefox");
         properties.put("browserprofile.firefox.browser", "firefox");
         properties.put("browserprofile.firefox.arguments", "headless");
+        properties.put("browserprofile.firefox.downloadDirectory", "target");
 
         properties.put("browserprofile.multiFirefox.name", "Multi Argument Firefox");
         properties.put("browserprofile.multiFirefox.browser", "firefox");
@@ -329,6 +331,7 @@ public class BrowserStatementTest extends NeodymiumTest
         LinkedList<String> list = new LinkedList<>();
         list.add("headless");
         Assert.assertEquals(list, config.getArguments());
+        Assert.assertEquals(new File("target").getAbsolutePath(), config.getDownloadDirectory());
     }
 
     private void checkMultiChrome(BrowserConfiguration config)
@@ -356,6 +359,7 @@ public class BrowserStatementTest extends NeodymiumTest
         LinkedList<String> list = new LinkedList<>();
         list.add("headless");
         Assert.assertEquals(list, config.getArguments());
+        Assert.assertEquals(new File("target").getAbsolutePath(), config.getDownloadDirectory());
     }
 
     private void checkMultiFirefox(BrowserConfiguration config)
