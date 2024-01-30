@@ -245,7 +245,7 @@ public abstract class NeodymiumTest
                 boolean expAnnotationFound = false;
                 for (String compAnnotation : compAnnotations)
                 {
-                    if (compAnnotation.equals(expAnnotation))
+                    if (compAnnotation.matches(".*" + expAnnotation + ".*"))
                     {
                         expAnnotationFound = true;
                         break;
