@@ -22,7 +22,7 @@ public class DataUtilsTest extends NeodymiumTest
     public static void setUpNeodymiumConfiguration() throws IOException
     {
         // set up a temp-neodymium.properties
-        final String fileLocation = "config/temp-neodymium.properties";
+        final String fileLocation = "config/temp-neodymiumDataUtilsTest.properties";
         File tempConfigFile = new File("./" + fileLocation);
         tempFiles.add(tempConfigFile);
         Map<String, String> properties = new HashMap<>();

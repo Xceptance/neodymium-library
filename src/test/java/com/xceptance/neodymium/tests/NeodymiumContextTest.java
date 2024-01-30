@@ -37,7 +37,7 @@ public class NeodymiumContextTest extends NeodymiumTest
         writeMapToPropertiesFile(properties1, tempConfigFile1);
 
         // set up a temp-neodymium.properties
-        final String fileLocation = "config/temp-neodymium.properties";
+        final String fileLocation = "config/temp-neodymiumFixedRandomnessOfDataSetsTests.properties";
         File tempConfigFile2 = new File("./" + fileLocation);
         tempFiles.add(tempConfigFile2);
         Map<String, String> properties2 = new HashMap<>();
@@ -134,7 +134,7 @@ public class NeodymiumContextTest extends NeodymiumTest
         properties.put("browserprofile.chrome1200.arguments", "headless");
         properties.put("browserprofile.chrome1200.browserResolution", "1200x768");
 
-        File tempConfigFile = File.createTempFile("browser", "", new File("./config/"));
+        File tempConfigFile = File.createTempFile("browserFixedRandomnessOfDataSetsTests", "", new File("./config/"));
         tempFiles.add(tempConfigFile);
         writeMapToPropertiesFile(properties, tempConfigFile);
 
