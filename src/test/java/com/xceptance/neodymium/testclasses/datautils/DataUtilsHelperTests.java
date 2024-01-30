@@ -15,9 +15,9 @@ public class DataUtilsHelperTests
     {
         String email = DataUtils.randomEmail();
         Assert.assertNotNull(email);
-        Assert.assertEquals(28, email.length());
+        Assert.assertEquals(27, email.length());
         Assert.assertTrue(email.startsWith("junit-"));
-        Assert.assertTrue(email.endsWith("@varmail.com"));
+        Assert.assertTrue(email.endsWith("@varmail.de"));
     }
 
     @Test
@@ -25,7 +25,7 @@ public class DataUtilsHelperTests
     {
         String email = DataUtils.randomEmail();
         // test fixed random
-        Assert.assertEquals("junit-lwtq5qha2z@varmail.com", email);
+        Assert.assertEquals("junit-lwtq5qha2z@varmail.de", email);
     }
 
     @Test
