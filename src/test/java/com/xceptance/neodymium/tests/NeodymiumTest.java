@@ -233,6 +233,7 @@ public abstract class NeodymiumTest
         final Map<FrameworkMethod, Description> compDescriptions = new NeodymiumRunner(clazz).getChildDescriptions();
         boolean matching = true;
 
+        String missing = "";
         for (Entry<String, List<String>> entry : expectedAnnotations.entrySet())
         {
             String methodName = entry.getKey();
@@ -250,10 +251,14 @@ public abstract class NeodymiumTest
                         break;
                     }
                 }
+                if (!expAnnotationFound)
+                {
+                    missing += expAnnotation + ";";
+                }
                 matching &= expAnnotationFound;
             }
         }
-        Assert.assertTrue(matching);
+        Assert.assertTrue("Not all annotations were found, missing annotations were: " + missing, matching);
     }
 
     private List<String> getAnnotationsForMethod(final Map<FrameworkMethod, Description> compDescriptions, final String methodName)
