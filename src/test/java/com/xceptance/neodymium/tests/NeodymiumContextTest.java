@@ -1,11 +1,14 @@
 package com.xceptance.neodymium.tests;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.aeonbits.owner.ConfigFactory;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,12 +31,27 @@ public class NeodymiumContextTest extends NeodymiumTest
     @BeforeClass
     public static void setUpNeodymiumConfiguration() throws IOException
     {
+        // make sure we don't remove the dev-neodyoium.properties
+        backUpConfigProperties("dev-neodymium.properties");
+
         // set up a dev-neodymium.properties file
         Map<String, String> properties1 = new HashMap<>();
         properties1.put("neodymium.webDriver.opera.pathToDriverServer", "/some/opera/path/just/for/test/purpose");
         properties1.put("neodymium.webDriver.phantomjs.pathToDriverServer", "/some/phantomjs/path/just/for/test/oldPurpose");
+
         File tempConfigFile1 = new File("./config/dev-neodymium.properties");
-        tempFiles.add(tempConfigFile1);
+        if (tempConfigFile1.exists())
+        {
+            // add data from actual file if it already exists
+            Properties prop = new Properties();
+            prop.load(new FileInputStream(tempConfigFile1));
+
+            for (String key : prop.stringPropertyNames())
+            {
+                properties1.put(key, prop.getProperty(key));
+            }
+        }
+
         writeMapToPropertiesFile(properties1, tempConfigFile1);
 
         // set up a temp-neodymium.properties
@@ -145,5 +163,11 @@ public class NeodymiumContextTest extends NeodymiumTest
         // checks Neodymium functions for different browser sizes
         Result result = JUnitCore.runClasses(WindowSizeTests.class);
         checkPass(result, 5, 0);
+    }
+
+    @AfterClass
+    public static void CleanUpConfig() throws IOException
+    {
+        NeodymiumTest.restoreConfigProperties("dev-neodymium.properties");
     }
 }

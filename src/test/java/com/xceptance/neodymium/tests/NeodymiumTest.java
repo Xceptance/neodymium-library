@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +39,55 @@ public abstract class NeodymiumTest
         for (File tempFile : tempFiles)
         {
             deleteTempFile(tempFile);
+        }
+    }
+
+    /**
+     * Checks if a backup file for the specified configuration file exists, if so, the configuration file is removes and
+     * the backup is renamed to the original name
+     * 
+     * @param configFileName
+     *            the file name of the configuration file
+     * @throws IOException
+     *             if there are issues with the file handling or file system
+     */
+    protected static void restoreConfigProperties(String configFileName) throws IOException
+    {
+        File backupFile = new File("./config/" + configFileName + ".backup");
+
+        if (backupFile.exists())
+        {
+            File configFile = new File("./config/" + configFileName);
+
+            if (configFile.exists())
+            {
+                Files.delete(configFile.toPath());
+
+            }
+
+            backupFile.renameTo(new File("./config/" + configFileName));
+        }
+    }
+
+    /**
+     * Creates a copy of the specified configuration file with a ".backup" prefix
+     * 
+     * @param configFileName
+     *            the file name of the configuration file
+     * @throws IOException
+     *             if there are issues with the file handling or file system
+     */
+    protected static void backUpConfigProperties(String configFileName) throws IOException
+    {
+        File configFile = new File("./config/" + configFileName);
+        File backupFile = new File("./config/" + configFileName + ".backup");
+
+        if (configFile.exists() && backupFile.exists() == false)
+        {
+            Path targetPath = backupFile.toPath();
+            Path originalPath = configFile.toPath();
+
+            Files.copy(originalPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
         }
     }
 
