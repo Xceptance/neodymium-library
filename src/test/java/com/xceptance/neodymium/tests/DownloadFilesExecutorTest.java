@@ -35,7 +35,7 @@ public class DownloadFilesExecutorTest extends NeodymiumTest
         properties.put("browserprofile.firefox_download.headless", "true");
         properties.put("browserprofile.firefox_download.downloadDirectory", "target");
 
-        File tempConfigFile = File.createTempFile("browser", "", new File("./config/"));
+        File tempConfigFile = File.createTempFile("browserDownloadFilesExecutorTest", "", new File("./config/"));
         writeMapToPropertiesFile(properties, tempConfigFile);
         tempFiles.add(tempConfigFile);
 

@@ -53,7 +53,7 @@ public class DownloadFilesInDifferentWays extends NeodymiumTest
     {
         fileName = new File("target/png2pdf.pdf");
         Selenide.open("https://png2pdf.com/");
-        $(".cc-dismiss").click();
+        $(".fc-cta-consent").click();
         $("#fileSelector").uploadFile(new File("src/test/resources/2020-in-one-picture.png"));
         $("button[aria-label='COMBINED']").shouldBe(enabled);
         $("button[aria-label='COMBINED']").scrollIntoView(true).click();

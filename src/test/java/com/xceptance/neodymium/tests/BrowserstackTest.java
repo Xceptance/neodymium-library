@@ -24,7 +24,7 @@ public class BrowserstackTest extends NeodymiumTest
         properties1.put("browserprofile.testEnvironment.browserstack.url", "https://hub-cloud.browserstack.com/wd/hub");
         properties1.put("browserprofile.testEnvironment.browserstack.username", CONFIGURATION.browserstackUsername());
         properties1.put("browserprofile.testEnvironment.browserstack.password", CONFIGURATION.browserstackAccessKey());
-        File tempConfigFile1 = new File("./config/credentials.properties");
+        File tempConfigFile1 = new File("./config/credentialsBrowserstackTest.properties");
         writeMapToPropertiesFile(properties1, tempConfigFile1);
         tempFiles.add(tempConfigFile1);
 
@@ -35,7 +35,7 @@ public class BrowserstackTest extends NeodymiumTest
         properties2.put("browserprofile.Safari_Browserstack.browserName", "Safari");
         properties2.put("browserprofile.Safari_Browserstack.version", "14.0");
         properties2.put("browserprofile.Safari_Browserstack.testEnvironment", "browserstack");
-        File tempConfigFile2 = new File("./config/dev-browser.properties");
+        File tempConfigFile2 = new File("./config/dev-browserBrowserstackTest.properties");
         writeMapToPropertiesFile(properties2, tempConfigFile2);
         tempFiles.add(tempConfigFile2);
     }

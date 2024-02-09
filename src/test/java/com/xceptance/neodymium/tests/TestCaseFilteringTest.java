@@ -19,7 +19,7 @@ public class TestCaseFilteringTest extends NeodymiumTest
     @BeforeClass
     public static void beforeClass() throws IOException
     {
-        final String fileLocation = "config/test-filtering-neodymium.properties";
+        final String fileLocation = "config/test-filtering-neodymiumTestCaseFilteringTest.properties";
 
         Map<String, String> properties = new HashMap<>();
         properties.put("neodymium.testNameFilter",
