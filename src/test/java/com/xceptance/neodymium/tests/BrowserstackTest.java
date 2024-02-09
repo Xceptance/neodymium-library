@@ -10,6 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
+
 import com.xceptance.neodymium.testclasses.multibrowser.BrowserstackHomePageTest;
 import com.xceptance.neodymium.util.TestConfiguration;
 
@@ -35,7 +36,7 @@ public class BrowserstackTest extends NeodymiumTest
         properties2.put("browserprofile.Safari_Browserstack.browserName", "Safari");
         properties2.put("browserprofile.Safari_Browserstack.version", "14.0");
         properties2.put("browserprofile.Safari_Browserstack.testEnvironment", "browserstack");
-        File tempConfigFile2 = new File("./config/dev-browserBrowserstackTest.properties");
+        File tempConfigFile2 = new File("./config/dev-browser.properties");
         writeMapToPropertiesFile(properties2, tempConfigFile2);
         tempFiles.add(tempConfigFile2);
     }
