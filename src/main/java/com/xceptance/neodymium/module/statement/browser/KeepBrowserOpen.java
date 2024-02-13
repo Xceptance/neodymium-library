@@ -12,6 +12,12 @@ import java.lang.annotation.Target;
 {
   TYPE, METHOD
 })
+/**
+ * This annotation defines whether or not the browser should be closed if the annotated test fails and is set to "false" per default.
+ * It can be used for test methods and test classes. 
+ * If it's used for both, then the method level annotation overrides the class level annotation.
+ * Also, if used, the method level annotation and the class level annotation both override the corresponding configuration property.
+ */
 public @interface KeepBrowserOpen
 {
     boolean onlyOnFailure() default false;
