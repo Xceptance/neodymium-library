@@ -16,6 +16,7 @@ import org.openqa.selenium.WebDriver;
 
 import com.browserup.bup.BrowserUpProxy;
 import com.xceptance.neodymium.NeodymiumRunner;
+import com.xceptance.neodymium.module.statement.browser.KeepBrowserOpen;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
 import com.xceptance.neodymium.tests.NeodymiumTest;
@@ -28,6 +29,7 @@ import com.xceptance.neodymium.util.Neodymium;
  * Attention: this test needs to use browsers that are not headless.
  */
 @RunWith(NeodymiumRunner.class)
+@KeepBrowserOpen(onlyOnFailure = false)
 public class ValidateKeepWebDriverOpen
 {
     private static WebDriver webDriver1;

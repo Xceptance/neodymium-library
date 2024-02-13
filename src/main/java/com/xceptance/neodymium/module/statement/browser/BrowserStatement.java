@@ -262,9 +262,10 @@ public class BrowserStatement extends StatementBuilder
 
     private boolean keepOpen(boolean testFailed, BrowserConfiguration browserConfiguration)
     {
+        // HUIBUH
         return (browserConfiguration != null && !browserConfiguration.isHeadless())
-               && (((Neodymium.configuration().keepBrowserOpenOnFailure() || browserMethodData.isKeepBrowserOpenOnFailure()) && testFailed) ||
-                   (Neodymium.configuration().keepBrowserOpen() || browserMethodData.isKeepBrowserOpen()));
+               && (((browserMethodData.isKeepBrowserOpenOnFailure()) && testFailed) ||
+                   (browserMethodData.isKeepBrowserOpen()));
     }
 
     private boolean canReuse(boolean preventReuse, WebDriverStateContainer webDriverStateContainer)
@@ -347,14 +348,42 @@ public class BrowserStatement extends StatementBuilder
 
             List<KeepBrowserOpen> methodKeepBrowserOpenAnnotations = getAnnotations(method.getMethod(), KeepBrowserOpen.class);
             List<KeepBrowserOpen> classKeepBrowserOpenAnnotations = getAnnotations(testClass.getJavaClass(), KeepBrowserOpen.class);
-
+ 
             boolean keepOpen = Neodymium.configuration().keepBrowserOpen();
             boolean keepOpenOnFailure = Neodymium.configuration().keepBrowserOpenOnFailure();
 
-            if (!classKeepBrowserOpenAnnotations.isEmpty())
+            // class annotation ovverrides config and method annotation overrides class annotation
+            if (!classKeepBrowserOpenAnnotations.isEmpty() && !methodKeepBrowserOpenAnnotations.isEmpty()) 
+            {
+                KeepBrowserOpen classKeepBrowserOpen = classKeepBrowserOpenAnnotations.get(0);
+                KeepBrowserOpen methodKeepBrowserOpen = methodKeepBrowserOpenAnnotations.get(0);
+                
+                if (classKeepBrowserOpen.onlyOnFailure())
+                {
+                    keepOpen = false;
+                    keepOpenOnFailure = true;
+                }
+                else
+                {
+                    keepOpenOnFailure = false;
+                }
+                
+                if (methodKeepBrowserOpen.onlyOnFailure())
+                {
+                    keepOpen = false;
+                    keepOpenOnFailure = true;
+                }
+                else
+                {
+                    keepOpenOnFailure = false;
+                }
+            }
+            
+            // class annotation overrides config
+            else if (!classKeepBrowserOpenAnnotations.isEmpty())
             {
                 KeepBrowserOpen keepBrowserOpen = classKeepBrowserOpenAnnotations.get(0);
-                if (keepBrowserOpen.value())
+                if (keepBrowserOpen.onlyOnFailure())
                 {
                     keepOpen = false;
                     keepOpenOnFailure = true;
@@ -365,11 +394,12 @@ public class BrowserStatement extends StatementBuilder
                     keepOpenOnFailure = false;
                 }
             }
-
-            if (!methodKeepBrowserOpenAnnotations.isEmpty())
+            
+            // method annotation overrides config
+            else if (!methodKeepBrowserOpenAnnotations.isEmpty())
             {
                 KeepBrowserOpen keepBrowserOpen = methodKeepBrowserOpenAnnotations.get(0);
-                if (keepBrowserOpen.value())
+                if (keepBrowserOpen.onlyOnFailure())
                 {
                     keepOpen = false;
                     keepOpenOnFailure = true;

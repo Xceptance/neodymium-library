@@ -14,5 +14,5 @@ import java.lang.annotation.Target;
 })
 public @interface KeepBrowserOpen
 {
-    boolean value() default false;
+    boolean onlyOnFailure() default false;
 }
