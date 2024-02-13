@@ -352,7 +352,7 @@ public class BrowserStatement extends StatementBuilder
             boolean keepOpen = Neodymium.configuration().keepBrowserOpen();
             boolean keepOpenOnFailure = Neodymium.configuration().keepBrowserOpenOnFailure();
 
-            // class annotation ovverrides config and method annotation overrides class annotation
+            // class annotation overrides neodymium configuration property and method annotation overrides class annotation
             if (!classKeepBrowserOpenAnnotations.isEmpty() && !methodKeepBrowserOpenAnnotations.isEmpty()) 
             {
                 KeepBrowserOpen classKeepBrowserOpen = classKeepBrowserOpenAnnotations.get(0);
