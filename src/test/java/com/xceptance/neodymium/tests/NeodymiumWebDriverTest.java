@@ -17,8 +17,9 @@ import com.xceptance.neodymium.testclasses.webDriver.LocalProxyUsingSelfCreatedC
 import com.xceptance.neodymium.testclasses.webDriver.ValidateClearReuseWebDriverCache;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenAnnotationsClassLevel;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenAnnotationsMethodLevel;
-import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureAnnotationsClassLevel;
-import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureAnnotationsMethodLevel;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureClassLevelOverridesConfigLevel;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureMethodLevelOverridesConfigLevel;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureMethodLevelOverridesClassLevel;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpen;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpenOnFailure;
 import com.xceptance.neodymium.testclasses.webDriver.ValidatePreventReuseWebDriver;
@@ -104,10 +105,10 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     }
 
     @Test
-    public void testValidateKeepBrowserOpenOnFailureClassLevel()
+    public void testValidateKeepBrowserOpenOnFailureClassLevelOverridesConfigLevel()
     {
         // XVFB or a display needed
-        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenOnFailureAnnotationsClassLevel.class);
+        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenOnFailureClassLevelOverridesConfigLevel.class);
         checkFail(result, 3, 0, 1);
     }
 
@@ -120,10 +121,18 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     }
 
     @Test
-    public void testValidateKeepBrowserOpenOnFailureMethodLevel()
+    public void testValidateKeepBrowserOpenOnFailureMethodLevelOverridesConfigLevel()
     {
         // XVFB or a display needed
-        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenOnFailureAnnotationsMethodLevel.class);
+        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenOnFailureMethodLevelOverridesConfigLevel.class);
+        checkFail(result, 3, 0, 1);
+    }
+    
+    @Test
+    public void testValidateKeepBrowserOpenOnFailureMethodLevelOverridesClassLevel()
+    {
+        // XVFB or a display needed
+        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenOnFailureMethodLevelOverridesClassLevel.class);
         checkFail(result, 3, 0, 1);
     }
 

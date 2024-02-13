@@ -20,7 +20,7 @@ import com.xceptance.neodymium.util.Neodymium;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(NeodymiumRunner.class)
-@KeepBrowserOpen(false)
+@KeepBrowserOpen(onlyOnFailure = false)
 public class ValidateKeepBrowserOpenAnnotationsClassLevel
 {
     private static WebDriver webDriver1;

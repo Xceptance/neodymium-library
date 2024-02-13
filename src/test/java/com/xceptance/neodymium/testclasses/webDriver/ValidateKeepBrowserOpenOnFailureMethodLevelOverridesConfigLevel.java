@@ -22,7 +22,7 @@ import com.xceptance.neodymium.util.Neodymium;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(NeodymiumRunner.class)
 @Browser("Chrome_1024x768")
-public class ValidateKeepBrowserOpenOnFailureAnnotationsMethodLevel
+public class ValidateKeepBrowserOpenOnFailureMethodLevelOverridesConfigLevel
 {
     private static WebDriver webDriver1;
 
@@ -60,7 +60,7 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationsMethodLevel
     }
 
     @Test
-    @KeepBrowserOpen(true)
+    @KeepBrowserOpen(onlyOnFailure = true)
     public void test1()
     {
         Assert.assertEquals(webDriver1, Neodymium.getDriver());
@@ -68,7 +68,7 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationsMethodLevel
     }
 
     @Test
-    @KeepBrowserOpen(true)
+    @KeepBrowserOpen(onlyOnFailure = true)
     public void test2()
     {
         Assert.assertNotEquals(webDriver1, webDriver2);
@@ -81,7 +81,7 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationsMethodLevel
     }
 
     @Test
-    @KeepBrowserOpen(true)
+    @KeepBrowserOpen(onlyOnFailure = true)
     public void test3()
     {
         Assert.assertNotEquals(webDriver1, webDriver2);
