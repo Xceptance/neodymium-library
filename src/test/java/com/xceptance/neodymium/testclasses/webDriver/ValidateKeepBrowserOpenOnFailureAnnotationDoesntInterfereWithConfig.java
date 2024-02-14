@@ -29,7 +29,7 @@ import com.xceptance.neodymium.util.Neodymium;
 @RunWith(NeodymiumRunner.class)
 @KeepBrowserOpen(onlyOnFailure = true)
 @Browser("Chrome_1024x768")
-public class ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig
+public class ValidateKeepBrowserOpenOnFailureAnnotationDoesntInterfereWithConfig
 {
     private static WebDriver webDriver1;
 
@@ -46,7 +46,7 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig
         final String fileLocation = "config/temp-ValidateKeepWebDriverOpen-neodymium.properties";
         tempConfigFile = new File("./" + fileLocation);
         Map<String, String> properties = new HashMap<>();
-        properties.put("neodymium.webDriver.keepBrowserOpenOnFailure", "false");
+        properties.put("neodymium.webDriver.keepBrowserOpenOnFailure", "true");
         NeodymiumTest.writeMapToPropertiesFile(properties, tempConfigFile);
         ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
 
@@ -91,7 +91,7 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver2);
 
-        // Let condition fail so that the WebDriver/browser is kept open
+        // Let condition fail
         Selenide.$("#cantFindMe").should(Condition.exist);
     }
 
