@@ -27,9 +27,9 @@ import com.xceptance.neodymium.util.Neodymium;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(NeodymiumRunner.class)
-@KeepBrowserOpen(onlyOnFailure = true)
+@KeepBrowserOpen(onlyOnFailure = false)
 @Browser("Chrome_1024x768")
-public class ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig
+public class ValidateKeepBrowserOpenAnnotationDoesntInterfereWithConfig
 {
     private static WebDriver webDriver1;
 
@@ -88,10 +88,10 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig
     {
         Assert.assertNotEquals(webDriver1, webDriver2);
         Assert.assertEquals(webDriver2, Neodymium.getDriver());
-        NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
+        NeodymiumWebDriverTest.assertWebDriverAlive(webDriver1);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver2);
 
-        // Let condition fail so that the WebDriver/browser is kept open
+        // Let condition fail
         Selenide.$("#cantFindMe").should(Condition.exist);
     }
 
@@ -102,7 +102,7 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig
         Assert.assertNotEquals(webDriver2, webDriver3);
         Assert.assertNotEquals(webDriver1, webDriver3);
         Assert.assertEquals(webDriver3, Neodymium.getDriver());
-        NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
+        NeodymiumWebDriverTest.assertWebDriverAlive(webDriver1);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver2);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver3);
     }
@@ -112,8 +112,12 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig
     {
         Assert.assertEquals(0, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
 
+        NeodymiumWebDriverTest.assertWebDriverAlive(webDriver1);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver2);
+        NeodymiumWebDriverTest.assertWebDriverAlive(webDriver3);
+        webDriver1.quit();
         webDriver2.quit();
+        webDriver3.quit();
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver2);
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver3);

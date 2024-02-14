@@ -47,7 +47,6 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationMethodOverridesClass
         tempConfigFile = new File("./" + fileLocation);
         Map<String, String> properties = new HashMap<>();
         properties.put("neodymium.webDriver.keepBrowserOpen", "true");
-        properties.put("neodymium.localproxy", "true");
         NeodymiumTest.writeMapToPropertiesFile(properties, tempConfigFile);
         ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
 
