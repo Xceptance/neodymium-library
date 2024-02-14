@@ -27,9 +27,8 @@ import com.xceptance.neodymium.util.Neodymium;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(NeodymiumRunner.class)
-@KeepBrowserOpen(onlyOnFailure = true)
 @Browser("Chrome_1024x768")
-public class ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig
+public class ValidateKeepBrowserOpenAnnotationMethodDoesntInterfereWithConfig
 {
     private static WebDriver webDriver1;
 
@@ -46,7 +45,7 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig
         final String fileLocation = "config/temp-ValidateKeepWebDriverOpen-neodymium.properties";
         tempConfigFile = new File("./" + fileLocation);
         Map<String, String> properties = new HashMap<>();
-        properties.put("neodymium.webDriver.keepBrowserOpenOnFailure", "true");
+        properties.put("neodymium.webDriver.keepBrowserOpenOnFailure", "false");
         NeodymiumTest.writeMapToPropertiesFile(properties, tempConfigFile);
         ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
 
@@ -77,6 +76,7 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig
     }
 
     @Test
+    @KeepBrowserOpen(onlyOnFailure = false)
     public void test1()
     {
         Assert.assertEquals(webDriver1, Neodymium.getDriver());
@@ -84,25 +84,27 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig
     }
 
     @Test
+    @KeepBrowserOpen(onlyOnFailure = false)
     public void test2()
     {
         Assert.assertNotEquals(webDriver1, webDriver2);
         Assert.assertEquals(webDriver2, Neodymium.getDriver());
-        NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
+        NeodymiumWebDriverTest.assertWebDriverAlive(webDriver1);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver2);
 
-        // Let condition fail so that the WebDriver/browser is kept open
+        // Let condition fail
         Selenide.$("#cantFindMe").should(Condition.exist);
     }
 
     @Test
+    @KeepBrowserOpen(onlyOnFailure = false)
     public void test3()
     {
         Assert.assertNotEquals(webDriver1, webDriver2);
         Assert.assertNotEquals(webDriver2, webDriver3);
         Assert.assertNotEquals(webDriver1, webDriver3);
         Assert.assertEquals(webDriver3, Neodymium.getDriver());
-        NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
+        NeodymiumWebDriverTest.assertWebDriverAlive(webDriver1);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver2);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver3);
     }
@@ -112,8 +114,12 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig
     {
         Assert.assertEquals(0, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
 
+        NeodymiumWebDriverTest.assertWebDriverAlive(webDriver1);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver2);
+        NeodymiumWebDriverTest.assertWebDriverAlive(webDriver3);
+        webDriver1.quit();
         webDriver2.quit();
+        webDriver3.quit();
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver2);
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver3);

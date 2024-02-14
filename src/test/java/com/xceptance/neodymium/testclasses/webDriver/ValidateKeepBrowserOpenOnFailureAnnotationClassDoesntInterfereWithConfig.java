@@ -29,7 +29,7 @@ import com.xceptance.neodymium.util.Neodymium;
 @RunWith(NeodymiumRunner.class)
 @KeepBrowserOpen(onlyOnFailure = true)
 @Browser("Chrome_1024x768")
-public class ValidateKeepBrowserOpenOnFailureAnnotationDoesntInterfereWithConfig
+public class ValidateKeepBrowserOpenOnFailureAnnotationClassDoesntInterfereWithConfig
 {
     private static WebDriver webDriver1;
 
