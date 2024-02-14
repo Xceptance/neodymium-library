@@ -1,5 +1,10 @@
 package com.xceptance.neodymium.testclasses.webDriver;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.aeonbits.owner.ConfigFactory;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,14 +21,14 @@ import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.KeepBrowserOpen;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
+import com.xceptance.neodymium.tests.NeodymiumTest;
 import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(NeodymiumRunner.class)
-@KeepBrowserOpen(onlyOnFailure = true)
 @Browser("Chrome_1024x768")
-public class ValidateKeepBrowserOpenOnFailureClassLevelOverridesConfigLevel
+public class ValidateKeepBrowserOpenOnFailureAnnotationMethodOverridesConfig
 {
     private static WebDriver webDriver1;
 
@@ -31,9 +36,20 @@ public class ValidateKeepBrowserOpenOnFailureClassLevelOverridesConfigLevel
 
     private static WebDriver webDriver3;
 
+    private static File tempConfigFile;
+
     @BeforeClass
     public static void beforeClass()
     {
+        // set up a temporary neodymium.properties
+        final String fileLocation = "config/temp-ValidateKeepWebDriverOpen-neodymium.properties";
+        tempConfigFile = new File("./" + fileLocation);
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.keepBrowserOpenOnFailure", "false");
+        properties.put("neodymium.localproxy", "true");
+        NeodymiumTest.writeMapToPropertiesFile(properties, tempConfigFile);
+        ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
+
         Assert.assertNull(webDriver1);
         Assert.assertNull(Neodymium.getDriver());
     }
@@ -61,6 +77,7 @@ public class ValidateKeepBrowserOpenOnFailureClassLevelOverridesConfigLevel
     }
 
     @Test
+    @KeepBrowserOpen(onlyOnFailure = true)
     public void test1()
     {
         Assert.assertEquals(webDriver1, Neodymium.getDriver());
@@ -68,6 +85,7 @@ public class ValidateKeepBrowserOpenOnFailureClassLevelOverridesConfigLevel
     }
 
     @Test
+    @KeepBrowserOpen(onlyOnFailure = true)
     public void test2()
     {
         Assert.assertNotEquals(webDriver1, webDriver2);
@@ -80,6 +98,7 @@ public class ValidateKeepBrowserOpenOnFailureClassLevelOverridesConfigLevel
     }
 
     @Test
+    @KeepBrowserOpen(onlyOnFailure = true)
     public void test3()
     {
         Assert.assertNotEquals(webDriver1, webDriver2);
