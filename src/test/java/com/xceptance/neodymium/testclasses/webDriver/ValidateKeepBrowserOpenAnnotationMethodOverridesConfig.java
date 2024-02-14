@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.aeonbits.owner.ConfigFactory;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,9 +28,8 @@ import com.xceptance.neodymium.util.Neodymium;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(NeodymiumRunner.class)
-@KeepBrowserOpen(onlyOnFailure = true)
 @Browser("Chrome_1024x768")
-public class ValidateKeepBrowserOpenOnFailureAnnotationMethodOverridesClass
+public class ValidateKeepBrowserOpenAnnotationMethodOverridesConfig
 {
     private static WebDriver webDriver1;
 
@@ -46,7 +46,7 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationMethodOverridesClass
         final String fileLocation = "config/temp-ValidateKeepWebDriverOpen-neodymium.properties";
         tempConfigFile = new File("./" + fileLocation);
         Map<String, String> properties = new HashMap<>();
-        properties.put("neodymium.webDriver.keepBrowserOpen", "false");
+        properties.put("neodymium.webDriver.keepBrowserOpenOnFailure", "true");
         NeodymiumTest.writeMapToPropertiesFile(properties, tempConfigFile);
         ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
 
@@ -92,28 +92,35 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationMethodOverridesClass
         Assert.assertEquals(webDriver2, Neodymium.getDriver());
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver1);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver2);
-
-        // Let condition fail
+        
+        // Let condition fail so that the WebDriver/browser is kept open
         Selenide.$("#cantFindMe").should(Condition.exist);
     }
-
+    
     @Test
     @KeepBrowserOpen(onlyOnFailure = false)
     public void test3()
     {
         Assert.assertNotEquals(webDriver1, webDriver2);
-        Assert.assertNotEquals(webDriver2, webDriver3);
         Assert.assertNotEquals(webDriver1, webDriver3);
+        Assert.assertNotEquals(webDriver2, webDriver3);
         Assert.assertEquals(webDriver3, Neodymium.getDriver());
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver1);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver2);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver3);
     }
 
+    @After
+    public void after()
+    {
+        NeodymiumWebDriverTest.assertWebDriverAlive(Neodymium.getDriver());
+    }
+
     @AfterClass
     public static void afterClass()
     {
         Assert.assertEquals(0, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
+
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver1);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver2);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver3);

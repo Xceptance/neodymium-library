@@ -17,13 +17,13 @@ import com.xceptance.neodymium.testclasses.webDriver.LocalProxyUsingSelfCreatedC
 import com.xceptance.neodymium.testclasses.webDriver.ValidateClearReuseWebDriverCache;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenAnnotationClassDoesntInterfereWithConfig;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenAnnotationMethodDoesntInterfereWithConfig;
-import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenAnnotationsClassLevel;
-import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenAnnotationsMethodLevel;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenAnnotationClassOverridesConfig;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenAnnotationMethodOverridesConfig;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureAnnotationClassDoesntInterfereWithConfig;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureAnnotationMethodDoesntInterfereWithConfig;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureAnnotationMethodOverridesConfig;
-import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureAnnotationMethodOverridesClass;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenAnnotationMethodOverridesClass;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpen;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpenOnFailure;
 import com.xceptance.neodymium.testclasses.webDriver.ValidatePreventReuseWebDriver;
@@ -133,11 +133,11 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     }
     
     @Test
-    public void testValidateKeepBrowserOpenClassLevel()
+    public void testValidateKeepBrowserOpenAnnotationClassOverridesConfig()
     {
         // XVFB or a display needed
-        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenAnnotationsClassLevel.class);
-        checkPass(result, 2, 0);
+        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenAnnotationClassOverridesConfig.class);
+        checkFail(result, 3, 0, 1);
     }
 
     @Test
@@ -149,11 +149,11 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     }
 
     @Test
-    public void testValidateKeepBrowserOpenMethodLevel()
+    public void testValidateKeepBrowserOpenAnnotationMethodOverridesConfig()
     {
         // XVFB or a display needed
-        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenAnnotationsMethodLevel.class);
-        checkPass(result, 2, 0);
+        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenAnnotationMethodOverridesConfig.class);
+        checkFail(result, 3, 0, 1);
     }
 
     @Test
@@ -165,10 +165,10 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     }
     
     @Test
-    public void testValidateKeepBrowserOpenOnFailureAnnotationMethodOverridesClass()
+    public void testValidateKeepBrowserOpenAnnotationMethodOverridesClass()
     {
         // XVFB or a display needed
-        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenOnFailureAnnotationMethodOverridesClass.class);
+        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenAnnotationMethodOverridesClass.class);
         checkFail(result, 3, 0, 1);
     }
 
