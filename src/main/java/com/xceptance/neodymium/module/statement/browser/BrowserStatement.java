@@ -351,36 +351,8 @@ public class BrowserStatement extends StatementBuilder
  
             boolean keepOpen = Neodymium.configuration().keepBrowserOpen();
             boolean keepOpenOnFailure = Neodymium.configuration().keepBrowserOpenOnFailure();
-
-            // class annotation overrides neodymium configuration property and method annotation overrides class annotation
-            if (!classKeepBrowserOpenAnnotations.isEmpty() && !methodKeepBrowserOpenAnnotations.isEmpty()) 
-            {
-                KeepBrowserOpen classKeepBrowserOpen = classKeepBrowserOpenAnnotations.get(0);
-                KeepBrowserOpen methodKeepBrowserOpen = methodKeepBrowserOpenAnnotations.get(0);
-                
-                if (classKeepBrowserOpen.onlyOnFailure())
-                {
-                    keepOpen = false;
-                    keepOpenOnFailure = true;
-                }
-                else
-                {
-                    keepOpenOnFailure = false;
-                }
-                
-                if (methodKeepBrowserOpen.onlyOnFailure())
-                {
-                    keepOpen = false;
-                    keepOpenOnFailure = true;
-                }
-                else
-                {
-                    keepOpenOnFailure = false;
-                }
-            }
             
-            // class annotation overrides config
-            else if (!classKeepBrowserOpenAnnotations.isEmpty())
+            if (!classKeepBrowserOpenAnnotations.isEmpty())
             {
                 KeepBrowserOpen keepBrowserOpen = classKeepBrowserOpenAnnotations.get(0);
                 if (keepBrowserOpen.onlyOnFailure())
@@ -395,8 +367,7 @@ public class BrowserStatement extends StatementBuilder
                 }
             }
             
-            // method annotation overrides config
-            else if (!methodKeepBrowserOpenAnnotations.isEmpty())
+            if (!methodKeepBrowserOpenAnnotations.isEmpty())
             {
                 KeepBrowserOpen keepBrowserOpen = methodKeepBrowserOpenAnnotations.get(0);
                 if (keepBrowserOpen.onlyOnFailure())
