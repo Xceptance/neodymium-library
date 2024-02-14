@@ -15,9 +15,13 @@ import com.xceptance.neodymium.testclasses.webDriver.LocalProxyUsingProvidedCert
 import com.xceptance.neodymium.testclasses.webDriver.LocalProxyUsingProvidedCertificatesRuntimeException;
 import com.xceptance.neodymium.testclasses.webDriver.LocalProxyUsingSelfCreatedCertificates;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateClearReuseWebDriverCache;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenAnnotationClassDoesntInterfereWithConfig;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenAnnotationMethodDoesntInterfereWithConfig;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenAnnotationsClassLevel;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenAnnotationsMethodLevel;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureAnnotationClassDoesntInterfereWithConfig;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureAnnotationMethodDoesntInterfereWithConfig;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureAnnotationMethodOverridesConfig;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureAnnotationMethodOverridesClass;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpen;
@@ -96,6 +100,38 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
         checkFail(result, 3, 0, 1);
     }
 
+    @Test
+    public void testValidateKeepBrowserOpenAnnotationClassDoesntInterfereWithConfig()
+    {
+        // XVFB or a display needed
+        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenAnnotationClassDoesntInterfereWithConfig.class);
+        checkFail(result, 3, 0, 1);
+    }
+    
+    @Test
+    public void testValidateKeepBrowserOpenOnFailureAnnotationClassDoesntInterfereWithConfig()
+    {
+        // XVFB or a display needed
+        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenOnFailureAnnotationClassDoesntInterfereWithConfig.class);
+        checkFail(result, 3, 0, 1);
+    }
+    
+    @Test
+    public void testValidateKeepBrowserOpenAnnotationMethodDoesntInterfereWithConfig()
+    {
+        // XVFB or a display needed
+        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenAnnotationMethodDoesntInterfereWithConfig.class);
+        checkFail(result, 3, 0, 1);
+    }
+    
+    @Test
+    public void testValidateKeepBrowserOpenOnFailureAnnotationMethodDoesntInterfereWithConfig()
+    {
+        // XVFB or a display needed
+        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenOnFailureAnnotationMethodDoesntInterfereWithConfig.class);
+        checkFail(result, 3, 0, 1);
+    }
+    
     @Test
     public void testValidateKeepBrowserOpenClassLevel()
     {

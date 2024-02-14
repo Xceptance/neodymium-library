@@ -27,9 +27,8 @@ import com.xceptance.neodymium.util.Neodymium;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(NeodymiumRunner.class)
-@KeepBrowserOpen(onlyOnFailure = true)
 @Browser("Chrome_1024x768")
-public class ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig
+public class ValidateKeepBrowserOpenOnFailureAnnotationMethodDoesntInterfereWithConfig
 {
     private static WebDriver webDriver1;
 
@@ -77,6 +76,7 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig
     }
 
     @Test
+    @KeepBrowserOpen(onlyOnFailure = true)
     public void test1()
     {
         Assert.assertEquals(webDriver1, Neodymium.getDriver());
@@ -84,6 +84,7 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig
     }
 
     @Test
+    @KeepBrowserOpen(onlyOnFailure = true)
     public void test2()
     {
         Assert.assertNotEquals(webDriver1, webDriver2);
@@ -91,11 +92,12 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver2);
 
-        // Let condition fail so that the WebDriver/browser is kept open
+        // Let condition fail
         Selenide.$("#cantFindMe").should(Condition.exist);
     }
 
     @Test
+    @KeepBrowserOpen(onlyOnFailure = true)
     public void test3()
     {
         Assert.assertNotEquals(webDriver1, webDriver2);
