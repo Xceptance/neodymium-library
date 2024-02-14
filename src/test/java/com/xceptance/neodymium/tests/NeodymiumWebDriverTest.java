@@ -19,7 +19,7 @@ import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenAnno
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenAnnotationsMethodLevel;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureClassLevelOverridesConfigLevel;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureMethodLevelOverridesConfigLevel;
-import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureMethodLevelOverridesClassLevel;
+import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepBrowserOpenOnFailureAnnotationMethodOverridesClass;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpen;
 import com.xceptance.neodymium.testclasses.webDriver.ValidateKeepWebDriverOpenOnFailure;
 import com.xceptance.neodymium.testclasses.webDriver.ValidatePreventReuseWebDriver;
@@ -129,10 +129,10 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     }
     
     @Test
-    public void testValidateKeepBrowserOpenOnFailureMethodLevelOverridesClassLevel()
+    public void testValidateKeepBrowserOpenOnFailureAnnotationMethodOverridesClass()
     {
         // XVFB or a display needed
-        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenOnFailureMethodLevelOverridesClassLevel.class);
+        Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenOnFailureAnnotationMethodOverridesClass.class);
         checkFail(result, 3, 0, 1);
     }
 
