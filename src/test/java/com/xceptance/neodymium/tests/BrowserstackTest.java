@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.aeonbits.owner.ConfigFactory;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
@@ -21,11 +22,13 @@ public class BrowserstackTest extends NeodymiumTest
     @BeforeClass
     public static void beforeClass() throws IOException
     {
+        Assume.assumeNotNull(CONFIGURATION.browserstackUsername());
+
         Map<String, String> properties1 = new HashMap<>();
         properties1.put("browserprofile.testEnvironment.browserstack.url", "https://hub-cloud.browserstack.com/wd/hub");
         properties1.put("browserprofile.testEnvironment.browserstack.username", CONFIGURATION.browserstackUsername());
         properties1.put("browserprofile.testEnvironment.browserstack.password", CONFIGURATION.browserstackAccessKey());
-        File tempConfigFile1 = new File("./config/credentialsBrowserstackTest.properties");
+        File tempConfigFile1 = new File("./config/credentials.properties");
         writeMapToPropertiesFile(properties1, tempConfigFile1);
         tempFiles.add(tempConfigFile1);
 
