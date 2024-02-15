@@ -90,6 +90,13 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidateKeepWebDriverOpen()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.keepBrowserOpenOnFailure", "false");
+        properties.put("neodymium.webDriver.keepBrowserOpen", "true");
+        properties.put("neodymium.localproxy", "true");
+
+        addPropertiesForTest("temp-ValidateKeepWebDriverOpen-neodymium.properties", properties);
+        
         // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateKeepWebDriverOpen.class);
         checkFail(result, 3, 0, 1);
@@ -110,10 +117,16 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
         checkFail(result, 3, 0, 1);
     }
 
-
     @Test
     public void testValidateKeepBrowserOpenAnnotationClassDoesntInterfereWithConfig()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.keepBrowserOpenOnFailure", "false");
+        properties.put("neodymium.webDriver.keepBrowserOpen", "false");
+        properties.put("neodymium.localproxy", "true");
+
+        addPropertiesForTest("temp-ValidateKeepBrowserOpenAnnotationClassDoesntInterfereWithConfig-neodymium.properties", properties);
+        
         // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenAnnotationClassDoesntInterfereWithConfig.class);
         checkFail(result, 3, 0, 1);
@@ -122,6 +135,13 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidateKeepBrowserOpenOnFailureAnnotationClassDoesntInterfereWithConfig()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.keepBrowserOpenOnFailure", "true");
+        properties.put("neodymium.webDriver.keepBrowserOpen", "true");
+        properties.put("neodymium.localproxy", "true");
+
+        addPropertiesForTest("temp-ValidateKeepBrowserOpenOnFailureAnnotationClassDoesntInterfereWithConfig-neodymium.properties", properties);
+        
         // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenOnFailureAnnotationClassDoesntInterfereWithConfig.class);
         checkFail(result, 3, 0, 1);
@@ -130,6 +150,13 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidateKeepBrowserOpenAnnotationMethodDoesntInterfereWithConfig()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.keepBrowserOpenOnFailure", "false");
+        properties.put("neodymium.webDriver.keepBrowserOpen", "false");
+        properties.put("neodymium.localproxy", "true");
+
+        addPropertiesForTest("temp-ValidateKeepBrowserOpenAnnotationMethodDoesntInterfereWithConfig-neodymium.properties", properties);
+        
         // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenAnnotationMethodDoesntInterfereWithConfig.class);
         checkFail(result, 3, 0, 1);
@@ -138,6 +165,13 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidateKeepBrowserOpenOnFailureAnnotationMethodDoesntInterfereWithConfig()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.keepBrowserOpenOnFailure", "true");
+        properties.put("neodymium.webDriver.keepBrowserOpen", "true");
+        properties.put("neodymium.localproxy", "true");
+
+        addPropertiesForTest("temp-ValidateKeepBrowserOpenOnFailureAnnotationMethodDoesntInterfereWithConfig-neodymium.properties", properties);
+        
         // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenOnFailureAnnotationMethodDoesntInterfereWithConfig.class);
         checkFail(result, 3, 0, 1);
@@ -146,6 +180,13 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidateKeepBrowserOpenAnnotationClassOverridesConfig()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.keepBrowserOpenOnFailure", "true");
+        properties.put("neodymium.webDriver.keepBrowserOpen", "false");
+        properties.put("neodymium.localproxy", "true");
+
+        addPropertiesForTest("temp-ValidateKeepBrowserOpenAnnotationClassOverridesConfig-neodymium.properties", properties);
+        
         // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenAnnotationClassOverridesConfig.class);
         checkFail(result, 3, 0, 1);
@@ -154,6 +195,13 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.keepBrowserOpenOnFailure", "false");
+        properties.put("neodymium.webDriver.keepBrowserOpen", "true");
+        properties.put("neodymium.localproxy", "true");
+
+        addPropertiesForTest("temp-ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig-neodymium.properties", properties);
+        
         // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig.class);
         checkFail(result, 3, 0, 1);
@@ -162,6 +210,13 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidateKeepBrowserOpenAnnotationMethodOverridesConfig()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.keepBrowserOpenOnFailure", "true");
+        properties.put("neodymium.webDriver.keepBrowserOpen", "false");
+        properties.put("neodymium.localproxy", "true");
+
+        addPropertiesForTest("temp-ValidateKeepBrowserOpenAnnotationMethodOverridesConfig-neodymium.properties", properties);
+        
         // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenAnnotationMethodOverridesConfig.class);
         checkFail(result, 3, 0, 1);
@@ -170,6 +225,13 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidateKeepBrowserOpenOnFailureAnnotationMethodOverridesConfig()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.keepBrowserOpenOnFailure", "false");
+        properties.put("neodymium.webDriver.keepBrowserOpen", "true");
+        properties.put("neodymium.localproxy", "true");
+
+        addPropertiesForTest("temp-ValidateKeepBrowserOpenAnnotationMethodOverridesConfig-neodymium.properties", properties);
+        
         // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenOnFailureAnnotationMethodOverridesConfig.class);
         checkFail(result, 3, 0, 1);
@@ -178,6 +240,13 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidateKeepBrowserOpenAnnotationMethodOverridesClass()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.keepBrowserOpenOnFailure", "false");
+        properties.put("neodymium.webDriver.keepBrowserOpen", "true");
+        properties.put("neodymium.localproxy", "true");
+
+        addPropertiesForTest("temp-ValidateKeepBrowserOpenAnnotationMethodOverridesConfig-neodymium.properties", properties);
+        
         // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateKeepBrowserOpenAnnotationMethodOverridesClass.class);
         checkFail(result, 3, 0, 1);
