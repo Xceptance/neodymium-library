@@ -14,7 +14,7 @@ import org.junit.runners.model.TestClass;
 public abstract class StatementBuilder extends Statement
 {
     /**
-     * Create iteration data for the t test method in tets class
+     * Create iteration data for the test method in tests class
      * 
      * @param testClass
      * @param method

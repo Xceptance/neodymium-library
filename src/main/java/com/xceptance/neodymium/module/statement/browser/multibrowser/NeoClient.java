@@ -21,6 +21,10 @@ import okhttp3.Request.Builder;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * Custom http client to communicate with Selenium Grid. In contrast to the default http client offered by Selenium,
+ * uses {@link OkHttpClient} for the actual communication and therefore supports accessing grid under proxy
+ */
 public class NeoClient implements HttpClient
 {
     private OkHttpClient client;
