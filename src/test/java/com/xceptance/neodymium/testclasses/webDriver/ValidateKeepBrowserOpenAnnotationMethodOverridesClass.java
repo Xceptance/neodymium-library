@@ -1,10 +1,5 @@
 package com.xceptance.neodymium.testclasses.webDriver;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.aeonbits.owner.ConfigFactory;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,7 +16,6 @@ import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.KeepBrowserOpen;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
-import com.xceptance.neodymium.tests.NeodymiumTest;
 import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
@@ -37,18 +31,12 @@ public class ValidateKeepBrowserOpenAnnotationMethodOverridesClass
 
     private static WebDriver webDriver3;
 
-    private static File tempConfigFile;
-
     @BeforeClass
     public static void beforeClass()
     {
-        // set up a temporary neodymium.properties
-        final String fileLocation = "config/temp-ValidateKeepWebDriverOpen-neodymium.properties";
-        tempConfigFile = new File("./" + fileLocation);
-        Map<String, String> properties = new HashMap<>();
-        properties.put("neodymium.webDriver.keepBrowserOpen", "false");
-        NeodymiumTest.writeMapToPropertiesFile(properties, tempConfigFile);
-        ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
+        // NOTE: the property neodymium.webDriver.keepBrowserOpenOnFailure needs to be set before the BrowserStatement
+        // is build, which happens to be done before the beforeClass method. To ensure this test is working as expected
+        // the property is set outside in the NeodymiumWebDriverTest class, which executes this test class.
 
         Assert.assertNull(webDriver1);
         Assert.assertNull(Neodymium.getDriver());
@@ -123,7 +111,5 @@ public class ValidateKeepBrowserOpenAnnotationMethodOverridesClass
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver1);
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver2);
         NeodymiumWebDriverTest.assertWebDriverClosed(webDriver3);
-        
-        NeodymiumTest.deleteTempFile(tempConfigFile);
     }
 }

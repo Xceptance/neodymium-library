@@ -1,5 +1,6 @@
 package com.xceptance.neodymium.testclasses.webDriver;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -50,6 +51,9 @@ public class ValidateKeepWebDriverOpenOnFailure
 
         Assert.assertNull(webDriver1);
         Assert.assertNull(Neodymium.getDriver());
+        
+        Assert.assertNull(proxy1);
+        Assert.assertNull(Neodymium.getLocalProxy());
     }
 
     @Before
@@ -95,8 +99,6 @@ public class ValidateKeepWebDriverOpenOnFailure
     @Test
     public void test1() throws Exception
     {
-        boolean reuseWebDriver = Neodymium.configuration().reuseWebDriver();
-
         Assert.assertEquals(webDriver1, Neodymium.getDriver());
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver1);
 
@@ -139,6 +141,13 @@ public class ValidateKeepWebDriverOpenOnFailure
         NeodymiumWebDriverTest.assertProxyStopped(proxy1);
         NeodymiumWebDriverTest.assertProxyAlive(proxy2);
         NeodymiumWebDriverTest.assertProxyAlive(proxy3);
+    }
+    
+    @After
+    public void after()
+    {
+        NeodymiumWebDriverTest.assertWebDriverAlive(Neodymium.getDriver());
+        NeodymiumWebDriverTest.assertProxyAlive(Neodymium.getLocalProxy());
     }
 
     @AfterClass
