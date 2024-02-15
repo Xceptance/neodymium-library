@@ -14,7 +14,6 @@ import org.junit.runner.Result;
 import com.xceptance.neodymium.testclasses.multibrowser.BrowserstackHomePageTest;
 import com.xceptance.neodymium.util.TestConfiguration;
 
-//@Ignore("selenium grid under proxy not working yet")
 public class BrowserstackProxyErrorTest extends NeodymiumTest
 {
     private static final TestConfiguration CONFIGURATION = ConfigFactory.create(TestConfiguration.class);
