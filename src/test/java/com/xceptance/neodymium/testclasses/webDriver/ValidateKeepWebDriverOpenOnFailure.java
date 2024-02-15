@@ -17,7 +17,6 @@ import com.browserup.bup.BrowserUpProxy;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.module.statement.browser.KeepBrowserOpen;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
 import com.xceptance.neodymium.tests.NeodymiumTest;
@@ -30,7 +29,6 @@ import com.xceptance.neodymium.util.Neodymium;
  * Attention: this test needs to use browsers that are not headless.
  */
 @RunWith(NeodymiumRunner.class)
-@KeepBrowserOpen(onlyOnFailure = true)
 @Browser("Chrome_1024x768")
 public class ValidateKeepWebDriverOpenOnFailure
 {
