@@ -22,8 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.browserup.bup.BrowserUpProxy;
-import com.codeborne.selenide.WebDriverRunner;
-import com.xceptance.neodymium.NeodymiumWebDriverListener;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.BrowserRunnerHelper;
@@ -146,7 +144,6 @@ public class BrowserStatement extends StatementBuilder
         this.browserTag = browserTag;
         LOGGER.debug("Create browser for name: " + browserTag);
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(browserTag);
-
         try
         {
             // try to find appropriate web driver in cache before create a new instance
@@ -163,9 +160,6 @@ public class BrowserStatement extends StatementBuilder
             {
                 LOGGER.debug("Create new browser instance");
                 wDSCont = BrowserRunnerHelper.createWebDriverStateContainer(browserConfiguration);
-                EventFiringWebDriver eFWDriver = new EventFiringWebDriver(wDSCont.getWebDriver());
-                eFWDriver.register(new NeodymiumWebDriverListener());
-                wDSCont.setWebDriver(eFWDriver);
             }
             else
             {
@@ -180,7 +174,6 @@ public class BrowserStatement extends StatementBuilder
         {
             // set browser window size
             BrowserRunnerHelper.setBrowserWindowSize(browserConfiguration, wDSCont.getWebDriver());
-            WebDriverRunner.setWebDriver(wDSCont.getWebDriver());
             Neodymium.setWebDriverStateContainer(wDSCont);
             Neodymium.setBrowserProfileName(browserConfiguration.getConfigTag());
             Neodymium.setBrowserName(browserConfiguration.getCapabilities().getBrowserName());
@@ -260,7 +253,6 @@ public class BrowserStatement extends StatementBuilder
                 }
             }
         }
-
         Neodymium.setWebDriverStateContainer(null);
         Neodymium.setBrowserProfileName(null);
         Neodymium.setBrowserName(null);

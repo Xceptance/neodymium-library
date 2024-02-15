@@ -210,6 +210,21 @@
 	</reporting>
 
 	<dependencies>
+    <dependency>
+      <groupId>com.browserup</groupId>
+      <artifactId>browserup-proxy-mitm</artifactId>
+      <version>${browserup.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.seleniumhq.selenium</groupId>
+          <artifactId>selenium-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId> com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -276,6 +291,11 @@
 			<version>${selenide.version}</version>
 		</dependency>
 		<dependency>
+      <groupId>com.codeborne</groupId>
+      <artifactId>selenide-proxy</artifactId>
+      <version>${selenide.version}</version>
+    </dependency>
+		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-csv</artifactId>
 			<version>1.9.0</version>
@@ -310,7 +330,7 @@
 			<artifactId>log4j-api</artifactId>
 			<version>${log4j.version}</version>
 		</dependency>
-		<dependency>
+<!--		<dependency>
 			<groupId>com.browserup</groupId>
 			<artifactId>browserup-proxy-core</artifactId>
 			<version>${browserup.version}</version>
@@ -328,22 +348,8 @@
 					<artifactId>guava</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.browserup</groupId>
-			<artifactId>browserup-proxy-mitm</artifactId>
-			<version>${browserup.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.seleniumhq.selenium</groupId>
-					<artifactId>selenium-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId> com.google.guava</groupId>
-					<artifactId>guava</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+		</dependency>-->
+
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>

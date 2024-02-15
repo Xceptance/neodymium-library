@@ -34,6 +34,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariOptions;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import com.browserup.bup.BrowserUpProxy;
 import com.browserup.bup.BrowserUpProxyServer;
@@ -43,6 +44,12 @@ import com.browserup.bup.mitm.KeyStoreFileCertificateSource;
 import com.browserup.bup.mitm.RootCertificateGenerator;
 import com.browserup.bup.mitm.manager.ImpersonatingMitmManager;
 import com.browserup.bup.proxy.auth.AuthType;
+import com.codeborne.selenide.SelenideConfig;
+import com.codeborne.selenide.WebDriverRunner;
+import com.codeborne.selenide.impl.Plugins;
+import com.codeborne.selenide.proxy.SelenideProxyServer;
+import com.codeborne.selenide.proxy.SelenideProxyServerFactory;
+import com.xceptance.neodymium.NeodymiumWebDriverListener;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.TestEnvironment;
@@ -171,14 +178,13 @@ public final class BrowserRunnerHelper
     {
         final MutableCapabilities capabilities = config.getCapabilities();
         final WebDriverStateContainer wDSC = new WebDriverStateContainer();
-
+        SelenideProxyServer selenideProxyServer = null;
         if (Neodymium.configuration().useLocalProxy())
         {
             BrowserUpProxy proxy = setupEmbeddedProxy();
 
             // set the Proxy for later usage
             wDSC.setProxy(proxy);
-
             // configure the proxy via capabilities
             capabilities.setCapability(CapabilityType.PROXY, ClientUtil.createSeleniumProxy(proxy));
         }
@@ -190,6 +196,14 @@ public final class BrowserRunnerHelper
         final String testEnvironment = config.getTestEnvironment();
         if (StringUtils.isEmpty(testEnvironment) || "local".equalsIgnoreCase(testEnvironment))
         {
+            if (Neodymium.configuration().enableSelenideProxy())
+            {
+                SelenideProxyServerFactory selenideProxyServerFactory = Plugins.inject(SelenideProxyServerFactory.class);
+                selenideProxyServer = selenideProxyServerFactory.create(new SelenideConfig(),
+                                                                        (Proxy) capabilities.getCapability(CapabilityType.PROXY));
+                var proxy = selenideProxyServer.getSeleniumProxy();
+                capabilities.setCapability(CapabilityType.PROXY, proxy);
+            }
             final String browserName = capabilities.getBrowserName();
             if (chromeBrowsers.contains(browserName))
             {
@@ -249,6 +263,7 @@ public final class BrowserRunnerHelper
             {
                 wDSC.setWebDriver(new RemoteWebDriver(capabilities));
             }
+
         }
         else
         {
@@ -265,7 +280,6 @@ public final class BrowserRunnerHelper
             config.getGridProperties().put("accessKey", testEnvironmentProperties.getPassword());
             if (testEnvironmentUrl.contains("browserstack"))
             {
-
                 capabilities.setCapability("bstack:options", config.getGridProperties());
             }
             else if (testEnvironmentUrl.contains("saucelabs"))
@@ -289,6 +303,10 @@ public final class BrowserRunnerHelper
             }
             wDSC.setWebDriver(new RemoteWebDriver(new HttpCommandExecutor(new HashMap<>(), configClient, new NeodymiumProxyHttpClientFactory(testEnvironmentProperties)), capabilities));
         }
+        EventFiringWebDriver eFWDriver = new EventFiringWebDriver(wDSC.getWebDriver());
+        eFWDriver.register(new NeodymiumWebDriverListener());
+        wDSC.setWebDriver(eFWDriver);
+        WebDriverRunner.webdriverContainer.setWebDriver(wDSC.getWebDriver(), selenideProxyServer);
         return wDSC;
     }
 

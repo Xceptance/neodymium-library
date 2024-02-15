@@ -185,6 +185,10 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.proxy.socket.password")
     public String getProxySocketPassword();
 
+    @Key("neodymium.selenideProxy")
+    @DefaultValue("false")
+    public boolean enableSelenideProxy();
+
     @Key("neodymium.localproxy")
     @DefaultValue("false")
     public boolean useLocalProxy();
