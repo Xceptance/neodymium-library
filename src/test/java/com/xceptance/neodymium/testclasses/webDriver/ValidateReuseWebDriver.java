@@ -111,7 +111,8 @@ public class ValidateReuseWebDriver
         Assert.assertEquals(1, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
         WebDriverStateContainer wDSContainer = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_headless");
         Assert.assertEquals(2, wDSContainer.getUsedCount());
-
+        
+        WebDriverCache.quitCachedBrowsers();
         NeodymiumTest.deleteTempFile(tempConfigFile);
     }
 }
