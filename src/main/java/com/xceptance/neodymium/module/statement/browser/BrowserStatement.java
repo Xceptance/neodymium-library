@@ -49,6 +49,8 @@ public class BrowserStatement extends StatementBuilder
 
     private String browserTag;
 
+    private Object testClassInstance;
+
     Set<String> browser = new LinkedHashSet<>();
 
     private static final String SYSTEM_PROPERTY_BROWSERDEFINITION = "browserdefinition";
@@ -104,8 +106,9 @@ public class BrowserStatement extends StatementBuilder
      * @param next
      * @param parameter
      */
-    public BrowserStatement(Statement next, String parameter)
+    public BrowserStatement(Object testClassInstance, Statement next, String parameter)
     {
+        this.testClassInstance = testClassInstance;
         this.next = next;
         this.browserTag = parameter;
     }
@@ -159,7 +162,7 @@ public class BrowserStatement extends StatementBuilder
             if (wDSCont == null)
             {
                 LOGGER.debug("Create new browser instance");
-                wDSCont = BrowserRunnerHelper.createWebDriverStateContainer(browserConfiguration);
+                wDSCont = BrowserRunnerHelper.createWebDriverStateContainer(browserConfiguration, testClassInstance);
             }
             else
             {
@@ -392,7 +395,7 @@ public class BrowserStatement extends StatementBuilder
     @Override
     public StatementBuilder createStatement(Object testClassInstance, Statement next, Object parameter)
     {
-        return new BrowserStatement(next, (String) parameter);
+        return new BrowserStatement(testClassInstance, next, (String) parameter);
     }
 
     @Override
