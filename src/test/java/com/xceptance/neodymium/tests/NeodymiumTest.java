@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.aeonbits.owner.ConfigFactory;
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -25,6 +26,7 @@ import org.junit.runner.notification.Failure;
 import org.junit.runners.model.FrameworkMethod;
 
 import com.xceptance.neodymium.NeodymiumRunner;
+import com.xceptance.neodymium.util.Neodymium;
 
 public abstract class NeodymiumTest
 {
@@ -60,6 +62,36 @@ public abstract class NeodymiumTest
                                                         tempFile.getAbsolutePath(), e));
             }
         }
+    }
+
+    /**
+     * Add some properties to be used in the current test, using a temporary file name.
+     * 
+     * @param fileName
+     *            the filename for the temporary file used to transport the properties to the test, <b>use unique
+     *            filename for the test using it</b>
+     * @param properties
+     *            a HashMap containing all the needed properties for this test case
+     */
+    protected void addPropertiesForTest(String fileName, Map<String, String> properties)
+    {
+        // due to different states the configuration is in during initialization, we need to add it to the properties as
+        // well as the file
+
+        // during the general initialization we need the Neodymium.configuration()
+        for (String key : properties.keySet())
+        {
+            Neodymium.configuration().setProperty(key, properties.get(key));
+        }
+
+        // the Neodymium.configuration() will be overwritten at one stage of the init process, so we need to have the
+        // config values in temporary files as well
+        String fileLocation = "config/" + fileName;
+        File tempConfigFile = new File("./" + fileLocation);
+        NeodymiumTest.writeMapToPropertiesFile(properties, tempConfigFile);
+        ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
+
+        tempFiles.add(tempConfigFile);
     }
 
     /**

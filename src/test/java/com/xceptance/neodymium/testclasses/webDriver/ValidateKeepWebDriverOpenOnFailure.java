@@ -1,16 +1,13 @@
 package com.xceptance.neodymium.testclasses.webDriver;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.aeonbits.owner.ConfigFactory;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.openqa.selenium.WebDriver;
 
 import com.browserup.bup.BrowserUpProxy;
@@ -19,7 +16,6 @@ import com.codeborne.selenide.Selenide;
 import com.xceptance.neodymium.NeodymiumRunner;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverCache;
-import com.xceptance.neodymium.tests.NeodymiumTest;
 import com.xceptance.neodymium.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
@@ -28,6 +24,7 @@ import com.xceptance.neodymium.util.Neodymium;
  * Validate that the web driver is not reused.
  * Attention: this test needs to use browsers that are not headless.
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(NeodymiumRunner.class)
 @Browser("Chrome_1024x768")
 public class ValidateKeepWebDriverOpenOnFailure
@@ -44,19 +41,12 @@ public class ValidateKeepWebDriverOpenOnFailure
 
     private static BrowserUpProxy proxy3;
 
-    private static File tempConfigFile;
-
     @BeforeClass
-    public static void beforeClass()
+    public static void beforeClass() throws Exception
     {
-        // set up a temporary neodymium.properties
-        final String fileLocation = "config/temp-ValidateKeepWebDriverOpenOnFailure-neodymium.properties";
-        tempConfigFile = new File("./" + fileLocation);
-        Map<String, String> properties = new HashMap<>();
-        properties.put("neodymium.webDriver.keepBrowserOpenOnFailure", "true");
-        properties.put("neodymium.localproxy", "true");
-        NeodymiumTest.writeMapToPropertiesFile(properties, tempConfigFile);
-        ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
+        // NOTE: the property neodymium.webDriver.keepBrowserOpenOnFailure needs to be set before the BrowserStatement
+        // is build, which happens to be done before the beforeClass method. To ensure this test is working as expected
+        // the property is set outside in the NeodymiumWebDriverTest class, which executes this test class.
 
         Assert.assertNull(webDriver1);
         Assert.assertNull(Neodymium.getDriver());
@@ -103,8 +93,10 @@ public class ValidateKeepWebDriverOpenOnFailure
     }
 
     @Test
-    public void test1()
+    public void test1() throws Exception
     {
+        boolean reuseWebDriver = Neodymium.configuration().reuseWebDriver();
+
         Assert.assertEquals(webDriver1, Neodymium.getDriver());
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver1);
 
@@ -165,7 +157,5 @@ public class ValidateKeepWebDriverOpenOnFailure
         NeodymiumWebDriverTest.assertProxyStopped(proxy1);
         NeodymiumWebDriverTest.assertProxyStopped(proxy2);
         NeodymiumWebDriverTest.assertProxyStopped(proxy3);
-
-        NeodymiumTest.deleteTempFile(tempConfigFile);
     }
 }
