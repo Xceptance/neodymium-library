@@ -41,6 +41,12 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidateWebDriverClosed()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.reuseDriver", "false");
+        properties.put("neodymium.localproxy", "true");
+
+        addPropertiesForTest("temp-ValidateWebDriverClosed-neodymium.properties", properties);
+        
         Result result = JUnitCore.runClasses(ValidateWebDriverClosed.class);
         checkPass(result, 2, 0);
     }
@@ -48,6 +54,12 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidateReuseWebDriver()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.reuseDriver", "true");
+        properties.put("neodymium.localproxy", "true");
+
+        addPropertiesForTest("temp-ValidateReuseWebDriver-neodymium.properties", properties);
+        
         Result result = JUnitCore.runClasses(ValidateReuseWebDriver.class);
         checkPass(result, 2, 0);
     }
@@ -55,6 +67,13 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidateWebDriverReuseCounter()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.reuseDriver", "true");
+        properties.put("neodymium.webDriver.maxReuse", "0");
+        properties.put("neodymium.localproxy", "true");
+        
+        addPropertiesForTest("temp-ValidateWebDriverReuseCounter-neodymium.properties", properties);
+        
         Result result = JUnitCore.runClasses(ValidateWebDriverReuseCounter.class);
         checkPass(result, 6, 0);
     }
@@ -62,6 +81,12 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidateWebDriverMaxReuse()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.reuseDriver", "true");
+        properties.put("neodymium.webDriver.maxReuse", "1");
+        
+        addPropertiesForTest("temp-ValidateWebDriverMaxReuse-neodymium.properties", properties);
+        
         Result result = JUnitCore.runClasses(ValidateWebDriverMaxReuse.class);
         checkPass(result, 5, 0);
     }
@@ -69,6 +94,13 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidateWebDriverMaxReuseWithTwoWebDrivers()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.reuseDriver", "true");
+        properties.put("neodymium.webDriver.maxReuse", "2");
+        properties.put("neodymium.localproxy", "true");
+
+        addPropertiesForTest("temp-ValidateWebDriverMaxReuseWithTwoWebDrivers-neodymium.properties", properties);
+        
         Result result = JUnitCore.runClasses(ValidateWebDriverMaxReuseWithTwoWebDrivers.class);
         checkPass(result, 9, 0);
     }
@@ -76,6 +108,12 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidateClearReuseWebDriverCache()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.reuseDriver", "true");
+        properties.put("neodymium.localproxy", "true");
+        
+        addPropertiesForTest("temp-ValidateClearReuseWebDriverCache-neodymium.properties", properties);
+        
         Result result = JUnitCore.runClasses(ValidateClearReuseWebDriverCache.class);
         checkPass(result, 3, 0);
     }
@@ -83,6 +121,12 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testValidatePreventReuseWebDriver()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.reuseDriver", "true");
+        properties.put("neodymium.localproxy", "true");
+        
+        addPropertiesForTest("temp-ValidatePreventReuseWebDriver-neodymium.properties", properties);
+
         Result result = JUnitCore.runClasses(ValidatePreventReuseWebDriver.class);
         checkPass(result, 3, 0);
     }
@@ -255,6 +299,15 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testLocalProxyTrustAllServers()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.localproxy", "true");
+        properties.put("neodymium.localproxy.certificate", "false");
+        properties.put("neodymium.url.host", "authenticationtest.com");
+        properties.put("neodymium.basicauth.username", "User");
+        properties.put("neodymium.basicauth.password", "Pass");
+
+        addPropertiesForTest("temp-LocalProxyTrustAllServers-neodymium.properties", properties);
+        
         Result result = JUnitCore.runClasses(LocalProxyTrustAllServers.class);
         checkPass(result, 1, 0);
     }
@@ -262,6 +315,12 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testLocalProxyUsingSelfCreatedCertificates()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.localproxy", "true");
+        properties.put("neodymium.localproxy.certificate", "true");
+        
+        addPropertiesForTest("temp-LocalProxyUsingSelfCreatedCertificates-neodymium.properties", properties);
+        
         Result result = JUnitCore.runClasses(LocalProxyUsingSelfCreatedCertificates.class);
         checkPass(result, 1, 0);
     }
@@ -269,6 +328,17 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testLocalProxyUsingProvidedCertificates()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.localproxy", "true");
+        properties.put("neodymium.localproxy.certificate", "true");
+        properties.put("neodymium.localproxy.certificate.generate ", "false");
+        properties.put("neodymium.localproxy.certificate.archiveFile ", "./config/LocalProxyTestCertificate.p12");
+        properties.put("neodymium.localproxy.certificate.archivetype ", "PKCS12");
+        properties.put("neodymium.localproxy.certificate.name ", "MitmProxy");
+        properties.put("neodymium.localproxy.certificate.password ", "xceptance");
+        
+        addPropertiesForTest("temp-LocalProxyUsingProvidedCertificates-neodymium.properties", properties);
+        
         Result result = JUnitCore.runClasses(LocalProxyUsingProvidedCertificates.class);
         checkPass(result, 1, 0);
     }
@@ -276,6 +346,13 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     @Test
     public void testLocalProxyUsingProvidedCertificatesRuntimeException()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.localproxy", "true");
+        properties.put("neodymium.localproxy.certificate", "true");
+        properties.put("neodymium.localproxy.certificate.generate ", "false");
+
+        addPropertiesForTest("temp-LocalProxyUsingProvidedCertificatesRuntimeException-neodymium.properties", properties);
+        
         Result result = JUnitCore.runClasses(LocalProxyUsingProvidedCertificatesRuntimeException.class);
         checkFail(result, 1, 0, 1,
                   "The local proxy certificate isn't fully configured. Please check: certificate archive type, certificate archive file, certificate name and certificate password.");
