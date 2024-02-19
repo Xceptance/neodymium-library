@@ -242,10 +242,9 @@ public class BrowserStatement extends StatementBuilder
 
     private boolean keepOpen(boolean testFailed, BrowserConfiguration browserConfiguration)
     {
-        // HUIBUH
         return (browserConfiguration != null && !browserConfiguration.isHeadless())
                && (((browserMethodData.isKeepBrowserOpenOnFailure()) && testFailed) ||
-                   (browserMethodData.isKeepBrowserOpen()));
+                   (browserMethodData.isKeepBrowserOpen() && !browserMethodData.isKeepBrowserOpenOnFailure()));
     }
 
     private boolean canReuse(boolean preventReuse, WebDriverStateContainer webDriverStateContainer)
