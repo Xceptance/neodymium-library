@@ -151,7 +151,7 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
     {
         Map<String, String> properties = new HashMap<>();
         properties.put("neodymium.webDriver.keepBrowserOpenOnFailure", "true");
-        properties.put("neodymium.webDriver.keepBrowserOpen", "false");
+        properties.put("neodymium.webDriver.keepBrowserOpen", "true");
         properties.put("neodymium.localproxy", "true");
 
         addPropertiesForTest("temp-ValidateKeepWebDriverOpenOnFailure-neodymium.properties", properties);
