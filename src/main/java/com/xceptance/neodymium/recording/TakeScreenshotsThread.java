@@ -5,9 +5,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
 
+import javax.management.RuntimeErrorException;
+
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.xceptance.neodymium.recording.config.RecordingConfigurations;
 import com.xceptance.neodymium.recording.writers.Writer;
@@ -26,6 +30,8 @@ import io.qameta.allure.Allure;
  */
 public class TakeScreenshotsThread extends Thread
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TakeScreenshotsThread.class);
+    
     private WebDriver driver;
 
     private String fileName;
@@ -91,7 +97,7 @@ public class TakeScreenshotsThread extends Thread
                     }
                     catch (InterruptedException e)
                     {
-                        e.printStackTrace();
+                        LOGGER.error("thread didn't want to sleep", e);
                     }
 
                 }
@@ -115,12 +121,12 @@ public class TakeScreenshotsThread extends Thread
                 }
                 catch (IOException e)
                 {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
             catch (IOException e1)
             {
-                e1.printStackTrace();
+                throw new RuntimeException(e1);
             }
         }
     }

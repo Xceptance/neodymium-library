@@ -85,7 +85,7 @@ public class VideoWriter implements Writer
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -103,7 +103,7 @@ public class VideoWriter implements Writer
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         long videoProcessingStart = new Date().getTime();

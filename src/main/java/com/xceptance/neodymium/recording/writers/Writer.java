@@ -15,6 +15,9 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.xceptance.neodymium.recording.config.RecordingConfigurations;
 
 /**
@@ -26,6 +29,8 @@ import com.xceptance.neodymium.recording.config.RecordingConfigurations;
  */
 public interface Writer
 {
+    static final Logger LOGGER = LoggerFactory.getLogger(Writer.class);
+    
     /**
      * Instantiates the writer.
      * 
@@ -48,7 +53,7 @@ public interface Writer
         catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
             | InvocationTargetException e)
         {
-            e.printStackTrace();
+            LOGGER.error("writer instatiation failed", e);
         }
         return writerObject;
     }
@@ -64,30 +69,23 @@ public interface Writer
      *            {@link Double} image quality value (does nothing on 1.0 value)
      * @return compressed image {@link File}
      */
-    public default File compressImageIfNeeded(File imageFile, double imageScaleFactor, double imageQuality)
+    public default File compressImageIfNeeded(File imageFile, double imageScaleFactor, double imageQuality) throws IOException
     {
         // compress image if needed
         boolean isResizeNeeded = imageScaleFactor != 1.0;
         boolean isCompressionNeeded = imageQuality != 1.0;
         if (isResizeNeeded || isCompressionNeeded)
         {
-            try
+            BufferedImage img = ImageIO.read(imageFile);
+            if (isResizeNeeded)
             {
-                BufferedImage img = ImageIO.read(imageFile);
-                if (isResizeNeeded)
-                {
-                    img = resizeImage(img, imageScaleFactor);
-                }
-                if (isCompressionNeeded)
-                {
-                    img = changeImageQuality(img, imageQuality);
-                }
-                ImageIO.write(img, "jpg", imageFile);
+                img = resizeImage(img, imageScaleFactor);
             }
-            catch (IOException e)
+            if (isCompressionNeeded)
             {
-                e.printStackTrace();
+                img = changeImageQuality(img, imageQuality);
             }
+            ImageIO.write(img, "jpg", imageFile);
         }
         return imageFile;
     }
@@ -107,7 +105,6 @@ public interface Writer
 
         try (ImageOutputStream outputStream = ImageIO.createImageOutputStream(compressed))
         {
-
             // NOTE: The rest of the code is just a cleaned up version of your code
 
             // Obtain writer for JPEG format
@@ -132,10 +129,8 @@ public interface Writer
         }
         catch (IOException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return image;
     }
 
     /**
