@@ -1,15 +1,18 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.Browser.CHROME;
+import static org.openqa.selenium.remote.Browser.EDGE;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
+import static org.openqa.selenium.remote.Browser.IE;
+import static org.openqa.selenium.remote.Browser.SAFARI;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,15 +28,16 @@ import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariOptions;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import com.browserup.bup.BrowserUpProxy;
 import com.browserup.bup.BrowserUpProxyServer;
@@ -43,6 +47,12 @@ import com.browserup.bup.mitm.KeyStoreFileCertificateSource;
 import com.browserup.bup.mitm.RootCertificateGenerator;
 import com.browserup.bup.mitm.manager.ImpersonatingMitmManager;
 import com.browserup.bup.proxy.auth.AuthType;
+import com.codeborne.selenide.SelenideConfig;
+import com.codeborne.selenide.WebDriverRunner;
+import com.codeborne.selenide.impl.Plugins;
+import com.codeborne.selenide.proxy.SelenideProxyServer;
+import com.codeborne.selenide.proxy.SelenideProxyServerFactory;
+import com.xceptance.neodymium.NeodymiumWebDriverListener;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfigurationMapper;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
@@ -50,6 +60,11 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.configurati
 import com.xceptance.neodymium.util.Neodymium;
 import com.xceptance.neodymium.util.NeodymiumConfiguration;
 
+/**
+ * Helper class to create webdriver for the test
+ * 
+ * @author olha
+ */
 public final class BrowserRunnerHelper
 {
     private static final String CERT_PASSWORD = "xceptance";
@@ -70,46 +85,14 @@ public final class BrowserRunnerHelper
 
     static
     {
-        chromeBrowsers.add(BrowserType.ANDROID);
-        chromeBrowsers.add(BrowserType.CHROME);
+        chromeBrowsers.add(CHROME.browserName());
 
-        firefoxBrowsers.add(BrowserType.FIREFOX);
-        firefoxBrowsers.add(BrowserType.FIREFOX_CHROME);
-        firefoxBrowsers.add(BrowserType.FIREFOX_PROXY);
+        firefoxBrowsers.add(FIREFOX.browserName());
 
-        internetExplorerBrowsers.add(BrowserType.IE);
-        internetExplorerBrowsers.add(BrowserType.IE_HTA);
-        internetExplorerBrowsers.add(BrowserType.IEXPLORE);
-        internetExplorerBrowsers.add(BrowserType.IEXPLORE_PROXY);
+        internetExplorerBrowsers.add(IE.browserName());
+        internetExplorerBrowsers.add(EDGE.browserName());
 
-        safariBrowsers.add(BrowserType.SAFARI);
-        safariBrowsers.add(BrowserType.SAFARI_PROXY);
-    }
-
-    /**
-     * Returns an {@link HttpCommandExecutor} to a Selenium grid (e.g. SauceLabs) that contains basic authentication for
-     * access
-     * 
-     * @param testEnvironment
-     *            The {@link TestEnvironment} to the grid
-     * @return {@link HttpCommandExecutor} to Selenium grid augmented with credentials
-     * @throws MalformedURLException
-     *             if the given grid URL is invalid
-     */
-    protected static HttpCommandExecutor createGridExecutor(String testEnvironment) throws MalformedURLException
-
-    {
-        TestEnvironment testEnvironmentProperties = MultibrowserConfiguration.getInstance().getTestEnvironment(testEnvironment);
-
-        if (testEnvironmentProperties == null)
-        {
-            throw new IllegalArgumentException("No properties found for test environment: \"" + testEnvironment + "\"");
-        }
-
-        final Map<String, CommandInfo> additionalCommands = new HashMap<String, CommandInfo>(); // just a dummy
-
-        URL gridUrl = new URL(testEnvironmentProperties.getUrl());
-        return new HttpCommandExecutor(additionalCommands, gridUrl, new NeodymiumProxyHttpClientFactory(testEnvironmentProperties));
+        safariBrowsers.add(SAFARI.browserName());
     }
 
     /**
@@ -195,18 +178,18 @@ public final class BrowserRunnerHelper
      *             if <a href="https://github.com/Xceptance/neodymium-library/wiki/Selenium-grid">Selenium grid</a> is
      *             used and the given grid URL is invalid
      */
-    public static WebDriverStateContainer createWebDriverStateContainer(final BrowserConfiguration config) throws MalformedURLException
+    public static WebDriverStateContainer createWebDriverStateContainer(final BrowserConfiguration config, Object testClassInstance)
+        throws MalformedURLException
     {
         final MutableCapabilities capabilities = config.getCapabilities();
         final WebDriverStateContainer wDSC = new WebDriverStateContainer();
-
+        SelenideProxyServer selenideProxyServer = null;
         if (Neodymium.configuration().useLocalProxy())
         {
             BrowserUpProxy proxy = setupEmbeddedProxy();
 
             // set the Proxy for later usage
             wDSC.setProxy(proxy);
-
             // configure the proxy via capabilities
             capabilities.setCapability(CapabilityType.PROXY, ClientUtil.createSeleniumProxy(proxy));
         }
@@ -218,6 +201,14 @@ public final class BrowserRunnerHelper
         final String testEnvironment = config.getTestEnvironment();
         if (StringUtils.isEmpty(testEnvironment) || "local".equalsIgnoreCase(testEnvironment))
         {
+            if (Neodymium.configuration().enableSelenideProxy())
+            {
+                SelenideProxyServerFactory selenideProxyServerFactory = Plugins.inject(SelenideProxyServerFactory.class);
+                selenideProxyServer = selenideProxyServerFactory.create(new SelenideConfig(),
+                                                                        (Proxy) capabilities.getCapability(CapabilityType.PROXY));
+                var proxy = selenideProxyServer.getSeleniumProxy();
+                capabilities.setCapability(CapabilityType.PROXY, proxy);
+            }
             final String browserName = capabilities.getBrowserName();
             if (chromeBrowsers.contains(browserName))
             {
@@ -229,7 +220,10 @@ public final class BrowserRunnerHelper
                 {
                     options.setBinary(pathToBrowser);
                 }
-                options.setHeadless(config.isHeadless());
+                if (config.isHeadless())
+                {
+                    options.addArguments("--headless");
+                }
                 if (config.getArguments() != null && config.getArguments().size() > 0)
                 {
                     options.addArguments(config.getArguments());
@@ -248,10 +242,12 @@ public final class BrowserRunnerHelper
             }
             else if (firefoxBrowsers.contains(browserName))
             {
-                final FirefoxOptions options = new FirefoxOptions();
+                final FirefoxOptions options = new FirefoxOptions().merge(capabilities);
                 options.setBinary(createFirefoxBinary(Neodymium.configuration().getFirefoxBrowserPath()));
-                options.merge(capabilities);
-                options.setHeadless(config.isHeadless());
+                if (config.isHeadless())
+                {
+                    options.addArguments("--headless");
+                }
                 if (config.getArguments() != null && config.getArguments().size() > 0)
                 {
                     options.addArguments(config.getArguments());
@@ -266,12 +262,11 @@ public final class BrowserRunnerHelper
                     profile.setPreference("browser.download.folderList", 2);
                     options.setProfile(profile);
                 }
-                wDSC.setWebDriver(new FirefoxDriver(options));
+                wDSC.setWebDriver(new FirefoxDriver(new GeckoDriverService.Builder().withAllowHosts("localhost").build(), options));
             }
             else if (internetExplorerBrowsers.contains(browserName))
             {
-                final InternetExplorerOptions options = new InternetExplorerOptions();
-                options.merge(capabilities);
+                final InternetExplorerOptions options = new InternetExplorerOptions().merge(capabilities);
                 if (config.getArguments() != null && config.getArguments().size() > 0)
                 {
                     for (String argument : config.getArguments())
@@ -290,13 +285,54 @@ public final class BrowserRunnerHelper
             {
                 wDSC.setWebDriver(new RemoteWebDriver(capabilities));
             }
+
         }
         else
         {
             // establish connection to target website
-            wDSC.setWebDriver(new RemoteWebDriver(createGridExecutor(testEnvironment), capabilities));
+            TestEnvironment testEnvironmentProperties = MultibrowserConfiguration.getInstance().getTestEnvironment(testEnvironment);
+            if (testEnvironmentProperties == null)
+            {
+                throw new IllegalArgumentException("No properties found for test environment: \"" + testEnvironment + "\"");
+            }
+            String testEnvironmentUrl = testEnvironmentProperties.getUrl();
+            ClientConfig configClient = ClientConfig.defaultConfig();
+            configClient = configClient.baseUrl(new URL(testEnvironmentUrl));
+            config.getGridProperties().put("userName", testEnvironmentProperties.getUsername());
+            config.getGridProperties().put("accessKey", testEnvironmentProperties.getPassword());
+            String buildId = StringUtils.isBlank(System.getenv("BUILD_NUMBER")) ? "local run" : System.getenv("BUILD_NUMBER");
+            config.getGridProperties().put("sessionName", testClassInstance.getClass().toString());
+            config.getGridProperties().put("buildName", "Test Automation");
+            config.getGridProperties().put("buildIdentifier", buildId);
+            if (testEnvironmentUrl.contains("browserstack"))
+            {
+                capabilities.setCapability("bstack:options", config.getGridProperties());
+            }
+            else if (testEnvironmentUrl.contains("saucelabs"))
+            {
+                capabilities.setCapability("sauce:options", config.getGridProperties());
+            }
+            else
+            {
+                String optionsTag = testEnvironmentProperties.getOptionsTag();
+                if (StringUtils.isBlank(optionsTag))
+                {
+                    for (String key : config.getGridProperties().keySet())
+                    {
+                        capabilities.setCapability(key, config.getGridProperties().get(key));
+                    }
+                }
+                else
+                {
+                    capabilities.setCapability(optionsTag, config.getGridProperties());
+                }
+            }
+            wDSC.setWebDriver(new RemoteWebDriver(new HttpCommandExecutor(new HashMap<>(), configClient, new NeodymiumProxyHttpClientFactory(testEnvironmentProperties)), capabilities));
         }
-
+        EventFiringWebDriver eFWDriver = new EventFiringWebDriver(wDSC.getWebDriver());
+        eFWDriver.register(new NeodymiumWebDriverListener());
+        wDSC.setWebDriver(eFWDriver);
+        WebDriverRunner.webdriverContainer.setWebDriver(wDSC.getWebDriver(), selenideProxyServer);
         return wDSC;
     }
 
@@ -412,7 +448,7 @@ public final class BrowserRunnerHelper
             popularContentTypes.add("application/x-download");
             return String.join(";", popularContentTypes);
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             return "text/plain;text/csv;application/zip;application/pdf;application/octet-stream;" +
                    "application/msword;application/vnd.ms-excel;text/css;text/html";

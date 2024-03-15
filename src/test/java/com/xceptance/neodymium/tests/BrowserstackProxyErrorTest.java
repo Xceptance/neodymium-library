@@ -14,7 +14,7 @@ import org.junit.runner.Result;
 import com.xceptance.neodymium.testclasses.multibrowser.BrowserstackHomePageTest;
 import com.xceptance.neodymium.util.TestConfiguration;
 
-public class BrowserstackTest extends NeodymiumTest
+public class BrowserstackProxyErrorTest extends NeodymiumTest
 {
     private static final TestConfiguration CONFIGURATION = ConfigFactory.create(TestConfiguration.class);
 
@@ -26,6 +26,11 @@ public class BrowserstackTest extends NeodymiumTest
         properties1.put("browserprofile.testEnvironment.browserstack.username", CONFIGURATION.browserstackUsername());
         properties1.put("browserprofile.testEnvironment.browserstack.password", CONFIGURATION.browserstackAccessKey());
 
+        properties1.put("browserprofile.testEnvironment.browserstack.proxy", "true");
+        properties1.put("browserprofile.testEnvironment.browserstack.proxy.host", CONFIGURATION.proxyHost());
+        properties1.put("browserprofile.testEnvironment.browserstack.proxy.port", CONFIGURATION.proxyPort());
+        properties1.put("browserprofile.testEnvironment.browserstack.proxy.username", "wrongUsername");
+        properties1.put("browserprofile.testEnvironment.browserstack.proxy.password", "wrongPassword");
         File tempConfigFile1 = new File("./config/credentials.properties");
         writeMapToPropertiesFile(properties1, tempConfigFile1);
         tempFiles.add(tempConfigFile1);
@@ -43,9 +48,9 @@ public class BrowserstackTest extends NeodymiumTest
     }
 
     @Test
-    public void testBrowserstack()
+    public void testBrowserstackProxyAuthError()
     {
         Result result = JUnitCore.runClasses(BrowserstackHomePageTest.class);
-        checkPass(result, 1, 0);
+        checkFail(result, 1, 0, 1);
     }
 }

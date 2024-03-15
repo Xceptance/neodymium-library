@@ -185,6 +185,10 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.proxy.socket.password")
     public String getProxySocketPassword();
 
+    @Key("neodymium.selenideProxy")
+    @DefaultValue("false")
+    public boolean enableSelenideProxy();
+
     @Key("neodymium.localproxy")
     @DefaultValue("false")
     public boolean useLocalProxy();
@@ -218,10 +222,6 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.webDriver.window.height")
     @DefaultValue("-1")
     public Integer getWindowHeight();
-
-    @Key("neodymium.webDriver.firefox.legacyMode")
-    @DefaultValue("false")
-    public boolean useFirefoxLegacy();
 
     @Key("neodymium.webDriver.reuseDriver")
     @DefaultValue("false")

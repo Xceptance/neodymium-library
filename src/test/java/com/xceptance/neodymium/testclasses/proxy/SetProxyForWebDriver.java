@@ -18,8 +18,7 @@ public class SetProxyForWebDriver
     public void testChrome()
     {
         DesiredCapabilities capabilities = createCapabilitiesWithProxy();
-        ChromeOptions options = new ChromeOptions();
-        options.merge(capabilities);
+        ChromeOptions options = new ChromeOptions().merge(capabilities);
 
         Assert.assertTrue(options.getCapability(CapabilityType.PROXY) != null);
     }
@@ -28,8 +27,7 @@ public class SetProxyForWebDriver
     public void testFirefox()
     {
         DesiredCapabilities capabilities = createCapabilitiesWithProxy();
-        FirefoxOptions options = new FirefoxOptions();
-        options.merge(capabilities);
+        FirefoxOptions options = new FirefoxOptions().merge(capabilities);
 
         Assert.assertTrue(options.getCapability(CapabilityType.PROXY) != null);
     }
@@ -38,8 +36,7 @@ public class SetProxyForWebDriver
     public void testInternetExplorer()
     {
         DesiredCapabilities capabilities = createCapabilitiesWithProxy();
-        InternetExplorerOptions options = new InternetExplorerOptions();
-        options.merge(capabilities);
+        InternetExplorerOptions options = new InternetExplorerOptions().merge(capabilities);
 
         Assert.assertTrue(options.getCapability(CapabilityType.PROXY) != null);
     }
@@ -48,8 +45,7 @@ public class SetProxyForWebDriver
     public void testSafari()
     {
         DesiredCapabilities capabilities = createCapabilitiesWithProxy();
-        SafariOptions options = new SafariOptions();
-        options.merge(capabilities);
+        SafariOptions options = new SafariOptions().merge(capabilities);
 
         Assert.assertTrue(options.getCapability(CapabilityType.PROXY) != null);
     }

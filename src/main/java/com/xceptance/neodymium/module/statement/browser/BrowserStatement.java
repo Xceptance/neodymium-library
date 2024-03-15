@@ -16,15 +16,12 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.browserup.bup.BrowserUpProxy;
-import com.codeborne.selenide.WebDriverRunner;
-import com.xceptance.neodymium.NeodymiumWebDriverListener;
 import com.xceptance.neodymium.module.StatementBuilder;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.BrowserRunnerHelper;
@@ -36,13 +33,23 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.configurati
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.util.Neodymium;
 
+/**
+ * JUnit 4 statement to compute tests for multi-browsing runs
+ * 
+ * @author olha
+ */
 public class BrowserStatement extends StatementBuilder
 {
+    /**
+     * logger for {@link BrowserStatement} class
+     */
     public static Logger LOGGER = LoggerFactory.getLogger(BrowserStatement.class);
 
     private Statement next;
 
     private String browserTag;
+
+    private Object testClassInstance;
 
     Set<String> browser = new LinkedHashSet<>();
 
@@ -54,6 +61,10 @@ public class BrowserStatement extends StatementBuilder
 
     private WebDriverStateContainer wDSCont;
 
+    /**
+     * Don't use this constructor as it's only ment for instantiation of {@link BrowserStatement} objec in
+     * {@link StatementBuilder#instantiate(Class)}
+     */
     public BrowserStatement()
     {
         // that is like a dirty hack to provide testing ability
@@ -63,10 +74,6 @@ public class BrowserStatement extends StatementBuilder
         final String ieDriverPath = Neodymium.configuration().getIeDriverPath();
         final String chromeDriverPath = Neodymium.configuration().getChromeDriverPath();
         final String geckoDriverPath = Neodymium.configuration().getFirefoxDriverPath();
-
-        // shall we run old school firefox?
-        final boolean firefoxLegacy = Neodymium.configuration().useFirefoxLegacy();
-        System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, Boolean.toString(!firefoxLegacy));
 
         if (!StringUtils.isEmpty(ieDriverPath))
         {
@@ -93,8 +100,15 @@ public class BrowserStatement extends StatementBuilder
         }
     }
 
-    public BrowserStatement(Statement next, String parameter)
+    /**
+     * Add reference to the next statement
+     * 
+     * @param next
+     * @param parameter
+     */
+    public BrowserStatement(Object testClassInstance, Statement next, String parameter)
     {
+        this.testClassInstance = testClassInstance;
         this.next = next;
         this.browserTag = parameter;
     }
@@ -133,7 +147,6 @@ public class BrowserStatement extends StatementBuilder
         this.browserTag = browserTag;
         LOGGER.debug("Create browser for name: " + browserTag);
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(browserTag);
-
         try
         {
             // try to find appropriate web driver in cache before create a new instance
@@ -149,10 +162,7 @@ public class BrowserStatement extends StatementBuilder
             if (wDSCont == null)
             {
                 LOGGER.debug("Create new browser instance");
-                wDSCont = BrowserRunnerHelper.createWebDriverStateContainer(browserConfiguration);
-                EventFiringWebDriver eFWDriver = new EventFiringWebDriver(wDSCont.getWebDriver());
-                eFWDriver.register(new NeodymiumWebDriverListener());
-                wDSCont.setWebDriver(eFWDriver);
+                wDSCont = BrowserRunnerHelper.createWebDriverStateContainer(browserConfiguration, testClassInstance);
             }
             else
             {
@@ -167,7 +177,6 @@ public class BrowserStatement extends StatementBuilder
         {
             // set browser window size
             BrowserRunnerHelper.setBrowserWindowSize(browserConfiguration, wDSCont.getWebDriver());
-            WebDriverRunner.setWebDriver(wDSCont.getWebDriver());
             Neodymium.setWebDriverStateContainer(wDSCont);
             Neodymium.setBrowserProfileName(browserConfiguration.getConfigTag());
             Neodymium.setBrowserName(browserConfiguration.getCapabilities().getBrowserName());
@@ -190,11 +199,23 @@ public class BrowserStatement extends StatementBuilder
         Neodymium.clickViaJs(Neodymium.configuration().selenideClickViaJs());
     }
 
+    /**
+     * teardown browser after test
+     * 
+     * @param testFailed
+     */
     public void teardown(boolean testFailed)
     {
         teardown(testFailed, false, wDSCont);
     }
 
+    /**
+     * teardown browser after test
+     * 
+     * @param testFailed
+     * @param preventReuse
+     * @param webDriverStateContainer
+     */
     public void teardown(boolean testFailed, boolean preventReuse, WebDriverStateContainer webDriverStateContainer)
     {
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(Neodymium.getBrowserProfileName());
@@ -235,7 +256,6 @@ public class BrowserStatement extends StatementBuilder
                 }
             }
         }
-
         Neodymium.setWebDriverStateContainer(null);
         Neodymium.setBrowserProfileName(null);
         Neodymium.setBrowserName(null);
@@ -375,7 +395,7 @@ public class BrowserStatement extends StatementBuilder
     @Override
     public StatementBuilder createStatement(Object testClassInstance, Statement next, Object parameter)
     {
-        return new BrowserStatement(next, (String) parameter);
+        return new BrowserStatement(testClassInstance, next, (String) parameter);
     }
 
     @Override

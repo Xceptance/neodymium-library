@@ -116,8 +116,8 @@ public class TestdataStatement extends StatementBuilder
 
     private List<Field> getFieldsFromSuperclasses()
     {
-        var currentSuperclass = testClassInstance.getClass().getSuperclass();
-        var fields = new ArrayList<Field>(Arrays.asList(testClassInstance.getClass().getDeclaredFields()));
+        Class<?> currentSuperclass = testClassInstance.getClass().getSuperclass();
+        ArrayList<Field> fields = new ArrayList<Field>(Arrays.asList(testClassInstance.getClass().getDeclaredFields()));
         while (!currentSuperclass.equals(Object.class))
         {
             fields.addAll(List.of(currentSuperclass.getDeclaredFields()));
