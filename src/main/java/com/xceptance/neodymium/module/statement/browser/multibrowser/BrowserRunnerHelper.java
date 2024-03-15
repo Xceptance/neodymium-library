@@ -1,5 +1,6 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.Browser.CHROME;
 import static org.openqa.selenium.remote.Browser.EDGE;
 import static org.openqa.selenium.remote.Browser.FIREFOX;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.MutableCapabilities;
@@ -25,6 +27,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
@@ -51,6 +54,7 @@ import com.codeborne.selenide.proxy.SelenideProxyServer;
 import com.codeborne.selenide.proxy.SelenideProxyServerFactory;
 import com.xceptance.neodymium.NeodymiumWebDriverListener;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfiguration;
+import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.BrowserConfigurationMapper;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.configuration.TestEnvironment;
 import com.xceptance.neodymium.util.Neodymium;
@@ -225,6 +229,15 @@ public final class BrowserRunnerHelper
                     options.addArguments(config.getArguments());
                 }
 
+                if (StringUtils.isNotBlank(config.getDownloadDirectory()))
+                {
+                    HashMap<String, Object> prefs = new HashMap<>();
+                    prefs.put("download.default_directory", config.getDownloadDirectory());
+                    prefs.put("plugins.always_open_pdf_externally", true);
+
+                    options.setExperimentalOption("prefs", prefs);
+                }
+
                 wDSC.setWebDriver(new ChromeDriver(options));
             }
             else if (firefoxBrowsers.contains(browserName))
@@ -239,7 +252,16 @@ public final class BrowserRunnerHelper
                 {
                     options.addArguments(config.getArguments());
                 }
+                if (StringUtils.isNotBlank(config.getDownloadDirectory()))
+                {
+                    FirefoxProfile profile = new FirefoxProfile();
 
+                    profile.setPreference("browser.download.dir", config.getDownloadDirectory());
+                    profile.setPreference("browser.helperApps.neverAsk.saveToDisk", popularContentTypes());
+                    profile.setPreference("pdfjs.disabled", true);
+                    profile.setPreference("browser.download.folderList", 2);
+                    options.setProfile(profile);
+                }
                 wDSC.setWebDriver(new FirefoxDriver(new GeckoDriverService.Builder().withAllowHosts("localhost").build(), options));
             }
             else if (internetExplorerBrowsers.contains(browserName))
@@ -252,7 +274,6 @@ public final class BrowserRunnerHelper
                         options.addCommandSwitches(argument);
                     }
                 }
-
                 wDSC.setWebDriver(new InternetExplorerDriver(options));
             }
             else if (safariBrowsers.contains(browserName))
@@ -409,5 +430,28 @@ public final class BrowserRunnerHelper
 
         webdriverProxy.setNoProxy(Neodymium.configuration().getProxyBypass());
         return webdriverProxy;
+    }
+
+    /**
+     * Gets popular content types from the jdk content-types.properties file. In case the file is not found returns:
+     * </br>
+     * <em>text/plain;text/csv;application/zip;application/pdf;
+     * application/octet-stream;application/msword;application/vnd.ms-excel;text/css;text/html</em>
+     * 
+     * @return popular content types
+     */
+    private static String popularContentTypes()
+    {
+        try
+        {
+            List<String> popularContentTypes = IOUtils.readLines(BrowserConfigurationMapper.class.getResourceAsStream("/content-types.properties"), UTF_8);
+            popularContentTypes.add("application/x-download");
+            return String.join(";", popularContentTypes);
+        }
+        catch (Exception e)
+        {
+            return "text/plain;text/csv;application/zip;application/pdf;application/octet-stream;" +
+                   "application/msword;application/vnd.ms-excel;text/css;text/html";
+        }
     }
 }

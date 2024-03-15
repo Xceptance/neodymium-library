@@ -32,7 +32,7 @@ public class ProxyConfigurationTest extends NeodymiumTest
     @BeforeClass
     public static void beforeClass() throws IOException
     {
-        final String fileLocation = "config/temp-proxy-neodymium.properties";
+        final String fileLocation = "config/temp-proxy-neodymiumProxyConfigurationTest.properties";
 
         Map<String, String> properties = new HashMap<>();
         properties.put("neodymium.proxy", "true");

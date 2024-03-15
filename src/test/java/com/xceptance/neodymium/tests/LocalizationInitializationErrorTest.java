@@ -22,7 +22,7 @@ public class LocalizationInitializationErrorTest extends NeodymiumTest
     @BeforeClass
     public static void createLocalizationFile() throws IOException
     {
-        tempConfigFile = File.createTempFile("localization", ".yaml", new File("./config/"));
+        tempConfigFile = File.createTempFile("localizationLocalizationInitializationErrorTest", ".yaml", new File("./config/"));
         tempFiles.add(tempConfigFile);
 
         // set system property to change default localization file to the new created

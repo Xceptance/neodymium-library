@@ -1,5 +1,6 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser.configuration;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,10 +16,11 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariOptions;
 
+import com.xceptance.neodymium.util.Neodymium;
+
 /**
  * Class to map browser configurations
  * 
- * @author olha
  */
 public class BrowserConfigurationMapper
 {
@@ -53,6 +55,8 @@ public class BrowserConfigurationMapper
     private static final String HEADLESS = "headless";
 
     private static final String ARGUMENTS = "arguments";
+
+    private static final String DOWNLOAD_DIRECTORY = "downloadDirectory";
 
     // Appium specific properties
     private static final String APPIUM_VERSION = "appiumVersion";
@@ -116,8 +120,9 @@ public class BrowserConfigurationMapper
         /*
          * SauceLabs/TestingBot/BrowserStack configuration
          */
-        String emulatedPlatform = browserProfileConfiguration.get(PLATFORM);
         HashMap<String, Object> testEnvironmentProperties = new HashMap<>();
+
+        String emulatedPlatform = browserProfileConfiguration.get(PLATFORM);
         if (!StringUtils.isEmpty(emulatedPlatform))
         {
             testEnvironmentProperties.put("os", emulatedPlatform);
@@ -220,8 +225,8 @@ public class BrowserConfigurationMapper
         String emulatedDeviceOrientation = browserProfileConfiguration.get(DEVICE_ORIENTATION);
         if (!StringUtils.isEmpty(emulatedDeviceOrientation))
         {
-            testEnvironmentProperties.put("deviceOrientation", emulatedDeviceOrientation);
-            testEnvironmentProperties.put("orientation", emulatedDeviceOrientation);
+            testEnvironmentProperties.put(DEVICE_ORIENTATION, emulatedDeviceOrientation);
+            testEnvironmentProperties.put(ORIENTATION, emulatedDeviceOrientation);
         }
         /*
          * Chrome device emulation
@@ -300,10 +305,19 @@ public class BrowserConfigurationMapper
             browserConfiguration.setArguments(args);
         }
 
+        String downloadDirectory = browserProfileConfiguration.get(DOWNLOAD_DIRECTORY);
+        if (!StringUtils.isEmpty(downloadDirectory))
+        {
+            String downloadFolder = new File(downloadDirectory).getAbsolutePath();
+            browserConfiguration.setDownloadDirectory(downloadFolder);
+            Neodymium.downloadFolder(downloadFolder);
+        }
+
         browserConfiguration.setGridProperties(testEnvironmentProperties);
         browserConfiguration.setCapabilities(capabilities);
         browserConfiguration.setConfigTag(browserProfileConfiguration.get("browserTag"));
         browserConfiguration.setName(browserProfileConfiguration.get("name"));
+
         return browserConfiguration;
     }
 

@@ -54,10 +54,12 @@ public class BrowserStatementTest extends NeodymiumTest
         properties.put("browserprofile.chrome.testEnvironment", "local");
         properties.put("browserprofile.chrome.acceptInsecureCertificates", "true");
         properties.put("browserprofile.chrome.arguments", "headless");
+        properties.put("browserprofile.chrome.downloadDirectory", "target");
 
         properties.put("browserprofile.firefox.name", "Mozilla Firefox");
         properties.put("browserprofile.firefox.browser", "firefox");
         properties.put("browserprofile.firefox.arguments", "headless");
+        properties.put("browserprofile.firefox.downloadDirectory", "target");
 
         properties.put("browserprofile.multiFirefox.name", "Multi Argument Firefox");
         properties.put("browserprofile.multiFirefox.browser", "firefox");
@@ -284,14 +286,14 @@ public class BrowserStatementTest extends NeodymiumTest
     {
         Map<String, List<String>> expectedAnnotations = new HashMap<String, List<String>>();
         List<String> anno1 = new ArrayList<String>();
-        anno1.add("@org.junit.Test(timeout=0L, expected=org.junit.Test$None.class)");
-        anno1.add("@com.xceptance.neodymium.module.statement.browser.multibrowser.Browser(\"chrome\")");
+        anno1.add("@org.junit.Test");
+        anno1.add("@com.xceptance.neodymium.module.statement.browser.multibrowser.Browser.*chrome");
         anno1.add("@com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowsers()");
         expectedAnnotations.put("first", anno1);
 
         List<String> anno2 = new ArrayList<String>();
-        anno2.add("@org.junit.Test(timeout=0L, expected=org.junit.Test$None.class)");
-        anno2.add("@org.junit.Ignore(\"This should be visible\")");
+        anno2.add("@org.junit.Test");
+        anno2.add("@org.junit.Ignore.*This should be visible");
         expectedAnnotations.put("second", anno2);
 
         checkAnnotations(OneBrowserOneMethodBrowserSuppressed.class, expectedAnnotations);
@@ -325,6 +327,7 @@ public class BrowserStatementTest extends NeodymiumTest
         LinkedList<String> list = new LinkedList<>();
         list.add("headless");
         Assert.assertEquals(list, config.getArguments());
+        Assert.assertEquals(new File("target").getAbsolutePath(), config.getDownloadDirectory());
     }
 
     private void checkMultiChrome(BrowserConfiguration config)
@@ -352,6 +355,7 @@ public class BrowserStatementTest extends NeodymiumTest
         LinkedList<String> list = new LinkedList<>();
         list.add("headless");
         Assert.assertEquals(list, config.getArguments());
+        Assert.assertEquals(new File("target").getAbsolutePath(), config.getDownloadDirectory());
     }
 
     private void checkMultiFirefox(BrowserConfiguration config)

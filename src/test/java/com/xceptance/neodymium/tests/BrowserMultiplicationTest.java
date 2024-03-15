@@ -25,7 +25,7 @@ public class BrowserMultiplicationTest extends NeodymiumTest
         properties.put("browserprofile.first_browser.name", "first browser");
         properties.put("browserprofile.second_browser.name", "second browser");
 
-        File tempConfigFile = File.createTempFile("browser", "", new File("./config/"));
+        File tempConfigFile = File.createTempFile("browserBrowserMultiplicationTest", "", new File("./config/"));
         writeMapToPropertiesFile(properties, tempConfigFile);
         tempFiles.add(tempConfigFile);
 
