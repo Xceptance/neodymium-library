@@ -3,6 +3,7 @@ package com.xceptance.neodymium.tests.recording.writer;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
@@ -32,7 +33,7 @@ public abstract class AbstractWriterTest
     }
 
     @Before
-    public void calculatePath()
+    public void calculatePath() throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException
     {
         if (!new File(configurations.tempFolderToStoreRecording()).exists())
         {

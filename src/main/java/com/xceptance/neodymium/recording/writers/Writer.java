@@ -42,19 +42,13 @@ public interface Writer
      *            {@link String} name of the file writer shouls write into (with absolute or relative path)
      * @return created {@link Writer} instance
      */
-    public static Writer instantiate(Class<? extends Writer> writer, RecordingConfigurations recordingConfigurations, String fileName)
+    public static Writer instantiate(Class<? extends Writer> writer, RecordingConfigurations recordingConfigurations, String fileName) throws IOException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {
         Writer writerObject = null;
-        try
-        {
-            Constructor<? extends Writer> constructor = writer.getDeclaredConstructor(RecordingConfigurations.class, String.class);
-            writerObject = constructor.newInstance(recordingConfigurations, fileName);
-        }
-        catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
-            | InvocationTargetException e)
-        {
-            LOGGER.error("writer instatiation failed", e);
-        }
+        
+        Constructor<? extends Writer> constructor = writer.getDeclaredConstructor(RecordingConfigurations.class, String.class);
+        writerObject = constructor.newInstance(recordingConfigurations, fileName);
+
         return writerObject;
     }
 

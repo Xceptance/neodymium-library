@@ -3,6 +3,7 @@ package com.xceptance.neodymium.recording;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
 import javax.management.RuntimeErrorException;
@@ -45,7 +46,7 @@ public class TakeScreenshotsThread extends Thread
     private Writer writer;
 
     public TakeScreenshotsThread(WebDriver driver, Class<? extends Writer> writerClass, RecordingConfigurations recordingConfigurations,
-        String testName) throws IOException
+        String testName) throws IOException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {
         this.recordingConfigurations = recordingConfigurations;
         fileName = recordingConfigurations.tempFolderToStoreRecording()

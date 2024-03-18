@@ -48,6 +48,8 @@ public class VideoWriter implements Writer
      */
     protected VideoWriter(RecordingConfigurations recordingConfigurations, String videoFileName) throws IOException
     {
+        p = new ProcessBuilder(recordingConfigurations.ffmpegBinaryPath(), "-h").start();
+        
         pb = new ProcessBuilder(recordingConfigurations.ffmpegBinaryPath(), "-y", "-f", "image2pipe", "-r", " 5/1", "-i", "pipe:0", "-c:v", "libx264", videoFileName);
         pb.redirectErrorStream(true);
         pb.redirectOutput(Redirect.appendTo(new File(recordingConfigurations.ffmpegLogFile())));

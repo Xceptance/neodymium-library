@@ -149,7 +149,7 @@ public class GifSequenceWriter implements Writer
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -165,7 +165,7 @@ public class GifSequenceWriter implements Writer
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 }

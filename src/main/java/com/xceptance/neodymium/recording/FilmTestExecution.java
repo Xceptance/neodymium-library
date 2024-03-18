@@ -1,6 +1,7 @@
 package com.xceptance.neodymium.recording;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -85,9 +86,15 @@ public class FilmTestExecution
      * @param isGif
      *            should the desired {@link TakeScreenshotsThread} create a gif
      * @return constructed {@link TakeScreenshotsThread}
+     * @throws InvocationTargetException 
+     * @throws IllegalArgumentException 
+     * @throws IllegalAccessException 
+     * @throws InstantiationException 
+     * @throws SecurityException 
+     * @throws NoSuchMethodException 
      */
-    private static TakeScreenshotsThread createTakeScreenshotsThread(String testName, boolean isGif)
-    {
+    private static TakeScreenshotsThread createTakeScreenshotsThread(String testName, boolean isGif) 
+    {        
         RecordingConfigurations config = getContext((isGif ? GifRecordingConfigurations.class
                                                            : VideoRecordingConfigurations.class));
         if (config.enableFilming())
@@ -98,9 +105,10 @@ public class FilmTestExecution
                                                                               : VideoWriter.class, getContext((isGif ? GifRecordingConfigurations.class
                                                                                                                      : VideoRecordingConfigurations.class)), testName);
             }
-            catch (IOException e)
+            catch (IOException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+                | SecurityException e)
             {
-                throw new RuntimeException(e);
+                throw new RuntimeException("thread couldn't be created", e);
             }
         }
         return null;
@@ -213,7 +221,7 @@ public class FilmTestExecution
             }
             catch (InterruptedException e)
             {
-                LOGGER.error("thread.join() method failed", e);
+                throw new RuntimeException(e);
             }
         }
     }
@@ -239,7 +247,7 @@ public class FilmTestExecution
             }
             catch (InterruptedException e)
             {
-                LOGGER.error("thread.join() method failed", e);
+                throw new RuntimeException(e);
             }
         }
     }

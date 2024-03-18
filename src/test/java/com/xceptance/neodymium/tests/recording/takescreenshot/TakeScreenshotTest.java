@@ -1,6 +1,7 @@
 package com.xceptance.neodymium.tests.recording.takescreenshot;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -19,7 +20,7 @@ import com.xceptance.neodymium.util.Neodymium;
 public class TakeScreenshotTest
 {
     @Test
-    public void test() throws IOException, InterruptedException
+    public void test() throws IOException, InterruptedException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {
         TakeScreenshotsThread takeScreenshotsThread = new TakeScreenshotsThread(Neodymium.getDriver(), MockWriter.class, FilmTestExecution.getContextGif(), UUID.randomUUID()
                                                                                                                                                                 .toString());

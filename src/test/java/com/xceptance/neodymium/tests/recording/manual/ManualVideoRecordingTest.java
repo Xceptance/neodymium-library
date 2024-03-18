@@ -23,7 +23,9 @@ public class ManualVideoRecordingTest extends AbstractRecordingTest
     @BeforeClass
     public static void form()
     {
+        // we need to initialize both of them because after the config is build no temp file is able to override
         properties1.put("video.filmAutomaticaly", "false");
+        beforeClass("gif");
         beforeClass("video");
         configurationsClass = VideoRecordingConfigurations.class;
     }
