@@ -53,7 +53,7 @@ public abstract class AbstractWriterTest
         writer.write(ImageGenerator.generateImage(3));
         writer.stop();
         Assert.assertTrue("writer haven't created a file", new File(pathToFile).exists());
-        //new File(pathToFile).delete();
+        new File(pathToFile).delete();
     }
 
     @Test
