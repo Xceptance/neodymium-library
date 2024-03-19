@@ -31,7 +31,7 @@ import com.xceptance.neodymium.NeodymiumRunner;
 public abstract class NeodymiumTest
 {
     // holds files that will be deleted in @After method
-    static List<File> tempFiles = new LinkedList<>();
+    protected static List<File> tempFiles = new LinkedList<>();
 
     @AfterClass
     public static void cleanUp()
