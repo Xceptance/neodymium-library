@@ -34,8 +34,9 @@ public abstract class AbstractRecordingTest extends NeodymiumTest
         this.isGif = isGif;
     }
 
-    public static void beforeClass(String format)
+    public static void beforeClass(String format, boolean filmAutomatically)
     {
+        properties1.put(format + ".filmAutomaticaly", Boolean.toString(filmAutomatically));
         properties1.put(format + ".enableFilming", "true");
         properties1.put(format + ".deleteRecordingsAfterAddingToAllureReport", "false");
         File tempConfigFile1 = new File("./config/dev-" + format + "-recording.properties");
@@ -47,7 +48,7 @@ public abstract class AbstractRecordingTest extends NeodymiumTest
     public void test()
     {
         List<String> uuids = isGif ? FilmTestExecution.getNamesOfAllCurrentGifRecordings() : FilmTestExecution.getNamesOfAllCurrentVideoRecordings();
-        Assert.assertTrue(uuids.size() == 1);
+        Assert.assertEquals(1, uuids.size());
         uuid = uuids.get(0);
         Selenide.open("https://www.xceptance.com/en/");
         Selenide.sleep(FilmTestExecution.getContext(configurationsClass).oneImagePerMilliseconds());

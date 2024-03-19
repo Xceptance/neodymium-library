@@ -48,6 +48,7 @@ public class VideoWriter implements Writer
      */
     protected VideoWriter(RecordingConfigurations recordingConfigurations, String videoFileName) throws IOException
     {
+        // check if ffmpeg binary is found
         p = new ProcessBuilder(recordingConfigurations.ffmpegBinaryPath(), "-h").start();
         
         pb = new ProcessBuilder(recordingConfigurations.ffmpegBinaryPath(), "-y", "-f", "image2pipe", "-r", " 5/1", "-i", "pipe:0", "-c:v", "libx264", videoFileName);

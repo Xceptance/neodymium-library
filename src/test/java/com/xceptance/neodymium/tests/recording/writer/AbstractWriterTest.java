@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import com.xceptance.neodymium.recording.config.RecordingConfigurations;
 import com.xceptance.neodymium.recording.writers.Writer;
+import com.xceptance.neodymium.util.ImageGenerator;
 
 public abstract class AbstractWriterTest
 {
@@ -47,12 +48,12 @@ public abstract class AbstractWriterTest
     public void testWriting() throws IOException
     {
         writer.start();
-        writer.write(new File("imagesForVideo/img1.png"));
-        writer.write(new File("imagesForVideo/img2.png"));
-        writer.write(new File("imagesForVideo/img3.png"));
+        writer.write(ImageGenerator.generateImage(1));
+        writer.write(ImageGenerator.generateImage(2));
+        writer.write(ImageGenerator.generateImage(3));
         writer.stop();
         Assert.assertTrue("writer haven't created a file", new File(pathToFile).exists());
-        new File(pathToFile).delete();
+        //new File(pathToFile).delete();
     }
 
     @Test
@@ -61,7 +62,7 @@ public abstract class AbstractWriterTest
         File fileCopy = new File("target/" + UUID.randomUUID().toString() + ".png");
         fileCopy.deleteOnExit();
 
-        FileUtils.copyFile(new File("imagesForVideo/img1.png"), fileCopy);
+        FileUtils.copyFile(ImageGenerator.generateImage(1), fileCopy);
         int originalLength = (int) fileCopy.length();
         BufferedImage fileCopyImg = ImageIO.read(fileCopy);
 
@@ -69,7 +70,7 @@ public abstract class AbstractWriterTest
         ImageIO.write(fileCopyImg, "jpg", fileCopy);
 
         int compressedLength = (int) fileCopy.length();
-        Assert.assertTrue(originalLength > compressedLength);
+        Assert.assertTrue("original length (" + originalLength + ") is not greater than compressed lenght (" + compressedLength + ")", originalLength > compressedLength);
     }
 
     @Test
@@ -78,7 +79,7 @@ public abstract class AbstractWriterTest
         File fileCopy = new File("target/" + UUID.randomUUID().toString() + ".png");
         fileCopy.deleteOnExit();
 
-        FileUtils.copyFile(new File("imagesForVideo/img1.png"), fileCopy);
+        FileUtils.copyFile(ImageGenerator.generateImage(1), fileCopy);
         int originalLength = (int) fileCopy.length();
         BufferedImage fileCopyImg = ImageIO.read(fileCopy);
 
@@ -86,6 +87,6 @@ public abstract class AbstractWriterTest
         ImageIO.write(fileCopyImg, "jpg", fileCopy);
 
         int compressedLength = (int) fileCopy.length();
-        Assert.assertTrue(originalLength > compressedLength);
+        Assert.assertTrue("original length (" + originalLength + ") is not greater than compressed lenght (" + compressedLength + ")", originalLength > compressedLength);
     }
 }
