@@ -106,7 +106,7 @@ public class BrowserStatement extends StatementBuilder
      * @param next
      * @param parameter
      */
-    public BrowserStatement(Object testClassInstance, Statement next, String parameter)
+    public BrowserStatement(Statement next, BrowserMethodData parameter)
     {
         this.testClassInstance = testClassInstance;
         this.next = next;
@@ -431,7 +431,7 @@ public class BrowserStatement extends StatementBuilder
     @Override
     public StatementBuilder createStatement(Object testClassInstance, Statement next, Object parameter)
     {
-        return new BrowserStatement(testClassInstance, next, (String) parameter);
+        return new BrowserStatement(next, (BrowserMethodData) parameter);
     }
 
     @Override
