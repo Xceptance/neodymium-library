@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.aeonbits.owner.ConfigFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.xceptance.neodymium.recording.config.GifRecordingConfigurations;
 import com.xceptance.neodymium.recording.config.RecordingConfigurations;
@@ -27,8 +25,6 @@ import com.xceptance.neodymium.util.Neodymium;
  */
 public class FilmTestExecution
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FilmTestExecution.class);
-    
     private static final Map<Thread, VideoRecordingConfigurations> CONTEXTS_VIDEO = Collections.synchronizedMap(new WeakHashMap<>());
 
     private static final Map<Thread, GifRecordingConfigurations> CONTEXTS_GIF = Collections.synchronizedMap(new WeakHashMap<>());

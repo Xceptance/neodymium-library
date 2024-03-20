@@ -99,12 +99,12 @@ public interface Writer
 
         try (ImageOutputStream outputStream = ImageIO.createImageOutputStream(compressed))
         {
-            // NOTE: The rest of the code is just a cleaned up version of your code
-
-            // Obtain writer for JPEG format
+            // Obtain writer for JPG format
+            // Needs to be png, else alpha isn't handled (bogus input colorspace)
             ImageWriter jpgWriter = ImageIO.getImageWritersByFormatName("png").next();
             ImageIO.setUseCache(false);
-            // Configure JPEG compression: 70% quality
+            
+            // Configure JPG compression with specified image quality
             ImageWriteParam jpgWriteParam = jpgWriter.getDefaultWriteParam();
             jpgWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
             jpgWriteParam.setCompressionQuality((float) imageQuality);

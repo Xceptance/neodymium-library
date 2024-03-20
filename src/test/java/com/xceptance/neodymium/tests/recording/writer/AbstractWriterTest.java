@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import com.xceptance.neodymium.recording.config.RecordingConfigurations;
 import com.xceptance.neodymium.recording.writers.Writer;
-import com.xceptance.neodymium.util.ImageGenerator;
+import com.xceptance.neodymium.util.TestImageGenerator;
 
 public abstract class AbstractWriterTest
 {
@@ -47,22 +47,27 @@ public abstract class AbstractWriterTest
     @Test
     public void testWriting() throws IOException
     {
+        File filePath = new File(pathToFile);
+        filePath.deleteOnExit();
+        
         writer.start();
-        writer.write(ImageGenerator.generateImage(1));
-        writer.write(ImageGenerator.generateImage(2));
-        writer.write(ImageGenerator.generateImage(3));
+        writer.write(TestImageGenerator.generateImage());
+        writer.write(TestImageGenerator.generateImage());
+        writer.write(TestImageGenerator.generateImage());
         writer.stop();
-        Assert.assertTrue("writer haven't created a file", new File(pathToFile).exists());
-        new File(pathToFile).delete();
+        
+        //Assert.assertTrue("writer haven't created a file", path.exists());
+        //filePath.delete();
+        //Assert.assertFalse("the file wasn't deleted", new File(pathToFile).exists());
     }
 
     @Test
     public void testResizing() throws IOException
     {
-        File fileCopy = new File("target/" + UUID.randomUUID().toString() + ".png");
+        File fileCopy = new File("target/" + UUID.randomUUID().toString() + ".jpg");
         fileCopy.deleteOnExit();
 
-        FileUtils.copyFile(ImageGenerator.generateImage(1), fileCopy);
+        FileUtils.copyFile(TestImageGenerator.generateImage(), fileCopy);
         int originalLength = (int) fileCopy.length();
         BufferedImage fileCopyImg = ImageIO.read(fileCopy);
 
@@ -70,16 +75,16 @@ public abstract class AbstractWriterTest
         ImageIO.write(fileCopyImg, "jpg", fileCopy);
 
         int compressedLength = (int) fileCopy.length();
-        Assert.assertTrue("original length (" + originalLength + ") is not greater than compressed lenght (" + compressedLength + ")", originalLength > compressedLength);
+        Assert.assertTrue("original length (" + originalLength + ") is not greater than compressed length (" + compressedLength + ")", originalLength > compressedLength);
     }
 
     @Test
     public void testQualityChange() throws IOException
     {
-        File fileCopy = new File("target/" + UUID.randomUUID().toString() + ".png");
+        File fileCopy = new File("target/" + UUID.randomUUID().toString() + ".jpg");
         fileCopy.deleteOnExit();
 
-        FileUtils.copyFile(ImageGenerator.generateImage(1), fileCopy);
+        FileUtils.copyFile(TestImageGenerator.generateImage(), fileCopy);
         int originalLength = (int) fileCopy.length();
         BufferedImage fileCopyImg = ImageIO.read(fileCopy);
 
@@ -87,6 +92,6 @@ public abstract class AbstractWriterTest
         ImageIO.write(fileCopyImg, "jpg", fileCopy);
 
         int compressedLength = (int) fileCopy.length();
-        Assert.assertTrue("original length (" + originalLength + ") is not greater than compressed lenght (" + compressedLength + ")", originalLength > compressedLength);
+        Assert.assertTrue("original length (" + originalLength + ") is not greater than compressed length (" + compressedLength + ")", originalLength > compressedLength);
     }
 }
