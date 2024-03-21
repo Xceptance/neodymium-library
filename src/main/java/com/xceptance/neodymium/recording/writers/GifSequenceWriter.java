@@ -34,6 +34,8 @@ public class GifSequenceWriter implements Writer
 
     private RecordingConfigurations recordingConfigurations;
 
+    private ImageOutputStream out;
+
     /**
      * Required to instantiate the object in the {@link Writer#instantiate(Class, RecordingConfigurations, String)}
      * method.
@@ -124,7 +126,7 @@ public class GifSequenceWriter implements Writer
     @Override
     public void start() throws IOException
     {
-        ImageOutputStream out = new FileImageOutputStream(new File(gifFileName));
+        out = new FileImageOutputStream(new File(gifFileName));
         writer = ImageIO.getImageWritersBySuffix("gif").next();
         params = writer.getDefaultWriteParam();
 
@@ -162,6 +164,7 @@ public class GifSequenceWriter implements Writer
         try
         {
             writer.endWriteSequence();
+            out.close();
         }
         catch (IOException e)
         {

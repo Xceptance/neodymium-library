@@ -84,7 +84,7 @@ public class VideoWriter implements Writer
             ImageInputStream iis = ImageIO.createImageInputStream(new ByteArrayInputStream(imageBytes));
             BufferedImage img = ImageIO.read(iis);
 
-            ImageIO.write(img, "JPG", ffmpegInput);
+            ImageIO.write(img, "PNG", ffmpegInput);
         }
         catch (IOException e)
         {

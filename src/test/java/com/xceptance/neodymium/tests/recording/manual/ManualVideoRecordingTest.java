@@ -45,7 +45,8 @@ public class ManualVideoRecordingTest extends AbstractRecordingTest
     public static void assertLogFileExists()
     {
         File logFile = new File(FilmTestExecution.getContextVideo().ffmpegLogFile());
-        Assert.assertTrue(logFile.exists());
+        Assert.assertTrue("the logfile for the manual video recording test exists", logFile.exists());
         logFile.delete();
+        Assert.assertFalse("the logfile for the manual video recording test wasn't deleted", logFile.exists());
     }
 }

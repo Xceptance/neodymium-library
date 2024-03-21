@@ -59,7 +59,8 @@ public abstract class AbstractRecordingTest extends NeodymiumTest
     {
         File recordingFile = new File(FilmTestExecution.getContext(configurationsClass).tempFolderToStoreRecording() + uuid + "."
                                       + FilmTestExecution.getContext(configurationsClass).format());
-        Assert.assertTrue(recordingFile.exists());
+        Assert.assertTrue("the recording file doesn't exist", recordingFile.exists());
         recordingFile.delete();
+        Assert.assertFalse("the recording file wasn't deleted", recordingFile.exists());
     }
 }

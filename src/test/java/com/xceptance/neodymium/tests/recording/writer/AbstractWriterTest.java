@@ -48,7 +48,6 @@ public abstract class AbstractWriterTest
     public void testWriting() throws IOException
     {
         File filePath = new File(pathToFile);
-        filePath.deleteOnExit();
         
         writer.start();
         writer.write(TestImageGenerator.generateImage());
@@ -56,16 +55,15 @@ public abstract class AbstractWriterTest
         writer.write(TestImageGenerator.generateImage());
         writer.stop();
         
-        //Assert.assertTrue("writer haven't created a file", path.exists());
-        //filePath.delete();
-        //Assert.assertFalse("the file wasn't deleted", new File(pathToFile).exists());
+        Assert.assertTrue("writer haven't created a file", filePath.exists());
+        filePath.delete();
+        Assert.assertFalse("the file wasn't deleted", filePath.exists());
     }
 
     @Test
     public void testResizing() throws IOException
     {
         File fileCopy = new File("target/" + UUID.randomUUID().toString() + ".jpg");
-        fileCopy.deleteOnExit();
 
         FileUtils.copyFile(TestImageGenerator.generateImage(), fileCopy);
         int originalLength = (int) fileCopy.length();
@@ -76,13 +74,16 @@ public abstract class AbstractWriterTest
 
         int compressedLength = (int) fileCopy.length();
         Assert.assertTrue("original length (" + originalLength + ") is not greater than compressed length (" + compressedLength + ")", originalLength > compressedLength);
+        
+        Assert.assertTrue("writer haven't created a file", fileCopy.exists());
+        fileCopy.delete();
+        Assert.assertFalse("the file wasn't deleted", fileCopy.exists());
     }
 
     @Test
     public void testQualityChange() throws IOException
     {
         File fileCopy = new File("target/" + UUID.randomUUID().toString() + ".jpg");
-        fileCopy.deleteOnExit();
 
         FileUtils.copyFile(TestImageGenerator.generateImage(), fileCopy);
         int originalLength = (int) fileCopy.length();
@@ -93,5 +94,9 @@ public abstract class AbstractWriterTest
 
         int compressedLength = (int) fileCopy.length();
         Assert.assertTrue("original length (" + originalLength + ") is not greater than compressed length (" + compressedLength + ")", originalLength > compressedLength);
+        
+        Assert.assertTrue("writer haven't created a file", fileCopy.exists());
+        fileCopy.delete();
+        Assert.assertFalse("the file wasn't deleted", fileCopy.exists());
     }
 }
