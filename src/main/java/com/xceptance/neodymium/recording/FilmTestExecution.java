@@ -33,6 +33,8 @@ public class FilmTestExecution
 
     private static final Map<String, TakeScreenshotsThread> VIDEO_THREADS = Collections.synchronizedMap(new WeakHashMap<>());
 
+    public final static String TEMPORARY_CONFIG_FILE_PROPERTY_NAME = "recording.temporaryConfigFile";
+
     /**
      * Gets {@link RecordingConfigurations} for current thread
      * 
@@ -43,6 +45,11 @@ public class FilmTestExecution
      */
     public static RecordingConfigurations getContext(Class<? extends RecordingConfigurations> configurationClass)
     {
+        // the property needs to be a valid URI in order to satisfy the Owner framework
+        if (null == ConfigFactory.getProperty(TEMPORARY_CONFIG_FILE_PROPERTY_NAME))
+        {
+            ConfigFactory.setProperty(TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:this/path/should/never/exist/noOneShouldCreateMe.properties");
+        }
         if (configurationClass.equals(VideoRecordingConfigurations.class))
         {
             return CONTEXTS_VIDEO.computeIfAbsent(Thread.currentThread(), key -> {
@@ -82,15 +89,15 @@ public class FilmTestExecution
      * @param isGif
      *            should the desired {@link TakeScreenshotsThread} create a gif
      * @return constructed {@link TakeScreenshotsThread}
-     * @throws InvocationTargetException 
-     * @throws IllegalArgumentException 
-     * @throws IllegalAccessException 
-     * @throws InstantiationException 
-     * @throws SecurityException 
-     * @throws NoSuchMethodException 
+     * @throws InvocationTargetException
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     * @throws SecurityException
+     * @throws NoSuchMethodException
      */
-    private static TakeScreenshotsThread createTakeScreenshotsThread(String testName, boolean isGif) 
-    {        
+    private static TakeScreenshotsThread createTakeScreenshotsThread(String testName, boolean isGif)
+    {
         RecordingConfigurations config = getContext((isGif ? GifRecordingConfigurations.class
                                                            : VideoRecordingConfigurations.class));
         if (config.enableFilming())

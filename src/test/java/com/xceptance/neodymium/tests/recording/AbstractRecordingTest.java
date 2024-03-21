@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.aeonbits.owner.ConfigFactory;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,8 +40,10 @@ public abstract class AbstractRecordingTest extends NeodymiumTest
         properties1.put(format + ".filmAutomaticaly", Boolean.toString(filmAutomatically));
         properties1.put(format + ".enableFilming", "true");
         properties1.put(format + ".deleteRecordingsAfterAddingToAllureReport", "false");
-        File tempConfigFile1 = new File("./config/dev-" + format + "-recording.properties");
+        final String fileLocation = "config/temp-" + format + "-" + filmAutomatically + ".properties";
+        File tempConfigFile1 = new File("./" + fileLocation);
         writeMapToPropertiesFile(properties1, tempConfigFile1);
+        ConfigFactory.setProperty(FilmTestExecution.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
         tempFiles.add(tempConfigFile1);
     }
 

@@ -17,7 +17,6 @@ public class AutomaticGifRecordingTest extends AbstractRecordingTest
     {
         // we need to initialize both of them because after the config is build no temp file is able to override
         beforeClass("gif", true);
-        beforeClass("video", true);
         configurationsClass = GifRecordingConfigurations.class;
     }
 }

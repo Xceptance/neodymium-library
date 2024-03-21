@@ -4,7 +4,7 @@ import org.aeonbits.owner.Config.Sources;
 
 @Sources(
 {
-  "system:env", "system:properties", "file:config/dev-video-recording.properties", "file:config/video-recording.properties"
+  "${recording.temporaryConfigFile}", "system:env", "system:properties", "file:config/dev-video-recording.properties", "file:config/video-recording.properties"
 })
 public interface VideoRecordingConfigurations extends RecordingConfigurations
 {
