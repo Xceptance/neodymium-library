@@ -60,6 +60,12 @@ public class FilmTestExecution
             return ConfigFactory.create(GifRecordingConfigurations.class);
         });
     }
+    
+    public static void clearThreadContexts()
+    {
+        CONTEXTS_GIF.remove(Thread.currentThread());
+        CONTEXTS_VIDEO.remove(Thread.currentThread());
+    }
 
     /**
      * Gets {@link GifRecordingConfigurations} for current thread
