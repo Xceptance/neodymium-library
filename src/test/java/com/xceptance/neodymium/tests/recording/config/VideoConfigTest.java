@@ -3,11 +3,12 @@ package com.xceptance.neodymium.tests.recording.config;
 import java.io.File;
 import java.util.HashMap;
 
-import org.aeonbits.owner.ConfigFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.xceptance.neodymium.recording.FilmTestExecution;
+import com.xceptance.neodymium.recording.config.RecordingConfigurations;
 import com.xceptance.neodymium.recording.config.VideoRecordingConfigurations;
 
 public class VideoConfigTest extends ConfigTest
@@ -16,6 +17,12 @@ public class VideoConfigTest extends ConfigTest
     public VideoConfigTest()
     {
         super(VideoRecordingConfigurations.class, "video");
+    }
+
+    @Override
+    protected RecordingConfigurations getContext()
+    {
+        return FilmTestExecution.getContextVideo();
     }
 
     @Before
@@ -37,7 +44,7 @@ public class VideoConfigTest extends ConfigTest
         File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");
         writeMapToPropertiesFile(properties, tempConfigFile1);
         tempFiles.add(tempConfigFile1);
-        Assert.assertEquals("build", ConfigFactory.create(configClass).ffmpegLogFile());
+        Assert.assertEquals("build", getContext().ffmpegLogFile());
     }
 
     @Test
@@ -48,6 +55,6 @@ public class VideoConfigTest extends ConfigTest
         File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");
         writeMapToPropertiesFile(properties, tempConfigFile1);
         tempFiles.add(tempConfigFile1);
-        Assert.assertEquals("/home/user/node_modules/@ffmpeg-installer/linux-x64/", ConfigFactory.create(configClass).ffmpegBinaryPath());
+        Assert.assertEquals("/home/user/node_modules/@ffmpeg-installer/linux-x64/", getContext().ffmpegBinaryPath());
     }
 }

@@ -3,12 +3,13 @@ package com.xceptance.neodymium.tests.recording.config;
 import java.io.File;
 import java.util.HashMap;
 
-import org.aeonbits.owner.ConfigFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.xceptance.neodymium.recording.FilmTestExecution;
 import com.xceptance.neodymium.recording.config.GifRecordingConfigurations;
+import com.xceptance.neodymium.recording.config.RecordingConfigurations;
 
 public class GifConfigTest extends ConfigTest
 {
@@ -16,6 +17,12 @@ public class GifConfigTest extends ConfigTest
     public GifConfigTest()
     {
         super(GifRecordingConfigurations.class, "gif");
+    }
+
+    @Override
+    protected RecordingConfigurations getContext()
+    {
+        return FilmTestExecution.getContextGif();
     }
 
     @Before
@@ -37,6 +44,6 @@ public class GifConfigTest extends ConfigTest
         File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");
         writeMapToPropertiesFile(properties, tempConfigFile1);
         tempFiles.add(tempConfigFile1);
-        Assert.assertEquals(true, ConfigFactory.create(configClass).loop());
+        Assert.assertEquals(true, getContext().loop());
     }
 }
