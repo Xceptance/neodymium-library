@@ -26,8 +26,6 @@ public abstract class AbstractRecordingTest extends NeodymiumTest
 
     public static Class<? extends RecordingConfigurations> configurationsClass;
 
-    protected static Map<String, String> properties1 = new HashMap<>();
-
     private boolean isGif;
 
     protected AbstractRecordingTest(boolean isGif)
@@ -38,6 +36,7 @@ public abstract class AbstractRecordingTest extends NeodymiumTest
     public static void beforeClass(String format, boolean filmAutomatically)
     {
         FilmTestExecution.clearThreadContexts();
+        Map<String, String> properties1 = new HashMap<>();
         properties1.put(format + ".filmAutomaticaly", Boolean.toString(filmAutomatically));
         properties1.put(format + ".enableFilming", "true");
         properties1.put(format + ".deleteRecordingsAfterAddingToAllureReport", "false");
@@ -64,7 +63,7 @@ public abstract class AbstractRecordingTest extends NeodymiumTest
         File recordingFile = new File(FilmTestExecution.getContext(configurationsClass).tempFolderToStoreRecording() + uuid + "."
                                       + FilmTestExecution.getContext(configurationsClass).format());
         Assert.assertTrue("the recording file doesn't exist", recordingFile.exists());
-//        recordingFile.delete();
-//        Assert.assertFalse("the recording file wasn't deleted", recordingFile.exists());
+        recordingFile.delete();
+        Assert.assertFalse("the recording file wasn't deleted", recordingFile.exists());
     }
 }
