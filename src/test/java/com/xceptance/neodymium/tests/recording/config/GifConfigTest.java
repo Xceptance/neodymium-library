@@ -39,6 +39,7 @@ public class GifConfigTest extends ConfigTest
     @Test
     public void testLoop()
     {
+        FilmTestExecution.clearThreadContexts();
         HashMap<String, String> properties = new HashMap<>();
         properties.put(prefix + ".loop", "true");
         File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");

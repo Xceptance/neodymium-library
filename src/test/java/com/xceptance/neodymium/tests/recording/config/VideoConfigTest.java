@@ -39,6 +39,7 @@ public class VideoConfigTest extends ConfigTest
     @Test
     public void testFFmpegLogFile()
     {
+        FilmTestExecution.clearThreadContexts();
         HashMap<String, String> properties = new HashMap<>();
         properties.put(prefix + ".ffmpegLogFile", "build");
         File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");
@@ -50,6 +51,7 @@ public class VideoConfigTest extends ConfigTest
     @Test
     public void testFFmpegBinaryPath()
     {
+        FilmTestExecution.clearThreadContexts();
         HashMap<String, String> properties = new HashMap<>();
         properties.put(prefix + ".ffmpegBinaryPath", "/home/user/node_modules/@ffmpeg-installer/linux-x64/");
         File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");

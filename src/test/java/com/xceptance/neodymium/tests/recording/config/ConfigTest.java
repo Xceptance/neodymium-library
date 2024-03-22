@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.xceptance.neodymium.recording.FilmTestExecution;
 import com.xceptance.neodymium.recording.config.RecordingConfigurations;
 import com.xceptance.neodymium.tests.NeodymiumTest;
 
@@ -48,6 +49,7 @@ public abstract class ConfigTest extends NeodymiumTest
     @Test
     public void testEnableFilming()
     {
+        FilmTestExecution.clearThreadContexts();
         HashMap<String, String> properties = new HashMap<>();
         properties.put(prefix + ".enableFilming", "true");
         File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");
@@ -65,6 +67,7 @@ public abstract class ConfigTest extends NeodymiumTest
     @Test
     public void testFilmAutomaticaly()
     {
+        FilmTestExecution.clearThreadContexts();
         HashMap<String, String> properties = new HashMap<>();
         properties.put(prefix + ".filmAutomaticaly", "false");
         File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");
@@ -83,6 +86,7 @@ public abstract class ConfigTest extends NeodymiumTest
     @Test
     public void testOneImagePerMilliseconds()
     {
+        FilmTestExecution.clearThreadContexts();
         HashMap<String, String> properties = new HashMap<>();
         properties.put(prefix + ".oneImagePerMilliseconds", "200");
         File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");
@@ -101,6 +105,7 @@ public abstract class ConfigTest extends NeodymiumTest
     @Test
     public void testTempFolderToStoreRecording()
     {
+        FilmTestExecution.clearThreadContexts();
         HashMap<String, String> properties = new HashMap<>();
         properties.put(prefix + ".tempFolderToStoreRecording", "build/");
         File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");
@@ -119,6 +124,7 @@ public abstract class ConfigTest extends NeodymiumTest
     @Test
     public void testDeleteRecordingsAfterAddingToAllureReport()
     {
+        FilmTestExecution.clearThreadContexts();
         HashMap<String, String> properties = new HashMap<>();
         properties.put(prefix + ".deleteRecordingsAfterAddingToAllureReport", "false");
         File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");
@@ -137,6 +143,7 @@ public abstract class ConfigTest extends NeodymiumTest
     @Test
     public void testAppendAllRecordingsToReport()
     {
+        FilmTestExecution.clearThreadContexts();
         HashMap<String, String> properties = new HashMap<>();
         properties.put(prefix + ".appendAllRecordingsToReport", "true");
         File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");
@@ -154,6 +161,7 @@ public abstract class ConfigTest extends NeodymiumTest
     @Test
     public void testImageQuality()
     {
+        FilmTestExecution.clearThreadContexts();
         HashMap<String, String> properties = new HashMap<>();
         properties.put(prefix + ".imageQuality", "0.5");
         File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");
@@ -172,6 +180,7 @@ public abstract class ConfigTest extends NeodymiumTest
     @Test
     public void testImageScaleFactor()
     {
+        FilmTestExecution.clearThreadContexts();
         HashMap<String, String> properties = new HashMap<>();
         properties.put(prefix + ".imageScaleFactor", "0.5");
         File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");
