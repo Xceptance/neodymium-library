@@ -200,9 +200,15 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         // from methodBlock
         List<Class<? extends StatementBuilder>> statementRunOrder = new DefaultStatementRunOrder().getRunOrder();
 
+        List<FrameworkMethod> computedMethods = super.computeTestMethods();
+        boolean wipMethod = computedMethods.stream().anyMatch(computedMethod -> computedMethod.getAnnotation(WIP.class) != null);
         // super.computeTestMethods will return all methods that are annotated with @Test
-        for (FrameworkMethod testAnnotatedMethod : super.computeTestMethods())
+        for (FrameworkMethod testAnnotatedMethod : computedMethods)
         {
+            if (wipMethod && testAnnotatedMethod.getAnnotation(WIP.class) == null)
+            {
+                continue;
+            }
             // these lists contain all the builders and data that will be responsible for a particular method
             List<StatementBuilder> builderList = new LinkedList<>();
             List<List<Object>> builderDataList = new LinkedList<>();
