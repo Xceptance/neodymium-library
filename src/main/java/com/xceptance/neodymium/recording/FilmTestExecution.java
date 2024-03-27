@@ -21,7 +21,7 @@ import com.xceptance.neodymium.util.Neodymium;
  * Wrapper class to ease work with {@link TakeScreenshotsThread}. This class also ensures the thread safety of
  * {@link GifRecordingConfigurations} and {@link VideoRecordingConfigurations}
  * 
- * @author olha
+ * @author Xceptance Software Technologies
  */
 public class FilmTestExecution
 {
@@ -61,6 +61,10 @@ public class FilmTestExecution
         });
     }
     
+    /**
+     * Removes configuration from current thread to be able to compute a new one,
+     * because computing a new one is only possible if the there is no configuration already.
+     */
     public static void clearThreadContexts()
     {
         CONTEXTS_GIF.remove(Thread.currentThread());
