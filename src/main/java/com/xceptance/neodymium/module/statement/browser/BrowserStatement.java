@@ -128,15 +128,21 @@ public class BrowserStatement extends StatementBuilder
         }
         finally
         {
-            if (FilmTestExecution.getContextGif().filmAutomaticaly())
-            {
-                FilmTestExecution.finishGifFilming(uuid, testFailed);
+            try 
+            {                
+                if (FilmTestExecution.getContextGif().filmAutomaticaly())
+                {
+                    FilmTestExecution.finishGifFilming(uuid, testFailed);
+                }
+                if (FilmTestExecution.getContextVideo().filmAutomaticaly())
+                {
+                    FilmTestExecution.finishVideoFilming(uuid, testFailed);
+                }
             }
-            if (FilmTestExecution.getContextVideo().filmAutomaticaly())
+            finally 
             {
-                FilmTestExecution.finishVideoFilming(uuid, testFailed);
+                teardown(testFailed);                
             }
-            teardown(testFailed);
         }
     }
 
