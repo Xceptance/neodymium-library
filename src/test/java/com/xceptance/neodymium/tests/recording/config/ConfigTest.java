@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.xceptance.neodymium.recording.FilmTestExecution;
+import com.xceptance.neodymium.recording.config.GifRecordingConfigurations;
 import com.xceptance.neodymium.recording.config.RecordingConfigurations;
 import com.xceptance.neodymium.tests.NeodymiumTest;
 
@@ -32,12 +33,9 @@ public abstract class ConfigTest extends NeodymiumTest
     {
         defaultConfig.put("enableFilming", "false");
         defaultConfig.put("filmAutomaticaly", "true");
-
         defaultConfig.put("deleteRecordingsAfterAddingToAllureReport", "true");
-        defaultConfig.put("appendAllRecordingsToReport", "false");
-
+        defaultConfig.put("appendAllRecordingsToReport", "false");        
         defaultConfig.put("imageScaleFactor", "1.0");
-        defaultConfig.put("loop", "false");
     }
 
     @Test
@@ -79,8 +77,7 @@ public abstract class ConfigTest extends NeodymiumTest
     @Test
     public void testOneImagePerMillisecondsDefault()
     {
-        Assert.assertEquals(defaultConfig.get("oneImagePerMilliseconds"),
-                            getContext().oneImagePerMilliseconds() + "");
+        Assert.assertEquals(defaultConfig.get("oneImagePerMilliseconds"), getContext().oneImagePerMilliseconds() + "");
     }
 
     @Test
@@ -173,8 +170,7 @@ public abstract class ConfigTest extends NeodymiumTest
     @Test
     public void testImageScaleFactorDefault()
     {
-        Assert.assertEquals(defaultConfig.get("imageScaleFactor"),
-                            getContext().imageScaleFactor() + "");
+        Assert.assertEquals(defaultConfig.get("imageScaleFactor"), getContext().imageScaleFactor() + "");
     }
 
     @Test
@@ -193,23 +189,5 @@ public abstract class ConfigTest extends NeodymiumTest
     public void testFormatDefault()
     {
         Assert.assertEquals(defaultConfig.get("format"), getContext().format());
-    }
-
-    @Test
-    public void testLoopDefault()
-    {
-        Assert.assertEquals(Boolean.valueOf(defaultConfig.get("loop")), getContext().loop());
-    }
-
-    @Test
-    public void testFFmpegBinaryPathDefault()
-    {
-        Assert.assertEquals(defaultConfig.get("ffmpegBinaryPath"), getContext().ffmpegBinaryPath());
-    }
-
-    @Test
-    public void testFFmpegLogFileDefault()
-    {
-        Assert.assertEquals(defaultConfig.get("ffmpegLogFile"), getContext().ffmpegLogFile());
     }
 }

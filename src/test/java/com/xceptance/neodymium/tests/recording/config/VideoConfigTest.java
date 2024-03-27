@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.xceptance.neodymium.recording.FilmTestExecution;
-import com.xceptance.neodymium.recording.config.RecordingConfigurations;
 import com.xceptance.neodymium.recording.config.VideoRecordingConfigurations;
 
 public class VideoConfigTest extends ConfigTest
@@ -20,7 +19,7 @@ public class VideoConfigTest extends ConfigTest
     }
 
     @Override
-    protected RecordingConfigurations getContext()
+    protected VideoRecordingConfigurations getContext()
     {
         return FilmTestExecution.getContextVideo();
     }
@@ -37,12 +36,24 @@ public class VideoConfigTest extends ConfigTest
     }
 
     @Test
+    public void testFFmpegLogFileDefault()
+    {
+        Assert.assertEquals(defaultConfig.get("ffmpegLogFile"), getContext().ffmpegLogFile());
+    }
+    
+    @Test
+    public void testFFmpegBinaryPathDefault()
+    {
+        Assert.assertEquals(defaultConfig.get("ffmpegBinaryPath"), getContext().ffmpegBinaryPath());
+    }
+
+    @Test
     public void testFFmpegLogFile()
     {
         FilmTestExecution.clearThreadContexts();
         HashMap<String, String> properties = new HashMap<>();
-        properties.put(prefix + ".ffmpegLogFile", "build");
-        File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");
+        properties.put("video.ffmpegLogFile", "build");
+        File tempConfigFile1 = new File("./config/dev-video-recording.properties");
         writeMapToPropertiesFile(properties, tempConfigFile1);
         tempFiles.add(tempConfigFile1);
         Assert.assertEquals("build", getContext().ffmpegLogFile());
@@ -53,8 +64,8 @@ public class VideoConfigTest extends ConfigTest
     {
         FilmTestExecution.clearThreadContexts();
         HashMap<String, String> properties = new HashMap<>();
-        properties.put(prefix + ".ffmpegBinaryPath", "/home/user/node_modules/@ffmpeg-installer/linux-x64/");
-        File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");
+        properties.put("video.ffmpegBinaryPath", "/home/user/node_modules/@ffmpeg-installer/linux-x64/");
+        File tempConfigFile1 = new File("./config/dev-video-recording.properties");
         writeMapToPropertiesFile(properties, tempConfigFile1);
         tempFiles.add(tempConfigFile1);
         Assert.assertEquals("/home/user/node_modules/@ffmpeg-installer/linux-x64/", getContext().ffmpegBinaryPath());

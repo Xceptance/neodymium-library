@@ -15,6 +15,8 @@ import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 
+import com.xceptance.neodymium.recording.config.GifRecordingConfigurations;
+
 import com.xceptance.neodymium.recording.config.RecordingConfigurations;
 
 /**
@@ -133,7 +135,7 @@ public class GifSequenceWriter implements Writer
         ImageTypeSpecifier imageTypeSpecifier = ImageTypeSpecifier.createFromBufferedImageType(BufferedImage.TYPE_4BYTE_ABGR);
         metadata = writer.getDefaultImageMetadata(imageTypeSpecifier, params);
 
-        configureRootMetadata(recordingConfigurations.oneImagePerMilliseconds(), recordingConfigurations.loop());
+        configureRootMetadata(recordingConfigurations.oneImagePerMilliseconds(), ((GifRecordingConfigurations) recordingConfigurations).loop());
         writer.setOutput(out);
         writer.prepareWriteSequence(null);
     }

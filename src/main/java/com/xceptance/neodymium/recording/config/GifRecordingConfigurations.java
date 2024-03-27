@@ -8,11 +8,43 @@ import org.aeonbits.owner.Config.Sources;
 })
 public interface GifRecordingConfigurations extends RecordingConfigurations
 {
+    @Key("gif.enableFilming")
+    @DefaultValue("false")
+    public boolean enableFilming();
+
+    @Key("gif.filmAutomaticaly")
+    @DefaultValue("true")
+    public boolean filmAutomaticaly();
+
+    @Key("gif.oneImagePerMilliseconds")
+    @DefaultValue("500")
+    public int oneImagePerMilliseconds();
+
+    @Key("gif.tempFolderToStoreRecording")
+    @DefaultValue("target/gifs/")
+    public String tempFolderToStoreRecording();
+
+    @Key("gif.deleteRecordingsAfterAddingToAllureReport")
+    @DefaultValue("true")
+    public boolean deleteRecordingsAfterAddingToAllureReport();
+
+    @Key("gif.appendAllRecordingsToReport")
+    @DefaultValue("false")
+    public boolean appendAllRecordingsToReport();
+
+    @Key("gif.imageQuality")
+    @DefaultValue("0.2")
+    public double imageQuality();
+
+    @Key("gif.imageScaleFactor")
+    @DefaultValue("1.0")
+    public double imageScaleFactor();
+    
+    @Key("gif.format")
+    @DefaultValue("gif")
+    public String format();
+    
     @Key("gif.loop")
     @DefaultValue("false")
     public boolean loop();
-
-    @Override
-    @DefaultValue("gif")
-    public String format();
 }

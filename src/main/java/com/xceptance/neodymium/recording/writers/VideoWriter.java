@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.codeborne.selenide.Selenide;
 import com.xceptance.neodymium.recording.config.RecordingConfigurations;
+import com.xceptance.neodymium.recording.config.VideoRecordingConfigurations;
 import com.xceptance.neodymium.util.AllureAddons;
 
 /**
@@ -49,11 +50,11 @@ public class VideoWriter implements Writer
     protected VideoWriter(RecordingConfigurations recordingConfigurations, String videoFileName) throws IOException
     {
         // check if ffmpeg binary is found
-        p = new ProcessBuilder(recordingConfigurations.ffmpegBinaryPath(), "-h").start();
+        p = new ProcessBuilder(((VideoRecordingConfigurations) recordingConfigurations).ffmpegBinaryPath(), "-h").start();
         
-        pb = new ProcessBuilder(recordingConfigurations.ffmpegBinaryPath(), "-y", "-f", "image2pipe", "-r", " 5/1", "-i", "pipe:0", "-c:v", "libx264", videoFileName);
+        pb = new ProcessBuilder(((VideoRecordingConfigurations) recordingConfigurations).ffmpegBinaryPath(), "-y", "-f", "image2pipe", "-r", " 5/1", "-i", "pipe:0", "-c:v", "libx264", videoFileName);
         pb.redirectErrorStream(true);
-        pb.redirectOutput(Redirect.appendTo(new File(recordingConfigurations.ffmpegLogFile())));
+        pb.redirectOutput(Redirect.appendTo(new File(((VideoRecordingConfigurations) recordingConfigurations).ffmpegLogFile())));
     }
 
     /**

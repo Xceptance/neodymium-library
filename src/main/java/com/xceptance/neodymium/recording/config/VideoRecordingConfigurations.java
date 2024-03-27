@@ -39,6 +39,10 @@ public interface VideoRecordingConfigurations extends RecordingConfigurations
     @Key("video.imageScaleFactor")
     @DefaultValue("1.0")
     public double imageScaleFactor();
+    
+    @Key("video.format")
+    @DefaultValue("mp4")
+    public String format();
 
     @Key("video.ffmpegBinaryPath")
     @DefaultValue("ffmpeg")
@@ -47,12 +51,4 @@ public interface VideoRecordingConfigurations extends RecordingConfigurations
     @Key("video.ffmpegLogFile")
     @DefaultValue("target/ffmpeg_output_msg.txt")
     public String ffmpegLogFile();
-
-    @Override
-    @DefaultValue("mp4")
-    public String format();
-
-    @Override
-    @DefaultValue("false")
-    public boolean loop();
 }

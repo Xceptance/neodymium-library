@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import com.xceptance.neodymium.recording.FilmTestExecution;
 import com.xceptance.neodymium.recording.config.GifRecordingConfigurations;
-import com.xceptance.neodymium.recording.config.RecordingConfigurations;
 
 public class GifConfigTest extends ConfigTest
 {
@@ -20,7 +19,7 @@ public class GifConfigTest extends ConfigTest
     }
 
     @Override
-    protected RecordingConfigurations getContext()
+    protected GifRecordingConfigurations getContext()
     {
         return FilmTestExecution.getContextGif();
     }
@@ -32,19 +31,24 @@ public class GifConfigTest extends ConfigTest
         defaultConfig.put("tempFolderToStoreRecording", "target/gifs/");
         defaultConfig.put("imageQuality", "0.2");
         defaultConfig.put("format", "gif");
-        defaultConfig.put("ffmpegBinaryPath", null);
-        defaultConfig.put("ffmpegLogFile", null);
+        defaultConfig.put("loop", "false");     
     }
-
+    
+    @Test
+    public void testLoopDefault()
+    {
+        Assert.assertEquals(Boolean.valueOf(defaultConfig.get("loop")), getContext().loop());
+    } 
+    
     @Test
     public void testLoop()
     {
         FilmTestExecution.clearThreadContexts();
         HashMap<String, String> properties = new HashMap<>();
-        properties.put(prefix + ".loop", "true");
-        File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");
+        properties.put("gif.loop", "true");
+        File tempConfigFile1 = new File("./config/dev-gif-recording.properties");
         writeMapToPropertiesFile(properties, tempConfigFile1);
         tempFiles.add(tempConfigFile1);
         Assert.assertEquals(true, getContext().loop());
-    }
+    }    
 }
