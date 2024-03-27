@@ -5,9 +5,7 @@ import org.aeonbits.owner.Config.LoadPolicy;
 import org.aeonbits.owner.Config.LoadType;
 
 /**
- * Configuration interface, which contains on the values needed for both gif and video recording. Needed to enable
- * abstract handling of the subclasses. Contains the key and default values for gif as this format is default for
- * recording
+ * Configuration interface, which contains the variables needed for both gif and video recording.
  * 
  * @author Xceptance Software Technologies
  */

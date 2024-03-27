@@ -2,9 +2,15 @@ package com.xceptance.neodymium.recording.config;
 
 import org.aeonbits.owner.Config.Sources;
 
+/**
+ * Configuration interface, which contains the values needed for video recording. 
+ * Contains the key and default values for video.
+ * 
+ * @author Xceptance Software Technologies
+ */
 @Sources(
 {
-  "${recording.temporaryConfigFile}", "system:env", "system:properties", "file:config/dev-video-recording.properties", "file:config/video-recording.properties", "file:config/neodyium.properties", "file:config/dev-neodymium.properties"
+  "${recording.temporaryConfigFile}", "system:env", "system:properties", "file:config/dev-video-recording.properties", "file:config/dev-neodymium.properties", "file:config/video-recording.properties", "file:config/neodyium.properties"
 })
 public interface VideoRecordingConfigurations extends RecordingConfigurations
 {

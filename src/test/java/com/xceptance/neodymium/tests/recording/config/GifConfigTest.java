@@ -27,6 +27,12 @@ public class GifConfigTest extends ConfigTest
     @Before
     public void setDiffDefaultConfig()
     {
+        FilmTestExecution.clearThreadContexts();
+        HashMap<String, String> properties = new HashMap<>();
+        File tempConfigFile1 = new File("./config/dev-gif-recording.properties");
+        writeMapToPropertiesFile(properties, tempConfigFile1);
+        tempFiles.add(tempConfigFile1);
+        
         defaultConfig.put("oneImagePerMilliseconds", "500");
         defaultConfig.put("tempFolderToStoreRecording", "target/gifs/");
         defaultConfig.put("imageQuality", "0.2");
@@ -43,7 +49,6 @@ public class GifConfigTest extends ConfigTest
     @Test
     public void testLoop()
     {
-        FilmTestExecution.clearThreadContexts();
         HashMap<String, String> properties = new HashMap<>();
         properties.put("gif.loop", "true");
         File tempConfigFile1 = new File("./config/dev-gif-recording.properties");

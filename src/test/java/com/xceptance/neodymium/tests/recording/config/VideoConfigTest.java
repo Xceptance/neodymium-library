@@ -27,6 +27,12 @@ public class VideoConfigTest extends ConfigTest
     @Before
     public void setDiffDefaultConfig()
     {
+        FilmTestExecution.clearThreadContexts();
+        HashMap<String, String> properties = new HashMap<>();
+        File tempConfigFile1 = new File("./config/dev-video-recording.properties");
+        writeMapToPropertiesFile(properties, tempConfigFile1);
+        tempFiles.add(tempConfigFile1);
+        
         defaultConfig.put("oneImagePerMilliseconds", "100");
         defaultConfig.put("tempFolderToStoreRecording", "target/videos/");
         defaultConfig.put("imageQuality", "1.0");
