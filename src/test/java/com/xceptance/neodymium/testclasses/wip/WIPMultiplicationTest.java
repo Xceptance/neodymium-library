@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.WIP;
+import com.xceptance.neodymium.WorkInProgress;
 import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 
 @Browser("Chrome_headless")
@@ -12,7 +12,7 @@ import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
 @RunWith(NeodymiumRunner.class)
 public class WIPMultiplicationTest
 {
-    @WIP
+    @WorkInProgress
     @Test
     public void first()
     {

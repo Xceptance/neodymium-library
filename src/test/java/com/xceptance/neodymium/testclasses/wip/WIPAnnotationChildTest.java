@@ -2,11 +2,11 @@ package com.xceptance.neodymium.testclasses.wip;
 
 import org.junit.Test;
 
-import com.xceptance.neodymium.WIP;
+import com.xceptance.neodymium.WorkInProgress;
 
 public class WIPAnnotationChildTest extends WIPAnnotationTest
 {
-    @WIP
+    @WorkInProgress
     @Test
     public void third()
     {
