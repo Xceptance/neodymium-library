@@ -253,18 +253,20 @@ public final class BrowserRunnerHelper
                     FirefoxProfile profile = new FirefoxProfile();
 
                     // differentiate types of preference values to avoid misunderstanding
-                    if (config.getPreferencesBoolean() != null && config.getPreferencesBoolean().isEmpty())
-                    {
-                        config.getPreferencesBoolean().forEach((key, val) -> profile.setPreference(key, val));
-                    }
-                    if (config.getPreferencesInteger() != null && config.getPreferencesInteger().isEmpty())
-                    {
-                        config.getPreferencesInteger().forEach((key, val) -> profile.setPreference(key, val));
-                    }
-                    if (config.getPreferencesString() != null && config.getPreferencesString().isEmpty())
-                    {
-                        config.getPreferencesString().forEach((key, val) -> profile.setPreference(key, val));
-                    }
+                    config.getPreferences().forEach((key, val) -> {
+                        if (val.equals("true") | val.equals("false"))
+                        {
+                            profile.setPreference(key, Boolean.parseBoolean(val.toString()));
+                        }
+                        else if (StringUtils.isNumeric(val.toString()))
+                        {
+                            profile.setPreference(key, Integer.parseInt(val.toString()));
+                        }
+                        else
+                        {
+                            profile.setPreference(key, val.toString());
+                        }
+                    });
                     options.setProfile(profile);
                 }
 

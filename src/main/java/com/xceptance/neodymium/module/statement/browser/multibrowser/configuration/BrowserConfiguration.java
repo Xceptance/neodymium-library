@@ -29,11 +29,7 @@ public class BrowserConfiguration
 
     private List<String> arguments;
 
-    private Map<String, Boolean> preferencesBoolean;
-
-    private Map<String, Integer> preferencesInteger;
-
-    private Map<String, String> preferencesString;
+    private Map<String, Object> preferences;
 
     public String getConfigTag()
     {
@@ -117,61 +113,15 @@ public class BrowserConfiguration
 
     public Map<String, Object> getPreferences()
     {
-        Map<String, Object> allPreferences = new HashMap<>();
-        if (preferencesBoolean != null)
-        {
-            allPreferences.putAll(preferencesBoolean);
-        }
-        if (preferencesInteger != null)
-        {
-            allPreferences.putAll(preferencesInteger);
-        }
-        if (preferencesString != null)
-        {
-            allPreferences.putAll(preferencesString);
-        }
-        return allPreferences;
+        return preferences;
     }
 
-    public Map<String, Boolean> getPreferencesBoolean()
+    public void addPreference(String key, Object val)
     {
-        return preferencesBoolean;
-    }
-
-    public Map<String, Integer> getPreferencesInteger()
-    {
-        return preferencesInteger;
-    }
-
-    public Map<String, String> getPreferencesString()
-    {
-        return preferencesString;
-    }
-
-    public void addPreference(String key, boolean val)
-    {
-        if (this.preferencesBoolean == null)
+        if (this.preferences == null)
         {
-            this.preferencesBoolean = new HashMap<>();
+            this.preferences = new HashMap<String, Object>();
         }
-        this.preferencesBoolean.put(key, val);
-    }
-
-    public void addPreference(String key, int val)
-    {
-        if (this.preferencesInteger == null)
-        {
-            this.preferencesInteger = new HashMap<>();
-        }
-        this.preferencesInteger.put(key, val);
-    }
-
-    public void addPreference(String key, String val)
-    {
-        if (this.preferencesString == null)
-        {
-            this.preferencesString = new HashMap<>();
-        }
-        this.preferencesString.put(key, val);
+        this.preferences.put(key, val);
     }
 }

@@ -333,18 +333,12 @@ public class BrowserStatementTest extends NeodymiumTest
         LinkedList<String> list = new LinkedList<>();
         list.add("headless");
         Assert.assertEquals(list, config.getArguments());
-        
-        HashMap<String, Boolean> prefsBoolean = new HashMap<>();
-        prefsBoolean.put("geolocation.enabled", true);
-        Assert.assertEquals(prefsBoolean, config.getPreferencesBoolean());
 
-        HashMap<String, Integer> prefsInteger = new HashMap<>();
-        prefsInteger.put("renderer.memory_cache.size", 120000);
-        Assert.assertEquals(prefsInteger, config.getPreferencesInteger());
-
-        HashMap<String, String> prefsString = new HashMap<>();
-        prefsString.put("homepage", "https://www.xceptance.com");
-        Assert.assertEquals(prefsString, config.getPreferencesString());
+        HashMap<String, Object> prefs = new HashMap<>();
+        prefs.put("geolocation.enabled", true);
+        prefs.put("renderer.memory_cache.size", 120000);
+        prefs.put("homepage", "https://www.xceptance.com");
+        Assert.assertEquals(prefs, config.getPreferences());
     }
 
     private void checkMultiChrome(BrowserConfiguration config)
@@ -372,18 +366,12 @@ public class BrowserStatementTest extends NeodymiumTest
         LinkedList<String> list = new LinkedList<>();
         list.add("headless");
         Assert.assertEquals(list, config.getArguments());
-        
-        HashMap<String, Boolean> prefsBoolean = new HashMap<>();
-        prefsBoolean.put("media.navigator.permission.disabled", true);
-        Assert.assertEquals(prefsBoolean, config.getPreferencesBoolean());
 
-        HashMap<String, Integer> prefsInteger = new HashMap<>();
-        prefsInteger.put("app.update.backgroundMaxErrors", 1);
-        Assert.assertEquals(prefsInteger, config.getPreferencesInteger());
-
-        HashMap<String, String> prefsString = new HashMap<>();
-        prefsString.put("browser.startup.homepage", "https://www.xceptance.com");
-        Assert.assertEquals(prefsString, config.getPreferencesString());
+        HashMap<String, Object> prefs = new HashMap<>();
+        prefs.put("media.navigator.permission.disabled", true);
+        prefs.put("app.update.backgroundMaxErrors", 1);
+        prefs.put("browser.startup.homepage", "https://www.xceptance.com");
+        Assert.assertEquals(prefs, config.getPreferences());
     }
 
     private void checkMultiFirefox(BrowserConfiguration config)
