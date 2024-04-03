@@ -254,7 +254,7 @@ public final class BrowserRunnerHelper
 
                     // differentiate types of preference values to avoid misunderstanding
                     config.getPreferences().forEach((key, val) -> {
-                        if (val.equals("true") | val.equals("false"))
+                        if (val.equals("true") || val.equals("false"))
                         {
                             profile.setPreference(key, Boolean.parseBoolean(val.toString()));
                         }
