@@ -20,10 +20,10 @@ public class SafariBuilder extends Builder
 
     public SafariDriverService createDriverService(List<String> arguments)
     {
-        firefoxBinary = findDefaultExecutable();
+        // firefoxBinary = findDefaultExecutable();
         port = PortProber.findFreePort();
         this.arguments = arguments;
-        return createDriverService(firefoxBinary, port, createArgs(), ImmutableMap.copyOf(System.getenv()));
+        return createDriverService(null, port, getDefaultTimeout(), createArgs(), ImmutableMap.copyOf(System.getenv()));
     }
 
     @Override

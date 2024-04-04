@@ -1,83 +1,49 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser.wrappers;
 
+import static java.util.Collections.unmodifiableList;
+
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.openqa.selenium.firefox.GeckoDriverService;
+import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.GeckoDriverService.Builder;
-import org.openqa.selenium.net.PortProber;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.io.ByteStreams;
 
 public class GeckoBuilder extends Builder
 {
-    private File firefoxBinary;
-
-    private int port;
-
     private List<String> arguments;
 
-    public GeckoDriverService createDriverService(List<String> arguments)
+    public GeckoBuilder withArgs(List<String> args)
     {
-        firefoxBinary = findDefaultExecutable();
-        port = PortProber.findFreePort();
-        this.arguments = arguments;
-        var logPathArgs = arguments.stream().filter(arg -> arg.contains("--log-path")).collect(Collectors.toList());
-        this.arguments.removeAll(logPathArgs);
-        var service = createDriverService(firefoxBinary, port, createArgs(), ImmutableMap.copyOf(System.getenv()));
-
-        if (!logPathArgs.isEmpty())
-        {
-            String firefoxLogFile = logPathArgs.get(0).replaceAll("--log-path=", "").trim();
-            if (firefoxLogFile != null)
-            {
-                if ("/dev/stdout".equals(firefoxLogFile))
-                {
-                    service.sendOutputTo(System.out);
-                }
-                else if ("/dev/stderr".equals(firefoxLogFile))
-                {
-                    service.sendOutputTo(System.err);
-                }
-                else if ("/dev/null".equals(firefoxLogFile))
-                {
-                    service.sendOutputTo(ByteStreams.nullOutputStream());
-                }
-                else
-                {
-                    try
-                    {
-                        service.sendOutputTo(new FileOutputStream(firefoxLogFile));
-                    }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        return service;
+        this.arguments = args;
+        return this;
     }
 
     @Override
-    protected ImmutableList<String> createArgs()
+    protected List<String> createArgs()
     {
-        ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
-        // argsBuilder.addAll(super.createArgs());
-        argsBuilder.add(String.format("--port=%d", port));
-        if (firefoxBinary != null)
-        {
-            argsBuilder.add("-b");
-            argsBuilder.add(firefoxBinary.getPath());
-        } // else GeckoDriver will be responsible for finding Firefox on the PATH or via a capability.
+        List<String> args = new ArrayList<>();
         if (arguments != null && !arguments.isEmpty())
         {
-            argsBuilder.addAll(arguments);
+            int indexOfLogs = arguments.indexOf("--log");
+            if (indexOfLogs > -1)
+            {
+                withLogLevel(FirefoxDriverLogLevel.fromString(arguments.get(indexOfLogs + 1)));
+                arguments.remove(indexOfLogs);
+                arguments.remove(indexOfLogs);
+            }
+
+            List<String> logPaths = arguments.stream().filter(arg -> arg.contains("--log-path=")).collect(Collectors.toList());
+            if (!logPaths.isEmpty())
+            {
+                String logPath = logPaths.get(logPaths.size() - 1);
+                withLogFile(new File(logPath.replace("--log-path=", "")));
+                arguments.remove(arguments.indexOf(logPath));
+            }
+            args.addAll(arguments);
         }
-        return argsBuilder.build();
+        args.addAll(super.createArgs());
+        return unmodifiableList(args);
     }
 }

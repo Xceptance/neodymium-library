@@ -90,7 +90,7 @@ public class JavaScriptUtils
         }
     }
 
-    private static void sleep(final int msec)
+    private static void sleep(final long msec)
     {
         // wait
         try

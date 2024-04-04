@@ -27,7 +27,7 @@ public class DriverArgumentsTest extends NeodymiumTest
     {
         Map<String, String> properties1 = new HashMap<>();
         properties1.put("neodymium.webDriver.chrome.driverArguments", "--silent ; --log-path=" + randomLogFileName);
-        properties1.put("neodymium.webDriver.firefox.driverArguments", "--log ; fatal ; --log-path=" + randomLogFileName);
+        properties1.put("neodymium.webDriver.firefox.driverArguments", "--log ; info ; --log-path=" + randomLogFileName);
         File tempConfigFile1 = new File("./config/dev-neodymium.properties");
         tempFiles.add(tempConfigFile1);
         writeMapToPropertiesFile(properties1, tempConfigFile1);

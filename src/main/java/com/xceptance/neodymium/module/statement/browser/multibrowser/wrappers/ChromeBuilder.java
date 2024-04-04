@@ -7,6 +7,7 @@ import java.util.List;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeDriverService.Builder;
 import org.openqa.selenium.net.PortProber;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -20,12 +21,12 @@ public class ChromeBuilder extends Builder
 
     public ChromeDriverService createDriverService(List<String> arguments)
     {
-        firefoxBinary = findDefaultExecutable();
+        // firefoxBinary = findDefaultExecutable();
         port = PortProber.findFreePort();
         this.arguments = arguments;
         try
         {
-            return new ChromeDriverService(firefoxBinary, port, createArgs(), ImmutableMap.copyOf(System.getenv()));
+            return new ChromeDriverService(null, port, getDefaultTimeout(), createArgs(), ImmutableMap.copyOf(System.getenv()));
         }
         catch (IOException e)
         {

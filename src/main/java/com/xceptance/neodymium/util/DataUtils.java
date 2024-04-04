@@ -19,6 +19,11 @@ import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.spi.json.GsonJsonProvider;
 import com.jayway.jsonpath.spi.mapper.GsonMappingProvider;
 
+/**
+ * Class with util methods for test data
+ * 
+ * @author olha
+ */
 public class DataUtils
 {
     // GsonBuilder().serializeNulls needed to keep explicit null values within Json objects

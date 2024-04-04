@@ -21,12 +21,12 @@ public class IEBuilder extends Builder
 
     public InternetExplorerDriverService createDriverService(List<String> arguments)
     {
-        firefoxBinary = findDefaultExecutable();
+        // firefoxBinary = findDefaultExecutable();
         port = PortProber.findFreePort();
         this.arguments = arguments;
         try
         {
-            return createDriverService(firefoxBinary, port, createArgs(), ImmutableMap.copyOf(System.getenv()));
+            return createDriverService(null, port, getDefaultTimeout(), createArgs(), ImmutableMap.copyOf(System.getenv()));
         }
         catch (WebDriverException e)
         {

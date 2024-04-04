@@ -43,7 +43,7 @@ public interface NeodymiumConfiguration extends Mutable
 
     @Key("neodymium.selenideAddons.staleElement.retry.timeout")
     @DefaultValue("500")
-    public int staleElementRetryTimeout();
+    public long staleElementRetryTimeout();
 
     @Key("neodymium.selenideAddons.optional.retry.pollingIntervall")
     @DefaultValue("3000")
@@ -55,11 +55,11 @@ public interface NeodymiumConfiguration extends Mutable
 
     @Key("neodymium.javaScriptUtils.timeout")
     @DefaultValue("2000")
-    public int javaScriptTimeout();
+    public long javaScriptTimeout();
 
     @Key("neodymium.javaScriptUtils.pollingInterval")
     @DefaultValue("200")
-    public int javaScriptPollingInterval();
+    public long javaScriptPollingInterval();
 
     @Key("neodymium.javaScriptUtils.loading.jQueryIsRequired")
     @DefaultValue("true")
@@ -185,6 +185,10 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.proxy.socket.password")
     public String getProxySocketPassword();
 
+    @Key("neodymium.selenideProxy")
+    @DefaultValue("false")
+    public boolean enableSelenideProxy();
+
     @Key("neodymium.localproxy")
     @DefaultValue("false")
     public boolean useLocalProxy();
@@ -218,10 +222,6 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.webDriver.window.height")
     @DefaultValue("-1")
     public Integer getWindowHeight();
-
-    @Key("neodymium.webDriver.firefox.legacyMode")
-    @DefaultValue("false")
-    public boolean useFirefoxLegacy();
 
     @Key("neodymium.webDriver.reuseDriver")
     @DefaultValue("false")
