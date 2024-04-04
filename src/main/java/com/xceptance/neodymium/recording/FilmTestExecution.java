@@ -1,5 +1,7 @@
 package com.xceptance.neodymium.recording;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -114,6 +116,10 @@ public class FilmTestExecution
         {
             try
             {
+                assertTrue("recording property oneImagePerMilliseconds value is out of bounds", config.oneImagePerMilliseconds() >= 0);
+                assertTrue("recording property imageQuality value is out of bounds", (0 <= config.imageQuality()) && (config.imageQuality() <= 1.0));
+                assertTrue("recording property imageScaleFactor value is out of bounds", (0 < config.imageScaleFactor()) && (config.imageScaleFactor() <= 1.0));
+                
                 return new TakeScreenshotsThread(Neodymium.getDriver(), isGif ? GifSequenceWriter.class
                                                                               : VideoWriter.class, getContext((isGif ? GifRecordingConfigurations.class
                                                                                                                      : VideoRecordingConfigurations.class)), testName);
