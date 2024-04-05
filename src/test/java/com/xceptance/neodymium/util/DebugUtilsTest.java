@@ -30,7 +30,7 @@ public class DebugUtilsTest
     @Test
     public void testHighlighting()
     {
-        Neodymium.configuration().setProperty("neodymium.debugUtils.highlight.duration", "2000");
+        Neodymium.configuration().setProperty("neodymium.debugUtils.highlight.duration", "1000");
 
         Selenide.open("https://blog.xceptance.com/");
         DebugUtils.injectJavaScript();

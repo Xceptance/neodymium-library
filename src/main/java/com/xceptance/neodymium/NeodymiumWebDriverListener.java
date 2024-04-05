@@ -27,12 +27,14 @@ public class NeodymiumWebDriverListener implements WebDriverListener
     @Override
     public void beforeFindElement(WebElement element, By locator)
     {
-        DebugUtils.highlightElements(element.findElements(locator), Neodymium.getDriver());
+        DebugUtils.injectHighlightingJs();
+        DebugUtils.highlightAllElements(element.findElements(locator), Neodymium.getDriver());
     }
 
     @Override
     public void beforeFindElements(WebElement element, By locator)
     {
-        DebugUtils.highlightElements(element.findElements(locator), Neodymium.getDriver());
+        DebugUtils.injectHighlightingJs();
+        DebugUtils.highlightAllElements(element.findElements(locator), Neodymium.getDriver());
     }
 }
