@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.xceptance</groupId>
 	<artifactId>neodymium-library</artifactId>
-	<version>4.3.0-SNAPSHOT</version>
+	<version>4.334.0-SNAPSHOT</version>
 
 	<name>neodymium-library</name>
 	<url>https://github.com/Xceptance/neodymium-library</url>
@@ -55,7 +55,7 @@
 		<maven.compiler.target.version>17</maven.compiler.target.version>
 		<surefire.version>2.22.2</surefire.version>
 		<allure.version>2.13.9</allure.version>
-		<selenide.version>7.0.4</selenide.version>
+		<selenide.version>7.2.0</selenide.version>
 		<cucumber.version>6.9.1</cucumber.version>
 		<browserup.version>2.1.2</browserup.version>
 		<log4j.version>2.22.0</log4j.version>

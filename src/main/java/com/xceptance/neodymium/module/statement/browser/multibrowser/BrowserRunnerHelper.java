@@ -37,7 +37,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariOptions;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.openqa.selenium.support.events.EventFiringDecorator;
 
 import com.browserup.bup.BrowserUpProxy;
 import com.browserup.bup.BrowserUpProxyServer;
@@ -329,10 +329,9 @@ public final class BrowserRunnerHelper
             }
             wDSC.setWebDriver(new RemoteWebDriver(new HttpCommandExecutor(new HashMap<>(), configClient, new NeodymiumProxyHttpClientFactory(testEnvironmentProperties)), capabilities));
         }
-        EventFiringWebDriver eFWDriver = new EventFiringWebDriver(wDSC.getWebDriver());
-        eFWDriver.register(new NeodymiumWebDriverListener());
-        wDSC.setWebDriver(eFWDriver);
-        WebDriverRunner.webdriverContainer.setWebDriver(wDSC.getWebDriver(), selenideProxyServer);
+        WebDriver decoratedDriver = new EventFiringDecorator<WebDriver>(new NeodymiumWebDriverListener()).decorate(wDSC.getWebDriver());
+        wDSC.setDecoratedWebDriver(decoratedDriver);
+        WebDriverRunner.setWebDriver(decoratedDriver, selenideProxyServer);
         return wDSC;
     }
 

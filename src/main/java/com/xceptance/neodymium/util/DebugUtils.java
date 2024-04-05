@@ -66,7 +66,7 @@ public class DebugUtils
         Selenide.executeJavaScript(injectJS);
     }
 
-    static void highlightElements(List<WebElement> elements, WebDriver driver)
+    public static void highlightElements(List<WebElement> elements, WebDriver driver)
     {
         long highlightTime = Neodymium.configuration().debuggingHighlightDuration();
         if (highlightTime <= 0)

@@ -10,6 +10,8 @@ public class WebDriverStateContainer
 
     private WebDriver webDriver;
 
+    private WebDriver decoratedWebDriver;
+
     private BrowserUpProxy proxy;
 
     public WebDriver getWebDriver()
@@ -17,9 +19,19 @@ public class WebDriverStateContainer
         return webDriver;
     }
 
+    public WebDriver getDecoratedWebDriver()
+    {
+        return decoratedWebDriver;
+    }
+
     public void setWebDriver(WebDriver webDriver)
     {
         this.webDriver = webDriver;
+    }
+
+    public void setDecoratedWebDriver(WebDriver webDriver)
+    {
+        this.decoratedWebDriver = webDriver;
     }
 
     public void setProxy(BrowserUpProxy proxy)
