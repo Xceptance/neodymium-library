@@ -34,9 +34,9 @@ public interface GifRecordingConfigurations extends RecordingConfigurations
     @DefaultValue("true")
     public boolean deleteRecordingsAfterAddingToAllureReport();
 
-    @Key("gif.appendAllRecordingsToReport")
-    @DefaultValue("false")
-    public boolean appendAllRecordingsToReport();
+    @Key("gif.appendAllRecordingsToAllureReport")
+    @DefaultValue("true")
+    public boolean appendAllRecordingsToAllureReport();
 
     @Key("gif.imageQuality")
     @DefaultValue("0.2")

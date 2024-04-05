@@ -39,7 +39,7 @@ public abstract class ConfigTest extends NeodymiumTest
         defaultConfig.put("enableFilming", "false");
         defaultConfig.put("filmAutomatically", "true");
         defaultConfig.put("deleteRecordingsAfterAddingToAllureReport", "true");
-        defaultConfig.put("appendAllRecordingsToReport", "false");        
+        defaultConfig.put("appendAllRecordingsToAllureReport", "true");        
         defaultConfig.put("imageScaleFactor", "1.0");
     }
 
@@ -133,19 +133,19 @@ public abstract class ConfigTest extends NeodymiumTest
     @Test
     public void testAppendAllRecordingsToReportDefault()
     {
-        Assert.assertEquals(Boolean.valueOf(defaultConfig.get("appendAllRecordingsToReport")),
-                            getContext().appendAllRecordingsToReport());
+        Assert.assertEquals(Boolean.valueOf(defaultConfig.get("appendAllRecordingsToAllureReport")),
+                            getContext().appendAllRecordingsToAllureReport());
     }
 
     @Test
     public void testAppendAllRecordingsToReport()
     {
         HashMap<String, String> properties = new HashMap<>();
-        properties.put(prefix + ".appendAllRecordingsToReport", "true");
+        properties.put(prefix + ".appendAllRecordingsToAllureReport", "true");
         File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");
         writeMapToPropertiesFile(properties, tempConfigFile1);
         tempFiles.add(tempConfigFile1);
-        Assert.assertEquals(true, getContext().appendAllRecordingsToReport());
+        Assert.assertEquals(true, getContext().appendAllRecordingsToAllureReport());
     }
 
     @Test

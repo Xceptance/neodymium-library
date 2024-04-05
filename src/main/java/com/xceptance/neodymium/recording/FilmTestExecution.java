@@ -116,10 +116,19 @@ public class FilmTestExecution
         {
             try
             {
-                assertTrue("recording property oneImagePerMilliseconds value is out of bounds", config.oneImagePerMilliseconds() >= 0);
-                assertTrue("recording property imageQuality value is out of bounds", (0 <= config.imageQuality()) && (config.imageQuality() <= 1.0));
-                assertTrue("recording property imageScaleFactor value is out of bounds", (0 < config.imageScaleFactor()) && (config.imageScaleFactor() <= 1.0));
-                
+                if (isGif) 
+                {
+                    assertTrue("recording property gif.oneImagePerMilliseconds value is out of bounds", config.oneImagePerMilliseconds() >= 0);
+                    assertTrue("recording property gif.imageQuality value is out of bounds", (0 <= config.imageQuality()) && (config.imageQuality() <= 1.0));
+                    assertTrue("recording property gif.imageScaleFactor value is out of bounds", (0 < config.imageScaleFactor()) && (config.imageScaleFactor() <= 1.0));                    
+                }
+                else 
+                {
+                    assertTrue("recording property video.oneImagePerMilliseconds value is out of bounds", config.oneImagePerMilliseconds() >= 0);
+                    assertTrue("recording property video.imageQuality value is out of bounds", (0 <= config.imageQuality()) && (config.imageQuality() <= 1.0));
+                    assertTrue("recording property video.imageScaleFactor value is out of bounds", (0 < config.imageScaleFactor()) && (config.imageScaleFactor() <= 1.0));                    
+                }
+                  
                 return new TakeScreenshotsThread(Neodymium.getDriver(), isGif ? GifSequenceWriter.class
                                                                               : VideoWriter.class, getContext((isGif ? GifRecordingConfigurations.class
                                                                                                                      : VideoRecordingConfigurations.class)), testName);

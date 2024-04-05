@@ -34,9 +34,9 @@ public interface VideoRecordingConfigurations extends RecordingConfigurations
     @DefaultValue("true")
     public boolean deleteRecordingsAfterAddingToAllureReport();
 
-    @Key("video.appendAllRecordingsToReport")
-    @DefaultValue("false")
-    public boolean appendAllRecordingsToReport();
+    @Key("video.appendAllRecordingsToAllureReport")
+    @DefaultValue("true")
+    public boolean appendAllRecordingsToAllureReport();
 
     @Key("video.imageQuality")
     @DefaultValue("1.0")

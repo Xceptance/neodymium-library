@@ -107,16 +107,16 @@ public class TakeScreenshotsThread extends Thread
                 writer.stop();
                 try
                 {
-                    if (recordingConfigurations.appendAllRecordingsToReport() || testFailed)
+                    if (recordingConfigurations.appendAllRecordingsToAllureReport() || testFailed)
                     {
 
                         String type = isGif ? "image/gif" : "video/mp4";
                         Allure.addAttachment(fileName, type, new FileInputStream(fileName), recordingConfigurations.format());
 
-                    }
-                    if (recordingConfigurations.deleteRecordingsAfterAddingToAllureReport())
-                    {
-                        new File(fileName).delete();
+                        if (recordingConfigurations.deleteRecordingsAfterAddingToAllureReport())
+                        {
+                            new File(fileName).delete();
+                        }
                     }
                 }
                 catch (IOException e)
