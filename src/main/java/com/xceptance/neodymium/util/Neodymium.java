@@ -455,6 +455,17 @@ public class Neodymium
     {
         Configuration.timeout = timeout;
     }
+    
+    /**
+     * Shortcut to set download folder
+     * 
+     * @param downloadFolder
+     *            the directory where Selenide should store downloaded files
+     */
+    public static void downloadFolder(String downloadFolder)
+    {
+        Configuration.downloadsFolder = downloadFolder;
+    }
 
     /**
      * Validates if the currently configured site is equal to one or more Strings.
@@ -473,6 +484,30 @@ public class Neodymium
         for (int i = 0; i < sites.length; i++)
         {
             if (Neodymium.configuration().site().equals(sites[i]))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Validates if the currently configured locale is equal to one or more Strings.
+     * 
+     * @param locales
+     *            Names of the locales
+     * @return boolean value indicating whether the configured locale is matching one of the given Strings
+     * @see Neodymium
+     */
+    public static boolean isLocale(String... locales)
+    {
+        if (Neodymium.configuration().locale() == null)
+        {
+            return false;
+        }
+        for (int i = 0; i < locales.length; i++)
+        {
+            if (Neodymium.configuration().locale().equals(locales[i]))
             {
                 return true;
             }

@@ -12,6 +12,8 @@ public class TestEnvironment
 
     private String password;
 
+    private String optionsTag;
+
     private boolean useProxy = false;
 
     private String proxyHost;
@@ -27,6 +29,7 @@ public class TestEnvironment
         url = properties.getProperty(baseKey + ".url");
         username = properties.getProperty(baseKey + ".username");
         password = properties.getProperty(baseKey + ".password");
+        optionsTag = properties.getProperty(baseKey + ".optionsTag");
         useProxy = Boolean.valueOf(properties.getProperty(baseKey + ".proxy"));
         if (useProxy)
         {
@@ -95,5 +98,15 @@ public class TestEnvironment
     public String getProxyPassword()
     {
         return proxyPassword;
+    }
+
+    public String getOptionsTag()
+    {
+        return optionsTag;
+    }
+
+    public boolean isUseProxy()
+    {
+        return useProxy;
     }
 }

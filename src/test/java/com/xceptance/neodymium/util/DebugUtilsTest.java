@@ -1,5 +1,6 @@
 package com.xceptance.neodymium.util;
 
+import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
@@ -25,7 +26,7 @@ public class DebugUtilsTest
     @Test
     public void testHighlighting()
     {
-        Neodymium.configuration().setProperty("neodymium.debugUtils.highlight.duration", "500");
+        Neodymium.configuration().setProperty("neodymium.debugUtils.highlight.duration", "1000");
 
         Selenide.open("https://blog.xceptance.com/");
         DebugUtils.injectJavaScript();
@@ -40,7 +41,7 @@ public class DebugUtilsTest
 
         final List<WebElement> list2 = $("body").findElements(By.cssSelector("#content article"));
         DebugUtils.highlightElements(list2, Neodymium.getDriver());
-        $$(".neodymium-highlight-box").shouldHaveSize(10);
+        $$(".neodymium-highlight-box").shouldHave(size(10));
 
         DebugUtils.resetAllHighlight();
         $(".neodymium-highlight-box").shouldNot(exist);

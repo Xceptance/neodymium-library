@@ -7,7 +7,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runner.notification.RunNotifier;
@@ -143,9 +148,43 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         return testClassInstance;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void validateInstanceMethods(List<Throwable> errors)
+    {
+        validatePublicVoidNoArgMethods(After.class, false, errors);
+        validatePublicVoidNoArgMethods(Before.class, false, errors);
+        validateTestMethods(errors);
+        if (computeTestMethods().isEmpty())
+        {
+            String testExecutionRegex = Neodymium.configuration().getTestNameFilter();
+
+            // only throw exception if test class has no execution methods accidentally
+            if (StringUtils.isNotEmpty(testExecutionRegex))
+            {
+                errors.add(new Exception("No runnable methods"));
+            }
+            // in case the neodymium.testNameFilter is set, it's assumes, that the test methods are ignored on
+            // purpose
+            else
+            {
+                // for the case, when the property was set accidentally, inform the user about such behavior reason via
+                // warning in logs
+                LOGGER.warn("The test class " + getName() + " will not be executed as none of its methods match regex '"
+                            + testExecutionRegex + "'. In case this is not the behaviour you expected,"
+                            + " please check your neodymium.properties for neodymium.testNameFilter configuration"
+                            + " and your maven surefire settings for the corresponding system property");
+            }
+        }
+    }
+
     @Override
     protected List<FrameworkMethod> computeTestMethods()
     {
+        boolean workInProgress = Neodymium.configuration().workInProgress();
+        
         // Normally JUnit works with all methods that are annotated with @Test, see super's implementation
         // But we override this function in order to do all the fancy stuff, like method multiplication and so on.
         // So we basically start with the list of test methods and add and rearrange new one's to this list and JUnit
@@ -164,8 +203,18 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         List<Class<? extends StatementBuilder>> statementRunOrder = new DefaultStatementRunOrder().getRunOrder();
 
         // super.computeTestMethods will return all methods that are annotated with @Test
-        for (FrameworkMethod testAnnotatedMethod : super.computeTestMethods())
+        List<FrameworkMethod> computedMethods = super.computeTestMethods();
+        boolean wipMethod = computedMethods.stream().anyMatch(computedMethod -> computedMethod.getAnnotation(WorkInProgress.class) != null);
+        
+        for (FrameworkMethod testAnnotatedMethod : computedMethods)
         {
+            if (workInProgress) 
+            {
+                if (wipMethod && testAnnotatedMethod.getAnnotation(WorkInProgress.class) == null)
+                {
+                    continue;
+                }                
+            }
             // these lists contain all the builders and data that will be responsible for a particular method
             List<StatementBuilder> builderList = new LinkedList<>();
             List<List<Object>> builderDataList = new LinkedList<>();
@@ -200,6 +249,21 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
             // This is the point where multiple test methods are computed for the current processed method.
             testMethods.addAll(buildCrossProduct(testAnnotatedMethod.getMethod(), builderList, builderDataList));
+        }
+
+        // filter test methods by regex
+        String testExecutionRegex = Neodymium.configuration().getTestNameFilter();
+        if (StringUtils.isNotEmpty(testExecutionRegex))
+        {
+            testMethods = testMethods.stream()
+                                     .filter(testMethod -> {
+                                         String functionName = testMethod.getMethod().getDeclaringClass().getName() + "#"
+                                                               + testMethod.getName();
+                                         return Pattern.compile(testExecutionRegex)
+                                                       .matcher(functionName)
+                                                       .find();
+                                     })
+                                     .collect(Collectors.toList());
         }
 
         // this list is now final for class execution so make it unmodifiable
@@ -303,6 +367,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     {
         // clear the context before next child run
         Neodymium.clearThreadContext();
+
         super.runChild(method, notifier);
     }
 

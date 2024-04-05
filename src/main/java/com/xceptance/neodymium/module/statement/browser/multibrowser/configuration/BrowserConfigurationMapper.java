@@ -1,5 +1,6 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser.configuration;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,11 +11,17 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.opera.OperaOptions;
+import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariOptions;
 
+import com.xceptance.neodymium.util.Neodymium;
+
+/**
+ * Class to map browser configurations
+ * 
+ */
 public class BrowserConfigurationMapper
 {
     private static final String BROWSER = "browser";
@@ -51,12 +58,12 @@ public class BrowserConfigurationMapper
 
     private static final String PREFERENCES = "preferences";
 
+    private static final String DOWNLOAD_DIRECTORY = "downloadDirectory";
+
     // Appium specific properties
     private static final String APPIUM_VERSION = "appiumVersion";
 
     private static final String BROWSER_NAME = "browserName";
-
-    private static final String PLATFORM_NAME = "platformName";
 
     private static final String PLATFORM_VERSION = "platformVersion";
 
@@ -66,6 +73,16 @@ public class BrowserConfigurationMapper
 
     private static final String ORIENTATION = "orientation";
 
+    /**
+     * Map passed data to {@link BrowserConfiguration} object
+     * 
+     * @param browserProfileConfiguration
+     * @param globalHeadless
+     * @param globalAcceptInsecureCertificates
+     * @param globalPageLoadStrategy
+     * @param globalBrowserResolution
+     * @return created {@link BrowserConfiguration} object
+     */
     public BrowserConfiguration map(Map<String, String> browserProfileConfiguration, String globalHeadless, String globalAcceptInsecureCertificates,
                                     String globalPageLoadStrategy, String globalBrowserResolution)
     {
@@ -77,19 +94,7 @@ public class BrowserConfigurationMapper
         if (emulatedBrowser != null)
             emulatedBrowser = emulatedBrowser.toLowerCase();
 
-        if ("iphone".equals(emulatedBrowser))
-        {
-            capabilities = DesiredCapabilities.iphone();
-        }
-        else if ("ipad".equals(emulatedBrowser))
-        {
-            capabilities = DesiredCapabilities.ipad();
-        }
-        else if ("android".equals(emulatedBrowser))
-        {
-            capabilities = DesiredCapabilities.android();
-        }
-        else if ("firefox".equals(emulatedBrowser))
+        if ("firefox".equals(emulatedBrowser))
         {
             capabilities = new FirefoxOptions();
         }
@@ -99,7 +104,7 @@ public class BrowserConfigurationMapper
         }
         else if ("internetexplorer".equals(emulatedBrowser))
         {
-            capabilities = DesiredCapabilities.internetExplorer();
+            capabilities = new InternetExplorerOptions();
         }
         else if ("safari".equals(emulatedBrowser))
         {
@@ -109,10 +114,6 @@ public class BrowserConfigurationMapper
         {
             capabilities = new EdgeOptions();
         }
-        else if ("opera".equals(emulatedBrowser))
-        {
-            capabilities = new OperaOptions();
-        }
         else
         {
             capabilities = new DesiredCapabilities();
@@ -121,48 +122,43 @@ public class BrowserConfigurationMapper
         /*
          * SauceLabs/TestingBot/BrowserStack configuration
          */
+        HashMap<String, Object> testEnvironmentProperties = new HashMap<>();
+
         String emulatedPlatform = browserProfileConfiguration.get(PLATFORM);
         if (!StringUtils.isEmpty(emulatedPlatform))
         {
-            capabilities.setCapability(CapabilityType.PLATFORM, emulatedPlatform);
-            // BrowserStack
-            capabilities.setCapability("os", emulatedPlatform);
+            testEnvironmentProperties.put("os", emulatedPlatform);
         }
 
-        String emulatedPlatformName = browserProfileConfiguration.get(PLATFORM_NAME);
+        String emulatedPlatformName = browserProfileConfiguration.get(PLATFORM_VERSION);
+
         if (!StringUtils.isEmpty(emulatedPlatformName))
         {
-            capabilities.setCapability(CapabilityType.PLATFORM_NAME, emulatedPlatformName);
-            // BrowserStack
-            capabilities.setCapability("os", emulatedPlatformName);
+            testEnvironmentProperties.put("osVersion", emulatedPlatformName);
         }
 
         String emulatedVersion = browserProfileConfiguration.get(BROWSER_VERSION);
         if (!StringUtils.isEmpty(emulatedVersion))
         {
-            capabilities.setCapability(CapabilityType.VERSION, emulatedVersion);
-            // BrowserStack
-            capabilities.setCapability("browser_version", emulatedVersion);
+            testEnvironmentProperties.put(CapabilityType.BROWSER_VERSION, emulatedVersion);
         }
 
         String emulatedDeviceName = browserProfileConfiguration.get(DEVICE_NAME);
         if (!StringUtils.isEmpty(emulatedDeviceName))
         {
             // SauceLabs, TestingBot
-            capabilities.setCapability("deviceName", emulatedDeviceName);
-            // BrowserStack
-            capabilities.setCapability("device", emulatedDeviceName);
+            testEnvironmentProperties.put("deviceName", emulatedDeviceName);
         }
 
         String emulatedDeviceScreenResolution = browserProfileConfiguration.get(SCREEN_RESOLUTION);
         if (!StringUtils.isEmpty(emulatedDeviceScreenResolution))
         {
             // SauceLabs
-            capabilities.setCapability("screenResolution", emulatedDeviceScreenResolution);
+            testEnvironmentProperties.put("screenResolution", emulatedDeviceScreenResolution);
             // TestingBot
-            capabilities.setCapability("screen-resolution", emulatedDeviceScreenResolution);
+            testEnvironmentProperties.put("screen-resolution", emulatedDeviceScreenResolution);
             // BrowserStack
-            capabilities.setCapability("resolution", emulatedDeviceScreenResolution);
+            testEnvironmentProperties.put("resolution", emulatedDeviceScreenResolution);
         }
 
         String emulatedMaximumTestDuration = browserProfileConfiguration.get(MAXIMUM_DURATION);
@@ -179,9 +175,9 @@ public class BrowserConfigurationMapper
                                            + emulatedMaximumTestDuration + "\"", e);
             }
             // SauceLabs
-            capabilities.setCapability("maxDuration", maxDura);
+            testEnvironmentProperties.put("maxDuration", maxDura);
             // TestingBot
-            capabilities.setCapability("maxduration", maxDura);
+            testEnvironmentProperties.put("maxduration", maxDura);
             // BrowserStack does not support to set this capability (fix value of 2 hours)
         }
 
@@ -199,58 +195,42 @@ public class BrowserConfigurationMapper
                                            + emulatedIdleTimeout + "\"", e);
             }
             // SauceLabs, BrowserStack
-            capabilities.setCapability("idleTimeout", idleTim);
+            testEnvironmentProperties.put("idleTimeout", idleTim);
             // TestingBot
-            capabilities.setCapability("idletimeout", idleTim);
+            testEnvironmentProperties.put("idletimeout", idleTim);
         }
 
         String emulatedSeleniumVersion = browserProfileConfiguration.get(SELENIUM_VERSION);
         if (!StringUtils.isEmpty(emulatedSeleniumVersion))
         {
             // SauceLabs, BrowserStack
-            capabilities.setCapability("seleniumVersion", emulatedSeleniumVersion);
-            // TestingBot
-            capabilities.setCapability("selenium-version", emulatedSeleniumVersion);
+            testEnvironmentProperties.put("seleniumVersion", emulatedSeleniumVersion);
+            testEnvironmentProperties.put("selenium-version", emulatedSeleniumVersion);
         }
 
         // appium
         String appiumVersion = browserProfileConfiguration.get(APPIUM_VERSION);
         if (!StringUtils.isEmpty(appiumVersion))
-            capabilities.setCapability(APPIUM_VERSION, appiumVersion);
+            testEnvironmentProperties.put(APPIUM_VERSION, appiumVersion);
 
         String browserName = browserProfileConfiguration.get(BROWSER_NAME);
         if (!StringUtils.isEmpty(browserName))
             capabilities.setCapability(BROWSER_NAME, browserName);
 
-        String platformVersion = browserProfileConfiguration.get(PLATFORM_VERSION);
-        if (!StringUtils.isEmpty(platformVersion))
-            capabilities.setCapability(PLATFORM_VERSION, platformVersion);
-
-        String platformName = browserProfileConfiguration.get(PLATFORM_NAME);
-        if (!StringUtils.isEmpty(platformName))
-            capabilities.setCapability(PLATFORM_NAME, platformName);
-
         String app = browserProfileConfiguration.get(APP);
         if (!StringUtils.isEmpty(app))
-            capabilities.setCapability(APP, app);
+            testEnvironmentProperties.put(APP, app);
 
         String automationName = browserProfileConfiguration.get(AUTOMATION_NAME);
         if (!StringUtils.isEmpty(automationName))
-            capabilities.setCapability(AUTOMATION_NAME, automationName);
+            testEnvironmentProperties.put("projectName", automationName);
 
         String emulatedDeviceOrientation = browserProfileConfiguration.get(DEVICE_ORIENTATION);
         if (!StringUtils.isEmpty(emulatedDeviceOrientation))
-            capabilities.setCapability("deviceOrientation", emulatedDeviceOrientation);
-
-        String orientation = browserProfileConfiguration.get(ORIENTATION);
-        if (!StringUtils.isEmpty(orientation))
         {
-            // SauceLabs, TestingBot
-            capabilities.setCapability(ORIENTATION, orientation);
-            // BrowserStack, Appium
-            capabilities.setCapability("deviceOrientation", orientation);
+            testEnvironmentProperties.put(DEVICE_ORIENTATION, emulatedDeviceOrientation);
+            testEnvironmentProperties.put(ORIENTATION, emulatedDeviceOrientation);
         }
-
         /*
          * Chrome device emulation
          */
@@ -297,14 +277,10 @@ public class BrowserConfigurationMapper
         if (!StringUtils.isEmpty(acceptInsecureCerts))
         {
             capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.parseBoolean(acceptInsecureCerts));
-            // BrowserStack, helps on iPhone
-            capabilities.setCapability("acceptSslCerts", Boolean.parseBoolean(acceptInsecureCerts));
         }
         else if (!StringUtils.isEmpty(globalAcceptInsecureCertificates))
         {
             capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.parseBoolean(globalAcceptInsecureCertificates));
-            // BrowserStack
-            capabilities.setCapability("acceptSslCerts", Boolean.parseBoolean(globalAcceptInsecureCertificates));
         }
 
         // headless
@@ -361,7 +337,15 @@ public class BrowserConfigurationMapper
             }
         }
 
-        capabilities.setCapability("name", browserProfileConfiguration.get("name"));
+        String downloadDirectory = browserProfileConfiguration.get(DOWNLOAD_DIRECTORY);
+        if (!StringUtils.isEmpty(downloadDirectory))
+        {
+            String downloadFolder = new File(downloadDirectory).getAbsolutePath();
+            browserConfiguration.setDownloadDirectory(downloadFolder);
+            Neodymium.downloadFolder(downloadFolder);
+        }
+
+        browserConfiguration.setGridProperties(testEnvironmentProperties);
         browserConfiguration.setCapabilities(capabilities);
         browserConfiguration.setConfigTag(browserProfileConfiguration.get("browserTag"));
         browserConfiguration.setName(browserProfileConfiguration.get("name"));

@@ -33,7 +33,7 @@ public class BrowserStatementConfigurationTestError extends NeodymiumTest
             properties.put("browserprofile.testEnvironmentFlags.browser", "chrome");
             properties.put("browserprofile.testEnvironmentFlags.idleTimeout", unparsableInt);
 
-            tempConfigFile = File.createTempFile("browser", "", new File("./config/"));
+            tempConfigFile = File.createTempFile("browserBrowserStatementConfigurationTestError", "", new File("./config/"));
             tempFiles.add(tempConfigFile);
             writeMapToPropertiesFile(properties, tempConfigFile);
 
@@ -61,7 +61,7 @@ public class BrowserStatementConfigurationTestError extends NeodymiumTest
             properties.put("browserprofile.testEnvironmentFlags.browser", "chrome");
             properties.put("browserprofile.testEnvironmentFlags.maxDuration", unparsableInt);
 
-            tempConfigFile = File.createTempFile("browser", "", new File("./config/"));
+            tempConfigFile = File.createTempFile("browserBrowserStatementConfigurationTestErrorTestParseErrorMaxiumumDuration", "", new File("./config/"));
             tempFiles.add(tempConfigFile);
             writeMapToPropertiesFile(properties, tempConfigFile);
 
