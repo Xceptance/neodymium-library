@@ -16,6 +16,7 @@ public class WIPTest extends NeodymiumTest
     public void setJUnitViewModeFlat()
     {
         Neodymium.configuration().setProperty("neodymium.junit.viewmode", "flat");
+        Neodymium.configuration().setProperty("neodymium.workInProgress", "true");
     }
 
     @Test
