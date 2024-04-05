@@ -37,7 +37,7 @@ public abstract class ConfigTest extends NeodymiumTest
         tempFiles.add(tempConfigFile1);
         
         defaultConfig.put("enableFilming", "false");
-        defaultConfig.put("filmAutomaticaly", "true");
+        defaultConfig.put("filmAutomatically", "true");
         defaultConfig.put("deleteRecordingsAfterAddingToAllureReport", "true");
         defaultConfig.put("appendAllRecordingsToReport", "false");        
         defaultConfig.put("imageScaleFactor", "1.0");
@@ -63,18 +63,18 @@ public abstract class ConfigTest extends NeodymiumTest
     @Test
     public void testFilmAutomaticalyDefault()
     {
-        Assert.assertEquals(Boolean.valueOf(defaultConfig.get("filmAutomaticaly")), getContext().filmAutomaticaly());
+        Assert.assertEquals(Boolean.valueOf(defaultConfig.get("filmAutomatically")), getContext().filmAutomatically());
     }
 
     @Test
     public void testFilmAutomaticaly()
     {
         HashMap<String, String> properties = new HashMap<>();
-        properties.put(prefix + ".filmAutomaticaly", "false");
+        properties.put(prefix + ".filmAutomatically", "false");
         File tempConfigFile1 = new File("./config/dev-" + prefix + "-recording.properties");
         writeMapToPropertiesFile(properties, tempConfigFile1);
         tempFiles.add(tempConfigFile1);
-        Assert.assertEquals(false, getContext().filmAutomaticaly());
+        Assert.assertEquals(false, getContext().filmAutomatically());
     }
 
     @Test

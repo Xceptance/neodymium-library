@@ -14,7 +14,7 @@ public abstract interface RecordingConfigurations extends Mutable
 {
     public boolean enableFilming();
 
-    public boolean filmAutomaticaly();
+    public boolean filmAutomatically();
 
     public int oneImagePerMilliseconds();
 

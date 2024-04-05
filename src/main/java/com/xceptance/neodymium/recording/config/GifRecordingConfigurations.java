@@ -18,9 +18,9 @@ public interface GifRecordingConfigurations extends RecordingConfigurations
     @DefaultValue("false")
     public boolean enableFilming();
 
-    @Key("gif.filmAutomaticaly")
+    @Key("gif.filmAutomatically")
     @DefaultValue("true")
-    public boolean filmAutomaticaly();
+    public boolean filmAutomatically();
 
     @Key("gif.oneImagePerMilliseconds")
     @DefaultValue("500")

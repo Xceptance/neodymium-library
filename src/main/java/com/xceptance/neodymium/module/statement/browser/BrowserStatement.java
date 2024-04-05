@@ -109,11 +109,11 @@ public class BrowserStatement extends StatementBuilder
         LOGGER.debug("setup browser: " + browserTag);
         setUpTest(browserTag);
         String uuid = UUID.randomUUID().toString();
-        if (FilmTestExecution.getContextGif().filmAutomaticaly())
+        if (FilmTestExecution.getContextGif().filmAutomatically())
         {
             FilmTestExecution.startGifRecording(uuid);
         }
-        if (FilmTestExecution.getContextVideo().filmAutomaticaly())
+        if (FilmTestExecution.getContextVideo().filmAutomatically())
         {
             FilmTestExecution.startVideoRecording(uuid);
         }
@@ -130,11 +130,11 @@ public class BrowserStatement extends StatementBuilder
         {
             try 
             {                
-                if (FilmTestExecution.getContextGif().filmAutomaticaly())
+                if (FilmTestExecution.getContextGif().filmAutomatically())
                 {
                     FilmTestExecution.finishGifFilming(uuid, testFailed);
                 }
-                if (FilmTestExecution.getContextVideo().filmAutomaticaly())
+                if (FilmTestExecution.getContextVideo().filmAutomatically())
                 {
                     FilmTestExecution.finishVideoFilming(uuid, testFailed);
                 }

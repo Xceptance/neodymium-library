@@ -77,6 +77,7 @@ public class TakeScreenshotsThread extends Thread
 
                 long turns = 0;
                 long millis = 0;
+                
                 // start screenshot loop
                 while (run)
                 {
