@@ -54,11 +54,19 @@ public class BrowserStatementTest extends NeodymiumTest
         properties.put("browserprofile.chrome.testEnvironment", "local");
         properties.put("browserprofile.chrome.acceptInsecureCertificates", "true");
         properties.put("browserprofile.chrome.arguments", "headless");
+
+        properties.put("browserprofile.chrome.preferences",
+                       "homepage=https://www.xceptance.com ; geolocation.enabled=true ; renderer.memory_cache.size=120000");
         properties.put("browserprofile.chrome.downloadDirectory", "target");
+
 
         properties.put("browserprofile.firefox.name", "Mozilla Firefox");
         properties.put("browserprofile.firefox.browser", "firefox");
         properties.put("browserprofile.firefox.arguments", "headless");
+
+        properties.put("browserprofile.firefox.preferences",
+                       "media.navigator.permission.disabled=true ; browser.startup.homepage=https://www.xceptance.com ; app.update.backgroundMaxErrors=1");
+
         properties.put("browserprofile.firefox.downloadDirectory", "target");
 
         properties.put("browserprofile.multiFirefox.name", "Multi Argument Firefox");
@@ -327,6 +335,13 @@ public class BrowserStatementTest extends NeodymiumTest
         LinkedList<String> list = new LinkedList<>();
         list.add("headless");
         Assert.assertEquals(list, config.getArguments());
+
+        HashMap<String, Object> prefs = new HashMap<>();
+        prefs.put("geolocation.enabled", true);
+        prefs.put("renderer.memory_cache.size", 120000);
+        prefs.put("homepage", "https://www.xceptance.com");
+        Assert.assertEquals(prefs, config.getPreferences());
+        
         Assert.assertEquals(new File("target").getAbsolutePath(), config.getDownloadDirectory());
     }
 
@@ -355,6 +370,12 @@ public class BrowserStatementTest extends NeodymiumTest
         LinkedList<String> list = new LinkedList<>();
         list.add("headless");
         Assert.assertEquals(list, config.getArguments());
+
+        HashMap<String, Object> prefs = new HashMap<>();
+        prefs.put("media.navigator.permission.disabled", true);
+        prefs.put("app.update.backgroundMaxErrors", 1);
+        prefs.put("browser.startup.homepage", "https://www.xceptance.com");
+        Assert.assertEquals(prefs, config.getPreferences());
         Assert.assertEquals(new File("target").getAbsolutePath(), config.getDownloadDirectory());
     }
 

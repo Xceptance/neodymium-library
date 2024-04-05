@@ -2,6 +2,7 @@ package com.xceptance.neodymium.module.statement.browser.multibrowser.configurat
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openqa.selenium.MutableCapabilities;
 
@@ -29,6 +30,8 @@ public class BrowserConfiguration
     private boolean headless;
 
     private List<String> arguments;
+
+    private Map<String, Object> preferences;
 
     private String downloadDirectory;
 
@@ -222,6 +225,20 @@ public class BrowserConfiguration
         this.arguments = arguments;
     }
 
+    public Map<String, Object> getPreferences()
+    {
+        return preferences;
+    }
+
+    public void addPreference(String key, Object val)
+    {
+        if (this.preferences == null)
+        {
+            this.preferences = new HashMap<String, Object>();
+        }
+        this.preferences.put(key, val);
+    }
+      
     public String getDownloadDirectory()
     {
         return downloadDirectory;

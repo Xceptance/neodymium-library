@@ -229,11 +229,27 @@ public final class BrowserRunnerHelper
                     options.addArguments(config.getArguments());
                 }
 
-                if (StringUtils.isNotBlank(config.getDownloadDirectory()))
+
+                if (config.getPreferences() != null && !config.getPreferences().isEmpty())
+                {
+                    options.setExperimentalOption("prefs", config.getPreferences());
+                }
+
+                if ((config.getPreferences() != null && !config.getPreferences().isEmpty()) || StringUtils.isNotBlank(config.getDownloadDirectory()))
                 {
                     HashMap<String, Object> prefs = new HashMap<>();
-                    prefs.put("download.default_directory", config.getDownloadDirectory());
-                    prefs.put("plugins.always_open_pdf_externally", true);
+
+                    // if we have configured prefs, we need to add all to the experimental options
+                    if(config.getPreferences() != null && !config.getPreferences().isEmpty())
+                    {
+                        prefs.putAll(config.getPreferences());
+                    }
+                    // if we have configured a download folder separately, it'll override the general config
+                    if(StringUtils.isNotBlank(config.getDownloadDirectory()))
+                    {
+                        prefs.put("download.default_directory", config.getDownloadDirectory());
+                        prefs.put("plugins.always_open_pdf_externally", true);                        
+                    }
 
                     options.setExperimentalOption("prefs", prefs);
                 }
@@ -255,13 +271,43 @@ public final class BrowserRunnerHelper
                 if (StringUtils.isNotBlank(config.getDownloadDirectory()))
                 {
                     FirefoxProfile profile = new FirefoxProfile();
+                }
+              
+                if ((config.getPreferences() != null && !config.getPreferences().isEmpty()) || StringUtils.isNotBlank(config.getDownloadDirectory()))
+                {
+                    FirefoxProfile profile = new FirefoxProfile();
 
-                    profile.setPreference("browser.download.dir", config.getDownloadDirectory());
-                    profile.setPreference("browser.helperApps.neverAsk.saveToDisk", popularContentTypes());
-                    profile.setPreference("pdfjs.disabled", true);
-                    profile.setPreference("browser.download.folderList", 2);
+                    // if we have configured prefs, we need to add all to the experimental options
+                    if (config.getPreferences() != null && !config.getPreferences().isEmpty())
+                    {
+                        // differentiate types of preference values to avoid misunderstanding
+                        config.getPreferences().forEach((key, val) -> {
+                            if (val.equals("true") || val.equals("false"))
+                            {
+                                profile.setPreference(key, Boolean.parseBoolean(val.toString()));
+                            }
+                            else if (StringUtils.isNumeric(val.toString()))
+                            {
+                                profile.setPreference(key, Integer.parseInt(val.toString()));
+                            }
+                            else
+                            {
+                                profile.setPreference(key, val.toString());
+                            }
+                        });
+                    }
+
+                    // if we have configured a download folder separately, it'll override the general config
+                    if (StringUtils.isNotBlank(config.getDownloadDirectory()))
+                    {
+                        profile.setPreference("browser.download.dir", config.getDownloadDirectory());
+                        profile.setPreference("browser.helperApps.neverAsk.saveToDisk", popularContentTypes());
+                        profile.setPreference("pdfjs.disabled", true);
+                        profile.setPreference("browser.download.folderList", 2);
+                    }
                     options.setProfile(profile);
                 }
+                
                 wDSC.setWebDriver(new FirefoxDriver(new GeckoDriverService.Builder().withAllowHosts("localhost").build(), options));
             }
             else if (internetExplorerBrowsers.contains(browserName))
