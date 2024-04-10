@@ -10,6 +10,7 @@ import static org.openqa.selenium.remote.Browser.SAFARI;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,6 +39,7 @@ import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariOptions;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.testcontainers.containers.BrowserWebDriverContainer;
 
 import com.browserup.bup.BrowserUpProxy;
 import com.browserup.bup.BrowserUpProxyServer;
@@ -238,7 +240,18 @@ public final class BrowserRunnerHelper
                     options.setExperimentalOption("prefs", prefs);
                 }
 
-                wDSC.setWebDriver(new ChromeDriver(options));
+                if (config.getUseTestContainers())
+                {
+                    BrowserWebDriverContainer container = (BrowserWebDriverContainer) new BrowserWebDriverContainer().withCapabilities(options)
+                                                                                                                     .withStartupTimeout(Duration.ofSeconds(config.getTestContainerTimeout()));
+                    container.start();
+                    wDSC.setTestcontainer(container);
+                    wDSC.setWebDriver(new RemoteWebDriver(container.getSeleniumAddress(), options));
+                }
+                else
+                {
+                    wDSC.setWebDriver(new ChromeDriver(options));
+                }
             }
             else if (firefoxBrowsers.contains(browserName))
             {
@@ -262,7 +275,20 @@ public final class BrowserRunnerHelper
                     profile.setPreference("browser.download.folderList", 2);
                     options.setProfile(profile);
                 }
-                wDSC.setWebDriver(new FirefoxDriver(new GeckoDriverService.Builder().withAllowHosts("localhost").build(), options));
+                if (config.getUseTestContainers())
+                {
+                    BrowserWebDriverContainer container = (BrowserWebDriverContainer) new BrowserWebDriverContainer().withCapabilities(options)
+                                                                                                                     .withStartupTimeout(Duration.ofSeconds(config.getTestContainerTimeout()));
+                    container.start();
+
+                    wDSC.setTestcontainer(container);
+                    wDSC.setWebDriver(
+                                      new RemoteWebDriver(container.getSeleniumAddress(), options));
+                }
+                else
+                {
+                    wDSC.setWebDriver(new FirefoxDriver(new GeckoDriverService.Builder().withAllowHosts("localhost").build(), options));
+                }
             }
             else if (internetExplorerBrowsers.contains(browserName))
             {
@@ -274,7 +300,20 @@ public final class BrowserRunnerHelper
                         options.addCommandSwitches(argument);
                     }
                 }
-                wDSC.setWebDriver(new InternetExplorerDriver(options));
+                if (config.getUseTestContainers() && browserName == EDGE.browserName())
+                {
+                    BrowserWebDriverContainer container = (BrowserWebDriverContainer) new BrowserWebDriverContainer().withCapabilities(options)
+                                                                                                                     .withStartupTimeout(Duration.ofSeconds(config.getTestContainerTimeout()));
+                    container.start();
+
+                    wDSC.setTestcontainer(container);
+                    wDSC.setWebDriver(
+                                      new RemoteWebDriver(container.getSeleniumAddress(), options));
+                }
+                else
+                {
+                    wDSC.setWebDriver(new InternetExplorerDriver(options));
+                }
             }
             else if (safariBrowsers.contains(browserName))
             {

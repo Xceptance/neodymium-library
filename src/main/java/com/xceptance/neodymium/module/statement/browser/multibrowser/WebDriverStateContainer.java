@@ -1,6 +1,7 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser;
 
 import org.openqa.selenium.WebDriver;
+import org.testcontainers.containers.BrowserWebDriverContainer;
 
 import com.browserup.bup.BrowserUpProxy;
 
@@ -11,6 +12,8 @@ public class WebDriverStateContainer
     private WebDriver webDriver;
 
     private BrowserUpProxy proxy;
+
+    private BrowserWebDriverContainer testcontainer;
 
     public WebDriver getWebDriver()
     {
@@ -40,5 +43,15 @@ public class WebDriverStateContainer
     public void incrementUsedCount()
     {
         usedCount++;
+    }
+
+    public BrowserWebDriverContainer getTestcontainer()
+    {
+        return testcontainer;
+    }
+
+    public void setTestcontainer(BrowserWebDriverContainer testcontainer)
+    {
+        this.testcontainer = testcontainer;
     }
 }

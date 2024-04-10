@@ -256,6 +256,10 @@ public class BrowserStatement extends StatementBuilder
                 }
             }
         }
+        if (webDriverStateContainer.getTestcontainer() != null)
+        {
+            webDriverStateContainer.getTestcontainer().stop();
+        }
         Neodymium.setWebDriverStateContainer(null);
         Neodymium.setBrowserProfileName(null);
         Neodymium.setBrowserName(null);

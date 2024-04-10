@@ -102,9 +102,17 @@ public class MultibrowserConfiguration
                 String value = (String) browserProfileProperties.get(BROWSER_PROFILE_PREFIX + browserProfile + "." + subkey);
                 browserProfileConfiguration.put(subkey, value);
             }
-            browserProfiles.put(browserProfile,
+            
+            try
+            {
+                browserProfiles.put(browserProfile,
                                 mapper.map(browserProfileConfiguration, globalHeadless, globalAcceptInsecureCertificates, globalPageLoadStrategy,
                                            globalBrowserResolution));
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 

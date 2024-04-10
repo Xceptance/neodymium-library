@@ -32,6 +32,10 @@ public class BrowserConfiguration
 
     private String downloadDirectory;
 
+    private boolean useTestContainers;
+
+    private int testContainerTimeout;
+
     /**
      * get config tag
      * 
@@ -230,5 +234,24 @@ public class BrowserConfiguration
     public void setDownloadDirectory(String downloadDirectory)
     {
         this.downloadDirectory = downloadDirectory;
+    }
+
+    public void setUseTestContainers(boolean useContainer)
+    {
+        this.useTestContainers = useContainer;
+    }
+
+    public boolean getUseTestContainers()
+    {
+        return this.useTestContainers;
+    }
+
+    public void setTestContainerTimeout(int timeout)
+    {
+        this.testContainerTimeout = timeout;
+    }
+
+    public int getTestContainerTimeout() {
+        return this.testContainerTimeout;
     }
 }

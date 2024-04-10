@@ -1,12 +1,14 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser.configuration;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
@@ -71,6 +73,9 @@ public class BrowserConfigurationMapper
 
     private static final String ORIENTATION = "orientation";
 
+    private static final String TESTCONTAINER = "testcontainer";
+
+    private static final String TCTIMEOUT = "testcontainerTimeout";
     /**
      * Map passed data to {@link BrowserConfiguration} object
      * 
@@ -317,6 +322,41 @@ public class BrowserConfigurationMapper
         browserConfiguration.setCapabilities(capabilities);
         browserConfiguration.setConfigTag(browserProfileConfiguration.get("browserTag"));
         browserConfiguration.setName(browserProfileConfiguration.get("name"));
+        String testContainer = browserProfileConfiguration.get(TESTCONTAINER);
+
+        if (!StringUtils.isEmpty(testContainer))
+        {
+            if (Arrays.asList("internetexplorer", "safari").contains(emulatedBrowser))
+            {
+                Assert.fail("Testcontainer not supported for browser:" + emulatedBrowser);
+            }
+            browserConfiguration.setUseTestContainers(Boolean.valueOf(testContainer));
+        }
+        else
+        {
+            browserConfiguration.setUseTestContainers(false);
+        }
+        
+        String testContainerTimeout = browserProfileConfiguration.get(TCTIMEOUT);
+        
+        if (!StringUtils.isEmpty(testContainerTimeout))
+        {
+            boolean isInt = true;
+            try {
+                Integer.parseInt(testContainerTimeout);
+            }
+            catch(NumberFormatException e) {
+                isInt = false;
+            }
+            if (!isInt)
+            {
+                Assert.fail(testContainer + " is not a valid Integer");
+            }
+            browserConfiguration.setTestContainerTimeout(Integer.valueOf(testContainerTimeout));
+        }
+        else
+        {
+            browserConfiguration.setTestContainerTimeout(60);        }
 
         return browserConfiguration;
     }
