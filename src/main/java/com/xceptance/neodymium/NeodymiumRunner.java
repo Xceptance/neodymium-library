@@ -183,6 +183,8 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     @Override
     protected List<FrameworkMethod> computeTestMethods()
     {
+        boolean workInProgress = Neodymium.configuration().workInProgress();
+        
         // Normally JUnit works with all methods that are annotated with @Test, see super's implementation
         // But we override this function in order to do all the fancy stuff, like method multiplication and so on.
         // So we basically start with the list of test methods and add and rearrange new one's to this list and JUnit
@@ -201,8 +203,18 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         List<Class<? extends StatementBuilder>> statementRunOrder = new DefaultStatementRunOrder().getRunOrder();
 
         // super.computeTestMethods will return all methods that are annotated with @Test
-        for (FrameworkMethod testAnnotatedMethod : super.computeTestMethods())
+        List<FrameworkMethod> computedMethods = super.computeTestMethods();
+        boolean wipMethod = computedMethods.stream().anyMatch(computedMethod -> computedMethod.getAnnotation(WorkInProgress.class) != null);
+        
+        for (FrameworkMethod testAnnotatedMethod : computedMethods)
         {
+            if (workInProgress) 
+            {
+                if (wipMethod && testAnnotatedMethod.getAnnotation(WorkInProgress.class) == null)
+                {
+                    continue;
+                }                
+            }
             // these lists contain all the builders and data that will be responsible for a particular method
             List<StatementBuilder> builderList = new LinkedList<>();
             List<List<Object>> builderDataList = new LinkedList<>();
@@ -355,6 +367,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     {
         // clear the context before next child run
         Neodymium.clearThreadContext();
+
         super.runChild(method, notifier);
     }
 

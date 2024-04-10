@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
 
 import com.xceptance.neodymium.module.statement.browser.BrowserStatement;
@@ -56,9 +55,19 @@ public class BrowserStatementTest extends NeodymiumTest
         properties.put("browserprofile.chrome.acceptInsecureCertificates", "true");
         properties.put("browserprofile.chrome.arguments", "headless");
 
+        properties.put("browserprofile.chrome.preferences",
+                       "homepage=https://www.xceptance.com ; geolocation.enabled=true ; renderer.memory_cache.size=120000");
+        properties.put("browserprofile.chrome.downloadDirectory", "target");
+
+
         properties.put("browserprofile.firefox.name", "Mozilla Firefox");
         properties.put("browserprofile.firefox.browser", "firefox");
         properties.put("browserprofile.firefox.arguments", "headless");
+
+        properties.put("browserprofile.firefox.preferences",
+                       "media.navigator.permission.disabled=true ; browser.startup.homepage=https://www.xceptance.com ; app.update.backgroundMaxErrors=1");
+
+        properties.put("browserprofile.firefox.downloadDirectory", "target");
 
         properties.put("browserprofile.multiFirefox.name", "Multi Argument Firefox");
         properties.put("browserprofile.multiFirefox.browser", "firefox");
@@ -74,11 +83,9 @@ public class BrowserStatementTest extends NeodymiumTest
         properties.put("browserprofile.testEnvironmentFlags.maxDuration", "5678");
         properties.put("browserprofile.testEnvironmentFlags.seleniumVersion", "3.1234");
         properties.put("browserprofile.testEnvironmentFlags.screenResolution", "800x600");
-        properties.put("browserprofile.testEnvironmentFlags.platform", "Windows 7");
-        properties.put("browserprofile.testEnvironmentFlags.platformName", "Windows 10");
+        properties.put("browserprofile.testEnvironmentFlags.platform", "Windows 10");
         properties.put("browserprofile.testEnvironmentFlags.deviceName", "MyDevice");
-        properties.put("browserprofile.testEnvironmentFlags.deviceOrientation", "portrait");
-        properties.put("browserprofile.testEnvironmentFlags.orientation", "landscape");
+        properties.put("browserprofile.testEnvironmentFlags.deviceOrientation", "landscape");
 
         properties.put("browserprofile.testEnvironmentFlags2.name", "Test Environment Browser");
         properties.put("browserprofile.testEnvironmentFlags2.browser", "chrome");
@@ -86,8 +93,7 @@ public class BrowserStatementTest extends NeodymiumTest
         properties.put("browserprofile.testEnvironmentFlags2.maxDuration", "5678");
         properties.put("browserprofile.testEnvironmentFlags2.seleniumVersion", "3.1234");
         properties.put("browserprofile.testEnvironmentFlags2.screenResolution", "800x600");
-        properties.put("browserprofile.testEnvironmentFlags2.platform", "Windows 7");
-        properties.put("browserprofile.testEnvironmentFlags2.platformName", "Windows 10");
+        properties.put("browserprofile.testEnvironmentFlags2.platform", "Windows 10");
         properties.put("browserprofile.testEnvironmentFlags2.deviceName", "MyDevice");
         properties.put("browserprofile.testEnvironmentFlags2.deviceOrientation", "portrait");
 
@@ -288,14 +294,14 @@ public class BrowserStatementTest extends NeodymiumTest
     {
         Map<String, List<String>> expectedAnnotations = new HashMap<String, List<String>>();
         List<String> anno1 = new ArrayList<String>();
-        anno1.add("@org.junit.Test(timeout=0, expected=org.junit.Test$None.class)");
-        anno1.add("@com.xceptance.neodymium.module.statement.browser.multibrowser.Browser(value=\"chrome\")");
+        anno1.add("@org.junit.Test");
+        anno1.add("@com.xceptance.neodymium.module.statement.browser.multibrowser.Browser.*chrome");
         anno1.add("@com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowsers()");
         expectedAnnotations.put("first", anno1);
 
         List<String> anno2 = new ArrayList<String>();
-        anno2.add("@org.junit.Test(timeout=0, expected=org.junit.Test$None.class)");
-        anno2.add("@org.junit.Ignore(value=\"This should be visible\")");
+        anno2.add("@org.junit.Test");
+        anno2.add("@org.junit.Ignore.*This should be visible");
         expectedAnnotations.put("second", anno2);
 
         checkAnnotations(OneBrowserOneMethodBrowserSuppressed.class, expectedAnnotations);
@@ -329,6 +335,14 @@ public class BrowserStatementTest extends NeodymiumTest
         LinkedList<String> list = new LinkedList<>();
         list.add("headless");
         Assert.assertEquals(list, config.getArguments());
+
+        HashMap<String, Object> prefs = new HashMap<>();
+        prefs.put("geolocation.enabled", true);
+        prefs.put("renderer.memory_cache.size", 120000);
+        prefs.put("homepage", "https://www.xceptance.com");
+        Assert.assertEquals(prefs, config.getPreferences());
+        
+        Assert.assertEquals(new File("target").getAbsolutePath(), config.getDownloadDirectory());
     }
 
     private void checkMultiChrome(BrowserConfiguration config)
@@ -356,6 +370,13 @@ public class BrowserStatementTest extends NeodymiumTest
         LinkedList<String> list = new LinkedList<>();
         list.add("headless");
         Assert.assertEquals(list, config.getArguments());
+
+        HashMap<String, Object> prefs = new HashMap<>();
+        prefs.put("media.navigator.permission.disabled", true);
+        prefs.put("app.update.backgroundMaxErrors", 1);
+        prefs.put("browser.startup.homepage", "https://www.xceptance.com");
+        Assert.assertEquals(prefs, config.getPreferences());
+        Assert.assertEquals(new File("target").getAbsolutePath(), config.getDownloadDirectory());
     }
 
     private void checkMultiFirefox(BrowserConfiguration config)
@@ -378,20 +399,21 @@ public class BrowserStatementTest extends NeodymiumTest
         Assert.assertEquals("testEnvironmentFlags", config.getConfigTag());
         Assert.assertEquals("Test Environment Browser", config.getName());
         MutableCapabilities testCapabilities = config.getCapabilities();
+        HashMap<String, Object> testGridProperties = config.getGridProperties();
         Assert.assertEquals("chrome", testCapabilities.getBrowserName());
-        Assert.assertEquals(1234, testCapabilities.getCapability("idleTimeout"));
-        Assert.assertEquals(1234, testCapabilities.getCapability("idletimeout"));
-        Assert.assertEquals(5678, testCapabilities.getCapability("maxDuration"));
-        Assert.assertEquals(5678, testCapabilities.getCapability("maxduration"));
-        Assert.assertEquals("3.1234", testCapabilities.getCapability("seleniumVersion"));
-        Assert.assertEquals("3.1234", testCapabilities.getCapability("selenium-version"));
-        Assert.assertEquals("800x600", testCapabilities.getCapability("screenResolution"));
-        Assert.assertEquals("800x600", testCapabilities.getCapability("screen-resolution"));
-        Assert.assertEquals(Platform.VISTA, testCapabilities.getCapability("platform"));
-        Assert.assertEquals("Windows 10", testCapabilities.getCapability("platformName"));
-        Assert.assertEquals("MyDevice", testCapabilities.getCapability("deviceName"));
-        Assert.assertEquals("landscape", testCapabilities.getCapability("deviceOrientation"));
-        Assert.assertEquals("landscape", testCapabilities.getCapability("orientation"));
+        Assert.assertEquals(1234, testGridProperties.get("idleTimeout"));
+        Assert.assertEquals(1234, testGridProperties.get("idletimeout"));
+        Assert.assertEquals(5678, testGridProperties.get("maxDuration"));
+        Assert.assertEquals(5678, testGridProperties.get("maxduration"));
+        Assert.assertEquals("3.1234", testGridProperties.get("seleniumVersion"));
+        Assert.assertEquals("3.1234", testGridProperties.get("selenium-version"));
+        Assert.assertEquals("800x600", testGridProperties.get("screenResolution"));
+        Assert.assertEquals("800x600", testGridProperties.get("screen-resolution"));
+        Assert.assertEquals("800x600", testGridProperties.get("resolution"));
+        Assert.assertEquals("Windows 10", testGridProperties.get("os"));
+        Assert.assertEquals("MyDevice", testGridProperties.get("deviceName"));
+        Assert.assertEquals("landscape", testGridProperties.get("deviceOrientation"));
+        Assert.assertEquals("landscape", testGridProperties.get("orientation"));
     }
 
     private void checkTestEnvironment2(BrowserConfiguration config)
@@ -400,19 +422,19 @@ public class BrowserStatementTest extends NeodymiumTest
         Assert.assertEquals("testEnvironmentFlags2", config.getConfigTag());
         Assert.assertEquals("Test Environment Browser", config.getName());
         MutableCapabilities testCapabilities = config.getCapabilities();
+        HashMap<String, Object> testGridProperties = config.getGridProperties();
         Assert.assertEquals("chrome", testCapabilities.getBrowserName());
-        Assert.assertEquals(1234, testCapabilities.getCapability("idleTimeout"));
-        Assert.assertEquals(1234, testCapabilities.getCapability("idletimeout"));
-        Assert.assertEquals(5678, testCapabilities.getCapability("maxDuration"));
-        Assert.assertEquals(5678, testCapabilities.getCapability("maxduration"));
-        Assert.assertEquals("3.1234", testCapabilities.getCapability("seleniumVersion"));
-        Assert.assertEquals("3.1234", testCapabilities.getCapability("selenium-version"));
-        Assert.assertEquals("800x600", testCapabilities.getCapability("screenResolution"));
-        Assert.assertEquals("800x600", testCapabilities.getCapability("screen-resolution"));
-        Assert.assertEquals(Platform.VISTA, testCapabilities.getCapability("platform"));
-        Assert.assertEquals("Windows 10", testCapabilities.getCapability("platformName"));
-        Assert.assertEquals("MyDevice", testCapabilities.getCapability("deviceName"));
-        Assert.assertEquals("portrait", testCapabilities.getCapability("deviceOrientation"));
-        Assert.assertEquals(null, testCapabilities.getCapability("orientation"));
+        Assert.assertEquals(1234, testGridProperties.get("idleTimeout"));
+        Assert.assertEquals(1234, testGridProperties.get("idletimeout"));
+        Assert.assertEquals(5678, testGridProperties.get("maxDuration"));
+        Assert.assertEquals(5678, testGridProperties.get("maxduration"));
+        Assert.assertEquals("3.1234", testGridProperties.get("seleniumVersion"));
+        Assert.assertEquals("3.1234", testGridProperties.get("selenium-version"));
+        Assert.assertEquals("800x600", testGridProperties.get("screenResolution"));
+        Assert.assertEquals("800x600", testGridProperties.get("screen-resolution"));
+        Assert.assertEquals("800x600", testGridProperties.get("resolution"));
+        Assert.assertEquals("Windows 10", testGridProperties.get("os"));
+        Assert.assertEquals("MyDevice", testGridProperties.get("deviceName"));
+        Assert.assertEquals("portrait", testGridProperties.get("orientation"));
     }
 }

@@ -32,7 +32,7 @@ public class ProxyConfigurationTest extends NeodymiumTest
     @BeforeClass
     public static void beforeClass() throws IOException
     {
-        final String fileLocation = "config/temp-proxy-neodymium.properties";
+        final String fileLocation = "config/temp-proxy-neodymiumProxyConfigurationTest.properties";
 
         Map<String, String> properties = new HashMap<>();
         properties.put("neodymium.proxy", "true");
@@ -40,12 +40,9 @@ public class ProxyConfigurationTest extends NeodymiumTest
         properties.put("neodymium.proxy.port", PORT);
         properties.put("neodymium.proxy.bypassForHosts", BYPASS);
 
-        // FIXME: #72 Uncomment when a fixed Selenium version is available in project.
-        // TODO: https://github.com/Xceptance/neodymium-library/issues/72
-        // TODO: The following properties lead to an error when setting up a chromedriver > v2.42
-        // properties.put("neodymium.proxy.socket.userName", SOCKET_USERNAME);
-        // properties.put("neodymium.proxy.socket.password", SOCKET_PASSWORD);
-        // properties.put("neodymium.proxy.socket.version", SOCKET_VERSION);
+        properties.put("neodymium.proxy.socket.userName", SOCKET_USERNAME);
+        properties.put("neodymium.proxy.socket.password", SOCKET_PASSWORD);
+        properties.put("neodymium.proxy.socket.version", SOCKET_VERSION);
 
         File tempConfigFile = new File("./" + fileLocation);
         writeMapToPropertiesFile(properties, tempConfigFile);

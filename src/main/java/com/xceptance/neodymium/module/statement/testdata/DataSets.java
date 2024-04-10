@@ -19,5 +19,10 @@ import java.lang.annotation.Target;
 })
 public @interface DataSets
 {
+    /**
+     * get data set indexes
+     * 
+     * @return
+     */
     DataSet[] value();
 }

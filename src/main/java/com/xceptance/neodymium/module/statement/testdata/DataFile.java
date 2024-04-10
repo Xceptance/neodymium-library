@@ -22,5 +22,10 @@ import java.lang.annotation.Target;
 })
 public @interface DataFile
 {
+    /**
+     * get path to test data file
+     * 
+     * @return
+     */
     String value() default "";
 }
