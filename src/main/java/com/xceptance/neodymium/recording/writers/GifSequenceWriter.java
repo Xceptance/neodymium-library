@@ -15,9 +15,10 @@ import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 
+import com.xceptance.neodymium.recording.TakeScreenshotsThread;
 import com.xceptance.neodymium.recording.config.GifRecordingConfigurations;
-
 import com.xceptance.neodymium.recording.config.RecordingConfigurations;
+import com.xceptance.neodymium.recording.config.VideoRecordingConfigurations;
 
 /**
  * Writer to create gif using pure java
