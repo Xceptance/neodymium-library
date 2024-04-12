@@ -36,8 +36,8 @@ public class NeodymiumContextTest extends NeodymiumTest
 
         // set up a dev-neodymium.properties file
         Map<String, String> properties1 = new HashMap<>();
-        properties1.put("neodymium.webDriver.opera.pathToDriverServer", "/some/opera/path/just/for/test/purpose");
-        properties1.put("neodymium.webDriver.phantomjs.pathToDriverServer", "/some/phantomjs/path/just/for/test/oldPurpose");
+        properties1.put("neodymium.webDriver.ie.pathToDriverServer", "/some/internetexplorer/path/just/for/test/purpose");
+        properties1.put("neodymium.webDriver.edge.pathToDriverServer", "/some/edge/path/just/for/test/oldPurpose");
 
         File tempConfigFile1 = new File("./config/dev-neodymium.properties");
         if (tempConfigFile1.exists())
@@ -58,7 +58,7 @@ public class NeodymiumContextTest extends NeodymiumTest
         File tempConfigFile2 = new File("./" + fileLocation);
         tempFiles.add(tempConfigFile2);
         Map<String, String> properties2 = new HashMap<>();
-        properties2.put("neodymium.webDriver.phantomjs.pathToDriverServer", "/some/phantomjs/path/just/for/test/newPurpose");
+        properties2.put("neodymium.webDriver.edge.pathToDriverServer", "/some/edge/path/just/for/test/newPurpose");
         writeMapToPropertiesFile(properties2, tempConfigFile2);
         ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
     }

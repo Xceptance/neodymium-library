@@ -10,12 +10,12 @@ public class OverrideNeodymiumConfiguration
     @NeodymiumTest
     public void testStandardConfigurationStillAvailable() throws Exception
     {
-        Assertions.assertEquals("/some/opera/path/just/for/test/purpose", Neodymium.configuration().getOperaDriverPath());
+        Assertions.assertEquals("/some/internetexplorer/path/just/for/test/purpose", Neodymium.configuration().getIeDriverPath());
     }
 
     @NeodymiumTest
     public void testConfigurationContainsOverriddenParts() throws Exception
     {
-        Assertions.assertEquals("/some/phantomjs/path/just/for/test/newPurpose", Neodymium.configuration().getPhantomJsDriverPath());
+        Assertions.assertEquals("/some/edge/path/just/for/test/newPurpose", Neodymium.configuration().getEdgeDriverPath());
     }
 }
