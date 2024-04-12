@@ -25,7 +25,7 @@ public class RandomnessOfRandomBrowserTest extends AbstractNeodymiumTest
             properties.put("browserprofile.browser" + i + ".headless", "true");
         }
 
-        File tempConfigFile = File.createTempFile("browser", "", new File("./config/"));
+        File tempConfigFile = File.createTempFile("browserRandomnessOfRandomBrowserTest", "", new File("./config/"));
         writeMapToPropertiesFile(properties, tempConfigFile);
         tempFiles.add(tempConfigFile);
 

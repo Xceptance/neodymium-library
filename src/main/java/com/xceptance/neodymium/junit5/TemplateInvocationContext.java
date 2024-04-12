@@ -6,6 +6,7 @@ import java.util.List;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.TestTemplateInvocationContext;
 
+import com.xceptance.neodymium.common.browser.BrowserMethodData;
 import com.xceptance.neodymium.common.testdata.TestdataContainer;
 import com.xceptance.neodymium.junit5.browser.BrowserExecutionCallback;
 import com.xceptance.neodymium.junit5.filtering.FilterTestMethodCallback;
@@ -15,17 +16,21 @@ public class TemplateInvocationContext implements TestTemplateInvocationContext
 {
     private String methodName;
 
-    private String browser;
+    private BrowserMethodData browser;
 
     private TestdataContainer dataSet;
 
-    public TemplateInvocationContext(String methodName, String browser, TestdataContainer dataSet)
+    private Object testClassInstance;
+
+    public TemplateInvocationContext(String methodName, BrowserMethodData browser, TestdataContainer dataSet, Object testClassInstance)
     {
         this.methodName = methodName;
         this.browser = browser;
         this.dataSet = dataSet;
+        this.testClassInstance = testClassInstance;
     }
 
+    @Override
     public String getDisplayName(int invocationIndex)
     {
         return methodName + (dataSet != null ? dataSet.getTitle() : "") + (browser != null ? " :: Browser " + browser : "");
@@ -37,11 +42,11 @@ public class TemplateInvocationContext implements TestTemplateInvocationContext
         List<Extension> extentions = new LinkedList<>();
         if (browser != null)
         {
-            extentions.add(new BrowserExecutionCallback(browser));
+            extentions.add(new BrowserExecutionCallback(browser, methodName));
         }
         if (dataSet != null)
         {
-            extentions.add(new TestdataCallback(dataSet));
+            extentions.add(new TestdataCallback(dataSet, testClassInstance));
         }
         extentions.add(new FilterTestMethodCallback());
         return extentions;

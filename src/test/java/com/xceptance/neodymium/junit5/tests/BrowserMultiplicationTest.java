@@ -5,15 +5,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
+import com.xceptance.neodymium.common.browser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.junit5.testclasses.multiplication.browser.OneBrowserOneMethod;
 import com.xceptance.neodymium.junit5.testclasses.multiplication.browser.OneBrowserTwoMethods;
 import com.xceptance.neodymium.junit5.testclasses.multiplication.browser.TwoBrowserOneMethod;
 import com.xceptance.neodymium.junit5.testclasses.multiplication.browser.TwoBrowserTwoMethods;
-import com.xceptance.neodymium.common.browser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserMultiplicationTest extends AbstractNeodymiumTest
@@ -25,7 +25,7 @@ public class BrowserMultiplicationTest extends AbstractNeodymiumTest
         properties.put("browserprofile.first_browser.name", "first browser");
         properties.put("browserprofile.second_browser.name", "second browser");
 
-        File tempConfigFile = File.createTempFile("browser", "", new File("./config/"));
+        File tempConfigFile = File.createTempFile("browserBrowserMultiplicationTest", "", new File("./config/"));
         writeMapToPropertiesFile(properties, tempConfigFile);
         tempFiles.add(tempConfigFile);
 
@@ -34,7 +34,7 @@ public class BrowserMultiplicationTest extends AbstractNeodymiumTest
         MultibrowserConfiguration.getInstance(tempConfigFile.getPath());
     }
 
-    @BeforeEach
+    @Before
     public void setJUnitViewModeFlat()
     {
         Neodymium.configuration().setProperty("neodymium.junit.viewmode", "flat");

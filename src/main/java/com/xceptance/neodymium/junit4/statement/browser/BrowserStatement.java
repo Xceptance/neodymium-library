@@ -10,10 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xceptance.neodymium.common.browser.BrowserData;
+import com.xceptance.neodymium.common.browser.BrowserMethodData;
 import com.xceptance.neodymium.common.browser.BrowserRunner;
 import com.xceptance.neodymium.junit4.StatementBuilder;
 
-public class BrowserStatement extends StatementBuilder<String>
+public class BrowserStatement extends StatementBuilder<BrowserMethodData>
 {
     public static Logger LOGGER = LoggerFactory.getLogger(BrowserStatement.class);
 
@@ -29,10 +30,10 @@ public class BrowserStatement extends StatementBuilder<String>
         browserData = new BrowserData();
     }
 
-    public BrowserStatement(Statement next, String parameter)
+    public BrowserStatement(Statement next, BrowserMethodData parameter, Object testClassInstance)
     {
         this.next = next;
-        browserRunner = new BrowserRunner(parameter);
+        browserRunner = new BrowserRunner(parameter, testClassInstance.toString());
     }
 
     @Override
@@ -57,7 +58,7 @@ public class BrowserStatement extends StatementBuilder<String>
     }
 
     @Override
-    public List<String> createIterationData(TestClass testClass, FrameworkMethod method)
+    public List<BrowserMethodData> createIterationData(TestClass testClass, FrameworkMethod method)
     {
         browserData.initClassAnnotationsFor(testClass.getJavaClass());
         return browserData.createIterationData(method.getMethod());
@@ -66,7 +67,7 @@ public class BrowserStatement extends StatementBuilder<String>
     @Override
     public BrowserStatement createStatement(Object testClassInstance, Statement next, Object parameter)
     {
-        return new BrowserStatement(next, (String) parameter);
+        return new BrowserStatement(next, (BrowserMethodData) parameter, testClassInstance);
     }
 
     @Override

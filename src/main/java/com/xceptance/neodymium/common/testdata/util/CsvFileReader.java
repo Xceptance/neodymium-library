@@ -20,6 +20,12 @@ public class CsvFileReader
 
     private static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
 
+    /**
+     * Get test data from CSV input stream
+     * 
+     * @param inputStream
+     * @return
+     */
     public static List<Map<String, String>> readFile(InputStream inputStream)
     {
         List<Map<String, String>> data = new LinkedList<>();
@@ -41,6 +47,12 @@ public class CsvFileReader
         return data;
     }
 
+    /**
+     * Get test data from CSV file
+     * 
+     * @param file
+     * @return
+     */
     public static List<Map<String, String>> readFile(File file)
     {
         try

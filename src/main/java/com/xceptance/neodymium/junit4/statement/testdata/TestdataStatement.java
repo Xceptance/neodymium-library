@@ -29,12 +29,10 @@ public class TestdataStatement extends StatementBuilder<TestdataContainer>
 
     private TestdataRunner testdataRunner;
 
-    // Map<String, String> testData;
-
-    public TestdataStatement(Statement next, Object parameter)
+    public TestdataStatement(Statement next, Object parameter, Object testClassInstance)
     {
         this.next = next;
-        testdataRunner = new TestdataRunner((TestdataContainer) parameter);
+        testdataRunner = new TestdataRunner((TestdataContainer) parameter, testClassInstance);
     }
 
     public TestdataStatement()
@@ -58,7 +56,7 @@ public class TestdataStatement extends StatementBuilder<TestdataContainer>
     @Override
     public TestdataStatement createStatement(Object testClassInstance, Statement next, Object parameter)
     {
-        return new TestdataStatement(next, (TestdataContainer) parameter);
+        return new TestdataStatement(next, parameter, testClassInstance);
     }
 
     @Override

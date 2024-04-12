@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
+import com.xceptance.neodymium.common.WorkInProgress;
 import com.xceptance.neodymium.common.browser.Browser;
 import com.xceptance.neodymium.junit4.order.DefaultStatementRunOrder;
 import com.xceptance.neodymium.util.Neodymium;
@@ -181,6 +182,8 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     @Override
     protected List<FrameworkMethod> computeTestMethods()
     {
+        boolean workInProgress = Neodymium.configuration().workInProgress();
+
         // Normally JUnit works with all methods that are annotated with @Test, see super's implementation
         // But we override this function in order to do all the fancy stuff, like method multiplication and so on.
         // So we basically start with the list of test methods and add and rearrange new one's to this list and JUnit
@@ -197,10 +200,19 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         // Statement run order defines the order of our own statements that will surround the default JUnit statement
         // from methodBlock
         List<Class<? extends StatementBuilder<?>>> statementRunOrder = new DefaultStatementRunOrder().getRunOrder();
+        List<FrameworkMethod> computedMethods = super.computeTestMethods();
+        boolean wipMethod = computedMethods.stream().anyMatch(computedMethod -> computedMethod.getAnnotation(WorkInProgress.class) != null);
 
         // super.computeTestMethods will return all methods that are annotated with @Test
         for (FrameworkMethod testAnnotatedMethod : super.computeTestMethods())
         {
+            if (workInProgress)
+            {
+                if (wipMethod && testAnnotatedMethod.getAnnotation(WorkInProgress.class) == null)
+                {
+                    continue;
+                }
+            }
             // these lists contain all the builders and data that will be responsible for a particular method
             List<StatementBuilder<?>> builderList = new LinkedList<>();
             List<List<?>> builderDataList = new LinkedList<>();

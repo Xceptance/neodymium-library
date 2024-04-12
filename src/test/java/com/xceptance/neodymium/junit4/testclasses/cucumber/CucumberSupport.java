@@ -3,6 +3,7 @@ package com.xceptance.neodymium.junit4.testclasses.cucumber;
 import org.junit.Assert;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
+import com.xceptance.neodymium.common.browser.BrowserMethodData;
 import com.xceptance.neodymium.junit4.NeodymiumCucumberRunListener;
 import com.xceptance.neodymium.util.Neodymium;
 import com.xceptance.neodymium.util.WebDriverUtils;
@@ -19,7 +20,10 @@ public class CucumberSupport
     @Given("^\"([^\"]*)\" is open$")
     public static void setUp(final String browserProfileName)
     {
-        WebDriverUtils.setUp(browserProfileName);
+        WebDriverUtils.setUp(new BrowserMethodData(browserProfileName, //
+                                                   Neodymium.configuration().keepBrowserOpen(), //
+                                                   Neodymium.configuration().keepBrowserOpenOnFailure()), //
+                             "CucumberSupport");
     }
 
     @Before("@SetUpWithBrowserTag")

@@ -13,12 +13,40 @@ import org.junit.runners.model.TestClass;
 
 public abstract class StatementBuilder<T> extends Statement
 {
+    /**
+     * Create iteration data for the test method in tests class
+     * 
+     * @param testClass
+     * @param method
+     * @return
+     * @throws Throwable
+     */
     public abstract List<T> createIterationData(TestClass testClass, FrameworkMethod method) throws Throwable;
 
+    /**
+     * Create statement for the test class
+     * 
+     * @param testClassInstance
+     * @param next
+     * @param parameter
+     * @return
+     */
     public abstract StatementBuilder<T> createStatement(Object testClassInstance, Statement next, Object parameter);
 
+    /**
+     * Get name of the test for which statement is created
+     * 
+     * @param data
+     * @return
+     */
     public abstract String getTestName(Object data);
 
+    /**
+     * Get name of the category of the test method
+     * 
+     * @param data
+     * @return
+     */
     public abstract String getCategoryName(Object data);
 
     public static <R extends StatementBuilder<?>> R instantiate(Class<R> clazz)

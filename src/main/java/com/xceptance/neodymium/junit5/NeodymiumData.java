@@ -7,9 +7,12 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.extension.TestTemplateInvocationContext;
 
+import com.xceptance.neodymium.common.WorkInProgress;
 import com.xceptance.neodymium.common.browser.BrowserData;
+import com.xceptance.neodymium.common.browser.BrowserMethodData;
 import com.xceptance.neodymium.common.testdata.TestdataContainer;
 import com.xceptance.neodymium.common.testdata.TestdataData;
+import com.xceptance.neodymium.util.Neodymium;
 
 public class NeodymiumData
 {
@@ -17,16 +20,29 @@ public class NeodymiumData
 
     private TestdataData testdataData;
 
+    private Class<?> testClass;
+
     public NeodymiumData(Class<?> testClass)
     {
+        this.testClass = testClass;
         this.browserData = new BrowserData(testClass);
         this.testdataData = new TestdataData(testClass);
     }
 
     public Stream<TestTemplateInvocationContext> computeTestMethods(Method templateMethod)
     {
+        boolean workInProgress = Neodymium.configuration().workInProgress();
+        boolean wipMethod = List.of(templateMethod.getDeclaringClass().getMethods()).stream()
+                                .filter(method -> method.getAnnotation(NeodymiumTest.class) != null)
+                                .anyMatch(method -> method.getAnnotation(WorkInProgress.class) != null);
+
         List<TestTemplateInvocationContext> muliplicationResult = new ArrayList<>();
-        List<String> browsers = browserData.createIterationData(templateMethod);
+
+        if (workInProgress && wipMethod && templateMethod.getAnnotation(WorkInProgress.class) == null)
+        {
+            return muliplicationResult.stream();
+        }
+        List<BrowserMethodData> browsers = browserData.createIterationData(templateMethod);
         List<TestdataContainer> dataSets = testdataData.getTestDataForMethod(templateMethod);
         if (browsers.isEmpty())
         {
@@ -36,11 +52,11 @@ public class NeodymiumData
         {
             dataSets.add(null);
         }
-        for (String browser : browsers)
+        for (BrowserMethodData browser : browsers)
         {
             for (TestdataContainer dataSet : dataSets)
             {
-                muliplicationResult.add(new TemplateInvocationContext(templateMethod.getName(), browser, dataSet));
+                muliplicationResult.add(new TemplateInvocationContext(templateMethod.getName(), browser, dataSet, testClass));
             }
         }
         return muliplicationResult.stream();

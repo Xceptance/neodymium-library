@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.xceptance.neodymium.common.browser.BrowserMethodData;
 import com.xceptance.neodymium.common.browser.BrowserRunner;
 import com.xceptance.neodymium.common.browser.WebDriverCache;
 
@@ -33,11 +34,11 @@ public class WebDriverUtils
      *            }
      *            </pre>
      **/
-    public static void setUp(final String browserProfileName)
+    public static void setUp(final BrowserMethodData browserProfileName, String testName)
     {
-        if (browserHelper.get().getBrowserTags().contains(browserProfileName))
+        if (browserHelper.get().getBrowserTags().contains(browserProfileName.getBrowserTag()))
         {
-            browserHelper.get().setUpTest(browserProfileName);
+            browserHelper.get().setUpTest(browserProfileName, testName);
         }
         else
         {
@@ -59,7 +60,11 @@ public class WebDriverUtils
     public static void setUpWithBrowserTag(Scenario scenario)
     {
         String browserProfileName = getFirstMatchingBrowserTag(scenario);
-        browserHelper.get().setUpTest(browserProfileName);
+        browserHelper.get()
+                     .setUpTest(new BrowserMethodData(browserProfileName, //
+                                                      Neodymium.configuration().keepBrowserOpen(), //
+                                                      Neodymium.configuration().keepBrowserOpenOnFailure()), //
+                                scenario.getName());
     }
 
     /**

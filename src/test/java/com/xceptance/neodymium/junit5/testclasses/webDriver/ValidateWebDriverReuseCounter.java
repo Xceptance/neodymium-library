@@ -1,10 +1,5 @@
 package com.xceptance.neodymium.junit5.testclasses.webDriver;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.aeonbits.owner.ConfigFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,12 +7,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 
 import com.browserup.bup.BrowserUpProxy;
-import com.xceptance.neodymium.junit5.tests.AbstractNeodymiumTest;
-import com.xceptance.neodymium.junit5.tests.NeodymiumWebDriverTest;
-import com.xceptance.neodymium.junit5.NeodymiumTest;
 import com.xceptance.neodymium.common.browser.Browser;
 import com.xceptance.neodymium.common.browser.WebDriverCache;
 import com.xceptance.neodymium.common.browser.WebDriverStateContainer;
+import com.xceptance.neodymium.junit5.NeodymiumTest;
+import com.xceptance.neodymium.junit5.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
 /*
@@ -33,21 +27,9 @@ public class ValidateWebDriverReuseCounter
 
     private static BrowserUpProxy proxy2;
 
-    private static File tempConfigFile;
-
     @BeforeAll
     public static void beforeClass()
     {
-        // set up a temporary neodymium.properties
-        final String fileLocation = "config/temp-ValidateWebDriverReuseCounter-neodymium.properties";
-        tempConfigFile = new File("./" + fileLocation);
-        Map<String, String> properties = new HashMap<>();
-        properties.put("neodymium.webDriver.reuseDriver", "true");
-        properties.put("neodymium.webDriver.maxReuse", "0");
-        properties.put("neodymium.localproxy", "true");
-        AbstractNeodymiumTest.writeMapToPropertiesFile(properties, tempConfigFile);
-        ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
-
         Assertions.assertNull(webDriver1);
         Assertions.assertNull(Neodymium.getDriver());
     }
@@ -193,7 +175,6 @@ public class ValidateWebDriverReuseCounter
         WebDriverStateContainer wDSContainer2 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_1500x1000_headless");
         Assertions.assertEquals(3, wDSContainer2.getUsedCount());
 
-        AbstractNeodymiumTest.deleteTempFile(tempConfigFile);
         WebDriverCache.quitCachedBrowsers();
     }
 }

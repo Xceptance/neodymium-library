@@ -1,9 +1,13 @@
 package com.xceptance.neodymium.junit5.tests;
 
+import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,6 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.aeonbits.owner.ConfigFactory;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -24,13 +29,12 @@ import org.opentest4j.AssertionFailedError;
 
 import com.xceptance.neodymium.junit5.tests.utils.NeodymiumTestExecutionSummary;
 import com.xceptance.neodymium.junit5.tests.utils.ResultAndDescriptionListener;
-
-import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
+import com.xceptance.neodymium.util.Neodymium;
 
 public abstract class AbstractNeodymiumTest
 {
     // holds files that will be deleted in @After method
-    static List<File> tempFiles = new LinkedList<>();
+    protected static List<File> tempFiles = new LinkedList<>();
 
     ResultAndDescriptionListener listener = new ResultAndDescriptionListener();
 
@@ -40,6 +44,55 @@ public abstract class AbstractNeodymiumTest
         for (File tempFile : tempFiles)
         {
             deleteTempFile(tempFile);
+        }
+    }
+
+    /**
+     * Checks if a backup file for the specified configuration file exists, if so, the configuration file is removes and
+     * the backup is renamed to the original name
+     * 
+     * @param configFileName
+     *            the file name of the configuration file
+     * @throws IOException
+     *             if there are issues with the file handling or file system
+     */
+    protected static void restoreConfigProperties(String configFileName) throws IOException
+    {
+        File backupFile = new File("./config/" + configFileName + ".backup");
+
+        if (backupFile.exists())
+        {
+            File configFile = new File("./config/" + configFileName);
+
+            if (configFile.exists())
+            {
+                Files.delete(configFile.toPath());
+
+            }
+
+            backupFile.renameTo(new File("./config/" + configFileName));
+        }
+    }
+
+    /**
+     * Creates a copy of the specified configuration file with a ".backup" prefix
+     * 
+     * @param configFileName
+     *            the file name of the configuration file
+     * @throws IOException
+     *             if there are issues with the file handling or file system
+     */
+    protected static void backUpConfigProperties(String configFileName) throws IOException
+    {
+        File configFile = new File("./config/" + configFileName);
+        File backupFile = new File("./config/" + configFileName + ".backup");
+
+        if (configFile.exists() && backupFile.exists() == false)
+        {
+            Path targetPath = backupFile.toPath();
+            Path originalPath = configFile.toPath();
+
+            Files.copy(originalPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
         }
     }
 
@@ -63,6 +116,36 @@ public abstract class AbstractNeodymiumTest
                                                         tempFile.getAbsolutePath(), e));
             }
         }
+    }
+
+    /**
+     * Add some properties to be used in the current test, using a temporary file name.
+     * 
+     * @param fileName
+     *            the filename for the temporary file used to transport the properties to the test, <b>use unique
+     *            filename for the test using it</b>
+     * @param properties
+     *            a HashMap containing all the needed properties for this test case
+     */
+    protected void addPropertiesForTest(String fileName, Map<String, String> properties)
+    {
+        // due to different states the configuration is in during initialization, we need to add it to the properties as
+        // well as the file
+
+        // during the general initialization we need the Neodymium.configuration()
+        for (String key : properties.keySet())
+        {
+            Neodymium.configuration().setProperty(key, properties.get(key));
+        }
+
+        // the Neodymium.configuration() will be overwritten at one stage of the init process, so we need to have the
+        // config values in temporary files as well
+        String fileLocation = "config/" + fileName;
+        File tempConfigFile = new File("./" + fileLocation);
+        writeMapToPropertiesFile(properties, tempConfigFile);
+        ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
+
+        tempFiles.add(tempConfigFile);
     }
 
     public NeodymiumTestExecutionSummary run(Class<?> testClass)

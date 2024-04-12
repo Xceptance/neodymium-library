@@ -48,4 +48,3 @@ public class FixedRandomnessOfDataSetsTests extends NeodymiumTest
         checkPass(result, 5, 0);
     }
 }
-

@@ -8,12 +8,11 @@ import com.xceptance.neodymium.common.testdata.TestdataRunner;
 
 public class TestdataCallback implements BeforeEachCallback
 {
-
     private TestdataRunner testdataRunner;
 
-    public TestdataCallback(TestdataContainer testData)
+    public TestdataCallback(TestdataContainer testData, Object testClassInstance)
     {
-        testdataRunner = new TestdataRunner(testData);
+        testdataRunner = new TestdataRunner(testData, testClassInstance);
     }
 
     @Override

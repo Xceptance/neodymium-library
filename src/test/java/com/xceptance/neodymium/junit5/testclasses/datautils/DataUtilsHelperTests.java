@@ -12,9 +12,9 @@ public class DataUtilsHelperTests
     {
         String email = DataUtils.randomEmail();
         Assertions.assertNotNull(email);
-        Assertions.assertEquals(28, email.length());
+        Assertions.assertEquals(27, email.length());
         Assertions.assertTrue(email.startsWith("junit-"));
-        Assertions.assertTrue(email.endsWith("@varmail.com"));
+        Assertions.assertTrue(email.endsWith("@varmail.de"));
     }
 
     @NeodymiumTest
@@ -22,7 +22,7 @@ public class DataUtilsHelperTests
     {
         String email = DataUtils.randomEmail();
         // test fixed random
-        Assertions.assertEquals("junit-lwtq5qha2z@varmail.com", email);
+        Assertions.assertEquals("junit-lwtq5qha2z@varmail.de", email);
     }
 
     @NeodymiumTest

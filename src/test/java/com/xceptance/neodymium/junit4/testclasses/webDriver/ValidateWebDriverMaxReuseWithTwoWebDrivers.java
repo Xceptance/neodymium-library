@@ -1,10 +1,5 @@
 package com.xceptance.neodymium.junit4.testclasses.webDriver;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.aeonbits.owner.ConfigFactory;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,7 +13,6 @@ import com.xceptance.neodymium.common.browser.Browser;
 import com.xceptance.neodymium.common.browser.WebDriverCache;
 import com.xceptance.neodymium.common.browser.WebDriverStateContainer;
 import com.xceptance.neodymium.junit4.NeodymiumRunner;
-import com.xceptance.neodymium.junit4.tests.NeodymiumTest;
 import com.xceptance.neodymium.junit4.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
@@ -36,21 +30,9 @@ public class ValidateWebDriverMaxReuseWithTwoWebDrivers
 
     private static BrowserUpProxy proxy2;
 
-    private static File tempConfigFile;
-
     @BeforeClass
     public static void beforeClass()
     {
-        // set up a temporary neodymium.properties
-        final String fileLocation = "config/temp-ValidateWebDriverMaxReuseWithTwoWebDriver-neodymium.properties";
-        tempConfigFile = new File("./" + fileLocation);
-        Map<String, String> properties = new HashMap<>();
-        properties.put("neodymium.webDriver.reuseDriver", "true");
-        properties.put("neodymium.webDriver.maxReuse", "2");
-        properties.put("neodymium.localproxy", "true");
-        NeodymiumTest.writeMapToPropertiesFile(properties, tempConfigFile);
-        ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
-
         Assert.assertNull(webDriver1);
         Assert.assertNull(Neodymium.getDriver());
     }
@@ -265,7 +247,6 @@ public class ValidateWebDriverMaxReuseWithTwoWebDrivers
         WebDriverStateContainer wDSContainer2 = WebDriverCache.instance.getWebDriverStateContainerByBrowserTag("Chrome_1500x1000_headless");
         Assert.assertEquals(1, wDSContainer2.getUsedCount());
 
-        NeodymiumTest.deleteTempFile(tempConfigFile);
         WebDriverCache.quitCachedBrowsers();
     }
 }

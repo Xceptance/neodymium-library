@@ -5,8 +5,11 @@ import org.junit.jupiter.api.Test;
 
 import com.xceptance.neodymium.junit5.testclasses.data.RandomDataSetsException;
 import com.xceptance.neodymium.junit5.testclasses.data.RandomnessOfDataSets;
-import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.MixRandomDataSetsFromRange;
-import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.OverrideClassRandomDataSetsOnMethodLevel;
+import com.xceptance.neodymium.junit5.testclasses.data.annotation.InstantiateDtoViaAnnotation;
+import com.xceptance.neodymium.junit5.testclasses.data.annotation.InstantiateDtoViaJsonPathInAnnotation;
+import com.xceptance.neodymium.junit5.testclasses.data.annotation.InstantiateFieldViaAnnotation;
+import com.xceptance.neodymium.junit5.testclasses.data.annotation.inheritance.ChildInheritingDtoFromAnnotation;
+import com.xceptance.neodymium.junit5.testclasses.data.annotation.inheritance.ChildInheritingValuesFromAnnotation;
 import com.xceptance.neodymium.junit5.testclasses.data.file.json.CanReadDataSetJson;
 import com.xceptance.neodymium.junit5.testclasses.data.file.xml.CanNotReadDataSetXml;
 import com.xceptance.neodymium.junit5.testclasses.data.inheritance.child.PackageTestDataInheritance;
@@ -31,8 +34,10 @@ import com.xceptance.neodymium.junit5.testclasses.data.override.methodonly.Metho
 import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.ClassWithoutTwoMethodsOneForced;
 import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.ForceOfNoneDataSets;
 import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.MixRandomAndValueDataSets;
+import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.MixRandomDataSetsFromRange;
 import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.OneDataSetTwoMethodsOneWithout;
 import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.OnlyImplicitOneDataSet;
+import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.OverrideClassRandomDataSetsOnMethodLevel;
 import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.TwoDataSetsTwoMethodsOneForced;
 import com.xceptance.neodymium.junit5.testclasses.data.override.mixed.TwoDataSetsTwoMethodsOneWithout;
 import com.xceptance.neodymium.junit5.testclasses.data.pkg.csv.CanReadPackageDataCSV;
@@ -450,5 +455,40 @@ public class TestDataStatementTest extends AbstractNeodymiumTest
         NeodymiumTestExecutionSummary summary = run(RandomDataSetsException.class);
         checkFail(summary, 1, 0, 1,
                   "java.lang.IllegalArgumentException: Method 'test' is marked to be run with 4 random data sets, but there are only 2 available");
+    }
+
+    @Test
+    public void canInstantiateFieldViaAnnotation()
+    {
+        NeodymiumTestExecutionSummary result = run(InstantiateFieldViaAnnotation.class);
+        checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void canInstantiateDtoViaJsonPathInAnnotation()
+    {
+        NeodymiumTestExecutionSummary result = run(InstantiateDtoViaJsonPathInAnnotation.class);
+        checkPass(result, 4, 0);
+    }
+
+    @Test
+    public void canInstantiateDtoViaAnnotation()
+    {
+        NeodymiumTestExecutionSummary result = run(InstantiateDtoViaAnnotation.class);
+        checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void canInheritDtoViaAnnotation()
+    {
+        NeodymiumTestExecutionSummary result = run(ChildInheritingDtoFromAnnotation.class);
+        checkPass(result, 2, 0);
+    }
+
+    @Test
+    public void canInheritValuesViaAnnotation()
+    {
+        NeodymiumTestExecutionSummary result = run(ChildInheritingValuesFromAnnotation.class);
+        checkPass(result, 2, 0);
     }
 }

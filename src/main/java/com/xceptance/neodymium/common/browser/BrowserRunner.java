@@ -3,33 +3,46 @@ package com.xceptance.neodymium.common.browser;
 import java.net.MalformedURLException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.browserup.bup.BrowserUpProxy;
 import com.codeborne.selenide.WebDriverRunner;
-import com.xceptance.neodymium.NeodymiumWebDriverListener;
 import com.xceptance.neodymium.common.browser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.common.browser.configuration.MultibrowserConfiguration;
+import com.xceptance.neodymium.common.recording.FilmTestExecution;
 import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserRunner
 {
     public static Logger LOGGER = LoggerFactory.getLogger(BrowserRunner.class);
 
-    private String browserTag;
+    private BrowserMethodData browserTag;
 
     private WebDriverStateContainer wDSCont;
 
     private MultibrowserConfiguration multibrowserConfiguration = MultibrowserConfiguration.getInstance();
 
-    public BrowserRunner(String browserTag)
+    private String testName;
+
+    private String recordingID;
+
+    /**
+     * Create browser runner for test
+     * 
+     * @param browserTag
+     *            {@link BrowserMethodData} browser tag
+     * @param testName
+     *            {@link String} test name
+     */
+    public BrowserRunner(BrowserMethodData browserTag, String testName)
     {
         this.browserTag = browserTag;
+        this.testName = testName;
     }
 
     public BrowserRunner()
@@ -38,12 +51,35 @@ public class BrowserRunner
 
     public void setUpTest()
     {
-        setUpTest(browserTag);
+        setUpTest(browserTag, testName);
+        recordingID = UUID.randomUUID().toString();
+        if (FilmTestExecution.getContextGif().filmAutomatically())
+        {
+            FilmTestExecution.startGifRecording(recordingID);
+        }
+        if (FilmTestExecution.getContextVideo().filmAutomatically())
+        {
+            FilmTestExecution.startVideoRecording(recordingID);
+        }
     }
 
     public void teardown(boolean testFailed)
     {
-        teardown(testFailed, false, wDSCont);
+        try
+        {
+            if (FilmTestExecution.getContextGif().filmAutomatically())
+            {
+                FilmTestExecution.finishGifFilming(recordingID, testFailed);
+            }
+            if (FilmTestExecution.getContextVideo().filmAutomatically())
+            {
+                FilmTestExecution.finishVideoFilming(recordingID, testFailed);
+            }
+        }
+        finally
+        {
+            teardown(testFailed, false, wDSCont);
+        }
     }
 
     /**
@@ -51,13 +87,15 @@ public class BrowserRunner
      * 
      * @param browserTag
      *            name of the browser corresponding to the browser.properties
+     * @param testName
+     *            name of the test to set up
      */
-    public void setUpTest(String browserTag)
+    public void setUpTest(BrowserMethodData browserTag, String testName)
     {
-        validateBrowserTagIsKnown(browserTag);
+        validateBrowserTagIsKnown(browserTag.getBrowserTag());
         wDSCont = null;
         this.browserTag = browserTag;
-        BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(browserTag);
+        BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(browserTag.getBrowserTag());
         try
         {
             // try to find appropriate web driver in cache before create a new instance
@@ -72,10 +110,7 @@ public class BrowserRunner
 
             if (wDSCont == null)
             {
-                wDSCont = BrowserRunnerHelper.createWebDriverStateContainer(browserConfiguration);
-                EventFiringWebDriver eFWDriver = new EventFiringWebDriver(wDSCont.getWebDriver());
-                eFWDriver.register(new NeodymiumWebDriverListener());
-                wDSCont.setWebDriver(eFWDriver);
+                wDSCont = BrowserRunnerHelper.createWebDriverStateContainer(browserConfiguration, testName);
             }
             else
             {
@@ -127,7 +162,7 @@ public class BrowserRunner
         {
             LOGGER.debug("Put browser into cache");
             webDriverStateContainer.incrementUsedCount();
-            WebDriverCache.instance.putWebDriverStateContainer(browserTag, webDriverStateContainer);
+            WebDriverCache.instance.putWebDriverStateContainer(browserTag.getBrowserTag(), webDriverStateContainer);
         }
         // close the WebDriver
         else
@@ -179,7 +214,7 @@ public class BrowserRunner
         }
         try
         {
-            RemoteWebDriver driver = (RemoteWebDriver) ((EventFiringWebDriver) webDriver).getWrappedDriver();
+            RemoteWebDriver driver = (RemoteWebDriver) webDriver;
             return driver.getSessionId() != null;
         }
         catch (Exception e)

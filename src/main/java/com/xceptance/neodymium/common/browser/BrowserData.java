@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openqa.selenium.firefox.FirefoxDriver;
 
 import com.xceptance.neodymium.common.Data;
 import com.xceptance.neodymium.util.Neodymium;
@@ -18,7 +17,9 @@ public class BrowserData extends Data
 {
     private List<String> classBrowsers;
 
-    private List<String> browserTags = new LinkedList<>();
+    private List<String> systemBrowserFilter;
+
+    private List<BrowserMethodData> browserMethodDatas = new LinkedList<>();
 
     private List<RandomBrowsers> classRandomBrowsersAnnotation;
 
@@ -55,10 +56,6 @@ public class BrowserData extends Data
         final String chromeDriverPath = Neodymium.configuration().getChromeDriverPath();
         final String geckoDriverPath = Neodymium.configuration().getFirefoxDriverPath();
 
-        // shall we run old school firefox?
-        final boolean firefoxLegacy = Neodymium.configuration().useFirefoxLegacy();
-        System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, Boolean.toString(!firefoxLegacy));
-
         if (!StringUtils.isEmpty(ieDriverPath))
         {
             System.setProperty("webdriver.ie.driver", ieDriverPath);
@@ -82,16 +79,16 @@ public class BrowserData extends Data
         // parse test specific browser definitions
         if (!StringUtils.isEmpty(browserDefinitionsProperty))
         {
-            browserTags.addAll(Arrays.asList(browserDefinitionsProperty.split(",")));
+            systemBrowserFilter.addAll(Arrays.asList(browserDefinitionsProperty.split(",")));
         }
     }
 
-    public List<String> getBrowserTags()
+    public List<BrowserMethodData> getBrowserTags()
     {
-        return browserTags;
+        return browserMethodDatas;
     }
 
-    public List<String> createIterationData(Method testMethod)
+    public List<BrowserMethodData> createIterationData(Method testMethod)
     {
         List<String> browsers = new LinkedList<>();
         List<String> methodBrowsers = new LinkedList<>();
@@ -113,18 +110,66 @@ public class BrowserData extends Data
             if (!methodRandomBrowsersAnnotations.isEmpty())
             {
                 // evaluate the method level (top priority)
-                return computeRandomBrowsers(testMethod, methodRandomBrowsersAnnotations, browsers);
+                browsers = computeRandomBrowsers(testMethod, methodRandomBrowsersAnnotations, browsers);
             }
             else if (!classRandomBrowsersAnnotation.isEmpty() && methodBrowsers.isEmpty())
             {
                 // evaluate the class level (including inheritance)
                 // Note: if browsers are annotated on method level they prohibit the evaluation of the random
                 // browser annotation on class level
-                return computeRandomBrowsers(testMethod, classRandomBrowsersAnnotation, browsers);
+                browsers = computeRandomBrowsers(testMethod, classRandomBrowsersAnnotation, browsers);
+            }
+        }
+        if (systemBrowserFilter != null && !systemBrowserFilter.isEmpty())
+        {
+            return browsers.stream()
+                           .filter(browserTag -> systemBrowserFilter.contains(browserTag))
+                           .map(browserTag -> addKeepBrowserOpenInformation(browserTag, testMethod))
+                           .collect(Collectors.toList());
+        }
+        return browsers.stream()
+                       .map(browserTag -> addKeepBrowserOpenInformation(browserTag, testMethod))
+                       .collect(Collectors.toList());
+    }
+
+    private BrowserMethodData addKeepBrowserOpenInformation(String browserTag, Method method)
+    {
+        List<KeepBrowserOpen> methodKeepBrowserOpenAnnotations = getAnnotations(method, KeepBrowserOpen.class);
+        List<KeepBrowserOpen> classKeepBrowserOpenAnnotations = getAnnotations(method.getDeclaringClass(), KeepBrowserOpen.class);
+
+        boolean keepOpen = Neodymium.configuration().keepBrowserOpen();
+        boolean keepOpenOnFailure = Neodymium.configuration().keepBrowserOpenOnFailure();
+
+        if (!classKeepBrowserOpenAnnotations.isEmpty())
+        {
+            KeepBrowserOpen keepBrowserOpen = classKeepBrowserOpenAnnotations.get(0);
+            if (keepBrowserOpen.onlyOnFailure())
+            {
+                keepOpen = false;
+                keepOpenOnFailure = true;
+            }
+            else
+            {
+                keepOpen = true;
+                keepOpenOnFailure = false;
             }
         }
 
-        return browsers;
+        if (!methodKeepBrowserOpenAnnotations.isEmpty())
+        {
+            KeepBrowserOpen keepBrowserOpen = methodKeepBrowserOpenAnnotations.get(0);
+            if (keepBrowserOpen.onlyOnFailure())
+            {
+                keepOpen = false;
+                keepOpenOnFailure = true;
+            }
+            else
+            {
+                keepOpen = true;
+                keepOpenOnFailure = false;
+            }
+        }
+        return new BrowserMethodData(browserTag, keepOpen, keepOpenOnFailure);
     }
 
     private List<String> computeRandomBrowsers(final Method method, final List<RandomBrowsers> randomBrowsersAnnotation,

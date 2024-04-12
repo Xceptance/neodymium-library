@@ -1,11 +1,14 @@
 package com.xceptance.neodymium.junit4.tests;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.aeonbits.owner.ConfigFactory;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,16 +31,30 @@ public class NeodymiumContextTest extends NeodymiumTest
     @BeforeClass
     public static void setUpNeodymiumConfiguration() throws IOException
     {
+        // make sure we don't remove the dev-neodyoium.properties
+        backUpConfigProperties("dev-neodymium.properties");
+
         // set up a dev-neodymium.properties file
         Map<String, String> properties1 = new HashMap<>();
         properties1.put("neodymium.webDriver.opera.pathToDriverServer", "/some/opera/path/just/for/test/purpose");
         properties1.put("neodymium.webDriver.phantomjs.pathToDriverServer", "/some/phantomjs/path/just/for/test/oldPurpose");
+
         File tempConfigFile1 = new File("./config/dev-neodymium.properties");
-        tempFiles.add(tempConfigFile1);
+        if (tempConfigFile1.exists())
+        {
+            // add data from actual file if it already exists
+            Properties prop = new Properties();
+            prop.load(new FileInputStream(tempConfigFile1));
+
+            for (String key : prop.stringPropertyNames())
+            {
+                properties1.put(key, prop.getProperty(key));
+            }
+        }
         writeMapToPropertiesFile(properties1, tempConfigFile1);
 
         // set up a temp-neodymium.properties
-        final String fileLocation = "config/temp-neodymium.properties";
+        final String fileLocation = "config/temp-neodymiumFixedRandomnessOfDataSetsTests.properties";
         File tempConfigFile2 = new File("./" + fileLocation);
         tempFiles.add(tempConfigFile2);
         Map<String, String> properties2 = new HashMap<>();
@@ -134,7 +151,7 @@ public class NeodymiumContextTest extends NeodymiumTest
         properties.put("browserprofile.chrome1200.arguments", "headless");
         properties.put("browserprofile.chrome1200.browserResolution", "1200x768");
 
-        File tempConfigFile = File.createTempFile("browser", "", new File("./config/"));
+        File tempConfigFile = File.createTempFile("browserFixedRandomnessOfDataSetsTests", "", new File("./config/"));
         tempFiles.add(tempConfigFile);
         writeMapToPropertiesFile(properties, tempConfigFile);
 
@@ -145,5 +162,11 @@ public class NeodymiumContextTest extends NeodymiumTest
         // checks Neodymium functions for different browser sizes
         Result result = JUnitCore.runClasses(WindowSizeTests.class);
         checkPass(result, 5, 0);
+    }
+
+    @AfterClass
+    public static void CleanUpConfig() throws IOException
+    {
+        NeodymiumTest.restoreConfigProperties("dev-neodymium.properties");
     }
 }
