@@ -256,21 +256,21 @@
 	</reporting>
 
 	<dependencies>
-    <dependency>
-      <groupId>com.browserup</groupId>
-      <artifactId>browserup-proxy-mitm</artifactId>
-      <version>${browserup.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.seleniumhq.selenium</groupId>
-          <artifactId>selenium-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId> com.google.guava</groupId>
-          <artifactId>guava</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+		<dependency>
+			<groupId>com.browserup</groupId>
+			<artifactId>browserup-proxy-mitm</artifactId>
+			<version>${browserup.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.seleniumhq.selenium</groupId>
+					<artifactId>selenium-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId> com.google.guava</groupId>
+					<artifactId>guava</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -321,11 +321,11 @@
 			<artifactId>allure-junit5</artifactId>
 			<version>${allure.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>io.qameta.allure</groupId>
-			<artifactId>allure-cucumber4-jvm</artifactId>
-			<version>${allure.version}</version>
-		</dependency>
+			<dependency>
+					<groupId>io.qameta.allure</groupId>
+					<artifactId>allure-cucumber6-jvm</artifactId>
+					<version>2.13.6</version>
+			</dependency>
 		<dependency>
 			<groupId>io.qameta.allure</groupId>
 			<artifactId>allure-selenide</artifactId>
@@ -347,10 +347,10 @@
 			<version>${selenide.version}</version>
 		</dependency>
 		<dependency>
-      <groupId>com.codeborne</groupId>
-      <artifactId>selenide-proxy</artifactId>
-      <version>${selenide.version}</version>
-    </dependency>
+			<groupId>com.codeborne</groupId>
+			<artifactId>selenide-proxy</artifactId>
+			<version>${selenide.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-csv</artifactId>
@@ -370,6 +370,12 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>2.0.12</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>2.0.13</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
@@ -396,10 +402,10 @@
 			<artifactId>gson</artifactId>
 			<version>2.10.1</version>
 		</dependency>
-    <dependency>
-      <groupId>com.squareup.okhttp3</groupId>
-      <artifactId>okhttp</artifactId>
-      <version>4.12.0</version>
-    </dependency>
-	</dependencies>
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>4.12.0</version>
+		</dependency>
+		</dependencies>
 </project>
