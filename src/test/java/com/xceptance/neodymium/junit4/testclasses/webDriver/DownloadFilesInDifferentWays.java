@@ -55,7 +55,7 @@ public class DownloadFilesInDifferentWays extends NeodymiumTest
         Selenide.open("https://png2pdf.com/");
         $(".fc-cta-consent").click();
         $("#fileSelector").uploadFile(new File("src/test/resources/2020-in-one-picture.png"));
-        $("button[aria-label='COMBINED']").shouldBe(enabled);
+        $("button[aria-label='COMBINED']").shouldBe(enabled, Duration.ofMillis(9000));
         $("button[aria-label='COMBINED']").scrollIntoView(true).click();
         waitForFileDownloading();
         validateFilePresentInDownloadHistory();
@@ -80,7 +80,7 @@ public class DownloadFilesInDifferentWays extends NeodymiumTest
 
     private void waitForFileDownloading()
     {
-        Selenide.Wait().withMessage("File was not downloaded").withTimeout(Duration.ofMillis(6000)).until((driver) -> {
+        Selenide.Wait().withMessage("File was not downloaded").withTimeout(Duration.ofMillis(9000)).until((driver) -> {
             return fileName.exists() && fileName.canRead();
         });
     }

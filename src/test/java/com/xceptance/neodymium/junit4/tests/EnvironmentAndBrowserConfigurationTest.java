@@ -11,6 +11,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
 import com.xceptance.neodymium.common.browser.configuration.BadProxyEnvironmentConfigurationJunit4;
+import com.xceptance.neodymium.common.browser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.junit4.testclasses.multibrowser.BrowserWithoutAvailableEnvironment;
 import com.xceptance.neodymium.junit4.testclasses.multibrowser.EnvironmentAndBrowserConfiguration;
 
@@ -118,9 +119,13 @@ public class EnvironmentAndBrowserConfigurationTest extends NeodymiumTest
         properties3.put("browserprofile.Galaxy_Note4_Emulation.acceptInsecureCertificates", BROWSER2ACCEPTINSECURECERTIFICATES.toString());
         properties3.put("browserprofile.Galaxy_Note4_Emulation.pageLoadStrategy", BROWSER2PAGELOADSTRATEGY);
         properties3.put("browserprofile.Galaxy_Note4_Emulation.browserResolution", BROWSER2RESOLUTION);
-        File tempConfigFile3 = new File("./config/dev-browser.properties");
-        writeMapToPropertiesFile(properties3, tempConfigFile3);
-        tempFiles.add(tempConfigFile3);
+        File tempConfigFile = File.createTempFile("browserEnvironmentAndBrowserConfigurationTest", "", new File("./config/"));
+        writeMapToPropertiesFile(properties3, tempConfigFile);
+        tempFiles.add(tempConfigFile);
+
+        // this line is important as we initialize the config from the temporary file we created above
+        MultibrowserConfiguration.clearAllInstances();
+        MultibrowserConfiguration.getInstance(tempConfigFile.getPath());
     }
 
     @Test

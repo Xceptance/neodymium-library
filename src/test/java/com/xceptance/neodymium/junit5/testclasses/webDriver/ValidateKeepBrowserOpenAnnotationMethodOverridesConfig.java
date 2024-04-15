@@ -3,6 +3,7 @@ package com.xceptance.neodymium.junit5.testclasses.webDriver;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -16,8 +17,6 @@ import com.xceptance.neodymium.common.browser.WebDriverCache;
 import com.xceptance.neodymium.junit5.NeodymiumTest;
 import com.xceptance.neodymium.junit5.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
-
-import io.cucumber.java.BeforeAll;
 
 @TestMethodOrder(MethodOrderer.MethodName.class)
 @Browser("Chrome_1024x768")

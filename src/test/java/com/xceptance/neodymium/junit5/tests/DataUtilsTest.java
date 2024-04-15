@@ -27,7 +27,7 @@ public class DataUtilsTest extends AbstractNeodymiumTest
         Map<String, String> properties = new HashMap<>();
 
         properties.put("neodymium.context.random.initialValue", "1323");
-        properties.put("neodymium.dataUtils.email.domain", "varmail.com");
+        properties.put("neodymium.dataUtils.email.domain", "varmail.de");
         properties.put("neodymium.dataUtils.email.local.prefix", "junit-");
         properties.put("neodymium.dataUtils.email.randomCharsAmount", "10");
         properties.put("neodymium.dataUtils.password.uppercaseCharAmount", "3");

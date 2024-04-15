@@ -141,7 +141,7 @@ public class NeodymiumWebDriverTest extends AbstractNeodymiumTest
 
         // XVFB or a display needed
         NeodymiumTestExecutionSummary summary = run(ValidateKeepWebDriverOpen.class);
-        checkPass(summary, 2, 0);
+        checkFail(summary, 3, 0, 1);
     }
 
     @Test

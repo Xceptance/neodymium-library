@@ -1,7 +1,7 @@
 package com.xceptance.neodymium.junit5.testclasses.webDriver;
 
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
@@ -92,7 +92,7 @@ public class ValidateKeepBrowserOpenOnFailureAnnotationClassOverridesConfig
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriver3);
     }
 
-    @AfterEach
+    @AfterAll
     public static void afterClass()
     {
         Assert.assertEquals(0, WebDriverCache.instance.getWebDriverStateContainerCacheSize());

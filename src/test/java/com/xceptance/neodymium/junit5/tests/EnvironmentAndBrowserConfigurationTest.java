@@ -8,10 +8,11 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import com.xceptance.neodymium.common.browser.configuration.BadProxyEnvironmentConfigurationJunit5;
+import com.xceptance.neodymium.common.browser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.junit5.testclasses.multibrowser.BrowserWithoutAvailableEnvironment;
 import com.xceptance.neodymium.junit5.testclasses.multibrowser.EnvironmentAndBrowserConfiguration;
 import com.xceptance.neodymium.junit5.tests.utils.NeodymiumTestExecutionSummary;
-import com.xceptance.neodymium.common.browser.configuration.BadProxyEnvironmentConfigurationJunit5;
 
 public class EnvironmentAndBrowserConfigurationTest extends AbstractNeodymiumTest
 {
@@ -117,9 +118,13 @@ public class EnvironmentAndBrowserConfigurationTest extends AbstractNeodymiumTes
         properties3.put("browserprofile.Galaxy_Note4_Emulation.acceptInsecureCertificates", BROWSER2ACCEPTINSECURECERTIFICATES.toString());
         properties3.put("browserprofile.Galaxy_Note4_Emulation.pageLoadStrategy", BROWSER2PAGELOADSTRATEGY);
         properties3.put("browserprofile.Galaxy_Note4_Emulation.browserResolution", BROWSER2RESOLUTION);
-        File tempConfigFile3 = new File("./config/dev-browser.properties");
-        writeMapToPropertiesFile(properties3, tempConfigFile3);
-        tempFiles.add(tempConfigFile3);
+        File tempConfigFile = File.createTempFile("browserEnvironmentAndBrowserConfigurationTest", "", new File("./config/"));
+        writeMapToPropertiesFile(properties3, tempConfigFile);
+        tempFiles.add(tempConfigFile);
+
+        // this line is important as we initialize the config from the temporary file we created above
+        MultibrowserConfiguration.clearAllInstances();
+        MultibrowserConfiguration.getInstance(tempConfigFile.getPath());
     }
 
     @Test
@@ -138,7 +143,7 @@ public class EnvironmentAndBrowserConfigurationTest extends AbstractNeodymiumTes
         checkPass(summary, 3, 0);
     }
 
-     @Test
+    @Test
     public void testRunningABrowserWithoutAEnvironmentConfiguration()
     {
         // test environment configuration

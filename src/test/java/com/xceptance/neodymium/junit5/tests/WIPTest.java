@@ -3,9 +3,9 @@ package com.xceptance.neodymium.junit5.tests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.xceptance.neodymium.junit4.testclasses.wip.WIPAnnotationChildTest;
-import com.xceptance.neodymium.junit4.testclasses.wip.WIPAnnotationTest;
-import com.xceptance.neodymium.junit4.testclasses.wip.WIPMultiplicationTest;
+import com.xceptance.neodymium.junit5.testclasses.wip.WIPAnnotationChildTest;
+import com.xceptance.neodymium.junit5.testclasses.wip.WIPAnnotationTest;
+import com.xceptance.neodymium.junit5.testclasses.wip.WIPMultiplicationTest;
 import com.xceptance.neodymium.junit5.tests.utils.NeodymiumTestExecutionSummary;
 import com.xceptance.neodymium.util.Neodymium;
 

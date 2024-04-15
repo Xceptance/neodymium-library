@@ -10,8 +10,8 @@ import static com.codeborne.selenide.Selenide.$$;
 import org.junit.jupiter.api.Assertions;
 
 import com.codeborne.selenide.Selenide;
-import com.xceptance.neodymium.junit5.NeodymiumTest;
 import com.xceptance.neodymium.common.browser.Browser;
+import com.xceptance.neodymium.junit5.NeodymiumTest;
 
 @Browser("Safari_Browserstack")
 public class BrowserstackHomePageTest

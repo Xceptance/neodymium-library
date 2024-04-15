@@ -12,13 +12,13 @@ public class TestdataCallback implements BeforeEachCallback
 
     public TestdataCallback(TestdataContainer testData, Object testClassInstance)
     {
-        testdataRunner = new TestdataRunner(testData, testClassInstance);
+        testdataRunner = new TestdataRunner(testData);
     }
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception
     {
-        testdataRunner.setUpTest();
+        testdataRunner.setUpTest(context.getRequiredTestInstance());
     }
 
 }

@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.aeonbits.owner.ConfigFactory;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import com.xceptance.neodymium.junit4.testclasses.multibrowser.BrowserstackHomePageTest;
+import com.xceptance.neodymium.junit5.testclasses.multibrowser.BrowserstackHomePageTest;
 import com.xceptance.neodymium.junit5.tests.utils.NeodymiumTestExecutionSummary;
 import com.xceptance.neodymium.util.TestConfiguration;
 
@@ -17,7 +17,7 @@ public class BrowserstackProxyTest extends AbstractNeodymiumTest
 {
     private static final TestConfiguration CONFIGURATION = ConfigFactory.create(TestConfiguration.class);
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() throws IOException
     {
         Map<String, String> properties1 = new HashMap<>();

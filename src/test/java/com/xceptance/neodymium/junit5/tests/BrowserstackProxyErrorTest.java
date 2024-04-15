@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.aeonbits.owner.ConfigFactory;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.xceptance.neodymium.junit5.testclasses.multibrowser.BrowserstackHomePageTest;
 import com.xceptance.neodymium.junit5.tests.utils.NeodymiumTestExecutionSummary;

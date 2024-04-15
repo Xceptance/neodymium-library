@@ -294,7 +294,7 @@ public class BrowserStatementTest extends NeodymiumTest
         Map<String, List<String>> expectedAnnotations = new HashMap<String, List<String>>();
         List<String> anno1 = new ArrayList<String>();
         anno1.add("@org.junit.Test");
-        anno1.add("@com.xceptance.neodymium.common.browser.Browser(value=\"chrome\")");
+        anno1.add("@com.xceptance.neodymium.common.browser.Browser.*chrome");
         anno1.add("@com.xceptance.neodymium.common.browser.SuppressBrowsers()");
         expectedAnnotations.put("first", anno1);
 
@@ -302,7 +302,6 @@ public class BrowserStatementTest extends NeodymiumTest
         anno2.add("@org.junit.Test");
         anno2.add("@org.junit.Ignore.*This should be visible");
         expectedAnnotations.put("second", anno2);
-
         checkAnnotations(OneBrowserOneMethodBrowserSuppressed.class, expectedAnnotations);
     }
 

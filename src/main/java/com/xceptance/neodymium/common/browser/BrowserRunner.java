@@ -21,7 +21,7 @@ public class BrowserRunner
 {
     public static Logger LOGGER = LoggerFactory.getLogger(BrowserRunner.class);
 
-    private BrowserMethodData browserTag;
+    private BrowserMethodData browserMethodData;
 
     private WebDriverStateContainer wDSCont;
 
@@ -41,7 +41,7 @@ public class BrowserRunner
      */
     public BrowserRunner(BrowserMethodData browserTag, String testName)
     {
-        this.browserTag = browserTag;
+        this.browserMethodData = browserTag;
         this.testName = testName;
     }
 
@@ -51,7 +51,7 @@ public class BrowserRunner
 
     public void setUpTest()
     {
-        setUpTest(browserTag, testName);
+        setUpTest(browserMethodData, testName);
         recordingID = UUID.randomUUID().toString();
         if (FilmTestExecution.getContextGif().filmAutomatically())
         {
@@ -94,7 +94,7 @@ public class BrowserRunner
     {
         validateBrowserTagIsKnown(browserTag.getBrowserTag());
         wDSCont = null;
-        this.browserTag = browserTag;
+        this.browserMethodData = browserTag;
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(browserTag.getBrowserTag());
         try
         {
@@ -162,7 +162,7 @@ public class BrowserRunner
         {
             LOGGER.debug("Put browser into cache");
             webDriverStateContainer.incrementUsedCount();
-            WebDriverCache.instance.putWebDriverStateContainer(browserTag.getBrowserTag(), webDriverStateContainer);
+            WebDriverCache.instance.putWebDriverStateContainer(browserMethodData.getBrowserTag(), webDriverStateContainer);
         }
         // close the WebDriver
         else
@@ -196,7 +196,8 @@ public class BrowserRunner
     private boolean keepOpen(boolean testFailed, BrowserConfiguration browserConfiguration)
     {
         return (browserConfiguration != null && !browserConfiguration.isHeadless())
-               && ((Neodymium.configuration().keepBrowserOpenOnFailure() && testFailed) || Neodymium.configuration().keepBrowserOpen());
+               && (((browserMethodData.isKeepBrowserOpenOnFailure()) && testFailed) ||
+                   (browserMethodData.isKeepBrowserOpen() && !browserMethodData.isKeepBrowserOpenOnFailure()));
     }
 
     private boolean canReuse(boolean preventReuse, WebDriverStateContainer webDriverStateContainer)

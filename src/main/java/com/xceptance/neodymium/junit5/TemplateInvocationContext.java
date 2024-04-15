@@ -33,7 +33,7 @@ public class TemplateInvocationContext implements TestTemplateInvocationContext
     @Override
     public String getDisplayName(int invocationIndex)
     {
-        return methodName + (dataSet != null ? dataSet.getTitle() : "") + (browser != null ? " :: Browser " + browser : "");
+        return methodName + (dataSet != null ? dataSet.getTitle() : "") + (browser != null ? " :: Browser " + browser.getBrowserTag() : "");
     }
 
     @Override

@@ -29,10 +29,13 @@ public class TestdataStatement extends StatementBuilder<TestdataContainer>
 
     private TestdataRunner testdataRunner;
 
+    private Object testClassInstance;
+
     public TestdataStatement(Statement next, Object parameter, Object testClassInstance)
     {
         this.next = next;
-        testdataRunner = new TestdataRunner((TestdataContainer) parameter, testClassInstance);
+        this.testClassInstance = testClassInstance;
+        testdataRunner = new TestdataRunner((TestdataContainer) parameter);
     }
 
     public TestdataStatement()
@@ -42,7 +45,7 @@ public class TestdataStatement extends StatementBuilder<TestdataContainer>
     @Override
     public void evaluate() throws Throwable
     {
-        testdataRunner.setUpTest();
+        testdataRunner.setUpTest(testClassInstance);
         next.evaluate();
     }
 

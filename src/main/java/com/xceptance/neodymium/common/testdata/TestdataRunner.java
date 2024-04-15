@@ -18,20 +18,17 @@ public class TestdataRunner
 
     private TestdataContainer testData;
 
-    private Object testClassInstance;
-
-    public TestdataRunner(TestdataContainer testData, Object testClassInstance)
+    public TestdataRunner(TestdataContainer testData)
     {
         this.testData = testData;
-        this.testClassInstance = testClassInstance;
     }
 
-    public void setUpTest() throws IllegalArgumentException, IllegalAccessException
+    public void setUpTest(Object testClassInstance) throws IllegalArgumentException, IllegalAccessException
     {
         if (testData != null)
         {
             Neodymium.getData().putAll(testData.getDataSet());
-            initializeDataObjects();
+            initializeDataObjects(testClassInstance);
         }
         else
         {
@@ -39,9 +36,9 @@ public class TestdataRunner
         }
     }
 
-    private void initializeDataObjects() throws IllegalArgumentException, IllegalAccessException
+    private void initializeDataObjects(Object testClassInstance) throws IllegalArgumentException, IllegalAccessException
     {
-        for (Field field : getFieldsFromSuperclasses())
+        for (Field field : getFieldsFromSuperclasses(testClassInstance))
         {
             DataItem dataAnnotation = field.getAnnotation(DataItem.class);
             if (dataAnnotation != null)
@@ -76,7 +73,7 @@ public class TestdataRunner
         }
     }
 
-    private List<Field> getFieldsFromSuperclasses()
+    private List<Field> getFieldsFromSuperclasses(Object testClassInstance)
     {
         Class<?> currentSuperclass = testClassInstance.getClass().getSuperclass();
         ArrayList<Field> fields = new ArrayList<Field>(Arrays.asList(testClassInstance.getClass().getDeclaredFields()));

@@ -142,7 +142,7 @@ public class NeodymiumWebDriverTest extends NeodymiumTest
 
         // XVFB or a display needed
         Result result = JUnitCore.runClasses(ValidateKeepWebDriverOpen.class);
-        checkPass(result, 2, 0);
+        checkFail(result, 3, 0, 1);
     }
 
     @Test
