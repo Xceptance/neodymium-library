@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.browserup.bup.BrowserUpProxy;
-import com.codeborne.selenide.WebDriverRunner;
 import com.xceptance.neodymium.common.browser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.common.browser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.common.recording.FilmTestExecution;
@@ -125,7 +124,6 @@ public class BrowserRunner
         {
             // set browser window size
             BrowserRunnerHelper.setBrowserWindowSize(browserConfiguration, wDSCont.getWebDriver());
-            WebDriverRunner.setWebDriver(wDSCont.getWebDriver());
             Neodymium.setWebDriverStateContainer(wDSCont);
             Neodymium.setBrowserProfileName(browserConfiguration.getConfigTag());
             Neodymium.setBrowserName(browserConfiguration.getCapabilities().getBrowserName());
