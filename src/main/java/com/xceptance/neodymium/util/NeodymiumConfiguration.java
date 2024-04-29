@@ -5,10 +5,9 @@ import static org.aeonbits.owner.Config.DisableableFeature.VARIABLE_EXPANSION;
 import org.aeonbits.owner.Config.LoadPolicy;
 import org.aeonbits.owner.Config.LoadType;
 import org.aeonbits.owner.Config.Sources;
+import org.aeonbits.owner.Mutable;
 
 import com.xceptance.neodymium.junit4.NeodymiumRunner.DescriptionMode;
-
-import org.aeonbits.owner.Mutable;
 
 @LoadPolicy(LoadType.MERGE)
 @Sources(
@@ -108,6 +107,10 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.allureAddons.screenshots.perstep.always")
     @DefaultValue("false")
     public boolean screenshotPerStep();
+
+    @Key("neodymium.allureAddons.reports.path")
+    @DefaultValue("/reports/tests")
+    public String reportsPath();
 
     @Key("neodymium.context.device.breakpoint.small")
     @DefaultValue("576")
