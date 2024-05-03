@@ -20,9 +20,9 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.proxy.RequestMatcher.HttpMethod;
 import com.codeborne.selenide.proxy.RequestMatchers;
-import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
-import com.xceptance.neodymium.tests.NeodymiumTest;
+import com.xceptance.neodymium.common.browser.Browser;
+import com.xceptance.neodymium.junit4.NeodymiumRunner;
+import com.xceptance.neodymium.junit4.tests.NeodymiumTest;
 
 @RunWith(NeodymiumRunner.class)
 @Browser("Chrome_headless")
