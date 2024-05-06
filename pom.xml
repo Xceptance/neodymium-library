@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.xceptance</groupId>
 	<artifactId>neodymium-library</artifactId>
-	<version>5.0.0-SNAPSHOT</version>
+	<version>5.0.1-SNAPSHOT</version>
 
 	<name>neodymium-library</name>
 	<url>https://github.com/Xceptance/neodymium-library</url>
@@ -260,6 +260,17 @@
 
 	<dependencies>
 		<dependency>
+      		<groupId>ru.yandex.qatools.ashot</groupId>
+      		<artifactId>ashot</artifactId>
+      		<version>1.5.4</version>
+      		<exclusions>
+        		<exclusion>
+          			<groupId>org.seleniumhq.selenium</groupId>
+          			<artifactId>selenium-remote-driver</artifactId>
+        		</exclusion>
+      		</exclusions>
+    	</dependency>
+		<dependency>
 			<groupId>com.browserup</groupId>
 			<artifactId>browserup-proxy-mitm</artifactId>
 			<version>${browserup.version}</version>
@@ -410,10 +421,5 @@
 			<artifactId>okhttp</artifactId>
 			<version>4.12.0</version>
 		</dependency>
-		<dependency>
-    		<groupId>ru.yandex.qatools.ashot</groupId>
-    		<artifactId>ashot</artifactId>
-    		<version>1.5.4</version>
-		</dependency>
-		</dependencies>
+	</dependencies>
 </project>
