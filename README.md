@@ -52,7 +52,10 @@ If you are still impatient, here is the quickest way to get Neodymium added to y
     <version>INSERT_LATEST_VERSION_HERE</version>
 </dependency>
 ```
+To write tests with JUnit4: 
+
 Add the `@RunWith` annotation to your test class or its superclass. This enables test execution with Neodymium.
+
 ```java
 @RunWith(NeodymiumRunner.class)
 public class MyTests
@@ -64,6 +67,24 @@ public class MyTests
     }
 }
 ```
+
+To write tests with JUnit5: 
+
+Add the `@NeodymiumTest` annotation to your test method. This enables test execution with Neodymium.
+
+```java
+public class MyTests
+{
+    @NeodymiumTest 
+    public void testMethod()
+    {
+        // test code
+    }
+}
+```
+
+If your project is already driven by Neodymium but you want to update to the latest version, please, check the [migration notes](https://github.com/Xceptance/neodymium-library/wiki/Migrate-to-Neodymium-5)
+
 And now is the time to dive into the features we added to make the most out of it. [Please head over to our Wiki](https://github.com/Xceptance/neodymium-library/wiki/).
 
 ## License
