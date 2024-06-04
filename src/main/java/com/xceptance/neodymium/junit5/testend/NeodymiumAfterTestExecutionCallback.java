@@ -1,10 +1,8 @@
 package com.xceptance.neodymium.junit5.testend;
 
-import java.io.File;
-import java.util.UUID;
+import java.nio.file.Path;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.imageio.ImageIO;
 
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -12,12 +10,10 @@ import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.assertthat.selenium_shutterbug.core.Capture;
+import com.assertthat.selenium_shutterbug.core.Shutterbug;
 import com.codeborne.selenide.ex.UIAssertionError;
 import com.xceptance.neodymium.util.Neodymium;
-
-import ru.yandex.qatools.ashot.AShot;
-import ru.yandex.qatools.ashot.Screenshot;
-import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
 @ParametersAreNonnullByDefault
 public class NeodymiumAfterTestExecutionCallback implements AfterTestExecutionCallback
@@ -26,44 +22,52 @@ public class NeodymiumAfterTestExecutionCallback implements AfterTestExecutionCa
 
     private final boolean captureSuccessfulTests;
 
+    private final Capture captureMode;
+
     public NeodymiumAfterTestExecutionCallback()
     {
-        this(false);
+        this(Neodymium.configuration().screenshotOnSuccess(), Neodymium.configuration().enableFullPageCapture());
     }
 
     /**
      * @param captureSuccessfulTests
      *            param that indicate if you need to capture successful tests
      */
-    public NeodymiumAfterTestExecutionCallback(final boolean captureSuccessfulTests)
+    public NeodymiumAfterTestExecutionCallback(boolean captureSuccessfulTests, boolean enableFullPageCapture)
     {
         this.captureSuccessfulTests = captureSuccessfulTests;
+        if (enableFullPageCapture)
+        {
+            this.captureMode = Capture.FULL;
+        }
+        else
+        {
+            this.captureMode = Capture.VIEWPORT;
+        }
     }
 
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception
     {
-        AShot screenshotShooter = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(100));
         WebDriver driver = Neodymium.getDriver();
-        Screenshot s = null;
+        Path imagePath = Path.of(System.getProperty("user.dir") + Neodymium.configuration().reportsPath());
 
         if (captureSuccessfulTests)
         {
-            s = screenshotShooter.takeScreenshot(driver);
-            log.info("captured Screenshot of successful Test to:");
+            Shutterbug.shootPage(driver, this.captureMode).save(imagePath.normalize().toString());
+            log.info("captured Screenshot of successful Test to: " + imagePath.normalize());
         }
         else
         {
-            Throwable error = context.getExecutionException().get();
-            if (!(error instanceof UIAssertionError))
+            if (context.getExecutionException().isPresent())
             {
-                s = screenshotShooter.takeScreenshot(driver);
-                log.info("captured Screenshot of failed Test to:");
+                Throwable error = context.getExecutionException().get();
+                if (error instanceof UIAssertionError)
+                {
+                    Shutterbug.shootPage(driver, this.captureMode).save(imagePath.normalize().toString());
+                    log.info("captured Screenshot of failed Test to: " + imagePath.normalize());
+                }
             }
-        }
-        if (s != null)
-        {
-            ImageIO.write(s.getImage(), "PNG", new File(Neodymium.configuration().reportsPath() + UUID.randomUUID().toString() + ".png"));
         }
     }
 }

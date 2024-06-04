@@ -109,7 +109,7 @@ public interface NeodymiumConfiguration extends Mutable
     public boolean screenshotPerStep();
 
     @Key("neodymium.allureAddons.reports.path")
-    @DefaultValue("/reports/tests")
+    @DefaultValue("/build/reports/tests/")
     public String reportsPath();
 
     @Key("neodymium.context.device.breakpoint.small")
@@ -267,4 +267,12 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.workInProgress")
     @DefaultValue("false")
     public boolean workInProgress();
+
+    @Key("neodymium.screenshotOnSuccess")
+    @DefaultValue("false")
+    public boolean screenshotOnSuccess();
+
+    @Key("neodymium.enableFullPageCapture")
+    @DefaultValue("false")
+    public boolean enableFullPageCapture();
 }
