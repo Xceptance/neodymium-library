@@ -1,10 +1,26 @@
 package com.xceptance.neodymium.util;
 
+import java.io.File;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import com.google.common.collect.ImmutableMap;
 
 import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
@@ -16,6 +32,8 @@ import io.qameta.allure.Step;
  */
 public class AllureAddons
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AllureAddons.class);
+
     /**
      * Define a step without return value. This can be used to transport data (information) from test into the report.
      *
@@ -91,5 +109,43 @@ public class AllureAddons
     public static byte[] attachPNG(final String filename)
     {
         return ((TakesScreenshot) Neodymium.getDriver()).getScreenshotAs(OutputType.BYTES);
+    }
+
+    public static void addEnvironmentInformation(ImmutableMap<String, String> environmentValuesSet)
+    {
+        try
+        {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.newDocument();
+            Element environment = doc.createElement("environment");
+            doc.appendChild(environment);
+            environmentValuesSet.forEach((k, v) -> {
+                Element parameter = doc.createElement("parameter");
+                Element key = doc.createElement("key");
+                Element value = doc.createElement("value");
+                key.appendChild(doc.createTextNode(k));
+                value.appendChild(doc.createTextNode(v));
+                parameter.appendChild(key);
+                parameter.appendChild(value);
+                environment.appendChild(parameter);
+            });
+
+            // Write the content into xml file
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            File allureResultsDir = new File(System.getProperty("allure.results.directory", System.getProperty("user.dir"))
+                                             + "/target/allure-results");
+            if (!allureResultsDir.exists())
+                allureResultsDir.mkdirs();
+            StreamResult result = new StreamResult(new File(System.getProperty("user.dir")
+                                                            + "/target/allure-results/environment.xml"));
+            transformer.transform(source, result);
+        }
+        catch (ParserConfigurationException | TransformerException e)
+        {
+            LOGGER.warn("Failed to add information about environment to Allure report");
+        }
     }
 }
