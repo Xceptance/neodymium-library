@@ -24,8 +24,11 @@ If you already know what you want to do, you can pick one of the demo test suite
 * [Neodymium Cucumber Example](https://github.com/Xceptance/neodymium-cucumber-example): For the fans of BDD/Cucumber, this is almost the same test suite as before but driven by BDD syntax.
 * [Neodymium Showcase](https://github.com/Xceptance/neodymium-showcase): This repository contains different showcases. Each of them demonstrates and comments on the usage of a single feature of Neodymium. Feel free to request more examples by creating an issue.
 
-## Introductions in other media
+## Introductions in media
 We have a talk (in German) about the features and some best practices for Neodymium available on [YouTube](https://www.youtube.com/watch?v=hn-juzcXrZg).
+
+[Here](https://blog.xceptance.com/2019/02/26/neodymium-an-open-source-framework-for-web-testing/) is an article on describing the main features of Neodymium and our motivation why we saw the need to create it.
+
 
 ## Additional Features
 These are our **additions** to make test automation nicer, quicker, and less painful. 
