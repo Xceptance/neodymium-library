@@ -32,12 +32,15 @@ public class NeodymiumRunner implements TestTemplateInvocationContextProvider
         SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
         if (!neoVersionLogged && Neodymium.configuration().logNeoVersion())
         {
-            LOGGER.info("This test uses Neodymium Library (version: " + Neodymium.getNeodymiumVersion()
-                        + "), MIT License, more details on https://github.com/Xceptance/neodymium-library");
-            neoVersionLogged = true;
-            AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder()
-                                                               .put("Testing Framework", "Neodymium " + Neodymium.getNeodymiumVersion())
-                                                               .build());
+            if (!AllureAddons.envFileExists())
+            {
+                LOGGER.info("This test uses Neodymium Library (version: " + Neodymium.getNeodymiumVersion()
+                            + "), MIT License, more details on https://github.com/Xceptance/neodymium-library");
+                neoVersionLogged = true;
+                AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder()
+                                                                   .put("Testing Framework", "Neodymium " + Neodymium.getNeodymiumVersion())
+                                                                   .build());
+            }
         }
     }
 

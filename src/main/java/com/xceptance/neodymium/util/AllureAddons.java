@@ -1,6 +1,10 @@
 package com.xceptance.neodymium.util;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -19,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -111,41 +117,107 @@ public class AllureAddons
         return ((TakesScreenshot) Neodymium.getDriver()).getScreenshotAs(OutputType.BYTES);
     }
 
+    /**
+     * Adds information about environment to the report
+     * 
+     * @param environmentValuesSet
+     *            map with environment values
+     */
     public static void addEnvironmentInformation(ImmutableMap<String, String> environmentValuesSet)
     {
         try
         {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-            Document doc = docBuilder.newDocument();
-            Element environment = doc.createElement("environment");
-            doc.appendChild(environment);
-            environmentValuesSet.forEach((k, v) -> {
-                Element parameter = doc.createElement("parameter");
-                Element key = doc.createElement("key");
-                Element value = doc.createElement("value");
-                key.appendChild(doc.createTextNode(k));
-                value.appendChild(doc.createTextNode(v));
-                parameter.appendChild(key);
-                parameter.appendChild(value);
-                environment.appendChild(parameter);
-            });
 
-            // Write the content into xml file
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
+
+            // check if allure-results folder exists
+            if (!getAllureResultsFolder().exists())
+            {
+                // create it if not
+                getAllureResultsFolder().mkdirs();
+            }
+            Document doc;
+
+            // if environment.xml file exists, there probably already was an entry in it
+            // in this case we need to append our values to it
+            if (envFileExists())
+            {
+                doc = docBuilder.parse(getEnvFile());
+                environmentValuesSet.forEach((k, v) -> {
+                    Node environment = doc.getDocumentElement();
+                    // Node environment = doc.getElementsByTagName("environment").item(0);
+                    Element parameter = doc.createElement("parameter");
+                    Element key = doc.createElement("key");
+                    Element value = doc.createElement("value");
+                    key.appendChild(doc.createTextNode(k));
+                    value.appendChild(doc.createTextNode(v));
+                    parameter.appendChild(key);
+                    parameter.appendChild(value);
+                    environment.appendChild(parameter);
+                });
+            }
+            else
+            {
+                doc = docBuilder.newDocument();
+                Element environment = doc.createElement("environment");
+                doc.appendChild(environment);
+                environmentValuesSet.forEach((k, v) -> {
+                    Element parameter = doc.createElement("parameter");
+                    Element key = doc.createElement("key");
+                    Element value = doc.createElement("value");
+                    key.appendChild(doc.createTextNode(k));
+                    value.appendChild(doc.createTextNode(v));
+                    parameter.appendChild(key);
+                    parameter.appendChild(value);
+                    environment.appendChild(parameter);
+                });
+            }
             DOMSource source = new DOMSource(doc);
-            File allureResultsDir = new File(System.getProperty("allure.results.directory", System.getProperty("user.dir"))
-                                             + "/target/allure-results");
-            if (!allureResultsDir.exists())
-                allureResultsDir.mkdirs();
-            StreamResult result = new StreamResult(new File(System.getProperty("user.dir")
-                                                            + "/target/allure-results/environment.xml"));
-            transformer.transform(source, result);
+            FileOutputStream output = new FileOutputStream(getEnvFile());
+            FileChannel channel = output.getChannel();
+            FileLock lock = channel.tryLock();
+            if (lock != null)
+            {
+                StreamResult result = new StreamResult(output);
+                transformer.transform(source, result);
+            }
+            lock.release();
         }
-        catch (ParserConfigurationException | TransformerException e)
+        catch (ParserConfigurationException | TransformerException | SAXException | IOException e)
         {
             LOGGER.warn("Failed to add information about environment to Allure report");
         }
+    }
+
+    /**
+     * Check if allure-reprot environment.xml file exists
+     * 
+     * @return false - if doesn't exist <br>
+     *         true - if exists
+     */
+    public static boolean envFileExists()
+    {
+        return getEnvFile().exists();
+    }
+
+    private static File getEnvFile()
+    {
+        File allureResultsDir = getAllureResultsFolder();
+        File envFile = new File(allureResultsDir.getAbsoluteFile() + "/environment.xml");
+        return envFile;
+    }
+
+    /**
+     * Get path to allure-results folder (default or configured in pom)
+     * 
+     * @return File with path to the allure-results folder
+     */
+    public static File getAllureResultsFolder()
+    {
+        return new File(System.getProperty("allure.results.directory", System.getProperty("user.dir")
+                                                                       + "/target/allure-results"));
     }
 }
