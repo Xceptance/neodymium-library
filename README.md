@@ -24,10 +24,11 @@ If you already know what you want to do, you can pick one of the demo test suite
 * [Neodymium Cucumber Example](https://github.com/Xceptance/neodymium-cucumber-example): For the fans of BDD/Cucumber, this is almost the same test suite as before but driven by BDD syntax.
 * [Neodymium Showcase](https://github.com/Xceptance/neodymium-showcase): This repository contains different showcases. Each of them demonstrates and comments on the usage of a single feature of Neodymium. Feel free to request more examples by creating an issue.
 
-## Introductions in other media
-We have an article on [DZone](https://dzone.com/articles/neodymium-an-open-source-framework-for-web-testing) describing the main features of Neodymium.
-
+## Neodymium in the media
 We have a talk (in German) about the features and some best practices for Neodymium available on [YouTube](https://www.youtube.com/watch?v=hn-juzcXrZg).
+
+[Here](https://blog.xceptance.com/2019/02/26/neodymium-an-open-source-framework-for-web-testing/) is an article on describing the main features of Neodymium and our motivation why we saw the need to create it.
+
 
 ## Additional Features
 These are our **additions** to make test automation nicer, quicker, and less painful. 
@@ -52,23 +53,8 @@ If you are still impatient, here is the quickest way to get Neodymium added to y
     <version>INSERT_LATEST_VERSION_HERE</version>
 </dependency>
 ```
-To write tests with JUnit4: 
 
-Add the `@RunWith` annotation to your test class or its superclass. This enables test execution with Neodymium.
-
-```java
-@RunWith(NeodymiumRunner.class)
-public class MyTests
-{
-    @Test 
-    public void testMethod()
-    {
-        // test code
-    }
-}
-```
-
-To write tests with JUnit5: 
+To write a simple unit test:
 
 Add the `@NeodymiumTest` annotation to your test method. This enables test execution with Neodymium.
 
@@ -81,7 +67,9 @@ public class MyTests
         // test code
     }
 }
+
 ```
+Please be aware that Neodymium (starting at version 5.0.0) is using JUnit5. If you want to run your tests with JUnit4 Neodymium still supports this and you can have a look [here](https://github.com/Xceptance/neodymium-library/wiki/).
 
 If your project is already driven by Neodymium but you want to update to the latest version, please, check the [migration notes](https://github.com/Xceptance/neodymium-library/wiki/Migrate-to-Neodymium-5)
 
