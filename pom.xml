@@ -16,25 +16,15 @@
 	</organization>
 
 	<developers>
-		<developer>
-			<name>Marcus Kaufmann</name>
-			<organization>Xceptance Software Technologies GmbH</organization>
-			<organizationUrl>https://www.xceptance.com</organizationUrl>
-			<roles>
-				<role>former developer</role>
-			</roles>
-		</developer>
-		<developer>
-			<name>Marcel Pfotenhauer</name>
-			<email>neodymium@xceptance.com</email>
-			<organization>Xceptance Software Technologies GmbH</organization>
-			<organizationUrl>https://www.xceptance.com</organizationUrl>
-			<roles>
-				<role>architect</role>
-				<role>developer</role>
-			</roles>
-		</developer>
-	</developers>
+    <developer>
+        <name>Xceptance Test Automation Team</name>
+        <id>xceptance</id>
+        <email>testautomation@xceptance.com </email>
+        <organization>Xceptance Software Technologies GmbH</organization>
+        <organizationUrl>https://www.xceptance.com/</organizationUrl>
+        <timezone>+1</timezone>
+    </developer>
+  </developers>
 
 	<licenses>
 		<license>
