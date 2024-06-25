@@ -6,12 +6,14 @@ import static com.codeborne.selenide.Condition.hidden;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.lang3.Range;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +22,7 @@ import org.openqa.selenium.StaleElementReferenceException;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.ex.ElementNotFound;
 import com.codeborne.selenide.ex.ElementShould;
 import com.codeborne.selenide.ex.UIAssertionError;
@@ -28,107 +31,170 @@ import com.codeborne.selenide.logevents.LogEvent.EventStatus;
 import com.codeborne.selenide.logevents.LogEventListener;
 import com.codeborne.selenide.logevents.SelenideLog;
 import com.codeborne.selenide.logevents.SelenideLogger;
-import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowsers;
+import com.xceptance.neodymium.common.browser.Browser;
+import com.xceptance.neodymium.common.browser.SuppressBrowsers;
+import com.xceptance.neodymium.junit4.NeodymiumRunner;
 
 @RunWith(NeodymiumRunner.class)
 @Browser("Chrome_headless")
 public class SelenideAddonsTest
 {
-    private void openPostersStartPage()
+    private List<Runnable> runArrayWithSEREinMessage = new ArrayList<Runnable>()
     {
-        Selenide.open("https://posters.xceptance.io:8443/posters/");
+        private static final long serialVersionUID = 1L;
+        {
+            add(
+                () -> {
+                    throw UIAssertionError.wrap(WebDriverRunner.driver(),
+                                                new AssertionError("StaleElementReferenceException"),
+                                                0);
+                });
+            add(
+                () -> {
+                    throw UIAssertionError.wrap(WebDriverRunner.driver(),
+                                                new AssertionError("WeCanStillSpotTheStaleElementReferenceExceptionEvenIfItTriesToHide"),
+                                                0);
+                });
+            add(
+                () -> {
+                    throw UIAssertionError.wrap(WebDriverRunner.driver(),
+                                                new AssertionError("We think this was caused by an :StaleElementReferenceException"),
+                                                0);
+                });
+            add(
+                () -> {
+                    throw UIAssertionError.wrap(WebDriverRunner.driver(),
+                                                new AssertionError("You shall pass! Even though you contain the word StaleElementReferenceException that we are searching for."),
+                                                0);
+                });
+            add(
+                () -> {
+                    throw UIAssertionError.wrap(WebDriverRunner.driver(),
+                                                new AssertionError("You shall never be seen in StaleElementReferenceException catch function!"), 0);
+                });
+        }
+    };
+
+    private List<Runnable> runArrayWithSEREinCause = new ArrayList<Runnable>()
+    {
+        private static final long serialVersionUID = 2L;
+        {
+            add(
+                () -> {
+                    throw new StaleElementReferenceException("You shall not pass!");
+                });
+            add(
+                () -> {
+                    throw new StaleElementReferenceException("You shall not pass!");
+                });
+            add(
+                () -> {
+                    throw new StaleElementReferenceException("You shall not pass!");
+                });
+            add(
+                () -> {
+                    throw new StaleElementReferenceException("You shall pass!");
+                });
+            add(
+                () -> {
+                    throw new StaleElementReferenceException("You shall never be seen!");
+                });
+        }
+    };
+
+    private void openBlogPage()
+    {
+        Selenide.open("https://blog.xceptance.com/");
     }
 
     @Test
     public void testMatchesAttributeCondition()
     {
-        openPostersStartPage();
-        $("#header-search-trigger").click();
+        openBlogPage();
+        $("#masthead .search-toggle").click();
 
-        $("#searchForm input").should(SelenideAddons.matchesAttribute("placeholder", "Search"));
+        $("#search-container .search-field").should(SelenideAddons.matchesAttribute("placeholder", "Search.*"));
     }
 
     @Test
     public void testMatchAttributeCondition()
     {
-        openPostersStartPage();
-        $("#header-search-trigger").click();
+        openBlogPage();
+        $("#masthead .search-toggle").click();
 
-        $("#searchForm input").should(SelenideAddons.matchAttribute("placeholder", "^S.a.c."));
-        $("#searchForm input").should(SelenideAddons.matchAttribute("placeholder", "\\D+"));
+        $("#search-container .search-field").should(SelenideAddons.matchAttribute("placeholder", "^S.a.c.\\s…"));
+        $("#search-container .search-field").should(SelenideAddons.matchAttribute("placeholder", "\\D+"));
     }
 
     @Test
     public void testMatchAttributeConditionError()
     {
-        openPostersStartPage();
-        $("#header-search-trigger").click();
+        openBlogPage();
+        $("#masthead .search-toggle").click();
 
         Assert.assertThrows(ElementShould.class, () -> {
-            $("#searchForm input").should(SelenideAddons.matchAttribute("placeholder", "\\d+"));
+            $("#search-container .search-field").should(SelenideAddons.matchAttribute("placeholder", "\\d+"));
         });
     }
 
     @Test
     public void testMatchAttributeConditionErrorMissingAttribute()
     {
-        openPostersStartPage();
-        $("#header-search-trigger").click();
+        openBlogPage();
+        $("#masthead .search-toggle").click();
 
         Assert.assertThrows(ElementShould.class, () -> {
-            $("#searchForm input").should(SelenideAddons.matchAttribute("foo", "bar"));
+            $("#search-container .search-field").should(SelenideAddons.matchAttribute("bar", "bar"));
         });
     }
 
     @Test
     public void testMatchesValueCondition()
     {
-        openPostersStartPage();
-        $("#header-search-trigger").click();
-        $("#searchForm input").val("mozzarella").submit();
+        openBlogPage();
+        $("#masthead .search-toggle").click();
+        $("#search-container .search-field").val("searchphrase").submit();
 
-        $("#searchForm input").should(SelenideAddons.matchesValue("ozzarell"));
+        $("#content .search-field").should(SelenideAddons.matchesValue("earchphras"));
     }
 
     @Test
     public void testMatchValueCondition()
     {
-        openPostersStartPage();
-        $("#header-search-trigger").click();
-        $("#searchForm input").val("mozzarella").submit();
+        openBlogPage();
+        $("#masthead .search-toggle").click();
+        $("#search-container .search-field").val("searchphrase").submit();
 
-        $("#searchForm input").should(SelenideAddons.matchValue("^m.z.a.e.l.$"));
-        $("#searchForm input").should(SelenideAddons.matchValue("\\D+"));
+        $("#content .search-field").should(SelenideAddons.matchValue("^s.a.c.p.r.s.$"));
+        $("#content .search-field").should(SelenideAddons.matchValue("\\D+"));
     }
 
     @Test
     public void testMatchValueConditionError()
     {
-        openPostersStartPage();
-        $("#header-search-trigger").click();
-        $("#searchForm input").val("mozzarella").submit();
+        openBlogPage();
+        $("#masthead .search-toggle").click();
+        $("#search-container .search-field").val("searchphrase").submit();
 
         Assert.assertThrows(ElementShould.class, () -> {
-            $("#searchForm input").should(SelenideAddons.matchValue("\\d+"));
+            $("#content .search-field").should(SelenideAddons.matchValue("\\d+"));
         });
     }
 
     @Test()
     public void testWrapAssertion()
     {
-        openPostersStartPage();
+        openBlogPage();
 
         SelenideAddons.wrapAssertionError(() -> {
-            Assert.assertEquals("Posters - The Ultimate Online Shop", Selenide.title());
+            Assert.assertEquals("Passionate Testing | Xceptance Blog", Selenide.title());
         });
     }
 
     @Test
     public void testWrapAssertionError()
     {
-        openPostersStartPage();
+        openBlogPage();
 
         Assert.assertThrows(UIAssertionError.class, () -> {
             SelenideAddons.wrapAssertionError(() -> {
@@ -161,10 +227,11 @@ public class SelenideAddonsTest
             }
         });
 
-        openPostersStartPage();
+        openBlogPage();
         Neodymium.softAssertions(true);
         try
         {
+
             SelenideAddons.wrapAssertionError(() -> {
                 Assert.assertEquals(errMessage, "MyPageTitle", Selenide.title());
             });
@@ -201,7 +268,7 @@ public class SelenideAddonsTest
             }
         });
 
-        openPostersStartPage();
+        openBlogPage();
         Neodymium.softAssertions(true);
         try
         {
@@ -219,10 +286,10 @@ public class SelenideAddonsTest
     @Test
     public void testWrapAssertionErrorWithoutMessage()
     {
-        final String errMessage = "AssertionError: No error message provided by the Assertion.";
+        final String errMessage = "java.lang.AssertionError: No error message provided by the Assertion.";
         try
         {
-            openPostersStartPage();
+            openBlogPage();
             SelenideAddons.wrapAssertionError(() -> {
                 Assert.assertTrue(Selenide.title().startsWith("MyPageTitle"));
             });
@@ -235,54 +302,77 @@ public class SelenideAddonsTest
 
     @Test()
     @SuppressBrowsers
-    public void testSafeRunnable()
+    public void testIsThrowableCausedBy()
     {
-        // preparing the test setup as kind of generator
-        AtomicInteger counter = new AtomicInteger(0);
-        List<Runnable> runArray = new ArrayList<Runnable>();
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall never be seen!");
-                     });
-        final Iterator<Runnable> iterator = runArray.iterator();
+        Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new NullPointerException("this is final cause")));
+        Assert.assertTrue("Throwable has unexpected cause", SelenideAddons.isThrowableCausedBy(causedByIOException, NullPointerException.class));
+    }
 
-        // testing the error path after three exceptions
-        long startTime = new Date().getTime();
-        try
-        {
-            SelenideAddons.$safe(() -> {
-                counter.incrementAndGet();
-                if (iterator.hasNext())
-                {
-                    iterator.next().run();
-                }
-            });
-        }
-        catch (StaleElementReferenceException e)
-        {
-            Assert.assertTrue(e.getMessage().startsWith("You shall pass!"));
-        }
-        long endTime = new Date().getTime();
-        Assert.assertTrue(endTime - startTime > Neodymium.configuration().staleElementRetryTimeout());
-        Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 1);
+    @Test()
+    @SuppressBrowsers
+    public void testIsThrowableNotCausedBy()
+    {
+        Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new NullPointerException("this is final cause")));
+        Assert.assertFalse("Throwable has unexpected cause",
+                           SelenideAddons.isThrowableCausedBy(causedByIOException, NumberFormatException.class, "not existing message"));
+    }
 
-        // testing the happy path after one exception
+    @Test()
+    @SuppressBrowsers
+    public void testIsThrowableCausedByMessage()
+    {
+        Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new NullPointerException("this is final cause")));
+        Assert.assertTrue("Throwable has unexpected cause",
+                          SelenideAddons.isThrowableCausedBy(causedByIOException, NumberFormatException.class, "this is assertion error"));
+    }
+
+    @Test()
+    @SuppressBrowsers
+    public void testIsThrowableNotCausedByMessage()
+    {
+        Throwable causedByIOException = new RuntimeException("This is runtime exception", new AssertionError("this is assertion error", new NullPointerException("this is final cause")));
+        Assert.assertFalse("Throwable has unexpected cause",
+                           SelenideAddons.isThrowableCausedBy(causedByIOException, NumberFormatException.class, "not existing message"));
+    }
+
+    @Test()
+    public void testSafeRunnableInCause()
+    {
+        testSafe(runArrayWithSEREinCause, false);
+    }
+
+    @Test()
+    public void testSafeRunnableInMessage()
+    {
+        testSafe(runArrayWithSEREinMessage, false);
+    }
+
+    @Test()
+    public void testSafeSupplierInCause()
+    {
+        testSafe(runArrayWithSEREinCause, true);
+    }
+
+    @Test()
+    public void testSafeSupplierInMessage()
+    {
+        testSafe(runArrayWithSEREinMessage, true);
+    }
+
+    private SelenideElement testSupplier(AtomicInteger counter, Iterator<Runnable> iterator)
+    {
+        return SelenideAddons.$safe(() -> {
+            counter.incrementAndGet();
+            if (iterator.hasNext())
+            {
+                iterator.next().run();
+            }
+            return $("body").should(exist);
+        });
+    }
+
+    private void testRunnable(AtomicInteger counter, Iterator<Runnable> iterator)
+    {
         SelenideAddons.$safe(() -> {
             counter.incrementAndGet();
             if (iterator.hasNext())
@@ -290,70 +380,53 @@ public class SelenideAddonsTest
                 iterator.next().run();
             }
         });
-        Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 3);
     }
 
-    @Test()
-    public void testSafeSupplier()
+    private void testSafe(List<Runnable> runArray, boolean isSupplier)
     {
         // preparing the test setup as kind of generator
         AtomicInteger counter = new AtomicInteger(0);
-        List<Runnable> runArray = new ArrayList<Runnable>();
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall not pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall pass!");
-                     });
-        runArray.add(
-                     () -> {
-                         throw new StaleElementReferenceException("You shall never be seen!");
-                     });
         final Iterator<Runnable> iterator = runArray.iterator();
 
         // testing the error path after three exceptions
-        openPostersStartPage();
+        openBlogPage();
+        String defaultRetryTimeout = Neodymium.configuration().setProperty("neodymium.selenideAddons.staleElement.retry.timeout", "6000");
         long startTime = new Date().getTime();
         try
         {
-            SelenideAddons.$safe(() -> {
-                counter.incrementAndGet();
-                if (iterator.hasNext())
-                {
-                    iterator.next().run();
-                }
-                return $("body").should(exist);
-            });
-        }
-        catch (StaleElementReferenceException e)
-        {
-            Assert.assertTrue(e.getMessage().startsWith("You shall pass!"));
-        }
-        long endTime = new Date().getTime();
-        Assert.assertTrue(endTime - startTime > Neodymium.configuration().staleElementRetryTimeout());
-        Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 1);
-
-        // testing the happy path after one exception
-        SelenideElement element = SelenideAddons.$safe(() -> {
-            counter.incrementAndGet();
-            if (iterator.hasNext())
+            if (isSupplier)
             {
-                iterator.next().run();
+                testSupplier(counter, iterator);
             }
-            return $("body");
-        });
-        Assert.assertEquals(counter.get(), Neodymium.configuration().staleElementRetryCount() + 3);
-        element.shouldBe(visible);
+            else
+            {
+                testRunnable(counter, iterator);
+            }
+        }
+        catch (StaleElementReferenceException | UIAssertionError e)
+        {
+            Assert.assertTrue(e.getMessage() + " doesn't contain phrase 'You shall pass!'", e.getMessage().contains("You shall pass!"));
+        }
+
+        long duration = new Date().getTime() - startTime;
+        long minimalDuration = Neodymium.configuration().staleElementRetryTimeout() * Neodymium.configuration().staleElementRetryCount();
+
+        // added buffer time to filter out the impact of the execution of passed runnable on the whole execution time
+        long maximalDuration = minimalDuration + Neodymium.configuration().staleElementRetryTimeout() / 2;
+        Assert.assertTrue("Waiting time taken to catch SERE (" + duration + "ms) is not in range from  " + minimalDuration + " to " + maximalDuration + "ms",
+                          Range.between(minimalDuration, maximalDuration).contains(duration));
+
+        Assert.assertEquals("SERE was catched " + counter.get() + " times instead of " + (Neodymium.configuration().staleElementRetryCount() + 1),
+                            Neodymium.configuration().staleElementRetryCount() + 1, counter.get());
+        Neodymium.configuration().setProperty("neodymium.selenideAddons.staleElement.retry.timeout", defaultRetryTimeout);
+        if (isSupplier)
+        {
+            // testing the happy path after one exception
+            SelenideElement element = testSupplier(counter, iterator);
+            Assert.assertEquals("SERE was catched " + counter.get() + " times instead of " + (Neodymium.configuration().staleElementRetryCount() + 3),
+                                Neodymium.configuration().staleElementRetryCount() + 3, counter.get());
+            element.shouldBe(visible);
+        }
     }
 
     @Test()
@@ -465,7 +538,7 @@ public class SelenideAddonsTest
         SelenideElement slider = $("#equalizer .k-slider-vertical:first-child span.k-draghandle");
         slider.scrollIntoView("{'block':'center','inline':'center'}");
         slider.shouldHave(attribute("aria-valuenow", "10"));
-        SelenideAddons.dragAndDropUntilCondition(slider, slider, 0, 10, 3000, 23, Condition.attribute("aria-valuenow", "-8"));
+        SelenideAddons.dragAndDropUntilCondition(slider, slider, 0, 10, 3000, 42, Condition.attribute("aria-valuenow", "-8"));
         slider.shouldHave(attribute("aria-valuenow", "-8"));
     }
 
@@ -500,7 +573,7 @@ public class SelenideAddonsTest
 
         SelenideElement slider = $(".balSlider span[role=slider]");
         slider.shouldHave(attribute("aria-valuenow", "0"));
-        SelenideAddons.dragAndDrop(slider, 42, 0);
+        SelenideAddons.dragAndDrop(slider, 48, 0);
         slider.shouldHave(attribute("aria-valuenow", "2"));
     }
 
@@ -511,7 +584,7 @@ public class SelenideAddonsTest
 
         SelenideElement slider = $(".balSlider span[role=slider]");
         slider.shouldHave(attribute("aria-valuenow", "0"));
-        SelenideAddons.dragAndDrop(slider, -42, 0);
+        SelenideAddons.dragAndDrop(slider, -32, 0);
         slider.shouldHave(attribute("aria-valuenow", "-2"));
     }
 
@@ -539,6 +612,74 @@ public class SelenideAddonsTest
         slider.shouldHave(attribute("aria-valuenow", "14"));
     }
 
+    @Test()
+    public void testRightwardDragAndDropOutOfBounds()
+    {
+        openSliderPage();
+
+        SelenideElement slider = $(".balSlider span[role=slider]");
+        slider.shouldHave(attribute("aria-valuenow", "0"));
+        AssertionError exception = Assert.assertThrows(AssertionError.class, () -> {
+            SelenideAddons.dragAndDrop(slider, 3200, 0);
+        });
+        String expectedMessage = "Performing drag and drop with an element moved the element out of the viewport. Try to scroll the element completely into the view port or to decrease the absolute values of your movements.";
+        String actualMessage = exception.getMessage();
+        Assert.assertTrue(String.format("The exception message '%s' doesn't contain the expected message '%s'", actualMessage, expectedMessage),
+                          actualMessage.contains(expectedMessage));
+    }
+
+    @Test()
+    public void testLeftwardDragAndDropOutOfBounds()
+    {
+        openSliderPage();
+
+        SelenideElement slider = $(".balSlider span[role=slider]");
+        slider.shouldHave(attribute("aria-valuenow", "0"));
+        AssertionError exception = Assert.assertThrows(AssertionError.class, () -> {
+            SelenideAddons.dragAndDrop(slider, -3200, 0);
+        });
+        String expectedMessage = "Performing drag and drop with an element moved the element out of the viewport. Try to scroll the element completely into the view port or to decrease the absolute values of your movements.";
+        String actualMessage = exception.getMessage();
+        Assert.assertTrue(String.format("The exception message %s doesn't contain the expected message %s", actualMessage, expectedMessage),
+                          actualMessage.contains(expectedMessage));
+    }
+
+    @Test()
+    public void testUpwardDragAndDropOutOfBounds()
+    {
+        openSliderPage();
+
+        SelenideElement slider = $("#equalizer .k-slider-vertical:first-child span.k-draghandle");
+        slider.scrollIntoView("{'block':'center','inline':'center'}");
+
+        slider.shouldHave(attribute("aria-valuenow", "10"));
+        AssertionError exception = Assert.assertThrows(AssertionError.class, () -> {
+            SelenideAddons.dragAndDrop(slider, 0, -1200);
+        });
+        String expectedMessage = "Performing drag and drop with an element moved the element out of the viewport. Try to scroll the element completely into the view port or to decrease the absolute values of your movements.";
+        String actualMessage = exception.getMessage();
+        Assert.assertTrue(String.format("The exception message %s doesn't contain the expected message %s", actualMessage, expectedMessage),
+                          actualMessage.contains(expectedMessage));
+    }
+
+    @Test()
+    public void testDownwardDragAndDropOutOfBounds()
+    {
+        openSliderPage();
+
+        SelenideElement slider = $("#equalizer .k-slider-vertical:first-child span.k-draghandle");
+        slider.scrollIntoView("{'block':'center','inline':'center'}");
+
+        slider.shouldHave(attribute("aria-valuenow", "10"));
+        AssertionError exception = Assert.assertThrows(AssertionError.class, () -> {
+            SelenideAddons.dragAndDrop(slider, 0, 1200);
+        });
+        String expectedMessage = "Performing drag and drop with an element moved the element out of the viewport. Try to scroll the element completely into the view port or to decrease the absolute values of your movements.";
+        String actualMessage = exception.getMessage();
+        Assert.assertTrue(String.format("The exception message %s doesn't contain the expected message %s", actualMessage, expectedMessage),
+                          actualMessage.contains(expectedMessage));
+    }
+
     private void openSliderPage()
     {
         Selenide.open("https://demos.telerik.com/kendo-ui/slider/index");
@@ -558,11 +699,12 @@ public class SelenideAddonsTest
             $("#onetrust-consent-sdk .onetrust-pc-dark-filter").shouldBe(hidden);
             Selenide.refresh();
         }
-        
-        Selenide.sleep(2000);
+        $(".kd-loader-wrap").shouldBe(hidden, Duration.ofMillis(6000));
+
         SelenideElement questionaire = $("#qual_ol .qual_x_close");
-        if (questionaire.isDisplayed()) {
-        	questionaire.click();
+        if (SelenideAddons.optionalWaitUntilCondition(questionaire, visible, 2000))
+        {
+            questionaire.click();
         }
     }
 
@@ -582,5 +724,171 @@ public class SelenideAddonsTest
 
         SelenideAddons.openHtmlContentWithCurrentWebDriver(textHtml);
         Assert.assertEquals(text, $("body").getText());
+    }
+
+    private static final long CUSTOM_MAX_WAITING_TIME = 20000;
+
+    private static final long CUSTOM_POLLING_INTERVAL = 5000;
+
+    private static final String PRIVACY_DIALOG_SELECTOR = "#privacy-message";
+
+    private void validateRuntimeIsExpected(Runnable runnable, long expectedTime, long pollingInterval)
+    {
+        final long startTime = new Date().getTime();
+        runnable.run();
+        final long endTime = new Date().getTime();
+
+        final long runtime = endTime - startTime;
+        // check that runtime of the wait until method was as long as expected
+        Assert.assertTrue("Runtime was not within the expected range", Range.between(expectedTime, expectedTime + pollingInterval / 2)
+                                                                            .contains(runtime));
+    }
+
+    @Test
+    public void testOptionalWaitUntil()
+    {
+        openBlogPage();
+
+        validateRuntimeIsExpected(() -> {
+            // wait until the optional privacy dialog is visible
+            boolean isVisible = SelenideAddons.optionalWaitUntilCondition($(PRIVACY_DIALOG_SELECTOR), visible, CUSTOM_MAX_WAITING_TIME);
+            Assert.assertTrue("the privacy message dialog was not found within the timeframe", isVisible);
+        },
+                                  0,
+                                  Neodymium.configuration().optionalElementRetryPollingIntervall());
+
+        validateRuntimeIsExpected(() -> {
+            // try wait until the optional privacy dialog is hidden, which will fail
+            boolean isHidden = SelenideAddons.optionalWaitUntilCondition($(PRIVACY_DIALOG_SELECTOR), hidden, CUSTOM_MAX_WAITING_TIME);
+            // check that the is false as is expected
+            Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
+        },
+                                  CUSTOM_MAX_WAITING_TIME,
+                                  Neodymium.configuration().optionalElementRetryPollingIntervall());
+    }
+
+    @Test
+    public void testOptionalWaitWhile()
+    {
+        openBlogPage();
+
+        validateRuntimeIsExpected(() -> {
+            // wait until the optional privacy dialog is not visible anymore, which will fail
+            boolean isHidden = SelenideAddons.optionalWaitWhileCondition($(PRIVACY_DIALOG_SELECTOR), visible, CUSTOM_MAX_WAITING_TIME);
+            // check that the result is false as expected
+            Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
+        },
+                                  CUSTOM_MAX_WAITING_TIME,
+                                  Neodymium.configuration().optionalElementRetryPollingIntervall());
+
+        // click the opt out button
+        $(PRIVACY_DIALOG_SELECTOR).find(".btn-link").click();
+
+        validateRuntimeIsExpected(() -> {
+            // wait until the privacy dialog is hidden
+            boolean isHidden = SelenideAddons.optionalWaitWhileCondition($(PRIVACY_DIALOG_SELECTOR), visible, CUSTOM_MAX_WAITING_TIME);
+            Assert.assertTrue("the privacy message dialog remained visible during the timeframe", isHidden);
+        },
+                                  0,
+                                  Neodymium.configuration().optionalElementRetryPollingIntervall());
+    }
+
+    @Test
+    public void testOptionalWaitUntilWithDefaultTimeout()
+    {
+        openBlogPage();
+
+        validateRuntimeIsExpected(() -> {
+            // wait until the optional privacy dialog is visible
+            boolean isVisible = SelenideAddons.optionalWaitUntilCondition($(PRIVACY_DIALOG_SELECTOR), visible);
+            Assert.assertTrue("the privacy message dialog was not found within the timeframe", isVisible);
+        },
+                                  0,
+                                  Neodymium.configuration().optionalElementRetryPollingIntervall());
+
+        validateRuntimeIsExpected(() -> {
+            // try wait until the optional privacy dialog is hidden, which will fail
+            boolean isHidden = SelenideAddons.optionalWaitUntilCondition($(PRIVACY_DIALOG_SELECTOR), hidden);
+            // check that the is false as is expected
+            Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
+        },
+                                  Neodymium.configuration().optionalElementRetryTimeout(),
+                                  Neodymium.configuration().optionalElementRetryPollingIntervall());
+    }
+
+    @Test
+    public void testOptionalWaitWhileWithDefaultTimeout()
+    {
+        openBlogPage();
+
+        validateRuntimeIsExpected(() -> {
+            // wait until the optional privacy dialog is not visible anymore, which will fail
+            boolean isHidden = SelenideAddons.optionalWaitWhileCondition($(PRIVACY_DIALOG_SELECTOR), visible);
+            // check that the result is false as expected
+            Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
+        },
+                                  Neodymium.configuration().optionalElementRetryTimeout(),
+                                  Neodymium.configuration().optionalElementRetryPollingIntervall());
+
+        // click the opt out button
+        $(PRIVACY_DIALOG_SELECTOR).find(".btn-link").click();
+
+        validateRuntimeIsExpected(() -> {
+            // wait until the privacy dialog is hidden
+            boolean isHidden = SelenideAddons.optionalWaitWhileCondition($(PRIVACY_DIALOG_SELECTOR), visible);
+            Assert.assertTrue("the privacy message dialog remained visible during the timeframe", isHidden);
+        },
+                                  0,
+                                  Neodymium.configuration().optionalElementRetryPollingIntervall());
+    }
+
+    @Test
+    public void testOptionalWaitUntilWithTimeoutAndPollingInterval()
+    {
+        openBlogPage();
+
+        validateRuntimeIsExpected(() -> {
+            // wait until the optional privacy dialog is visible
+            boolean isVisible = SelenideAddons.optionalWaitUntilCondition($(PRIVACY_DIALOG_SELECTOR), visible, CUSTOM_MAX_WAITING_TIME,
+                                                                          CUSTOM_POLLING_INTERVAL);
+            Assert.assertTrue("the privacy message dialog was not found within the timeframe", isVisible);
+        },
+                                  0,
+                                  CUSTOM_POLLING_INTERVAL);
+
+        validateRuntimeIsExpected(() -> {
+            // try wait until the optional privacy dialog is hidden, which will fail
+            boolean isHidden = SelenideAddons.optionalWaitUntilCondition($(PRIVACY_DIALOG_SELECTOR), hidden, CUSTOM_MAX_WAITING_TIME, CUSTOM_POLLING_INTERVAL);
+            // check that the is false as is expected
+            Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
+        },
+                                  CUSTOM_MAX_WAITING_TIME,
+                                  CUSTOM_POLLING_INTERVAL);
+    }
+
+    @Test
+    public void testOptionalWaitWhileWithTimeoutAndPollingInterval()
+    {
+        openBlogPage();
+
+        validateRuntimeIsExpected(() -> {
+            // wait until the optional privacy dialog is not visible anymore, which will fail
+            boolean isHidden = SelenideAddons.optionalWaitWhileCondition($(PRIVACY_DIALOG_SELECTOR), visible, CUSTOM_MAX_WAITING_TIME, CUSTOM_POLLING_INTERVAL);
+            // check that the result is false as expected
+            Assert.assertFalse("the privacy message dialog was unexpectedly hidden during the timeframe", isHidden);
+        },
+                                  CUSTOM_MAX_WAITING_TIME,
+                                  CUSTOM_POLLING_INTERVAL);
+
+        // click the opt out button
+        $(PRIVACY_DIALOG_SELECTOR).find(".btn-link").click();
+
+        validateRuntimeIsExpected(() -> {
+            // wait until the privacy dialog is hidden
+            boolean isHidden = SelenideAddons.optionalWaitWhileCondition($(PRIVACY_DIALOG_SELECTOR), visible, CUSTOM_MAX_WAITING_TIME, CUSTOM_POLLING_INTERVAL);
+            Assert.assertTrue("the privacy message dialog remained visible during the timeframe", isHidden);
+        },
+                                  0,
+                                  CUSTOM_POLLING_INTERVAL);
     }
 }

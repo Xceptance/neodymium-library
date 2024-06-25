@@ -1,5 +1,6 @@
 package com.xceptance.neodymium.util;
 
+import static com.codeborne.selenide.Condition.not;
 import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.sleep;
@@ -15,14 +16,17 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
 import com.codeborne.selenide.AssertionMode;
+import com.codeborne.selenide.CheckResult;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
+import com.codeborne.selenide.WebElementCondition;
 import com.codeborne.selenide.ex.UIAssertionError;
 import com.codeborne.selenide.impl.Html;
 import com.codeborne.selenide.impl.WebElementsCollectionWrapper;
@@ -34,6 +38,8 @@ import com.codeborne.selenide.logevents.SelenideLogger;
  */
 public class SelenideAddons
 {
+    private static final String SERE = StaleElementReferenceException.class.getSimpleName();
+
     /**
      * Returns an supplier that will return exactly one result if any. It will return an element that is found by
      * parentSelector and has a result for subElementSelector. It does NOT return the subelements, it is meant to be a
@@ -54,7 +60,7 @@ public class SelenideAddons
             @Override
             public SelenideElement get()
             {
-                return $$(parentSelector).stream().filter(e -> {
+                return $$(parentSelector).asDynamicIterable().stream().filter(e -> {
                     return e.$(subElementSelector).exists();
                 }).findFirst().get();
             };
@@ -81,7 +87,7 @@ public class SelenideAddons
             @Override
             public ElementsCollection get()
             {
-                List<SelenideElement> list = $$(parentSelector).stream().filter(e -> {
+                List<SelenideElement> list = $$(parentSelector).asDynamicIterable().stream().filter(e -> {
                     return e.$(subElementSelector).exists();
                 }).collect(Collectors.toList());
                 return new ElementsCollection(new WebElementsCollectionWrapper(WebDriverRunner.driver(), list));
@@ -109,7 +115,7 @@ public class SelenideAddons
             @Override
             public ElementsCollection get()
             {
-                List<SelenideElement> list = $$(parentSelector).stream().filter(e -> {
+                List<SelenideElement> list = $$(parentSelector).asDynamicIterable().stream().filter(e -> {
                     return !e.$(subElementSelector).exists();
                 }).collect(Collectors.toList());
                 return new ElementsCollection(new WebElementsCollectionWrapper(WebDriverRunner.driver(), list));
@@ -159,7 +165,7 @@ public class SelenideAddons
             }
             catch (final Throwable t)
             {
-                if (isThrowableCausedBy(t, StaleElementReferenceException.class))
+                if (isThrowableCausedBy(t, StaleElementReferenceException.class, SERE))
                 {
                     retryCounter++;
                     if (retryCounter > maxRetryCount)
@@ -169,7 +175,7 @@ public class SelenideAddons
                     }
                     else
                     {
-                        AllureAddons.addToReport("StaleElementReferenceException catched times: \"" + retryCounter + "\".", retryCounter);
+                        AllureAddons.addToReport(SERE + " catched times: \"" + retryCounter + "\".", retryCounter);
                         Selenide.sleep(Neodymium.configuration().staleElementRetryTimeout());
                     }
                 }
@@ -210,47 +216,40 @@ public class SelenideAddons
      */
     public static void $safe(final Runnable code)
     {
-        final int maxRetryCount = Neodymium.configuration().staleElementRetryCount();
-        int retryCounter = 0;
-
-        while (retryCounter <= maxRetryCount)
-        {
-            try
-            {
-                code.run();
-                break;
-            }
-            catch (final Throwable t)
-            {
-                if (isThrowableCausedBy(t, StaleElementReferenceException.class))
-                {
-                    retryCounter++;
-                    if (retryCounter > maxRetryCount)
-                    {
-                        // fail
-                        throw t;
-                    }
-                    else
-                    {
-                        AllureAddons.addToReport("StaleElementReferenceException catched times: \"" + retryCounter + "\".", retryCounter);
-                        Selenide.sleep(Neodymium.configuration().staleElementRetryTimeout());
-                    }
-                }
-                else
-                {
-                    // not the kind of error we are looking for
-                    throw t;
-                }
-            }
-        }
+        $safe(() -> {
+            code.run();
+            return null;
+        });
     }
 
-    private static boolean isThrowableCausedBy(final Throwable throwable, Class<? extends Throwable> clazz)
+    /**
+     * Recursively checks if the throwable is caused by exception of the specific class or contains one of the messages
+     * listed in the {@code phrasesHintingErrorToCatch}
+     * 
+     * @param throwable
+     *            throwable to check
+     * @param clazz
+     *            class of the expected throwable cause
+     * @param phrasesHintingErrorToCatch
+     *            optional parameters, error messages of expected throwable or its causes
+     * @return result of the check as boolean value
+     */
+    public static boolean isThrowableCausedBy(final Throwable throwable, Class<? extends Throwable> clazz, String... phrasesHintingErrorToCatch)
     {
         Throwable t = throwable;
         while (t != null)
         {
-            if (clazz.isInstance(t))
+            boolean containsMessage = false;
+            for (String message : phrasesHintingErrorToCatch)
+            {
+                String messageText = t.getMessage();
+                if (messageText != null && messageText.contains(message))
+                {
+                    containsMessage = true;
+                    break;
+                }
+            }
+            if (clazz.isInstance(t) || containsMessage)
             {
                 return true;
             }
@@ -271,7 +270,7 @@ public class SelenideAddons
      * @return a Selenide {@link Condition}
      * @see #matchValue(String)
      */
-    public static Condition matchesValue(String text)
+    public static WebElementCondition matchesValue(String text)
     {
         return matchValue(".*" + text + ".*");
     }
@@ -289,7 +288,7 @@ public class SelenideAddons
      *            etc.
      * @return a Selenide {@link Condition}
      */
-    public static Condition matchValue(final String regex)
+    public static WebElementCondition matchValue(final String regex)
     {
         return Condition.attributeMatching("value", regex);
     }
@@ -311,7 +310,7 @@ public class SelenideAddons
      * @see #matchAttribute(String, String)
      */
     @Deprecated
-    public static Condition matchesAttribute(String attributeName, String text)
+    public static WebElementCondition matchesAttribute(String attributeName, String text)
     {
         return matchAttribute(attributeName, text);
     }
@@ -334,9 +333,9 @@ public class SelenideAddons
      * @return a Selenide {@link Condition}
      */
     @Deprecated
-    public static Condition matchAttribute(final String attributeName, final String regex)
+    public static WebElementCondition matchAttribute(final String attributeName, final String regex)
     {
-        return new Condition("match " + attributeName)
+        return new WebElementCondition("match " + attributeName)
         {
             @Override
             public String toString()
@@ -345,9 +344,9 @@ public class SelenideAddons
             }
 
             @Override
-            public boolean apply(Driver driver, WebElement element)
+            public CheckResult check(Driver driver, WebElement element)
             {
-                return Html.text.matches(getAttributeValue(element, attributeName), regex);
+                return new CheckResult(Html.text.matches(getAttributeValue(element, attributeName), regex), element.getAttribute(attributeName));
             }
         };
     }
@@ -410,8 +409,18 @@ public class SelenideAddons
      */
     public static void dragAndDrop(SelenideElement elementToMove, int horizontalMovement, int verticalMovement)
     {
-        // perform drag and drop via the standard Selenium way
-        new Actions(Neodymium.getDriver()).dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement).build().perform();
+        try
+        {
+            // perform drag and drop via the standard Selenium way
+            new Actions(Neodymium.getDriver()).dragAndDropBy(elementToMove.getWrappedElement(), horizontalMovement, verticalMovement)
+                                              .build().perform();
+        }
+        catch (MoveTargetOutOfBoundsException targetOutOfBound)
+        {
+            String message = "Performing drag and drop with an element moved the element out of the viewport. Try to scroll the element completely into the view port or to decrease the absolute values of your movements.";
+            SelenideLogger.commitStep(SelenideLogger.beginStep("slider", message), targetOutOfBound);
+            throw UIAssertionError.wrap(WebDriverRunner.driver(), new AssertionError(message, targetOutOfBound), 0);
+        }
     }
 
     /**
@@ -433,8 +442,8 @@ public class SelenideAddons
      * @param condition
      *            The condition for the slider to verify the movement
      */
-    public static void dragAndDropUntilCondition(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement, int verticalMovement,
-                                                 int pauseBetweenMovements, int retryMovements, Condition condition)
+    public static void dragAndDropUntilCondition(SelenideElement elementToMove, SelenideElement elementToCheck, int horizontalMovement,
+                                                 int verticalMovement, int pauseBetweenMovements, int retryMovements, WebElementCondition condition)
     {
         int counter = 0;
         while (!elementToCheck.has(condition))
@@ -462,5 +471,167 @@ public class SelenideAddons
     {
         String encodedStuff = Base64.getEncoder().encodeToString(htmlContent.getBytes());
         open("data:text/html;charset=utf-8;base64," + encodedStuff);
+    }
+
+    /**
+     * Waits until an optional element matches a condition. This function will return false if the element does not
+     * match the given condition or can not be found in the given timeframe. This method will use the default optional
+     * retry timeout.
+     * <p>
+     * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
+     * </p>
+     * <ul>
+     * <li>*
+     * <li>neodymium.selenideAddons.optional.retry.timeout (default 2000ms pause between retries)</li>
+     * </ul>
+     * 
+     * @param element
+     *            the element to match
+     * @param condition
+     *            the condition for the element
+     * @return if the element did match the condition within the given retries
+     */
+    public static boolean optionalWaitUntilCondition(SelenideElement element, WebElementCondition condition)
+    {
+        return optionalWaitUntilCondition(element, condition, null, null);
+    }
+
+    /**
+     * Waits until an optional element matches a condition. This function will return false if the element does not
+     * match the given condition or can not be found in the given timeframe.
+     * <p>
+     * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
+     * </p>
+     * <ul>
+     * <li>neodymium.selenideAddons.optional.retry.count (default 5 retries)</li>
+     * </ul>
+     *
+     * @param element
+     *            the element to match
+     * @param condition
+     *            the condition for the element
+     * @param maxWaitingTime
+     *            the maximum amount of time to wait
+     * @return if the element did match the condition within the given retries
+     */
+    public static boolean optionalWaitUntilCondition(SelenideElement element, WebElementCondition condition, long maxWaitingTime)
+    {
+        return optionalWaitUntilCondition(element, condition, maxWaitingTime, null);
+    }
+
+    /**
+     * Waits until an optional element matches a condition. This function will return false if the element does not
+     * match the given condition or can not be found in the given timeframe.
+     * <p>
+     * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
+     * </p>
+     * <ul>
+     * <li>neodymium.selenideAddons.optional.retry.count (default 5 retries)</li>
+     * </ul>
+     *
+     * @param element
+     *            the element to match
+     * @param condition
+     *            the condition for the element
+     * @param maxWaitingTime
+     *            the maximum amount of time to wait
+     * @param pollingInterval
+     *            the amount of time to wait in between retries
+     * @return if the element did match the condition within the given retries
+     */
+    public static boolean optionalWaitUntilCondition(SelenideElement element, WebElementCondition condition, Long maxWaitingTime, Long pollingInterval)
+    {
+        if (maxWaitingTime == null)
+        {
+            maxWaitingTime = Neodymium.configuration().optionalElementRetryTimeout();
+        }
+        if (pollingInterval == null)
+        {
+            pollingInterval = Neodymium.configuration().optionalElementRetryPollingIntervall();
+        }
+
+        boolean result = false;
+        final long start = System.currentTimeMillis();
+        while (!result && ((System.currentTimeMillis() - start) < maxWaitingTime))
+        {
+            if (element.has(condition))
+            {
+                result = true;
+                break;
+            }
+            Selenide.sleep(pollingInterval);
+        }
+        return result;
+    }
+
+    /**
+     * Waits while an optional element matches a condition. This function will return false if the element does match
+     * the given condition or can not be found after the given timeframe. This method will use the default optional
+     * retry timeout.
+     * <p>
+     * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
+     * </p>
+     * <ul>
+     * <li>*
+     * <li>neodymium.selenideAddons.optional.retry.timeout (default 2000ms pause between retries)</li>
+     * </ul>
+     * 
+     * @param element
+     *            the element to match
+     * @param condition
+     *            the condition for the element
+     * @return if the element did stop matching the condition within the given retries
+     */
+    public static boolean optionalWaitWhileCondition(SelenideElement element, WebElementCondition condition)
+    {
+        return optionalWaitUntilCondition(element, not(condition), null, null);
+    }
+
+    /**
+     * Waits while an optional element matches a condition. This function will return false if the element does match
+     * the given condition or can not be found after the given timeframe.
+     * <p>
+     * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
+     * </p>
+     * <ul>
+     * <li>neodymium.selenideAddons.optional.retry.count (default 5 retries)</li>
+     * </ul>
+     *
+     * @param element
+     *            the element to match
+     * @param condition
+     *            the condition for the element
+     * @param maxWaitingTime
+     *            the maximum amount of time to wait
+     * @return if the element did stop matching the condition within the given retries
+     */
+    public static boolean optionalWaitWhileCondition(SelenideElement element, WebElementCondition condition, long maxWaitingTime)
+    {
+        return optionalWaitUntilCondition(element, not(condition), maxWaitingTime, null);
+    }
+
+    /**
+     * Waits while an optional element matches a condition. This function will return false if the element does match
+     * the given condition or can not be found after the given timeframe.
+     * <p>
+     * The following settings can be configured within the Neodymium configuration to tune the retry behavior:
+     * </p>
+     * <ul>
+     * <li>neodymium.selenideAddons.optional.retry.count (default 5 retries)</li>
+     * </ul>
+     *
+     * @param element
+     *            the element to match
+     * @param condition
+     *            the condition for the element
+     * @param maxWaitingTime
+     *            the maximum amount of time to wait
+     * @param pollingInterval
+     *            the amount of time to wait in between retries
+     * @return if the element did stop matching the condition within the given retries
+     */
+    public static boolean optionalWaitWhileCondition(SelenideElement element, WebElementCondition condition, long maxWaitingTime, long pollingInterval)
+    {
+        return optionalWaitUntilCondition(element, not(condition), maxWaitingTime, pollingInterval);
     }
 }

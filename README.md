@@ -1,6 +1,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/com.xceptance/neodymium-library.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.xceptance%22%20AND%20a:%22neodymium-library%22) [![Join the chat at https://gitter.im/neodymium-library/community](https://badges.gitter.im/neodymium-library/community.svg)](https://gitter.im/neodymium-library/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-# Neodymium v4.1.5
+# Neodymium
+
 Neodymium tries to solve your typical and most pressing UI test automation problems by combining JUnit, WebDriver, BDD/Cucumber, and proper reporting. It gives you ready to use templates, assembles well-known open source projects, and enhances this all with additional functionality that is often missing.
 
 Neodymium is basically the combination of state of the art open source test libraries with additional glue to make it stick reliably together.
@@ -21,11 +22,13 @@ If you already know what you want to do, you can pick one of the demo test suite
 * [Neodymium Template](https://github.com/Xceptance/neodymium-template): A template to start a new test automation suite quickly either as Cucumber or as pure Java. 
 * [Neodymium Pure Java Example](https://github.com/Xceptance/neodymium-example): A demo test suite against the Xceptance reference demo store [Posters](https://github.com/Xceptance/neodymium-library/wiki/Posters-demo-store) as pure Java version.  
 * [Neodymium Cucumber Example](https://github.com/Xceptance/neodymium-cucumber-example): For the fans of BDD/Cucumber, this is almost the same test suite as before but driven by BDD syntax.
+* [Neodymium Showcase](https://github.com/Xceptance/neodymium-showcase): This repository contains different showcases. Each of them demonstrates and comments on the usage of a single feature of Neodymium. Feel free to request more examples by creating an issue.
 
-## Introductions in other media
-We have an article on [DZone](https://dzone.com/articles/neodymium-an-open-source-framework-for-web-testing) describing the main features of Neodymium.
-
+## Neodymium in the media
 We have a talk (in German) about the features and some best practices for Neodymium available on [YouTube](https://www.youtube.com/watch?v=hn-juzcXrZg).
+
+[Here](https://blog.xceptance.com/2019/02/26/neodymium-an-open-source-framework-for-web-testing/) is an article on describing the main features of Neodymium and our motivation why we saw the need to create it.
+
 
 ## Additional Features
 These are our **additions** to make test automation nicer, quicker, and less painful. 
@@ -47,28 +50,36 @@ If you are still impatient, here is the quickest way to get Neodymium added to y
 <dependency>
     <groupId>com.xceptance</groupId>
     <artifactId>neodymium-library</artifactId>
-    <version>4.1.5</version>
+    <version>INSERT_LATEST_VERSION_HERE</version>
 </dependency>
 ```
-Add the `@RunWith` annotation to your test class or its superclass. This enables test execution with Neodymium.
+
+To write a simple unit test:
+
+Add the `@NeodymiumTest` annotation to your test method. This enables test execution with Neodymium.
+
 ```java
-@RunWith(NeodymiumRunner.class)
 public class MyTests
 {
-    @Test 
+    @NeodymiumTest 
     public void testMethod()
     {
         // test code
     }
 }
+
 ```
+Please be aware that Neodymium (starting at version 5.0.0) is using JUnit5. If you want to run your tests with JUnit4 Neodymium still supports this and you can have a look [here](https://github.com/Xceptance/neodymium-library/wiki/).
+
+If your project is already driven by Neodymium but you want to update to the latest version, please, check the [migration notes](https://github.com/Xceptance/neodymium-library/wiki/Migrate-to-Neodymium-5)
+
 And now is the time to dive into the features we added to make the most out of it. [Please head over to our Wiki](https://github.com/Xceptance/neodymium-library/wiki/).
 
 ## License
 Neodymium is licensed under the MIT License.
 
 ## Who Are We
-We are [Xceptance](https://www.xceptance.com/). A software testing company with strong commerce knowledge and projects with customers from all around the world. Besides Neodymium, we have developed [Xceptance Load Test (XLT)](https://github.com/Xceptance/XLT), a load and performance test tool that is open source too (APL 2.0). It provides an extensive range of awesome features to make the tester's and developer's life easier.
+We are [Xceptance](https://www.xceptance.com/en/). A software testing company with strong commerce knowledge and projects with customers from all around the world. Besides Neodymium, we have developed [Xceptance Load Test (XLT)](https://github.com/Xceptance/XLT), a load and performance test tool that is open source too (APL 2.0). It provides an extensive range of awesome features to make the tester's and developer's life easier.
 
 If you are looking for test automation that also covers the performance side of life, take a look at XLT. You can write and run load tests with real browsers including access to data from the [Web Performance Timing API](http://w3c.github.io/perf-timing-primer/). In case browsers are too heavy, XLT has other modes of load testing to offer as well. 
 

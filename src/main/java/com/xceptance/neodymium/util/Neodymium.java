@@ -10,13 +10,12 @@ import org.aeonbits.owner.ConfigFactory;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import com.browserup.bup.BrowserUpProxy;
 import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverStateContainer;
+import com.xceptance.neodymium.common.browser.WebDriverStateContainer;
 
 /**
  * See our Github wiki: <a href="https://github.com/Xceptance/neodymium-library/wiki/Neodymium-context">Neodymium
@@ -191,23 +190,14 @@ public class Neodymium
     }
 
     /**
-     * Get the current WebDriver as EventFiringWebDriver
-     *
-     * @return eventFiringWebDriver
-     */
-    public static EventFiringWebDriver getEventFiringWebdriver()
-    {
-        return (EventFiringWebDriver) getDriver();
-    }
-
-    /**
      * Get the current WebDriver as RemoteWebDriver
      *
      * @return remoteWebDriver
      */
     public static RemoteWebDriver getRemoteWebDriver()
     {
-        return (RemoteWebDriver) getEventFiringWebdriver().getWrappedDriver();
+        final WebDriverStateContainer wDSC = getContext().webDriverStateContainer;
+        return wDSC == null ? null : (RemoteWebDriver) wDSC.getWebDriver();
     }
 
     /**
@@ -457,6 +447,17 @@ public class Neodymium
     }
 
     /**
+     * Shortcut to set download folder
+     * 
+     * @param downloadFolder
+     *            the directory where Selenide should store downloaded files
+     */
+    public static void downloadFolder(String downloadFolder)
+    {
+        Configuration.downloadsFolder = downloadFolder;
+    }
+
+    /**
      * Validates if the currently configured site is equal to one or more Strings.
      * 
      * @param sites
@@ -473,6 +474,30 @@ public class Neodymium
         for (int i = 0; i < sites.length; i++)
         {
             if (Neodymium.configuration().site().equals(sites[i]))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Validates if the currently configured locale is equal to one or more Strings.
+     * 
+     * @param locales
+     *            Names of the locales
+     * @return boolean value indicating whether the configured locale is matching one of the given Strings
+     * @see Neodymium
+     */
+    public static boolean isLocale(String... locales)
+    {
+        if (Neodymium.configuration().locale() == null)
+        {
+            return false;
+        }
+        for (int i = 0; i < locales.length; i++)
+        {
+            if (Neodymium.configuration().locale().equals(locales[i]))
             {
                 return true;
             }
