@@ -5,10 +5,9 @@ import static org.aeonbits.owner.Config.DisableableFeature.VARIABLE_EXPANSION;
 import org.aeonbits.owner.Config.LoadPolicy;
 import org.aeonbits.owner.Config.LoadType;
 import org.aeonbits.owner.Config.Sources;
+import org.aeonbits.owner.Mutable;
 
 import com.xceptance.neodymium.junit4.NeodymiumRunner.DescriptionMode;
-
-import org.aeonbits.owner.Mutable;
 
 @LoadPolicy(LoadType.MERGE)
 @Sources(
@@ -264,4 +263,8 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.workInProgress")
     @DefaultValue("false")
     public boolean workInProgress();
+
+    @Key("neodymium.logNeoVersion")
+    @DefaultValue("true")
+    public boolean logNeoVersion();
 }
