@@ -7,6 +7,7 @@ import org.openqa.selenium.support.events.WebDriverListener;
 
 import com.xceptance.neodymium.util.DebugUtils;
 import com.xceptance.neodymium.util.Neodymium;
+import com.xceptance.neodymium.util.SelenideAddons;
 
 public class NeodymiumWebDriverListener implements WebDriverListener
 {
@@ -28,13 +29,13 @@ public class NeodymiumWebDriverListener implements WebDriverListener
     public void beforeFindElement(WebElement element, By locator)
     {
         DebugUtils.injectHighlightingJs();
-        DebugUtils.highlightAllElements(element.findElements(locator), Neodymium.getDriver());
+        SelenideAddons.$safe(() -> DebugUtils.highlightAllElements(element.findElements(locator), Neodymium.getDriver()));
     }
 
     @Override
     public void beforeFindElements(WebElement element, By locator)
     {
         DebugUtils.injectHighlightingJs();
-        DebugUtils.highlightAllElements(element.findElements(locator), Neodymium.getDriver());
+        SelenideAddons.$safe(() -> DebugUtils.highlightAllElements(element.findElements(locator), Neodymium.getDriver()));
     }
 }
