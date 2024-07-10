@@ -1,5 +1,8 @@
 package com.xceptance.neodymium.common.browser;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Repeatable;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -37,12 +40,72 @@ public class BrowserData extends Data
 
         if (getAnnotations(testClass, SuppressBrowsers.class).isEmpty())
         {
-            classBrowsers = getAnnotations(testClass, Browser.class).stream().map(annotation -> annotation.value()).distinct().collect(Collectors.toList());
+            classBrowsers = findBrowserRelatedClassAnnotation(testClass, Browser.class).stream().map(annotation -> annotation.value()).distinct()
+                                                                                       .collect(Collectors.toList());
         }
         else
         {
             classBrowsers = new LinkedList<>();
         }
+    }
+
+    public <T extends Annotation> List<T> findBrowserRelatedClassAnnotation(final Class<?> clazz, final Class<T> annotationToFind)
+    {
+        // this function is used to find the first (!) @Browser annotation on class level in the hierarchy
+        // furthermore its not the first but also the first that doesn't have @SuppressBrowsers annotated
+
+        if (clazz == null)
+            return new LinkedList<>();
+
+        // check class for browser annotation
+        // if class has browser annotation and no suppress browsers its fine, else take the super class and check again
+        List<T> browserAnnotations = getDeclaredAnnotations(clazz, annotationToFind);
+        List<SuppressBrowsers> suppressBrowsersAnnotations = getDeclaredAnnotations(clazz, SuppressBrowsers.class);
+
+        if (!suppressBrowsersAnnotations.isEmpty() || browserAnnotations.isEmpty())
+        {
+            return findBrowserRelatedClassAnnotation(clazz.getSuperclass(), annotationToFind);
+        }
+        else
+        {
+            return browserAnnotations;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Annotation> List<T> getDeclaredAnnotations(AnnotatedElement object, Class<T> annotationClass)
+    {
+        List<T> annotations = new LinkedList<>();
+        if (object == null || annotationClass == null)
+        {
+            return annotations;
+        }
+
+        // check if the annotation is repeatable
+        Repeatable repeatingAnnotation = annotationClass.getAnnotation(Repeatable.class);
+        Annotation annotation = (repeatingAnnotation == null) ? null : object.getDeclaredAnnotation(repeatingAnnotation.value());
+
+        if (annotation != null)
+        {
+            try
+            {
+                annotations.addAll(Arrays.asList((T[]) annotation.getClass().getMethod("value").invoke(annotation)));
+            }
+            catch (ReflectiveOperationException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+        else
+        {
+            T anno = object.getDeclaredAnnotation(annotationClass);
+            if (anno != null)
+            {
+                annotations.add(anno);
+            }
+        }
+
+        return annotations;
     }
 
     public BrowserData()
