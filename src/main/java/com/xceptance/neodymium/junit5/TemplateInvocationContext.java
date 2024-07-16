@@ -12,6 +12,7 @@ import com.xceptance.neodymium.junit5.browser.BrowserExecutionCallback;
 import com.xceptance.neodymium.junit5.filtering.FilterTestMethodCallback;
 import com.xceptance.neodymium.junit5.filtering.WipTestMethodCallback;
 import com.xceptance.neodymium.junit5.testdata.TestdataCallback;
+import com.xceptance.neodymium.util.Neodymium;
 
 public class TemplateInvocationContext implements TestTemplateInvocationContext
 {
@@ -40,6 +41,7 @@ public class TemplateInvocationContext implements TestTemplateInvocationContext
     @Override
     public List<Extension> getAdditionalExtensions()
     {
+        Neodymium.clearThreadContext();
         List<Extension> extentions = new LinkedList<>();
         if (browser != null)
         {
