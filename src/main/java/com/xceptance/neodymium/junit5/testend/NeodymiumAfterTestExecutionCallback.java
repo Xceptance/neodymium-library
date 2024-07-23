@@ -71,8 +71,11 @@ public class NeodymiumAfterTestExecutionCallback implements AfterTestExecutionCa
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception
     {
+        System.err.println("wtf?");
+        System.err.println(Neodymium.configuration().enableAcvancedScreenShots());
         if (Neodymium.configuration().enableAcvancedScreenShots())
         {
+            System.err.println("wtf^2?");
             WebDriver driver = Neodymium.getDriver();
             String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
 
@@ -132,9 +135,9 @@ public class NeodymiumAfterTestExecutionCallback implements AfterTestExecutionCa
     {
         PageSnapshot snapshot = Shutterbug.shootPage(driver, captureMode);
         BufferedImage image = snapshot.getImage();
-        String pathname = this.getFormatedReportsPath() + '\\' + testclassName;
+        String pathname = this.getFormatedReportsPath() + File.separator + testclassName;
         Files.createDirectories(Paths.get(pathname));
-        String imagePath = pathname + '\\' + filename + ".png";
+        String imagePath = pathname + File.separator + filename + ".png";
         File outputfile = new File(imagePath);
         if (this.highlightViewport)
         {
