@@ -268,11 +268,35 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("false")
     public boolean workInProgress();
 
-    @Key("neodymium.screenshotOnSuccess")
+    @Key("neodymium.screenshots.enableOnSuccess")
     @DefaultValue("false")
-    public boolean screenshotOnSuccess();
+    public boolean enableOnSuccess();
 
-    @Key("neodymium.enableFullPageCapture")
+    @Key("neodymium.screenshots.fullpagecapture.enable")
     @DefaultValue("false")
     public boolean enableFullPageCapture();
+
+    @Key("neodymium.screenshots.fullpagecapture.highlightViewport")
+    @DefaultValue("false")
+    public boolean enableHighlightViewport();
+
+    @Key("neodymium.screenshots.enableTreeDirectoryStructure")
+    @DefaultValue("false")
+    public boolean enableTreeDirectoryStructure();
+
+    @Key("neodymium.screenshots.fullpagecapture.highlightColor")
+    @DefaultValue("#FF0000")
+    public String fullScreenHighlightColor();
+
+    @Key("neodymium.screenshots.highlightLastElement")
+    @DefaultValue("false")
+    public boolean enableHighlightLastElement();
+
+    @Key("neodymium.screenshots.enableAdvancedScreenshots")
+    @DefaultValue("false")
+    public boolean enableAcvancedScreenShots();
+
+    @Key("neodymium.screenshots.highlightColor")
+    @DefaultValue("#FF0000")
+    public String highlightColor();
 }

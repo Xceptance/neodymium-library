@@ -142,6 +142,8 @@ public class BrowserRunner
         // set our default timeout
         Neodymium.timeout(Neodymium.configuration().selenideTimeout());
 
+        Neodymium.enableSelenideScreenshots(!Neodymium.configuration().enableAcvancedScreenShots());
+
         Neodymium.fastSetValue(Neodymium.configuration().selenideFastSetValue());
         Neodymium.clickViaJs(Neodymium.configuration().selenideClickViaJs());
     }

@@ -15,6 +15,7 @@ public class NeodymiumWebDriverListener implements WebDriverListener
     {
         DebugUtils.injectHighlightingJs();
         DebugUtils.highlightAllElements(by, driver);
+        Neodymium.setLastUsedLocator(by);
     }
 
     @Override
@@ -22,6 +23,7 @@ public class NeodymiumWebDriverListener implements WebDriverListener
     {
         DebugUtils.injectHighlightingJs();
         DebugUtils.highlightAllElements(by, driver);
+        Neodymium.setLastUsedLocator(by);
     }
 
     @Override
@@ -29,6 +31,7 @@ public class NeodymiumWebDriverListener implements WebDriverListener
     {
         DebugUtils.injectHighlightingJs();
         DebugUtils.highlightAllElements(element.findElements(locator), Neodymium.getDriver());
+        Neodymium.setLastUsedLocator(element, locator);
     }
 
     @Override
@@ -36,5 +39,6 @@ public class NeodymiumWebDriverListener implements WebDriverListener
     {
         DebugUtils.injectHighlightingJs();
         DebugUtils.highlightAllElements(element.findElements(locator), Neodymium.getDriver());
+        Neodymium.setLastUsedLocator(element, locator);
     }
 }
