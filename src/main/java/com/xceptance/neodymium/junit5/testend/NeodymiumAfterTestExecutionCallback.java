@@ -71,11 +71,8 @@ public class NeodymiumAfterTestExecutionCallback implements AfterTestExecutionCa
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception
     {
-        System.err.println("wtf?");
-        System.err.println(Neodymium.configuration().enableAcvancedScreenShots());
         if (Neodymium.configuration().enableAcvancedScreenShots())
         {
-            System.err.println("wtf^2?");
             WebDriver driver = Neodymium.getDriver();
             String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
 
@@ -169,7 +166,7 @@ public class NeodymiumAfterTestExecutionCallback implements AfterTestExecutionCa
         boolean result = ImageIO.write(image, "png", outputfile);
         if (result)
         {
-            Allure.addAttachment(imagePath, new FileInputStream(imagePath));
+            Allure.addAttachment("Screenshot", new FileInputStream(imagePath));
         }
         return result;
     }
