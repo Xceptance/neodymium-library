@@ -220,4 +220,10 @@ public class AllureAddons
         return new File(System.getProperty("allure.results.directory", System.getProperty("user.dir")
                                                                        + "/target/allure-results"));
     }
+
+    // @Link(name = "{name}", url = "{url}", type = "hyperlink")
+    @Step("{name}: {url}")
+    public static void addLinkToReport(String name, String url)
+    {
+    }
 }
