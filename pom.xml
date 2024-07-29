@@ -51,7 +51,7 @@
 		<allure.version>2.26.0</allure.version>
 		<selenide.version>7.4.0</selenide.version>
 		<cucumber.version>6.9.1</cucumber.version>
-		<browserup.version>2.1.2</browserup.version>
+		<browserup.version>2.2.17</browserup.version>
 		<log4j.version>2.23.1</log4j.version>
 		<junit.version>4.13.1</junit.version>
 		<junit.jupiter.version>5.8.0</junit.jupiter.version>
@@ -259,12 +259,6 @@
 	</reporting>
 
 	<dependencies>
-<!--		<dependency>
-			<groupId>org.littleshoot</groupId>
-			<artifactId>littleproxy</artifactId>
-			<version>1.1.2</version>
-		</dependency>
--->		<!-- https://mvnrepository.com/artifact/xyz.rogfam/littleproxy -->
 		<dependency>
 			<groupId>xyz.rogfam</groupId>
 			<artifactId>littleproxy</artifactId>
@@ -274,7 +268,7 @@
 		<dependency>
 			<groupId>com.github.valfirst.browserup-proxy</groupId>
 			<artifactId>browserup-proxy-mitm</artifactId>
-			<version>2.2.17</version>
+			<version>${browserup.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.seleniumhq.selenium</groupId>
