@@ -17,7 +17,7 @@ public class EndTestStepListener implements LogEventListener
         String currentUrl = Neodymium.getDriver().getCurrentUrl();
         if (!lastUrl.equals(currentUrl) && !currentUrl.equals("data:,"))
         {
-            AllureAddons.addLinkToReport("Site changed", Neodymium.getDriver().getCurrentUrl());
+            AllureAddons.addLinkToReport("URL changed", Neodymium.getDriver().getCurrentUrl());
         }
         lastUrl = currentUrl;
     }
@@ -26,6 +26,5 @@ public class EndTestStepListener implements LogEventListener
     public void beforeEvent(LogEvent currentLog)
     {
         // Do nothing as we only need the afterEvent method but both need to be implemented
-        assert true;
     }
 }

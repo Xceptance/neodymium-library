@@ -221,9 +221,16 @@ public class AllureAddons
                                                                        + "/target/allure-results"));
     }
 
-    // @Link(name = "{name}", url = "{url}", type = "hyperlink")
-    @Step("{name}: {url}")
-    public static void addLinkToReport(String name, String url)
+    /**
+     * Add a step to the report which contains a clickable url
+     *
+     * @param message
+     *            message to be displayed before link
+     * @param url
+     *            url for the link
+     */
+    @Step("{message}: {url}")
+    public static void addLinkToReport(String message, String url)
     {
     }
 }
