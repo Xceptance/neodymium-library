@@ -26,6 +26,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import com.codeborne.selenide.Selenide;
 import com.google.common.collect.ImmutableMap;
 
 import io.qameta.allure.Attachment;
@@ -39,6 +40,8 @@ import io.qameta.allure.Step;
 public class AllureAddons
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(AllureAddons.class);
+
+    private static final int MAX_RETRY_COUNT = 10;
 
     /**
      * Define a step without return value. This can be used to transport data (information) from test into the report.
@@ -127,64 +130,80 @@ public class AllureAddons
     {
         try
         {
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-
-            // check if allure-results folder exists
-            if (!getAllureResultsFolder().exists())
+            FileOutputStream output = new FileOutputStream(getEnvFile());
+            FileChannel channel = output.getChannel();
+            FileLock lock = null;
+            int retries = 0;
+            do
             {
-                // create it if not
-                getAllureResultsFolder().mkdirs();
+                if (retries > 0)
+                {
+                    Selenide.sleep(100);
+                }
+                lock = channel.tryLock();
+                retries++;
             }
-            Document doc;
-
-            // if environment.xml file exists, there probably already was an entry in it
-            // in this case we need to append our values to it
-            if (envFileExists())
+            while (retries < MAX_RETRY_COUNT && lock == null);
+            if (lock != null)
             {
-                doc = docBuilder.parse(getEnvFile());
-                environmentValuesSet.forEach((k, v) -> {
-                    Node environment = doc.getDocumentElement();
-                    // Node environment = doc.getElementsByTagName("environment").item(0);
-                    Element parameter = doc.createElement("parameter");
-                    Element key = doc.createElement("key");
-                    Element value = doc.createElement("value");
-                    key.appendChild(doc.createTextNode(k));
-                    value.appendChild(doc.createTextNode(v));
-                    parameter.appendChild(key);
-                    parameter.appendChild(value);
-                    environment.appendChild(parameter);
-                });
+                DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+                TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                Transformer transformer = transformerFactory.newTransformer();
+
+                // check if allure-results folder exists
+                if (!getAllureResultsFolder().exists())
+                {
+                    // create it if not
+                    getAllureResultsFolder().mkdirs();
+                }
+                Document doc;
+
+                // if environment.xml file exists, there probably already was an entry in it
+                // in this case we need to append our values to it
+                if (envFileExists())
+                {
+                    doc = docBuilder.parse(getEnvFile());
+                    environmentValuesSet.forEach((k, v) -> {
+                        Node environment = doc.getDocumentElement();
+                        Element parameter = doc.createElement("parameter");
+                        Element key = doc.createElement("key");
+                        Element value = doc.createElement("value");
+                        key.appendChild(doc.createTextNode(k));
+                        value.appendChild(doc.createTextNode(v));
+                        parameter.appendChild(key);
+                        parameter.appendChild(value);
+                        environment.appendChild(parameter);
+                    });
+                }
+                else
+                {
+                    doc = docBuilder.newDocument();
+                    Element environment = doc.createElement("environment");
+                    doc.appendChild(environment);
+                    environmentValuesSet.forEach((k, v) -> {
+                        Element parameter = doc.createElement("parameter");
+                        Element key = doc.createElement("key");
+                        Element value = doc.createElement("value");
+                        key.appendChild(doc.createTextNode(k));
+                        value.appendChild(doc.createTextNode(v));
+                        parameter.appendChild(key);
+                        parameter.appendChild(value);
+                        environment.appendChild(parameter);
+                    });
+                }
+                DOMSource source = new DOMSource(doc);
+
+                StreamResult result = new StreamResult(output);
+                transformer.transform(source, result);
+                lock.release();
             }
             else
             {
-                doc = docBuilder.newDocument();
-                Element environment = doc.createElement("environment");
-                doc.appendChild(environment);
-                environmentValuesSet.forEach((k, v) -> {
-                    Element parameter = doc.createElement("parameter");
-                    Element key = doc.createElement("key");
-                    Element value = doc.createElement("value");
-                    key.appendChild(doc.createTextNode(k));
-                    value.appendChild(doc.createTextNode(v));
-                    parameter.appendChild(key);
-                    parameter.appendChild(value);
-                    environment.appendChild(parameter);
-                });
+                LOGGER.warn("Could not acquire Filelock in time. Failed to add information about enviroment to Allure report");
             }
-            DOMSource source = new DOMSource(doc);
-            FileOutputStream output = new FileOutputStream(getEnvFile());
-            FileChannel channel = output.getChannel();
-            FileLock lock = channel.tryLock();
-            if (lock != null)
-            {
-                StreamResult result = new StreamResult(output);
-                transformer.transform(source, result);
-            }
-            lock.release();
+            output.close();
         }
         catch (ParserConfigurationException | TransformerException | SAXException | IOException e)
         {
