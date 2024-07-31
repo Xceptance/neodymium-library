@@ -267,4 +267,8 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.logNeoVersion")
     @DefaultValue("true")
     public boolean logNeoVersion();
+    
+    @Key("neodymium.addTestDataToReport")
+    @DefaultValue("true")
+    public boolean addTestDataToReport();
 }

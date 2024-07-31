@@ -8,16 +8,22 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.RandomStringGenerator;
 import org.apache.commons.text.TextRandomProvider;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSyntaxException;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.spi.json.GsonJsonProvider;
 import com.jayway.jsonpath.spi.mapper.GsonMappingProvider;
+
+import io.qameta.allure.Allure;
 
 /**
  * Class with util methods for test data
@@ -26,6 +32,8 @@ import com.jayway.jsonpath.spi.mapper.GsonMappingProvider;
  */
 public class DataUtils
 {
+    private static final String ALLURE_ALL_DATA_USED_FLAG = "neodymium.internal.data.fullDataUsed";
+
     // GsonBuilder().serializeNulls needed to keep explicit null values within Json objects
     private final static Gson GSON = new GsonBuilder().serializeNulls().create();
 
@@ -135,10 +143,21 @@ public class DataUtils
      * @param clazz
      *            A reference to an class that should be instantiated and filled from test data
      * @return an instance of the class provided
+     * @throws JsonSyntaxException 
      */
     public static <T> T get(final Class<T> clazz)
     {
-        return GSON.fromJson(getDataAsJsonObject(), clazz);
+        String dataObjectJson = getDataAsJsonObject().toString();
+        
+        if (Neodymium.configuration().addTestDataToReport()) 
+        {
+            Allure.addAttachment("Testdata", "text/html", convertJsonToHtml(dataObjectJson), "html");
+            
+            // to check if whole test data object is used
+            Neodymium.getData().put(ALLURE_ALL_DATA_USED_FLAG, "true");
+        }
+        
+        return GSON.fromJson(dataObjectJson, clazz);
     }
 
     /**
@@ -166,12 +185,48 @@ public class DataUtils
     {
         try
         {
-            return JsonPath.using(JSONPATH_CONFIGURATION).parse(getDataAsJsonObject()).read(jsonPath, clazz);
+            T dataObject = JsonPath.using(JSONPATH_CONFIGURATION).parse(getDataAsJsonObject()).read(jsonPath, clazz);
+            
+            if (Neodymium.configuration().addTestDataToReport())
+            {
+                if (Neodymium.getData().containsKey(ALLURE_ALL_DATA_USED_FLAG) == false) 
+                {
+                    ObjectMapper mapper = new ObjectMapper();
+                    String dataObjectJson;
+                    
+                    try {
+                        // covert Java object to JSON strings
+                        dataObjectJson = mapper.setSerializationInclusion(Include.NON_NULL).writeValueAsString(dataObject);
+                        
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                    
+                    Allure.addAttachment("Testdata (" + jsonPath + ")", "text/html", convertJsonToHtml(dataObjectJson), "html");
+                }
+            }
+
+            return dataObject;
         }
         catch (PathNotFoundException e)
         {
             return null;
         }
+    }
+    
+    /**
+     * 
+     * @param json 
+     *            as a string
+     * @return 
+     *            the string of the to html converted json
+     */
+    private static String convertJsonToHtml(String json) 
+    {
+        return ""
+            + "<div id=\"json-viewer\"></div>"
+            + "<script src=\"https://cdn.jsdelivr.net/npm/@textea/json-viewer@3\"></script>"            
+            + "<script>new JsonViewer({value:" + json + "}).render('#json-viewer')</script>";
     }
 
     /**
