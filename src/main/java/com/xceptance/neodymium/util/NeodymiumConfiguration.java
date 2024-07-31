@@ -269,6 +269,6 @@ public interface NeodymiumConfiguration extends Mutable
     public boolean logNeoVersion();
 
     @Key("neodymium.report.enableStepLinks")
-    @DefaultValue("false")
+    @DefaultValue("true")
     public boolean enableStepLinks();
 }

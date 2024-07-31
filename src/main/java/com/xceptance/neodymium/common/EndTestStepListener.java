@@ -9,17 +9,16 @@ public class EndTestStepListener implements LogEventListener
 {
     public static final String LISTENER_NAME = "end-teststep-listener";
 
-    private String lastUrl = "";
-
     @Override
     public void afterEvent(LogEvent currentLog)
     {
         String currentUrl = Neodymium.getDriver().getCurrentUrl();
+        String lastUrl = Neodymium.getData().get("neodymium.data.lastUrl");
         if (!lastUrl.equals(currentUrl) && !currentUrl.equals("data:,"))
         {
             AllureAddons.addLinkToReport("URL changed", Neodymium.getDriver().getCurrentUrl());
         }
-        lastUrl = currentUrl;
+        Neodymium.getData().put("neodymium.data.lastUrl", currentUrl);
     }
 
     @Override
