@@ -1,4 +1,4 @@
-package com.xceptance.neodymium.selenide.errorformatter;
+package com.xceptance.neodymium.util;
 
 import javax.annotation.Nonnull;
 
@@ -6,9 +6,8 @@ import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.ex.SelenideErrorFormatter;
 import com.codeborne.selenide.ex.Strings;
 import com.codeborne.selenide.impl.Screenshot;
-import com.xceptance.neodymium.util.Neodymium;
 
-public class ErrorDetailsFormatter extends SelenideErrorFormatter
+public class SelenideErrorDetailsFormatter extends SelenideErrorFormatter
 {
     @Nonnull
     @Override

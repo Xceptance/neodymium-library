@@ -1,1 +1,1 @@
-com.xceptance.neodymium.selenide.errorformatter.ErrorDetailsFormatter
+com.xceptance.neodymium.util.SelenideErrorDetailsFormatter
