@@ -267,4 +267,8 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.logNeoVersion")
     @DefaultValue("true")
     public boolean logNeoVersion();
+
+    @Key("neodymium.report.showSelenideErrorDetails")
+    @DefaultValue("false")
+    public boolean showSelenideErrorDetails();
 }
