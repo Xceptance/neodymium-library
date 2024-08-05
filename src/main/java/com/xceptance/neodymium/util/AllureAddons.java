@@ -127,7 +127,7 @@ public class AllureAddons
      * @param environmentValuesSet
      *            map with environment values
      */
-    public static void addEnvironmentInformation(ImmutableMap<String, String> environmentValuesSet)
+    public static synchronized void addEnvironmentInformation(ImmutableMap<String, String> environmentValuesSet)
     {
         try
         {
@@ -227,12 +227,13 @@ public class AllureAddons
 
                 StreamResult result = new StreamResult(output);
                 transformer.transform(source, result);
-                lock.release();
             }
             else
             {
                 LOGGER.warn("Could not acquire Filelock in time. Failed to add information about enviroment to Allure report");
             }
+            lock.release();
+            channel.close();
             output.close();
         }
         catch (ParserConfigurationException | TransformerException | SAXException | IOException e)
@@ -260,6 +261,7 @@ public class AllureAddons
         {
             try
             {
+                envFile.getParentFile().mkdirs();
                 envFile.createNewFile();
             }
             catch (IOException e)
