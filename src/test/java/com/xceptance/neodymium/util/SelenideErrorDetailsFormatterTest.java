@@ -17,7 +17,7 @@ import com.xceptance.neodymium.junit5.NeodymiumTest;
 public class SelenideErrorDetailsFormatterTest
 {
     @NeodymiumTest
-    public void testErrorDetailesActived()
+    public void testErrorDetailesDeactivated()
     {
         Neodymium.configuration().setProperty("neodymium.report.showSelenideErrorDetails", "false");
         Assertions.assertFalse(Neodymium.configuration().showSelenideErrorDetails());
@@ -37,7 +37,7 @@ public class SelenideErrorDetailsFormatterTest
     }
 
     @NeodymiumTest
-    public void testErrorDetailesDeActived()
+    public void testErrorDetailesActivated()
     {
         Neodymium.configuration().setProperty("neodymium.report.showSelenideErrorDetails", "true");
         Assertions.assertTrue(Neodymium.configuration().showSelenideErrorDetails());
@@ -60,7 +60,7 @@ public class SelenideErrorDetailsFormatterTest
     }
 
     @NeodymiumTest
-    public void testCollectionErrorDetailesActived()
+    public void testCollectionErrorDetailesDeactivated()
     {
         Neodymium.configuration().setProperty("neodymium.report.showSelenideErrorDetails", "false");
         Assertions.assertFalse(Neodymium.configuration().showSelenideErrorDetails());
@@ -79,7 +79,7 @@ public class SelenideErrorDetailsFormatterTest
     }
 
     @NeodymiumTest
-    public void testCollectionErrorDetailesDeActived()
+    public void testCollectionErrorDetailesActivated()
     {
         Neodymium.configuration().setProperty("neodymium.report.showSelenideErrorDetails", "true");
         Assertions.assertTrue(Neodymium.configuration().showSelenideErrorDetails());
