@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
-import com.google.common.collect.ImmutableMap;
 import com.xceptance.neodymium.util.AllureAddons;
 import com.xceptance.neodymium.util.Neodymium;
 
@@ -25,23 +24,11 @@ public class NeodymiumRunner implements TestTemplateInvocationContextProvider
 
     private NeodymiumData neoData;
 
-    private static boolean neoVersionLogged = false;
-
     public NeodymiumRunner()
     {
         SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
-        if (!neoVersionLogged && Neodymium.configuration().logNeoVersion())
-        {
-            if (!AllureAddons.envFileExists())
-            {
-                LOGGER.info("This test uses Neodymium Library (version: " + Neodymium.getNeodymiumVersion()
-                            + "), MIT License, more details on https://github.com/Xceptance/neodymium-library");
-                neoVersionLogged = true;
-                AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder()
-                                                                   .put("Testing Framework", "Neodymium " + Neodymium.getNeodymiumVersion())
-                                                                   .build());
-            }
-        }
+
+        AllureAddons.initializeEnvironmentInformation();
     }
 
     public enum DescriptionMode
