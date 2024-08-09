@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -39,6 +41,10 @@ import io.qameta.allure.Step;
 public class AllureAddons
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(AllureAddons.class);
+
+    private static boolean neoVersionLogged = false;
+
+    private static boolean customDataAdded = false;
 
     /**
      * Define a step without return value. This can be used to transport data (information) from test into the report.
@@ -148,7 +154,6 @@ public class AllureAddons
                 doc = docBuilder.parse(getEnvFile());
                 environmentValuesSet.forEach((k, v) -> {
                     Node environment = doc.getDocumentElement();
-                    // Node environment = doc.getElementsByTagName("environment").item(0);
                     Element parameter = doc.createElement("parameter");
                     Element key = doc.createElement("key");
                     Element value = doc.createElement("value");
@@ -219,5 +224,51 @@ public class AllureAddons
     {
         return new File(System.getProperty("allure.results.directory", System.getProperty("user.dir")
                                                                        + "/target/allure-results"));
+    }
+
+    public static void initializeEnvironmentInformation()
+    {
+        Map<String, String> environmentDataMap = new HashMap<String, String>();
+
+        if (!neoVersionLogged && Neodymium.configuration().logNeoVersion())
+        {
+            if (!AllureAddons.envFileExists())
+            {
+                LOGGER.info("This test uses Neodymium Library (version: " + Neodymium.getNeodymiumVersion()
+                            + "), MIT License, more details on https://github.com/Xceptance/neodymium-library");
+                neoVersionLogged = true;
+                environmentDataMap.putIfAbsent("Testing Framework", "Neodymium " + Neodymium.getNeodymiumVersion());
+            }
+        }
+        if (!customDataAdded && Neodymium.configuration().enableCustomEnvironmentData())
+        {
+            LOGGER.info("Custom Environment Data was added.");
+            customDataAdded = true;
+            String customDataIdentifier = "neodymium.report.environment.custom";
+            environmentDataMap = PropertiesUtil.addMissingPropertiesFromFile("./config/dev-neodymium.properties", customDataIdentifier, environmentDataMap);
+
+            Map<String, String> systemEnvMap = new HashMap<String, String>();
+            for (Map.Entry<String, String> entry : System.getenv().entrySet())
+            {
+                String key = (String) entry.getKey();
+                if (key.contains(customDataIdentifier))
+                {
+                    String cleanedKey = key.replace(customDataIdentifier, "");
+                    cleanedKey = cleanedKey.replaceAll("\\.", "");
+                    systemEnvMap.put(cleanedKey, (String) entry.getValue());
+                }
+            }
+            environmentDataMap = PropertiesUtil.mapPutAllIfAbsent(environmentDataMap, systemEnvMap);
+            environmentDataMap = PropertiesUtil.mapPutAllIfAbsent(environmentDataMap,
+                                                                  PropertiesUtil.getDataMapForIdentifier(customDataIdentifier,
+                                                                                                         System.getProperties()));
+            environmentDataMap = PropertiesUtil.addMissingPropertiesFromFile("./config/credentials.properties", customDataIdentifier, environmentDataMap);
+            environmentDataMap = PropertiesUtil.addMissingPropertiesFromFile("./config/neodymium.properties", customDataIdentifier, environmentDataMap);
+        }
+
+        if (!environmentDataMap.isEmpty())
+        {
+            AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder().putAll(environmentDataMap).build());
+        }
     }
 }

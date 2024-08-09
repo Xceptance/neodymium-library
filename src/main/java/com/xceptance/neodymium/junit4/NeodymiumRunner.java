@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
-import com.google.common.collect.ImmutableMap;
 import com.xceptance.neodymium.common.WorkInProgress;
 import com.xceptance.neodymium.common.browser.Browser;
 import com.xceptance.neodymium.junit4.order.DefaultStatementRunOrder;
@@ -83,23 +82,14 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
     private static boolean neoVersionLogged = false;
 
+    private static boolean customDataAdded = false;
+
     public NeodymiumRunner(Class<?> clazz) throws InitializationError
     {
         super(clazz);
         SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
 
-        if (!neoVersionLogged && Neodymium.configuration().logNeoVersion())
-        {
-            if (!AllureAddons.envFileExists())
-            {
-                LOGGER.info("This test uses Neodymium Library (version: " + Neodymium.getNeodymiumVersion()
-                            + "), MIT License, more details on https://github.com/Xceptance/neodymium-library");
-                neoVersionLogged = true;
-                AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder()
-                                                                   .put("Testing Framework", "Neodymium " + Neodymium.getNeodymiumVersion())
-                                                                   .build());
-            }
-        }
+        AllureAddons.initializeEnvironmentInformation();
     }
 
     public enum DescriptionMode
