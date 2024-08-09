@@ -143,20 +143,20 @@ public class DataUtils
      * @param clazz
      *            A reference to an class that should be instantiated and filled from test data
      * @return an instance of the class provided
-     * @throws JsonSyntaxException 
+     * @throws JsonSyntaxException
      */
     public static <T> T get(final Class<T> clazz)
     {
         String dataObjectJson = getDataAsJsonObject().toString();
-        
-        if (Neodymium.configuration().addTestDataToReport()) 
+
+        if (Neodymium.configuration().addTestDataToReport())
         {
             Allure.addAttachment("Testdata", "text/html", convertJsonToHtml(dataObjectJson), "html");
-            
+
             // to check if whole test data object is used
-            Neodymium.getData().put(ALLURE_ALL_DATA_USED_FLAG, "true");
+            Neodymium.getInternalContext().put(ALLURE_ALL_DATA_USED_FLAG, "true");
         }
-        
+
         return GSON.fromJson(dataObjectJson, clazz);
     }
 
@@ -186,22 +186,25 @@ public class DataUtils
         try
         {
             T dataObject = JsonPath.using(JSONPATH_CONFIGURATION).parse(getDataAsJsonObject()).read(jsonPath, clazz);
-            
+
             if (Neodymium.configuration().addTestDataToReport())
             {
-                if (Neodymium.getData().containsKey(ALLURE_ALL_DATA_USED_FLAG) == false) 
+                if (Neodymium.getInternalContext().containsKey(ALLURE_ALL_DATA_USED_FLAG) == false)
                 {
                     ObjectMapper mapper = new ObjectMapper();
                     String dataObjectJson;
-                    
-                    try {
+
+                    try
+                    {
                         // covert Java object to JSON strings
                         dataObjectJson = mapper.setSerializationInclusion(Include.NON_NULL).writeValueAsString(dataObject);
-                        
-                    } catch (JsonProcessingException e) {
+
+                    }
+                    catch (JsonProcessingException e)
+                    {
                         throw new RuntimeException(e);
                     }
-                    
+
                     Allure.addAttachment("Testdata (" + jsonPath + ")", "text/html", convertJsonToHtml(dataObjectJson), "html");
                 }
             }
@@ -213,20 +216,18 @@ public class DataUtils
             return null;
         }
     }
-    
+
     /**
-     * 
-     * @param json 
+     * @param json
      *            as a string
-     * @return 
-     *            the string of the to html converted json
+     * @return the string of the to html converted json
      */
-    private static String convertJsonToHtml(String json) 
+    private static String convertJsonToHtml(String json)
     {
         return ""
-            + "<div id=\"json-viewer\"></div>"
-            + "<script src=\"https://cdn.jsdelivr.net/npm/@textea/json-viewer@3\"></script>"            
-            + "<script>new JsonViewer({value:" + json + "}).render('#json-viewer')</script>";
+               + "<div id=\"json-viewer\"></div>"
+               + "<script src=\"https://cdn.jsdelivr.net/npm/@textea/json-viewer@3\"></script>"
+               + "<script>new JsonViewer({value:" + json + "}).render('#json-viewer')</script>";
     }
 
     /**

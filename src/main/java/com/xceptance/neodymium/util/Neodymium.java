@@ -28,6 +28,8 @@ public class Neodymium
 {
     private static final Map<Thread, Neodymium> CONTEXTS = Collections.synchronizedMap(new WeakHashMap<>());
 
+    private static final Map<Thread, HashMap<String, String>> INTERNAL_CONTEXTS = Collections.synchronizedMap(new WeakHashMap<>());
+
     // keep our current WebDriver state
     private WebDriverStateContainer webDriverStateContainer;
 
@@ -63,7 +65,7 @@ public class Neodymium
     }
 
     /**
-     * Retrieves the context instance for the current Thread.
+     * Retrieves the context instance for the current Thread. Retrieves the context instance for the current Thread.
      * 
      * @return the context instance for the current Thread
      */
@@ -71,6 +73,18 @@ public class Neodymium
     {
         return CONTEXTS.computeIfAbsent(Thread.currentThread(), key -> {
             return new Neodymium();
+        });
+    }
+
+    /**
+     * Retrieves the context instance for the current Thread. Retrieves the context instance for the current Thread.
+     * 
+     * @return the context instance for the current Thread
+     */
+    static HashMap<String, String> getInternalContext()
+    {
+        return INTERNAL_CONTEXTS.computeIfAbsent(Thread.currentThread(), key -> {
+            return new HashMap<String, String>();
         });
     }
 
