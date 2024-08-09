@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
 import com.google.common.collect.ImmutableMap;
+import com.xceptance.neodymium.common.EndTestStepListener;
 import com.xceptance.neodymium.util.AllureAddons;
 import com.xceptance.neodymium.util.Neodymium;
 
@@ -30,6 +31,12 @@ public class NeodymiumRunner implements TestTemplateInvocationContextProvider
     public NeodymiumRunner()
     {
         SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
+
+        if (Neodymium.configuration().enableStepLinks())
+        {
+            SelenideLogger.addListener(EndTestStepListener.LISTENER_NAME, new EndTestStepListener());
+        }
+
         if (!neoVersionLogged && Neodymium.configuration().logNeoVersion())
         {
             if (!AllureAddons.envFileExists())
