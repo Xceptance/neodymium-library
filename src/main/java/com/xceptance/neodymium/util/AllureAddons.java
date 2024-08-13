@@ -256,7 +256,7 @@ public class AllureAddons
     private static File getEnvFile()
     {
         File allureResultsDir = getAllureResultsFolder();
-        File envFile = new File(allureResultsDir.getAbsoluteFile() + "/environment.xml");
+        File envFile = new File(allureResultsDir.getAbsoluteFile() + File.separator + "environment.xml");
         if (!envFile.exists())
         {
             try
@@ -280,6 +280,6 @@ public class AllureAddons
     public static File getAllureResultsFolder()
     {
         return new File(System.getProperty("allure.results.directory", System.getProperty("user.dir")
-                                                                       + "/target/allure-results"));
+                                                                       + File.separator + "target" + File.separator + "allure-results"));
     }
 }
