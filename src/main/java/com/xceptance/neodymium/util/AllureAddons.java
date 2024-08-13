@@ -227,12 +227,12 @@ public class AllureAddons
 
                 StreamResult result = new StreamResult(output);
                 transformer.transform(source, result);
+                lock.release();
             }
             else
             {
                 LOGGER.warn("Could not acquire Filelock in time. Failed to add information about enviroment to Allure report");
             }
-            lock.release();
             channel.close();
             output.close();
         }
