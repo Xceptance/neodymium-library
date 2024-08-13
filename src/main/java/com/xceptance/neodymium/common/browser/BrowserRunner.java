@@ -15,10 +15,13 @@ import com.xceptance.neodymium.common.browser.configuration.BrowserConfiguration
 import com.xceptance.neodymium.common.browser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.common.recording.FilmTestExecution;
 import com.xceptance.neodymium.util.Neodymium;
+import com.xceptance.neodymium.util.SaveDataUtil;
 
 public class BrowserRunner
 {
     public static Logger LOGGER = LoggerFactory.getLogger(BrowserRunner.class);
+
+    private final boolean shouldLogBrowsers;
 
     private BrowserMethodData browserMethodData;
 
@@ -42,10 +45,12 @@ public class BrowserRunner
     {
         this.browserMethodData = browserTag;
         this.testName = testName;
+        shouldLogBrowsers = Neodymium.configuration().enableBrowserEnvironmentData();
     }
 
     public BrowserRunner()
     {
+        shouldLogBrowsers = Neodymium.configuration().enableBrowserEnvironmentData();
     }
 
     public void setUpTest()
@@ -59,6 +64,10 @@ public class BrowserRunner
         if (FilmTestExecution.getContextVideo().filmAutomatically())
         {
             FilmTestExecution.startVideoRecording(recordingID);
+        }
+        if (shouldLogBrowsers)
+        {
+            SaveDataUtil.saveUsedBrowsersToData(this.getBrowserTags());
         }
     }
 
