@@ -308,7 +308,8 @@ public class AllureAddons
             LOGGER.info("Custom Environment Data was added.");
             customDataAdded = true;
             String customDataIdentifier = "neodymium.report.environment.custom";
-            environmentDataMap = PropertiesUtil.addMissingPropertiesFromFile("./config/dev-neodymium.properties", customDataIdentifier, environmentDataMap);
+            environmentDataMap = PropertiesUtil.addMissingPropertiesFromFile("." + File.separator + "config" + File.separator + "dev-neodymium.properties",
+                                                                             customDataIdentifier, environmentDataMap);
 
             Map<String, String> systemEnvMap = new HashMap<String, String>();
             for (Map.Entry<String, String> entry : System.getenv().entrySet())
@@ -325,8 +326,10 @@ public class AllureAddons
             environmentDataMap = PropertiesUtil.mapPutAllIfAbsent(environmentDataMap,
                                                                   PropertiesUtil.getDataMapForIdentifier(customDataIdentifier,
                                                                                                          System.getProperties()));
-            environmentDataMap = PropertiesUtil.addMissingPropertiesFromFile("./config/credentials.properties", customDataIdentifier, environmentDataMap);
-            environmentDataMap = PropertiesUtil.addMissingPropertiesFromFile("./config/neodymium.properties", customDataIdentifier, environmentDataMap);
+            environmentDataMap = PropertiesUtil.addMissingPropertiesFromFile("." + File.separator + "config" + File.separator + "credentials.properties",
+                                                                             customDataIdentifier, environmentDataMap);
+            environmentDataMap = PropertiesUtil.addMissingPropertiesFromFile("." + File.separator + "config" + File.separator + "neodymium.properties",
+                                                                             customDataIdentifier, environmentDataMap);
         }
 
         if (!environmentDataMap.isEmpty())
