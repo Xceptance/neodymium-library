@@ -133,7 +133,7 @@ public class AllureAddons
      * @param environmentValuesSet
      *            map with environment values
      */
-    public static synchronized void addEnvironmentInformation(ImmutableMap<String, String> environmentValuesSet)
+    public static synchronized void addEnvironmentInformation(ImmutableMap<String, String> environmentValuesSet, boolean shouldUpdate)
     {
         try
         {
@@ -166,16 +166,19 @@ public class AllureAddons
                     getAllureResultsFolder().mkdirs();
                 }
                 Document doc;
+                boolean isFileAccessNeeded = false;
 
                 // if environment.xml file exists, there probably already was an entry in it
                 // in this case we need to append our values to it
                 if (getEnvFile().length() != 0)
                 {
                     doc = docBuilder.parse(getEnvFile());
-                    environmentValuesSet.forEach((k, v) -> {
+                    for (Map.Entry<String, String> entry : environmentValuesSet.entrySet())
+                    {
                         Node environment = doc.getDocumentElement();
                         NodeList childNodes = environment.getChildNodes();
                         boolean isSameNode = false;
+                        int keyToUpdate = 0;
                         for (int i = 0; i < childNodes.getLength(); i++)
                         {
                             Node child = childNodes.item(i);
@@ -194,9 +197,14 @@ public class AllureAddons
                                     value = subNode.getTextContent();
                                 }
                             }
-                            if (key.equals(k) && value.equals(v))
+                            if (key.equals(entry.getKey()) && value.equals(entry.getValue()))
                             {
                                 isSameNode = true;
+                                break;
+                            }
+                            else if (shouldUpdate && key.equals(entry.getKey()))
+                            {
+                                keyToUpdate = i;
                                 break;
                             }
                         }
@@ -205,34 +213,65 @@ public class AllureAddons
                             Element parameter = doc.createElement("parameter");
                             Element key = doc.createElement("key");
                             Element value = doc.createElement("value");
-                            key.appendChild(doc.createTextNode(k));
-                            value.appendChild(doc.createTextNode(v));
+                            key.appendChild(doc.createTextNode(entry.getKey()));
+                            value.appendChild(doc.createTextNode(entry.getValue()));
                             parameter.appendChild(key);
                             parameter.appendChild(value);
                             environment.appendChild(parameter);
+                            isFileAccessNeeded = true;
                         }
-                    });
+                        else if (shouldUpdate && keyToUpdate != 0)
+                        {
+                            Document updatedDoc = docBuilder.newDocument();
+                            Element updatedEnvironment = updatedDoc.createElement("environment");
+                            for (int i = 0; i < childNodes.getLength(); i++)
+                            {
+                                if (i != keyToUpdate)
+                                {
+                                    updatedEnvironment.appendChild(childNodes.item(i));
+                                }
+                                else
+                                {
+                                    Element parameter = doc.createElement("parameter");
+                                    Element key = doc.createElement("key");
+                                    Element value = doc.createElement("value");
+                                    key.appendChild(doc.createTextNode(entry.getKey()));
+                                    value.appendChild(doc.createTextNode(entry.getValue()));
+                                    parameter.appendChild(key);
+                                    parameter.appendChild(value);
+                                    updatedEnvironment.appendChild(parameter);
+                                }
+                            }
+                            doc = updatedDoc;
+                            isFileAccessNeeded = true;
+                        }
+                    }
                 }
                 else
                 {
+                    isFileAccessNeeded = true;
                     doc = docBuilder.newDocument();
                     Element environment = doc.createElement("environment");
                     doc.appendChild(environment);
-                    environmentValuesSet.forEach((k, v) -> {
+                    for (Map.Entry<String, String> entry : environmentValuesSet.entrySet())
+                    {
                         Element parameter = doc.createElement("parameter");
                         Element key = doc.createElement("key");
                         Element value = doc.createElement("value");
-                        key.appendChild(doc.createTextNode(k));
-                        value.appendChild(doc.createTextNode(v));
+                        key.appendChild(doc.createTextNode(entry.getKey()));
+                        value.appendChild(doc.createTextNode(entry.getValue()));
                         parameter.appendChild(key);
                         parameter.appendChild(value);
                         environment.appendChild(parameter);
-                    });
+                    }
                 }
-                DOMSource source = new DOMSource(doc);
+                if (isFileAccessNeeded)
+                {
+                    DOMSource source = new DOMSource(doc);
 
-                StreamResult result = new StreamResult(output);
-                transformer.transform(source, result);
+                    StreamResult result = new StreamResult(output);
+                    transformer.transform(source, result);
+                }
                 lock.release();
             }
             else
@@ -260,6 +299,7 @@ public class AllureAddons
     }
 
     private static File getEnvFile()
+
     {
         File allureResultsDir = getAllureResultsFolder();
         File envFile = new File(allureResultsDir.getAbsoluteFile() + File.separator + "environment.xml");
@@ -334,7 +374,7 @@ public class AllureAddons
 
         if (!environmentDataMap.isEmpty())
         {
-            AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder().putAll(environmentDataMap).build());
+            AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder().putAll(environmentDataMap).build(), false);
         }
     }
 }

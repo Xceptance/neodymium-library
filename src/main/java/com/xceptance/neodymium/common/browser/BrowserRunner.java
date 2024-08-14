@@ -11,11 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.browserup.bup.BrowserUpProxy;
+import com.google.common.collect.ImmutableMap;
 import com.xceptance.neodymium.common.browser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.common.browser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.common.recording.FilmTestExecution;
+import com.xceptance.neodymium.util.AllureAddons;
+import com.xceptance.neodymium.util.BrowserDataUtil;
 import com.xceptance.neodymium.util.Neodymium;
-import com.xceptance.neodymium.util.SaveDataUtil;
 
 public class BrowserRunner
 {
@@ -65,10 +67,6 @@ public class BrowserRunner
         {
             FilmTestExecution.startVideoRecording(recordingID);
         }
-        if (shouldLogBrowsers)
-        {
-            SaveDataUtil.saveUsedBrowsersToData(this.getBrowserTags());
-        }
     }
 
     public void teardown(boolean testFailed)
@@ -82,6 +80,14 @@ public class BrowserRunner
             if (FilmTestExecution.getContextVideo().filmAutomatically())
             {
                 FilmTestExecution.finishVideoFilming(recordingID, testFailed);
+            }
+            if (shouldLogBrowsers)
+            {
+                AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder()
+                                                                   .put("Used Browserconfigurations",
+                                                                        BrowserDataUtil.convertBrowserListToString(this.getBrowserTags()))
+                                                                   .build(),
+                                                       true);
             }
         }
         finally

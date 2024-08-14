@@ -12,7 +12,6 @@ import com.xceptance.neodymium.junit5.browser.BrowserExecutionCallback;
 import com.xceptance.neodymium.junit5.filtering.FilterTestMethodCallback;
 import com.xceptance.neodymium.junit5.filtering.WipTestMethodCallback;
 import com.xceptance.neodymium.junit5.testdata.TestdataCallback;
-import com.xceptance.neodymium.junit5.testend.NeodymiumAfterAllCallback;
 import com.xceptance.neodymium.util.Neodymium;
 
 public class TemplateInvocationContext implements TestTemplateInvocationContext
@@ -54,10 +53,6 @@ public class TemplateInvocationContext implements TestTemplateInvocationContext
         }
         extentions.add(new FilterTestMethodCallback());
         extentions.add(new WipTestMethodCallback());
-        if (Neodymium.configuration().enableBrowserEnvironmentData())
-        {
-            extentions.add(new NeodymiumAfterAllCallback());
-        }
         return extentions;
     }
 };
