@@ -8,9 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.RandomStringGenerator;
 import org.apache.commons.text.TextRandomProvider;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -191,18 +188,7 @@ public class DataUtils
             {
                 if (Neodymium.getData().containsKey(ALLURE_ALL_DATA_USED_FLAG) == false) 
                 {
-                    ObjectMapper mapper = new ObjectMapper();
-                    String dataObjectJson;
-                    
-                    try {
-                        // covert Java object to JSON strings
-                        dataObjectJson = mapper.setSerializationInclusion(Include.NON_NULL).writeValueAsString(dataObject);
-                        
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
-                    
-                    Allure.addAttachment("Testdata (" + jsonPath + ")", "text/html", convertJsonToHtml(dataObjectJson), "html");
+                    AllureAddons.addDataAsJsonToReport("Testdata (" + jsonPath + ")", dataObject);
                 }
             }
 
@@ -221,7 +207,7 @@ public class DataUtils
      * @return 
      *            the string of the to html converted json
      */
-    private static String convertJsonToHtml(String json) 
+    public static String convertJsonToHtml(String json) 
     {
         return ""
             + "<div id=\"json-viewer\"></div>"

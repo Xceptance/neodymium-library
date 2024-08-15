@@ -26,8 +26,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 
+import io.qameta.allure.Allure;
 import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
 
@@ -219,5 +223,28 @@ public class AllureAddons
     {
         return new File(System.getProperty("allure.results.directory", System.getProperty("user.dir")
                                                                        + "/target/allure-results"));
+    }
+    
+    /**
+     * 
+     * @param name
+     *            of the attachment
+     * @param data
+     *            that needs to be added as an attachment
+     */
+    public static void addDataAsJsonToReport(String name, Object data) 
+    {
+        ObjectMapper mapper = new ObjectMapper();
+        String dataObjectJson;
+        
+        try {
+            // covert Java object to JSON strings
+            dataObjectJson = mapper.setSerializationInclusion(Include.NON_NULL).writeValueAsString(data);
+            
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        
+        Allure.addAttachment(name, "text/html", DataUtils.convertJsonToHtml(dataObjectJson), "html");
     }
 }
