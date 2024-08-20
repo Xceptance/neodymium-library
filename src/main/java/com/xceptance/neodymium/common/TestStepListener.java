@@ -49,33 +49,36 @@ public class TestStepListener implements LogEventListener
     @Override
     public void afterEvent(LogEvent currentLog)
     {
+        String currentUrl = Neodymium.getDriver().getCurrentUrl();
         if (Neodymium.configuration().enableStepLinks())
         {
-            String currentUrl = Neodymium.getDriver().getCurrentUrl();
             String lastUrl = getLastUrl();
-            if (!lastUrl.equals(currentUrl) && !currentUrl.equals("data:,"))
+            if (lastUrl != null && !lastUrl.equals(currentUrl) && !currentUrl.equals("data:,"))
             {
                 AllureAddons.addLinkToReport("URL changed", Neodymium.getDriver().getCurrentUrl());
             }
             setLastUrl(currentUrl);
+        }
+
+        if (this.includeList != null)
+        {
+            for (String s : includeList)
+            {
+                Assertions.assertTrue(Pattern.compile(s).matcher(currentUrl).find(), "Opened Link was outside permitted URLs: " + currentUrl);
+            }
+        }
+        else if (this.excludeList != null)
+        {
+            for (String s : excludeList)
+            {
+                Assertions.assertTrue(!Pattern.compile(s).matcher(currentUrl).find(), "Opened Link was to forbidden site: " + currentUrl);
+            }
         }
     }
 
     @Override
     public void beforeEvent(LogEvent currentLog)
     {
-        String currentUrl = Neodymium.getDriver().getCurrentUrl();
-        if (this.includeList != null)
-        {
-            includeList.forEach(s -> {
-                Assertions.assertTrue(Pattern.compile(s).matcher(currentUrl).find(), "Opened Link was outside permitted URLs: " + currentUrl);
-            });
-        }
-        else if (this.excludeList != null)
-        {
-            excludeList.forEach(s -> {
-                Assertions.assertTrue(!Pattern.compile(s).matcher(currentUrl).find(), "Opened Link was to forbidden site: " + currentUrl);
-            });
-        }
+        // Do nothing as we only need the afterEvent method but both need to be implemented
     }
 }

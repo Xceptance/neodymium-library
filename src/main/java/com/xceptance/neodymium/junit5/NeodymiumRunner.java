@@ -32,10 +32,7 @@ public class NeodymiumRunner implements TestTemplateInvocationContextProvider
     {
         SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
 
-        if (Neodymium.configuration().enableStepLinks())
-        {
-            SelenideLogger.addListener(TestStepListener.LISTENER_NAME, new TestStepListener());
-        }
+        SelenideLogger.addListener(TestStepListener.LISTENER_NAME, new TestStepListener());
 
         if (!neoVersionLogged && Neodymium.configuration().logNeoVersion())
         {
