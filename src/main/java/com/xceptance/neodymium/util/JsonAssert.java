@@ -24,14 +24,10 @@ public class JsonAssert
                 + "<script type=\"module\">"
                   + "import * as jsondiffpatch from 'https://esm.sh/jsondiffpatch@0.6.0';"
                   + "import * as htmlFormatter from 'https://esm.sh/jsondiffpatch@0.6.0/formatters/html';"
-                  
-                  + "const jsondiffpatchInstance = jsondiffpatch.create({"
-                    + "objectHash: function (obj) {return obj._id || obj.id;},"
-                    + "arrays: {detectMove: false}"
-                  + "});"
+
                   + "const left = " + expectedJson + ";"
                   + "const right = " + actualJson + ";"
-                  + "const delta = jsondiffpatchInstance.diff(left, right);"
+                  + "const delta = jsondiffpatch.diff(left, right);"
                   + "document.getElementById('visual').innerHTML = htmlFormatter.format(delta, left);"
                 + "</script>"
                 + "<script>"
