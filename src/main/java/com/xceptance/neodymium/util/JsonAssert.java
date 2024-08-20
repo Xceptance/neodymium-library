@@ -34,6 +34,11 @@ public class JsonAssert
                   + "const delta = jsondiffpatchInstance.diff(left, right);"
                   + "document.getElementById('visual').innerHTML = htmlFormatter.format(delta, left);"
                 + "</script>"
+                + "<script>"
+                    + "window.onerror = function (e) {"
+                        + "document.getElementById('visual').innerHTML = \"An error occured: please check all json data for correct syntax.\";"
+                    + "};"
+                + "</script>"
               + "</body>"
             + "</html>";
         
