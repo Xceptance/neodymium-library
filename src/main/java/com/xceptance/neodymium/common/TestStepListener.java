@@ -20,19 +20,17 @@ public class TestStepListener implements LogEventListener
 
     private static final Map<Thread, String> LAST_URL = Collections.synchronizedMap(new WeakHashMap<>());
 
-    private List<String> excludeList = null;
-
     private List<String> includeList = null;
+
+    private List<String> excludeList = null;
 
     public TestStepListener()
     {
-        if (!Neodymium.configuration().getExcludeList().isEmpty())
-        {
-            excludeList = Arrays.asList(Neodymium.configuration().getExcludeList().split("\\s+"));
+        if(!Neodymium.configuration().getExcludeList().isEmpty()) {
+            this.excludeList = Arrays.asList(Neodymium.configuration().getExcludeList().split("\\s+"));
         }
-        if (!Neodymium.configuration().getIncludeList().isEmpty())
-        {
-            includeList = Arrays.asList(Neodymium.configuration().getIncludeList().split("\\s+"));
+        if(!Neodymium.configuration().getIncludeList().isEmpty()) {
+            this.includeList = Arrays.asList(Neodymium.configuration().getIncludeList().split("\\s+"));
         }
     }
 
@@ -59,17 +57,22 @@ public class TestStepListener implements LogEventListener
             }
             setLastUrl(currentUrl);
         }
-
         if (this.includeList != null)
         {
-            for (String s : includeList)
+            boolean result = false;
+            for (String s : this.includeList)
             {
-                Assertions.assertTrue(Pattern.compile(s).matcher(currentUrl).find(), "Opened Link was outside permitted URLs: " + currentUrl);
+                result = Pattern.compile(s).matcher(currentUrl).find();
+                if (result)
+                {
+                    break;
+                }
             }
+            Assertions.assertTrue(result, "Opened Link was outside permitted URLs: " + currentUrl);
         }
         else if (this.excludeList != null)
         {
-            for (String s : excludeList)
+            for (String s : this.excludeList)
             {
                 Assertions.assertTrue(!Pattern.compile(s).matcher(currentUrl).find(), "Opened Link was to forbidden site: " + currentUrl);
             }

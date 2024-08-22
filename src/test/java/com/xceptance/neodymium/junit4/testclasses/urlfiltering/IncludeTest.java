@@ -10,21 +10,17 @@ import com.xceptance.neodymium.junit4.tests.NeodymiumTest;
 
 @RunWith(NeodymiumRunner.class)
 @Browser("Chrome_1024x768")
-public class ExcludeTest extends NeodymiumTest
+public class IncludeTest extends NeodymiumTest
 {
     @Test
-    public void testFirstURLisforbidden()
+    public void testIncludedURLisAllowed()
     {
-        Selenide.open("https://www.xceptance.com/en/");
-        Selenide.sleep(100);
         Selenide.open("https://www.google.com/");
     }
 
     @Test
-    public void testSecondURLisforbidden()
+    public void testNotIncludedURLisforbidden()
     {
         Selenide.open("https://www.xceptance.com/en/");
-        Selenide.sleep(100);
-        Selenide.open("https://github.com");
     }
 }
