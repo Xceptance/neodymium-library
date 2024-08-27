@@ -126,7 +126,7 @@ public class ScreenshotWriter
         }
         if (this.highlightLastElement)
         {
-            double devicePixelRatio = new Long((long) ((JavascriptExecutor) driver).executeScript("return window.devicePixelRatio")).doubleValue();
+            double devicePixelRatio = (double) ((JavascriptExecutor) driver).executeScript("return window.devicePixelRatio");
             image = ImageProcessor.highlight(image, new Coordinates(Neodymium.getLastUsedElement(), devicePixelRatio), Color.decode(this.highlightColor),
                                              this.linethickness);
         }
