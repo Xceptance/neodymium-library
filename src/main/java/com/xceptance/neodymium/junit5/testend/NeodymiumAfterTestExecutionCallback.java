@@ -15,6 +15,7 @@ public class NeodymiumAfterTestExecutionCallback implements AfterTestExecutionCa
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception
     {
-        screenshotWriter.doScreenshot(context.getDisplayName(), context.getRequiredTestClass().getName(), context.getExecutionException());
+        screenshotWriter.doScreenshot(context.getRequiredTestMethod().getName(), context.getRequiredTestClass().getName(), context.getExecutionException(),
+                                      context.getRequiredTestMethod().getAnnotations());
     }
 }

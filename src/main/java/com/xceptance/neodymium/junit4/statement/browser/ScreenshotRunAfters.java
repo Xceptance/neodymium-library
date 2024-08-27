@@ -1,5 +1,6 @@
 package com.xceptance.neodymium.junit4.statement.browser;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,11 +22,15 @@ public class ScreenshotRunAfters extends RunAfters
 
     private final List<FrameworkMethod> afters;
 
-    public ScreenshotRunAfters(String displayName, String className, Statement next, List<FrameworkMethod> afters, Object target)
+    private final Annotation[] annotationList;
+
+    public ScreenshotRunAfters(FrameworkMethod method, Statement next, List<FrameworkMethod> afters, Object target)
     {
         super(next, afters, target);
-        this.displayName = displayName.replaceAll("\\d+\\s\\/\\s\\d+", "");
-        this.className = className;
+        this.displayName = method.getMethod().getName().replaceAll("\\d+\\s\\/\\s\\d+", "");
+        this.className = method.getDeclaringClass()
+                               .getCanonicalName();
+        this.annotationList = method.getAnnotations();
         this.afters = afters;
         this.next = next;
     }
@@ -37,12 +42,12 @@ public class ScreenshotRunAfters extends RunAfters
         try
         {
             next.evaluate();
-            new ScreenshotWriter().doScreenshot(displayName, className, Optional.empty());
+            new ScreenshotWriter().doScreenshot(displayName, className, Optional.empty(), annotationList);
         }
         catch (Throwable e)
         {
             errors.add(e);
-            new ScreenshotWriter().doScreenshot(displayName, className, Optional.of(e));
+            new ScreenshotWriter().doScreenshot(displayName, className, Optional.of(e), annotationList);
         }
         finally
         {

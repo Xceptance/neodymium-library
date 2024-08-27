@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,6 +28,7 @@ import com.assertthat.selenium_shutterbug.core.Shutterbug;
 import com.assertthat.selenium_shutterbug.utils.image.ImageProcessor;
 import com.assertthat.selenium_shutterbug.utils.web.Coordinates;
 import com.codeborne.selenide.ex.UIAssertionError;
+import com.xceptance.neodymium.common.testdata.DataSet;
 import com.xceptance.neodymium.util.Neodymium;
 
 import io.qameta.allure.Allure;
@@ -62,16 +64,33 @@ public class ScreenshotWriter
         }
     }
 
-    public void doScreenshot(String displayName, String testClassName, Optional<Throwable> executionException) throws IOException
+    public void doScreenshot(String displayName, String testClassName, Optional<Throwable> executionException, Annotation[] annotationList) throws IOException
     {
         if (Neodymium.configuration().enableAcvancedScreenShots())
         {
             WebDriver driver = Neodymium.getDriver();
             String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
-            String imageName = displayName + "_" + timeStamp;
+            String dataSetName = "";
+            for (Annotation a : annotationList)
+            {
+                if (a.annotationType().equals(DataSet.class))
+                {
+                    DataSet set = (DataSet) a;
+                    dataSetName += "_DataSet";
+                    if (set.value() > 0)
+                    {
+                        dataSetName += "_" + set.value();
+                    }
+                    if (!set.id().isEmpty())
+                    {
+                        dataSetName += "_" + set.id();
+                    }
+                }
+            }
+            String imageName = displayName + '_' + Neodymium.getBrowserProfileName() + dataSetName + '_' + timeStamp;
             if (this.enableTreeStructure)
             {
-                testClassName = testClassName.replace('.', '\\');
+                testClassName = testClassName.replace('.', File.separatorChar);
             }
             if (this.captureSuccessfulTests)
             {

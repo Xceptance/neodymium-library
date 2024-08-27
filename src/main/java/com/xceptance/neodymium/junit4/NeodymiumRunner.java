@@ -418,8 +418,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                                    Statement statement)
     {
         List<FrameworkMethod> afters = getTestClass().getAnnotatedMethods(After.class);
-        return new ScreenshotRunAfters(method.getName().replace(":", "").replace(" ", "_"), method.getDeclaringClass()
-                                                                                               .getCanonicalName(), statement, afters, target);
+        return new ScreenshotRunAfters(method, statement, afters, target);
     }
 
     @Override
