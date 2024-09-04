@@ -271,12 +271,6 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("")
     public String getSafariDriverArguments();
 
-    @Key("neodymium.webDriver.opera.pathToDriverServer")
-    public String getOperaDriverPath();
-
-    @Key("neodymium.webDriver.phantomjs.pathToDriverServer")
-    public String getPhantomJsDriverPath();
-
     @Key("neodymium.webDriver.chrome.pathToBrowser")
     public String getChromeBrowserPath();
 

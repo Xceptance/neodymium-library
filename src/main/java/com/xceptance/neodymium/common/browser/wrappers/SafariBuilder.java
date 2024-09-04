@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableMap;
 
 public class SafariBuilder extends Builder
 {
-    private File firefoxBinary;
+    private File safariBinary;
 
     private int port;
 
@@ -20,7 +20,7 @@ public class SafariBuilder extends Builder
 
     public SafariDriverService createDriverService(List<String> arguments)
     {
-        // firefoxBinary = findDefaultExecutable();
+        // safariBinary = findDefaultExecutable();
         port = PortProber.findFreePort();
         this.arguments = arguments;
         return createDriverService(null, port, getDefaultTimeout(), createArgs(), ImmutableMap.copyOf(System.getenv()));
@@ -32,10 +32,10 @@ public class SafariBuilder extends Builder
         ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
         argsBuilder.addAll(super.createArgs());
         argsBuilder.add(String.format("--port=%d", port));
-        if (firefoxBinary != null)
+        if (safariBinary != null)
         {
             argsBuilder.add("-b");
-            argsBuilder.add(firefoxBinary.getPath());
+            argsBuilder.add(safariBinary.getPath());
         } // else GeckoDriver will be responsible for finding Firefox on the PATH or via a capability.
         if (arguments != null)
         {

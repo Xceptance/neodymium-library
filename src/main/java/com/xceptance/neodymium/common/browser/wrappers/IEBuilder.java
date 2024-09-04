@@ -13,7 +13,7 @@ import com.google.common.collect.ImmutableMap;
 
 public class IEBuilder extends Builder
 {
-    private File firefoxBinary;
+    private File ieBinary;
 
     private int port;
 
@@ -21,7 +21,7 @@ public class IEBuilder extends Builder
 
     public InternetExplorerDriverService createDriverService(List<String> arguments)
     {
-        // firefoxBinary = findDefaultExecutable();
+        // ieBinary = findDefaultExecutable();
         port = PortProber.findFreePort();
         this.arguments = arguments;
         try
@@ -30,8 +30,7 @@ public class IEBuilder extends Builder
         }
         catch (WebDriverException e)
         {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException("Could not create IE driver instance", e);
         }
     }
 
@@ -41,10 +40,10 @@ public class IEBuilder extends Builder
         ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
         argsBuilder.addAll(super.createArgs());
         argsBuilder.add(String.format("--port=%d", port));
-        if (firefoxBinary != null)
+        if (ieBinary != null)
         {
             argsBuilder.add("-b");
-            argsBuilder.add(firefoxBinary.getPath());
+            argsBuilder.add(ieBinary.getPath());
         } // else GeckoDriver will be responsible for finding Firefox on the PATH or via a capability.
         if (arguments != null)
         {

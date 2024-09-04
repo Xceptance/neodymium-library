@@ -14,7 +14,6 @@ public class ChromeBuilder extends Builder
     public ChromeBuilder(List<String> args)
     {
         this.arguments = args;
-        System.out.println(args);
         if (this.arguments != null && !this.arguments.isEmpty())
         {
             List<String> portArgs = this.arguments.stream().filter(arg -> arg.contains("--port=")).collect(Collectors.toList());
@@ -35,7 +34,6 @@ public class ChromeBuilder extends Builder
         {
             argsBuilder.addAll(arguments);
         }
-        System.out.println(argsBuilder.build());
         return argsBuilder.build();
     }
 }
