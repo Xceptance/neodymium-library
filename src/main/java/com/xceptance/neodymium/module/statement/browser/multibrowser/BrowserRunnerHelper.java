@@ -10,7 +10,6 @@ import static org.openqa.selenium.remote.Browser.SAFARI;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,7 +23,6 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -245,16 +243,7 @@ public final class BrowserRunnerHelper
                     options.setExperimentalOption("prefs", prefs);
                 }
 
-                ChromeDriverService defaultServer = new ChromeBuilder().createDriverService(createArgsList(Neodymium.configuration()
-                                                                                                                    .getChromeDriverArguments()));
-                if (defaultServer != null)
-                {
-                    wDSC.setWebDriver(new ChromeDriver(defaultServer, options));
-                }
-                else
-                {
-                    wDSC.setWebDriver(new ChromeDriver(options));
-                }
+                wDSC.setWebDriver(new ChromeDriver(new ChromeBuilder(config.getDriverArguments()).build(), options));
             }
             else if (firefoxBrowsers.contains(browserName))
             {
@@ -279,8 +268,9 @@ public final class BrowserRunnerHelper
                     options.setProfile(profile);
                 }
 
-                wDSC.setWebDriver(new FirefoxDriver(new GeckoBuilder().withArgs(createArgsList(Neodymium.configuration().getFirefoxDriverArguments()))
-                                                                      .withAllowHosts("localhost").build(), options));
+                wDSC.setWebDriver(new FirefoxDriver(new GeckoBuilder(config.getDriverArguments())
+                                                                                                 .withAllowHosts("localhost")
+                                                                                                 .build(), options));
             }
             else if (internetExplorerBrowsers.contains(browserName))
             {
@@ -292,8 +282,7 @@ public final class BrowserRunnerHelper
                         options.addCommandSwitches(argument);
                     }
                 }
-                InternetExplorerDriverService defaultServer = new IEBuilder().createDriverService(createArgsList(Neodymium.configuration()
-                                                                                                                          .getIeDriverArguments()));
+                InternetExplorerDriverService defaultServer = new IEBuilder().createDriverService(config.getDriverArguments());
                 if (defaultServer != null)
                 {
                     wDSC.setWebDriver(new InternetExplorerDriver(defaultServer, options));
@@ -307,8 +296,7 @@ public final class BrowserRunnerHelper
             else if (safariBrowsers.contains(browserName))
             {
                 final SafariOptions options = (SafariOptions) capabilities;
-                SafariDriverService defaultServer = new SafariBuilder().createDriverService(createArgsList(Neodymium.configuration()
-                                                                                                                    .getSafariDriverArguments()));
+                SafariDriverService defaultServer = new SafariBuilder().createDriverService(config.getDriverArguments());
 
                 if (defaultServer != null)
                 {
@@ -373,14 +361,6 @@ public final class BrowserRunnerHelper
         wDSC.setWebDriver(eFWDriver);
         WebDriverRunner.webdriverContainer.setWebDriver(wDSC.getWebDriver(), selenideProxyServer);
         return wDSC;
-    }
-
-    private static List<String> createArgsList(String argsString)
-    {
-        var argsList = new ArrayList<>(List.of(argsString.split(";")));
-        argsList.removeIf(arg -> arg == null || arg.trim().equals(""));
-        argsList.replaceAll(String::trim);
-        return argsList;
     }
 
     private static BrowserUpProxy setupEmbeddedProxy()

@@ -348,10 +348,10 @@ public class BrowserStatement extends StatementBuilder
 
             List<KeepBrowserOpen> methodKeepBrowserOpenAnnotations = getAnnotations(method.getMethod(), KeepBrowserOpen.class);
             List<KeepBrowserOpen> classKeepBrowserOpenAnnotations = getAnnotations(testClass.getJavaClass(), KeepBrowserOpen.class);
- 
+
             boolean keepOpen = Neodymium.configuration().keepBrowserOpen();
             boolean keepOpenOnFailure = Neodymium.configuration().keepBrowserOpenOnFailure();
-            
+
             if (!classKeepBrowserOpenAnnotations.isEmpty())
             {
                 KeepBrowserOpen keepBrowserOpen = classKeepBrowserOpenAnnotations.get(0);
@@ -366,7 +366,7 @@ public class BrowserStatement extends StatementBuilder
                     keepOpenOnFailure = false;
                 }
             }
-            
+
             if (!methodKeepBrowserOpenAnnotations.isEmpty())
             {
                 KeepBrowserOpen keepBrowserOpen = methodKeepBrowserOpenAnnotations.get(0);

@@ -5,44 +5,47 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.junit.After;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
 
-import com.codeborne.selenide.Selenide;
-import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
+import com.xceptance.neodymium.testclasses.webDriver.DriverArgumentsConfigTest;
 
-@RunWith(NeodymiumRunner.class)
-@Browser("Chrome_headless")
-@Browser("FF_headless")
 public class DriverArgumentsTest extends NeodymiumTest
 {
-    private static String randomLogFileName = "target/" + UUID.randomUUID().toString() + ".log";
+    public static String logFileNameChrome = "target/" + UUID.randomUUID().toString() + "chrome.log";
+
+    public static String logFileNameFirefox = "target/" + UUID.randomUUID().toString() + "firefox.log";
 
     @BeforeClass
     public static void createSettings()
     {
-        Map<String, String> properties1 = new HashMap<>();
-        properties1.put("neodymium.webDriver.chrome.driverArguments", "--silent ; --log-path=" + randomLogFileName);
-        properties1.put("neodymium.webDriver.firefox.driverArguments", "--log ; info ; --log-path=" + randomLogFileName);
-        File tempConfigFile1 = new File("./config/dev-neodymium.properties");
-        tempFiles.add(tempConfigFile1);
-        writeMapToPropertiesFile(properties1, tempConfigFile1);
+        Map<String, String> properties3 = new HashMap<>();
+
+        properties3.put("browserprofile.FF_with_args.name", "FF with args");
+        properties3.put("browserprofile.FF_with_args.headless", "true");
+        properties3.put("browserprofile.FF_with_args.browserResolution", "1024x768");
+        properties3.put("browserprofile.FF_with_args.browser", "firefox");
+        properties3.put("browserprofile.FF_with_args.driverArgs",
+                        "--log ; info ;--allow-hosts; xceptance.com; google.com; --port=8525; --log-no-truncate ; --websocket-port=8785; --allow-origins; http://xceptance.com:8785 ; --log-path="
+                                                                  + logFileNameFirefox);
+
+        properties3.put("browserprofile.Chrome_with_args.name", "Chrome with args");
+        properties3.put("browserprofile.Chrome_with_args.headless", "true");
+        properties3.put("browserprofile.Chrome_with_args.browserResolution", "1024x768");
+        properties3.put("browserprofile.Chrome_with_args.browser", "chrome");
+        properties3.put("browserprofile.Chrome_with_args.driverArgs",
+                        "--port=7100 ; --allowed-origins=localhost, xceptance.com; --log-level=INFO ; --log-path=" + logFileNameChrome);
+        File tempConfigFile3 = new File("./config/dev-browser.properties");
+        writeMapToPropertiesFile(properties3, tempConfigFile3);
+        tempFiles.add(tempConfigFile3);
     }
 
     @Test
     public void test()
     {
-        Selenide.open("https://www.xceptance.com/en/");
-        Assert.assertTrue("No log file found", new File(randomLogFileName).exists());
-    }
-
-    @After
-    public void cleanup()
-    {
-        new File(randomLogFileName).delete();
+        Result result = JUnitCore.runClasses(DriverArgumentsConfigTest.class);
+        checkPass(result, 2, 0);
     }
 }

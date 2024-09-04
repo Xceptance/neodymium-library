@@ -1,6 +1,7 @@
 package com.xceptance.neodymium.module.statement.browser.multibrowser.configuration;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +21,6 @@ import com.xceptance.neodymium.util.Neodymium;
 
 /**
  * Class to map browser configurations
- * 
  */
 public class BrowserConfigurationMapper
 {
@@ -55,6 +55,8 @@ public class BrowserConfigurationMapper
     private static final String HEADLESS = "headless";
 
     private static final String ARGUMENTS = "arguments";
+
+    private static final String DRIVER_ARGS = "driverArgs";
 
     private static final String DOWNLOAD_DIRECTORY = "downloadDirectory";
 
@@ -303,6 +305,16 @@ public class BrowserConfigurationMapper
                 args.add(arg.trim());
             }
             browserConfiguration.setArguments(args);
+        }
+
+        // additional browser arguments
+        String driverArgs = browserProfileConfiguration.get(DRIVER_ARGS);
+        if (!StringUtils.isEmpty(driverArgs))
+        {
+            var argsList = new ArrayList<>(List.of(driverArgs.split(";")));
+            argsList.removeIf(arg -> arg == null || arg.trim().equals(""));
+            argsList.replaceAll(String::trim);
+            browserConfiguration.setDriverArguments(argsList);
         }
 
         String downloadDirectory = browserProfileConfiguration.get(DOWNLOAD_DIRECTORY);

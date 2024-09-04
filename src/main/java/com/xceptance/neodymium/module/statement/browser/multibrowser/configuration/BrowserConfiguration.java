@@ -30,6 +30,8 @@ public class BrowserConfiguration
 
     private List<String> arguments;
 
+    private List<String> driverArguments;
+
     private String downloadDirectory;
 
     /**
@@ -220,6 +222,16 @@ public class BrowserConfiguration
     public void setArguments(List<String> arguments)
     {
         this.arguments = arguments;
+    }
+
+    public List<String> getDriverArguments()
+    {
+        return driverArguments;
+    }
+
+    public void setDriverArguments(List<String> driverArguments)
+    {
+        this.driverArguments = driverArguments;
     }
 
     public String getDownloadDirectory()
