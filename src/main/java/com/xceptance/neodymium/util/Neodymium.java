@@ -10,13 +10,12 @@ import org.aeonbits.owner.ConfigFactory;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import com.browserup.bup.BrowserUpProxy;
 import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.WebDriverStateContainer;
+import com.xceptance.neodymium.common.browser.WebDriverStateContainer;
 
 /**
  * See our Github wiki: <a href="https://github.com/Xceptance/neodymium-library/wiki/Neodymium-context">Neodymium
@@ -191,23 +190,14 @@ public class Neodymium
     }
 
     /**
-     * Get the current WebDriver as EventFiringWebDriver
-     *
-     * @return eventFiringWebDriver
-     */
-    public static EventFiringWebDriver getEventFiringWebdriver()
-    {
-        return (EventFiringWebDriver) getDriver();
-    }
-
-    /**
      * Get the current WebDriver as RemoteWebDriver
      *
      * @return remoteWebDriver
      */
     public static RemoteWebDriver getRemoteWebDriver()
     {
-        return (RemoteWebDriver) getEventFiringWebdriver().getWrappedDriver();
+        final WebDriverStateContainer wDSC = getContext().webDriverStateContainer;
+        return wDSC == null ? null : (RemoteWebDriver) wDSC.getWebDriver();
     }
 
     /**
@@ -455,7 +445,7 @@ public class Neodymium
     {
         Configuration.timeout = timeout;
     }
-    
+
     /**
      * Shortcut to set download folder
      * 

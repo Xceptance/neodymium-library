@@ -7,7 +7,7 @@ import org.aeonbits.owner.Config.LoadType;
 import org.aeonbits.owner.Config.Sources;
 import org.aeonbits.owner.Mutable;
 
-import com.xceptance.neodymium.NeodymiumRunner.DescriptionMode;
+import com.xceptance.neodymium.junit4.NeodymiumRunner.DescriptionMode;
 
 @LoadPolicy(LoadType.MERGE)
 @Sources(
@@ -260,6 +260,13 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("")
     public String getIeDriverArguments();
 
+    @Key("neodymium.webDriver.edge.pathToDriverServer")
+    public String getEdgeDriverPath();
+
+    @Key("neodymium.webDriver.edge.driverArguments")
+    @DefaultValue("")
+    public String getEdgeDriverArguments();
+
     @Key("neodymium.webDriver.safari.driverArguments")
     @DefaultValue("")
     public String getSafariDriverArguments();
@@ -276,9 +283,14 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.webDriver.firefox.pathToBrowser")
     public String getFirefoxBrowserPath();
 
-    @Key("neodymium.webDriver.opera.pathToBrowser")
-    public String getOperaBrowserPath();
-
     @Key("neodymium.testNameFilter")
     public String getTestNameFilter();
+
+    @Key("neodymium.workInProgress")
+    @DefaultValue("false")
+    public boolean workInProgress();
+
+    @Key("neodymium.logNeoVersion")
+    @DefaultValue("true")
+    public boolean logNeoVersion();
 }
