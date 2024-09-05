@@ -334,16 +334,18 @@ public final class BrowserRunnerHelper
             else if (safariBrowsers.contains(browserName))
             {
                 final SafariOptions options = (SafariOptions) capabilities;
-                SafariDriverService defaultServer = new SafariBuilder().createDriverService(config.getDriverArguments());
-
-                if (defaultServer != null)
-                {
-                    wDSC.setWebDriver(new SafariDriver(defaultServer, options));
-                }
-                else
-                {
-                    wDSC.setWebDriver(new SafariDriver(options));
-                }
+//                SafariDriverService defaultServer = new SafariBuilder().createDriverService(config.getDriverArguments());
+//
+//                if (defaultServer != null)
+//                {
+//                    wDSC.setWebDriver(new SafariDriver(defaultServer, options));
+//                }
+//                else
+//                {
+//                    wDSC.setWebDriver(new SafariDriver(options));
+//                }
+                wDSC.setWebDriver(new SafariDriver(new SafariBuilder(config.getDriverArguments())
+                        .build(), options));
             }
             else
             {
