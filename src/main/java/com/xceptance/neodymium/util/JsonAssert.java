@@ -112,6 +112,7 @@ public class JsonAssert
 
     public static void assertEquals(String expectedJson, String actualJson, JSONCompareMode jsonCompareMode)
     {
+        System.out.println(jsonCompareMode.name());
         try
         {
             SelenideAddons.wrapAssertionError(() -> {
@@ -120,7 +121,7 @@ public class JsonAssert
         }
         catch (AssertionError | JSONException e)
         {
-            Allure.addAttachment("Json Compare", "text/html", htmlScript(expectedJson, actualJson, jsonCompareMode), "html");
+            Allure.addAttachment("Json Compare (" + jsonCompareMode.name() + ")" , "text/html", htmlScript(expectedJson, actualJson, jsonCompareMode), "html");
             
             throw e;
         }
