@@ -24,19 +24,19 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.ie.InternetExplorerDriverService;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.safari.SafariDriver;
-import org.openqa.selenium.safari.SafariDriverService;
 import org.openqa.selenium.safari.SafariOptions;
 import org.openqa.selenium.support.events.EventFiringDecorator;
 
@@ -59,6 +59,7 @@ import com.xceptance.neodymium.common.browser.configuration.BrowserConfiguration
 import com.xceptance.neodymium.common.browser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.common.browser.configuration.TestEnvironment;
 import com.xceptance.neodymium.common.browser.wrappers.ChromeBuilder;
+import com.xceptance.neodymium.common.browser.wrappers.EdgeBuilder;
 import com.xceptance.neodymium.common.browser.wrappers.GeckoBuilder;
 import com.xceptance.neodymium.common.browser.wrappers.IEBuilder;
 import com.xceptance.neodymium.common.browser.wrappers.SafariBuilder;
@@ -84,6 +85,8 @@ public final class BrowserRunnerHelper
 
     private static List<String> internetExplorerBrowsers = new LinkedList<String>();
 
+    private static List<String> edgeBrowsers = new LinkedList<String>();
+
     private static List<String> safariBrowsers = new LinkedList<String>();
 
     private final static Object mutex = new Object();
@@ -95,7 +98,7 @@ public final class BrowserRunnerHelper
         firefoxBrowsers.add(FIREFOX.browserName());
 
         internetExplorerBrowsers.add(IE.browserName());
-        internetExplorerBrowsers.add(EDGE.browserName());
+        edgeBrowsers.add(EDGE.browserName());
 
         safariBrowsers.add(SAFARI.browserName());
     }
@@ -320,32 +323,36 @@ public final class BrowserRunnerHelper
                         options.addCommandSwitches(argument);
                     }
                 }
-                InternetExplorerDriverService defaultServer = new IEBuilder().createDriverService(config.getDriverArguments());
-                if (defaultServer != null)
+                wDSC.setWebDriver(new InternetExplorerDriver(new IEBuilder(config.getDriverArguments())
+                                                                                                       .build(), options));
+            }
+            else if (edgeBrowsers.contains(browserName))
+            {
+                final EdgeOptions options = new EdgeOptions().merge(capabilities);
+                if (config.getArguments() != null && config.getArguments().size() > 0)
                 {
-                    wDSC.setWebDriver(new InternetExplorerDriver(defaultServer, options));
+                    options.addArguments(config.getArguments());
                 }
-                else
-                {
-                    wDSC.setWebDriver(new InternetExplorerDriver(options));
-                }
-                wDSC.setWebDriver(new InternetExplorerDriver(options));
+                wDSC.setWebDriver(new EdgeDriver(options));
+                wDSC.setWebDriver(new EdgeDriver(new EdgeBuilder(config.getDriverArguments())
+                                                                                             .build(), options));
             }
             else if (safariBrowsers.contains(browserName))
             {
                 final SafariOptions options = (SafariOptions) capabilities;
-//                SafariDriverService defaultServer = new SafariBuilder().createDriverService(config.getDriverArguments());
-//
-//                if (defaultServer != null)
-//                {
-//                    wDSC.setWebDriver(new SafariDriver(defaultServer, options));
-//                }
-//                else
-//                {
-//                    wDSC.setWebDriver(new SafariDriver(options));
-//                }
+                // SafariDriverService defaultServer = new
+                // SafariBuilder().createDriverService(config.getDriverArguments());
+                //
+                // if (defaultServer != null)
+                // {
+                // wDSC.setWebDriver(new SafariDriver(defaultServer, options));
+                // }
+                // else
+                // {
+                // wDSC.setWebDriver(new SafariDriver(options));
+                // }
                 wDSC.setWebDriver(new SafariDriver(new SafariBuilder(config.getDriverArguments())
-                        .build(), options));
+                                                                                                 .build(), options));
             }
             else
             {

@@ -23,7 +23,6 @@ public class GeckoBuilder extends Builder
     public GeckoBuilder(List<String> args)
     {
         this.arguments = args;
-        System.out.println(args);
         if (this.arguments != null && !this.arguments.isEmpty())
         {
             List<String> logPaths = arguments.stream().filter(arg -> arg.contains("--log-path=")).collect(Collectors.toList());

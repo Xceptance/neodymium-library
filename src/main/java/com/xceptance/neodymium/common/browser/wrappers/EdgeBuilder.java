@@ -3,15 +3,15 @@ package com.xceptance.neodymium.common.browser.wrappers;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.openqa.selenium.ie.InternetExplorerDriverService.Builder;
+import org.openqa.selenium.edge.EdgeDriverService.Builder;
 
 import com.google.common.collect.ImmutableList;
 
-public class IEBuilder extends Builder
+public class EdgeBuilder extends Builder
 {
     private List<String> arguments;
 
-    public IEBuilder(List<String> args)
+    public EdgeBuilder(List<String> args)
     {
         this.arguments = args;
         if (this.arguments != null && !this.arguments.isEmpty())
