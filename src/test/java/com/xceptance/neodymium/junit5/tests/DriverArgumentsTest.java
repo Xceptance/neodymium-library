@@ -1,18 +1,17 @@
-package com.xceptance.neodymium.junit4.tests;
+package com.xceptance.neodymium.junit5.tests;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.JUnitCore;
-import org.junit.runner.Result;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import com.xceptance.neodymium.junit4.testclasses.webDriver.DriverArgumentsConfigTest;
+import com.xceptance.neodymium.junit5.testclasses.webDriver.DriverArgumentsConfigTest;
+import com.xceptance.neodymium.junit5.tests.utils.NeodymiumTestExecutionSummary;
 
-public class DriverArgumentsTest extends NeodymiumTest
+public class DriverArgumentsTest extends AbstractNeodymiumTest
 {
     public static String logFileNameChrome = "target/" + UUID.randomUUID().toString() + "_chrome.log";
 
@@ -24,7 +23,7 @@ public class DriverArgumentsTest extends NeodymiumTest
 
     public static String firefoxWebsocketPort = "8785";
 
-    @BeforeClass
+    @BeforeAll
     public static void createSettings()
     {
         Map<String, String> properties3 = new HashMap<>();
@@ -53,7 +52,7 @@ public class DriverArgumentsTest extends NeodymiumTest
     @Test
     public void test()
     {
-        Result result = JUnitCore.runClasses(DriverArgumentsConfigTest.class);
+        NeodymiumTestExecutionSummary result = run(DriverArgumentsConfigTest.class);
         checkPass(result, 2, 0);
     }
 }

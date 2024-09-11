@@ -1,21 +1,18 @@
-package com.xceptance.neodymium.junit4.testclasses.webDriver;
+package com.xceptance.neodymium.junit5.testclasses.webDriver;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.runner.RunWith;
 
 import com.codeborne.selenide.Selenide;
 import com.xceptance.neodymium.common.browser.Browser;
-import com.xceptance.neodymium.junit4.NeodymiumRunner;
-import com.xceptance.neodymium.junit4.tests.DriverArgumentsTest;
+import com.xceptance.neodymium.junit5.NeodymiumTest;
+import com.xceptance.neodymium.junit5.tests.DriverArgumentsTest;
 import com.xceptance.neodymium.util.Neodymium;
 
-@RunWith(NeodymiumRunner.class)
 @Browser("FF_with_args")
 @Browser("Chrome_with_args")
 public class DriverArgumentsConfigTest
@@ -24,7 +21,7 @@ public class DriverArgumentsConfigTest
 
     private File firefoxLogFile = new File(DriverArgumentsTest.logFileNameFirefox);
 
-    @Test
+    @NeodymiumTest
     public void test() throws IOException
     {
         Selenide.open("https://www.xceptance.com/en/");
@@ -42,7 +39,7 @@ public class DriverArgumentsConfigTest
         }
     }
 
-    @After
+    @AfterEach
     public void cleanup()
     {
         if (chromeLogFile.exists())
