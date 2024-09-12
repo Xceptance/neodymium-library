@@ -7,7 +7,7 @@ import org.aeonbits.owner.Config.LoadType;
 import org.aeonbits.owner.Config.Sources;
 import org.aeonbits.owner.Mutable;
 
-import com.xceptance.neodymium.NeodymiumRunner.DescriptionMode;
+import com.xceptance.neodymium.junit4.NeodymiumRunner.DescriptionMode;
 
 @LoadPolicy(LoadType.MERGE)
 @Sources(
@@ -43,7 +43,7 @@ public interface NeodymiumConfiguration extends Mutable
 
     @Key("neodymium.selenideAddons.staleElement.retry.timeout")
     @DefaultValue("500")
-    public int staleElementRetryTimeout();
+    public long staleElementRetryTimeout();
 
     @Key("neodymium.selenideAddons.optional.retry.pollingIntervall")
     @DefaultValue("3000")
@@ -55,11 +55,11 @@ public interface NeodymiumConfiguration extends Mutable
 
     @Key("neodymium.javaScriptUtils.timeout")
     @DefaultValue("2000")
-    public int javaScriptTimeout();
+    public long javaScriptTimeout();
 
     @Key("neodymium.javaScriptUtils.pollingInterval")
     @DefaultValue("200")
-    public int javaScriptPollingInterval();
+    public long javaScriptPollingInterval();
 
     @Key("neodymium.javaScriptUtils.loading.jQueryIsRequired")
     @DefaultValue("true")
@@ -185,6 +185,10 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.proxy.socket.password")
     public String getProxySocketPassword();
 
+    @Key("neodymium.selenideProxy")
+    @DefaultValue("false")
+    public boolean enableSelenideProxy();
+
     @Key("neodymium.localproxy")
     @DefaultValue("false")
     public boolean useLocalProxy();
@@ -218,10 +222,6 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.webDriver.window.height")
     @DefaultValue("-1")
     public Integer getWindowHeight();
-
-    @Key("neodymium.webDriver.firefox.legacyMode")
-    @DefaultValue("false")
-    public boolean useFirefoxLegacy();
 
     @Key("neodymium.webDriver.reuseDriver")
     @DefaultValue("false")
@@ -259,21 +259,20 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.webDriver.ie.pathToDriverServer")
     public String getIeDriverPath();
 
-    @Key("neodymium.webDriver.opera.pathToDriverServer")
-    public String getOperaDriverPath();
-
-    @Key("neodymium.webDriver.phantomjs.pathToDriverServer")
-    public String getPhantomJsDriverPath();
-
     @Key("neodymium.webDriver.chrome.pathToBrowser")
     public String getChromeBrowserPath();
 
     @Key("neodymium.webDriver.firefox.pathToBrowser")
     public String getFirefoxBrowserPath();
 
-    @Key("neodymium.webDriver.opera.pathToBrowser")
-    public String getOperaBrowserPath();
-
     @Key("neodymium.testNameFilter")
     public String getTestNameFilter();
+
+    @Key("neodymium.workInProgress")
+    @DefaultValue("false")
+    public boolean workInProgress();
+
+    @Key("neodymium.logNeoVersion")
+    @DefaultValue("true")
+    public boolean logNeoVersion();
 }

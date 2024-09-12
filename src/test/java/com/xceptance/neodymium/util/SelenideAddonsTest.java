@@ -31,9 +31,9 @@ import com.codeborne.selenide.logevents.LogEvent.EventStatus;
 import com.codeborne.selenide.logevents.LogEventListener;
 import com.codeborne.selenide.logevents.SelenideLog;
 import com.codeborne.selenide.logevents.SelenideLogger;
-import com.xceptance.neodymium.NeodymiumRunner;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.Browser;
-import com.xceptance.neodymium.module.statement.browser.multibrowser.SuppressBrowsers;
+import com.xceptance.neodymium.common.browser.Browser;
+import com.xceptance.neodymium.common.browser.SuppressBrowsers;
+import com.xceptance.neodymium.junit4.NeodymiumRunner;
 
 @RunWith(NeodymiumRunner.class)
 @Browser("Chrome_headless")
@@ -113,7 +113,7 @@ public class SelenideAddonsTest
         openBlogPage();
         $("#masthead .search-toggle").click();
 
-        $("#search-container .search-field").should(SelenideAddons.matchesAttribute("placeholder", "Search"));
+        $("#search-container .search-field").should(SelenideAddons.matchesAttribute("placeholder", "Search.*"));
     }
 
     @Test
@@ -144,7 +144,7 @@ public class SelenideAddonsTest
         $("#masthead .search-toggle").click();
 
         Assert.assertThrows(ElementShould.class, () -> {
-            $("#search-container .search-field").should(SelenideAddons.matchAttribute("foo", "bar"));
+            $("#search-container .search-field").should(SelenideAddons.matchAttribute("bar", "bar"));
         });
     }
 
@@ -286,7 +286,7 @@ public class SelenideAddonsTest
     @Test
     public void testWrapAssertionErrorWithoutMessage()
     {
-        final String errMessage = "AssertionError: No error message provided by the Assertion.";
+        final String errMessage = "java.lang.AssertionError: No error message provided by the Assertion.";
         try
         {
             openBlogPage();
