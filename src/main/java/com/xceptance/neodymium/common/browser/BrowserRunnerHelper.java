@@ -32,6 +32,7 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.os.ExecutableFinder;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -186,7 +187,7 @@ public final class BrowserRunnerHelper
      *             if <a href="https://github.com/Xceptance/neodymium-library/wiki/Selenium-grid">Selenium grid</a> is
      *             used and the given grid URL is invalid
      */
-    public static WebDriverStateContainer createWebDriverStateContainer(final BrowserConfiguration config, Object testClassInstance)
+    public static WebDriverStateContainer createWebDriverStateContainer(final BrowserConfiguration config, final Object testClassInstance)
         throws MalformedURLException
     {
         final MutableCapabilities capabilities = config.getCapabilities();
@@ -194,7 +195,7 @@ public final class BrowserRunnerHelper
         SelenideProxyServer selenideProxyServer = null;
         if (Neodymium.configuration().useLocalProxy())
         {
-            BrowserUpProxy proxy = setupEmbeddedProxy();
+            final BrowserUpProxy proxy = setupEmbeddedProxy();
 
             // set the Proxy for later usage
             wDSC.setProxy(proxy);
@@ -211,16 +212,17 @@ public final class BrowserRunnerHelper
         {
             if (Neodymium.configuration().enableSelenideProxy())
             {
-                SelenideProxyServerFactory selenideProxyServerFactory = Plugins.inject(SelenideProxyServerFactory.class);
+                final SelenideProxyServerFactory selenideProxyServerFactory = Plugins.inject(SelenideProxyServerFactory.class);
                 selenideProxyServer = selenideProxyServerFactory.create(new SelenideConfig(),
                                                                         (Proxy) capabilities.getCapability(CapabilityType.PROXY));
-                var proxy = selenideProxyServer.getSeleniumProxy();
+                final var proxy = selenideProxyServer.getSeleniumProxy();
                 capabilities.setCapability(CapabilityType.PROXY, proxy);
             }
             final String browserName = capabilities.getBrowserName();
             if (chromeBrowsers.contains(browserName))
             {
-                final ChromeOptions options = (ChromeOptions) capabilities;
+                final ChromeOptions options = new ChromeOptions();
+                final String driverInPathPath = new ExecutableFinder().find("chromedriver");
 
                 // do we have a custom path?
                 String pathToBrowser = Neodymium.configuration().getChromeBrowserPath();
@@ -242,9 +244,10 @@ public final class BrowserRunnerHelper
                     options.setExperimentalOption("prefs", config.getPreferences());
                 }
 
-                if ((config.getPreferences() != null && !config.getPreferences().isEmpty()) || StringUtils.isNotBlank(config.getDownloadDirectory()))
+                if ((config.getPreferences() != null && !config.getPreferences().isEmpty()) ||
+                    StringUtils.isNotBlank(config.getDownloadDirectory()))
                 {
-                    HashMap<String, Object> prefs = new HashMap<>();
+                    final HashMap<String, Object> prefs = new HashMap<>();
 
                     // if we have configured prefs, we need to add all to the experimental options
                     if (config.getPreferences() != null && !config.getPreferences().isEmpty())
@@ -260,12 +263,15 @@ public final class BrowserRunnerHelper
 
                     options.setExperimentalOption("prefs", prefs);
                 }
-
-                wDSC.setWebDriver(new ChromeDriver(new ChromeBuilder(config.getDriverArguments()).build(), options));
+                // wDSC.setWebDriver(new ChromeDriver(new ChromeBuilder(config.getDriverArguments()).build(), options));
+                wDSC.setWebDriver(new ChromeDriver(new ChromeBuilder(config.getDriverArguments())
+                                                                                                 .usingDriverExecutable(new File(driverInPathPath))
+                                                                                                 .build(), options.merge(capabilities)));
             }
             else if (firefoxBrowsers.contains(browserName))
             {
-                final FirefoxOptions options = new FirefoxOptions().merge(capabilities);
+                final FirefoxOptions options = new FirefoxOptions();
+                final String driverInPathPath = new ExecutableFinder().find("geckodriver");
                 options.setBinary(createFirefoxBinary(Neodymium.configuration().getFirefoxBrowserPath()));
                 if (config.isHeadless())
                 {
@@ -275,9 +281,10 @@ public final class BrowserRunnerHelper
                 {
                     options.addArguments(config.getArguments());
                 }
-                if ((config.getPreferences() != null && !config.getPreferences().isEmpty()) || StringUtils.isNotBlank(config.getDownloadDirectory()))
+                if ((config.getPreferences() != null && !config.getPreferences().isEmpty()) ||
+                    StringUtils.isNotBlank(config.getDownloadDirectory()))
                 {
-                    FirefoxProfile profile = new FirefoxProfile();
+                    final FirefoxProfile profile = new FirefoxProfile();
 
                     // if we have configured prefs, we need to add all to the experimental options
                     if (config.getPreferences() != null && !config.getPreferences().isEmpty())
@@ -309,22 +316,30 @@ public final class BrowserRunnerHelper
                     }
                     options.setProfile(profile);
                 }
-                wDSC.setWebDriver(new FirefoxDriver(new GeckoBuilder(config.getDriverArguments())
-                                                                                                 .withAllowHosts("localhost")
-                                                                                                 .build(), options));
+                // wDSC.setWebDriver(new FirefoxDriver(new GeckoBuilder(config.getDriverArguments())
+                // .withAllowHosts("localhost")
+                // .build(), options));
+
+                wDSC.setWebDriver(new FirefoxDriver(new GeckoBuilder(config.getDriverArguments()).withAllowHosts("localhost")
+                                                                                                 .usingDriverExecutable(new File(driverInPathPath))
+                                                                                                 .build(), options.merge(capabilities)));
             }
             else if (internetExplorerBrowsers.contains(browserName))
             {
-                final InternetExplorerOptions options = new InternetExplorerOptions().merge(capabilities);
+                final InternetExplorerOptions options = new InternetExplorerOptions();
+                final String driverInPathPath = new ExecutableFinder().find("IEDriverServer");
                 if (config.getArguments() != null && config.getArguments().size() > 0)
                 {
-                    for (String argument : config.getArguments())
+                    for (final String argument : config.getArguments())
                     {
                         options.addCommandSwitches(argument);
                     }
                 }
+                // wDSC.setWebDriver(new InternetExplorerDriver(new IEBuilder(config.getDriverArguments())
+                // .build(), options));
                 wDSC.setWebDriver(new InternetExplorerDriver(new IEBuilder(config.getDriverArguments())
-                                                                                                       .build(), options));
+                                                                                                       .usingDriverExecutable(new File(driverInPathPath))
+                                                                                                       .build(), options.merge(capabilities)));
             }
             else if (edgeBrowsers.contains(browserName))
             {
@@ -339,24 +354,15 @@ public final class BrowserRunnerHelper
             }
             else if (safariBrowsers.contains(browserName))
             {
-                final SafariOptions options = (SafariOptions) capabilities;
-                // SafariDriverService defaultServer = new
-                // SafariBuilder().createDriverService(config.getDriverArguments());
-                //
-                // if (defaultServer != null)
-                // {
-                // wDSC.setWebDriver(new SafariDriver(defaultServer, options));
-                // }
-                // else
-                // {
-                // wDSC.setWebDriver(new SafariDriver(options));
-                // }
+                // safari driver is not expected to be in PATH, it will be looked in
+                // /usr/bin/safaridriver and /Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver
+                final SafariOptions options = new SafariOptions();
                 wDSC.setWebDriver(new SafariDriver(new SafariBuilder(config.getDriverArguments())
                                                                                                  .build(), options));
             }
             else
             {
-                wDSC.setWebDriver(new RemoteWebDriver(capabilities));
+                wDSC.setWebDriver(new RemoteWebDriver(capabilities.merge(capabilities)));
             }
 
         }
@@ -364,17 +370,17 @@ public final class BrowserRunnerHelper
         {
 
             // establish connection to target website
-            TestEnvironment testEnvironmentProperties = MultibrowserConfiguration.getInstance().getTestEnvironment(testEnvironment);
+            final TestEnvironment testEnvironmentProperties = MultibrowserConfiguration.getInstance().getTestEnvironment(testEnvironment);
             if (testEnvironmentProperties == null)
             {
                 throw new IllegalArgumentException("No properties found for test environment: \"" + testEnvironment + "\"");
             }
-            String testEnvironmentUrl = testEnvironmentProperties.getUrl();
+            final String testEnvironmentUrl = testEnvironmentProperties.getUrl();
             ClientConfig configClient = ClientConfig.defaultConfig();
             configClient = configClient.baseUrl(new URL(testEnvironmentUrl));
             config.getGridProperties().put("userName", testEnvironmentProperties.getUsername());
             config.getGridProperties().put("accessKey", testEnvironmentProperties.getPassword());
-            String buildId = StringUtils.isBlank(System.getenv("BUILD_NUMBER")) ? "local run" : System.getenv("BUILD_NUMBER");
+            final String buildId = StringUtils.isBlank(System.getenv("BUILD_NUMBER")) ? "local run" : System.getenv("BUILD_NUMBER");
             config.getGridProperties().put("sessionName", testClassInstance.getClass().toString());
             config.getGridProperties().put("buildName", "Test Automation");
             config.getGridProperties().put("buildIdentifier", buildId);
@@ -388,10 +394,10 @@ public final class BrowserRunnerHelper
             }
             else
             {
-                String optionsTag = testEnvironmentProperties.getOptionsTag();
+                final String optionsTag = testEnvironmentProperties.getOptionsTag();
                 if (StringUtils.isBlank(optionsTag))
                 {
-                    for (String key : config.getGridProperties().keySet())
+                    for (final String key : config.getGridProperties().keySet())
                     {
                         capabilities.setCapability(key, config.getGridProperties().get(key));
                     }
@@ -403,7 +409,7 @@ public final class BrowserRunnerHelper
             }
             wDSC.setWebDriver(new RemoteWebDriver(new HttpCommandExecutor(new HashMap<>(), configClient, new NeodymiumProxyHttpClientFactory(testEnvironmentProperties)), capabilities));
         }
-        WebDriver decoratedDriver = new EventFiringDecorator<WebDriver>(new NeodymiumWebDriverListener()).decorate(wDSC.getWebDriver());
+        final WebDriver decoratedDriver = new EventFiringDecorator<WebDriver>(new NeodymiumWebDriverListener()).decorate(wDSC.getWebDriver());
         wDSC.setDecoratedWebDriver(decoratedDriver);
         WebDriverRunner.setWebDriver(decoratedDriver, selenideProxyServer);
         return wDSC;
@@ -417,7 +423,8 @@ public final class BrowserRunnerHelper
         if (Neodymium.configuration().useLocalProxyWithSelfSignedCertificate())
         {
             final CertificateAndKeySource rootCertificateSource = createLocalProxyRootCertSource();
-            final ImpersonatingMitmManager mitmManager = ImpersonatingMitmManager.builder().rootCertificateSource(rootCertificateSource).build();
+            final ImpersonatingMitmManager mitmManager = ImpersonatingMitmManager.builder().rootCertificateSource(rootCertificateSource)
+                                                                                 .build();
             proxy.setMitmManager(mitmManager);
         }
         else
@@ -485,8 +492,10 @@ public final class BrowserRunnerHelper
         final Proxy webdriverProxy = new Proxy();
         webdriverProxy.setHttpProxy(proxyHost);
         webdriverProxy.setSslProxy(proxyHost);
-        if (!StringUtils.isAllEmpty(Neodymium.configuration().getProxySocketUsername(), Neodymium.configuration().getProxySocketPassword())
-            || Neodymium.configuration().getProxySocketVersion() != null)
+        if (!StringUtils.isAllEmpty(Neodymium.configuration().getProxySocketUsername(),
+                                    Neodymium.configuration().getProxySocketPassword())
+            ||
+            Neodymium.configuration().getProxySocketVersion() != null)
         {
             webdriverProxy.setSocksProxy(proxyHost);
             if (StringUtils.isNoneEmpty(Neodymium.configuration().getProxySocketUsername(),
@@ -517,11 +526,12 @@ public final class BrowserRunnerHelper
     {
         try
         {
-            List<String> popularContentTypes = IOUtils.readLines(BrowserConfigurationMapper.class.getResourceAsStream("/content-types.properties"), UTF_8);
+            final List<String> popularContentTypes = IOUtils.readLines(BrowserConfigurationMapper.class.getResourceAsStream("/content-types.properties"),
+                                                                       UTF_8);
             popularContentTypes.add("application/x-download");
             return String.join(";", popularContentTypes);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             return "text/plain;text/csv;application/zip;application/pdf;application/octet-stream;" +
                    "application/msword;application/vnd.ms-excel;text/css;text/html";
