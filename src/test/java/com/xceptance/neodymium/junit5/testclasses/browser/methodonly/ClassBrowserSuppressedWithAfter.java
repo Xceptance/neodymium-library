@@ -1,26 +1,23 @@
-package com.xceptance.neodymium.junit4.testclasses.browser.classonly;
+package com.xceptance.neodymium.junit5.testclasses.browser.methodonly;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
 
 import com.xceptance.neodymium.common.browser.Browser;
 import com.xceptance.neodymium.common.browser.SuppressBrowsers;
-import com.xceptance.neodymium.junit4.NeodymiumRunner;
+import com.xceptance.neodymium.junit5.NeodymiumTest;
 import com.xceptance.neodymium.util.Neodymium;
 
-@RunWith(NeodymiumRunner.class)
-@Browser("Chrome_headless")
-public class MethodBrowserSuppressedWithAfter
+@Browser("chrome")
+@SuppressBrowsers
+public class ClassBrowserSuppressedWithAfter
 {
-    @SuppressBrowsers
-    @Test
+    @NeodymiumTest
     public void first() throws Exception
     {
     }
 
-    @After
+    @AfterEach
     public void after()
     {
         Assert.assertNull("Browser should not be started for cleanup", Neodymium.getDriver());

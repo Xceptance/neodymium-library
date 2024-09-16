@@ -23,6 +23,10 @@ import com.xceptance.neodymium.junit5.testclasses.browser.RandomBrowsersClassIni
 import com.xceptance.neodymium.junit5.testclasses.browser.RandomBrowsersMethodInitialisationException;
 import com.xceptance.neodymium.junit5.testclasses.browser.classonly.ClassBrowserSuppressed;
 import com.xceptance.neodymium.junit5.testclasses.browser.classonly.ClassBrowserSuppressedNoBrowserAnnotation;
+import com.xceptance.neodymium.junit5.testclasses.browser.classonly.ClassBrowserSuppressedWithBefore;
+import com.xceptance.neodymium.junit5.testclasses.browser.classonly.MethodBrowserSuppressedWithAfter;
+import com.xceptance.neodymium.junit5.testclasses.browser.classonly.NewBrowserIsNotStartedForCleanUp;
+import com.xceptance.neodymium.junit5.testclasses.browser.classonly.NewBrowserIsNotStartedForSetUp;
 import com.xceptance.neodymium.junit5.testclasses.browser.classonly.OneClassBrowserOneMethod;
 import com.xceptance.neodymium.junit5.testclasses.browser.classonly.RandomBrowserClassLevel;
 import com.xceptance.neodymium.junit5.testclasses.browser.classonly.TwoClassBrowserOneMethod;
@@ -30,12 +34,22 @@ import com.xceptance.neodymium.junit5.testclasses.browser.classonly.TwoSameClass
 import com.xceptance.neodymium.junit5.testclasses.browser.inheritance.BrowserOverwrittingChild;
 import com.xceptance.neodymium.junit5.testclasses.browser.inheritance.RandomBrowsersChild;
 import com.xceptance.neodymium.junit5.testclasses.browser.inheritance.RandomBrowsersOverwritingChild;
+import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.DontStartNewBrowserForOneOfTheAfters;
+import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.DontStartNewBrowserForOneOfTheBefores;
 import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.MethodBrowserSuppressNoBrowserAnnotation;
 import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.OneBrowserOneMethodBrowserSuppressed;
 import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.RandomBrowserMethodLevel;
 import com.xceptance.neodymium.junit5.testclasses.browser.mixed.ClassAndMethodSameBrowserOneMethod;
+import com.xceptance.neodymium.junit5.testclasses.browser.mixed.ClassBrowserSuppressedAfterWithBrowser;
+import com.xceptance.neodymium.junit5.testclasses.browser.mixed.ClassBrowserSuppressedBeforeWithBrowser;
 import com.xceptance.neodymium.junit5.testclasses.browser.mixed.MethodBrowserAnnotationOverwritesClassRandomBrowser;
+import com.xceptance.neodymium.junit5.testclasses.browser.mixed.NewBrowserIsNotStartedForOneOfCleanUps;
+import com.xceptance.neodymium.junit5.testclasses.browser.mixed.NewBrowserIsNotStartedForOneOfSetUps;
+import com.xceptance.neodymium.junit5.testclasses.browser.mixed.OverwriteBrowserForCleanUp;
+import com.xceptance.neodymium.junit5.testclasses.browser.mixed.OverwriteBrowserForSetUp;
 import com.xceptance.neodymium.junit5.testclasses.browser.mixed.RandomBrowserMixed;
+import com.xceptance.neodymium.junit5.testclasses.browser.mixed.StartBrowserForCleanUp;
+import com.xceptance.neodymium.junit5.testclasses.browser.mixed.StartBrowserForSetUp;
 import com.xceptance.neodymium.junit5.tests.utils.NeodymiumTestExecutionSummary;
 import com.xceptance.neodymium.util.Neodymium;
 
@@ -185,6 +199,133 @@ public class BrowserStatementTest extends AbstractNeodymiumTest
         NeodymiumTestExecutionSummary summary = run(RandomBrowsersClassInitialisationException.class);
         checkFail(summary, 1, 0, 1,
                   "java.lang.IllegalArgumentException: Method 'test1' is marked to be run with 9 random browsers, but there are only 4 available");
+    }
+
+    @Test
+    public void testStartBrowserForSetUp()
+    {
+        // by default, new browser is started for each @Before
+        NeodymiumTestExecutionSummary summary = run(StartBrowserForSetUp.class);
+        checkPass(summary, 1, 0);
+    }
+
+    @Test
+    public void testNewBrowserIsNotStartedForOneOfSetUps()
+    {
+        // by default, new browser is started for each @After
+        NeodymiumTestExecutionSummary summary = run(NewBrowserIsNotStartedForOneOfSetUps.class);
+        checkPass(summary, 1, 0);
+    }
+
+    @Test
+    public void testNewBrowserIsNotStartedForSetUp()
+    {
+        // if test class is annotated with @@StartNewBrowserForCleanUp(false), no new browser is started for cleanup
+        NeodymiumTestExecutionSummary summary = run(NewBrowserIsNotStartedForSetUp.class);
+        checkPass(summary, 1, 0);
+    }
+
+    @Test
+    public void testClassBrowserSuppressedWithBefore()
+    {
+        // if test class, marked to run without browser but it's not marked that no new browser should be started for
+        // @After method, Runtime Exception should be thrown
+        NeodymiumTestExecutionSummary summary = run(ClassBrowserSuppressedWithBefore.class);
+        checkFail(summary, 1, 0, 1,
+                  "java.lang.RuntimeException: No browser setting for @BeforeEach method 'before' was found."
+                                    + " If browser is suppressed for the test and is also not required for the set up,"
+                                    + " please mark the @BeforeEach method with @DontStartNewBrowserForSetUp annotation."
+                                    + " If you need to start a browser for the set up, please,"
+                                    + " use @Browser annotaion to mention what browser should be used exactly for this @BeforeEach.");
+    }
+
+    @Test
+    public void testDontStartNewBrowserForOneOfTheBefores()
+    {
+        // if test class, marked to run without browser but it's not marked that no new browser should be started for
+        // @After method, Runtime Exception should be thrown
+        NeodymiumTestExecutionSummary summary = run(DontStartNewBrowserForOneOfTheBefores.class);
+        checkPass(summary, 1, 0);
+    }
+
+    @Test
+    public void testClassBrowserSuppressedBeforeWithBrowser()
+    {
+        // although test class is marked to be run without browser, if @After method is annotated with @Browser, the
+        // browser should be started for clean up
+        NeodymiumTestExecutionSummary summary = run(ClassBrowserSuppressedBeforeWithBrowser.class);
+        checkPass(summary, 1, 0);
+    }
+
+    @Test
+    public void testOverwriteBrowserForSetUp()
+    {
+        // it should be possible to use different browser profle for clean up (using @Browser annotation)
+        NeodymiumTestExecutionSummary summary = run(OverwriteBrowserForSetUp.class);
+        checkPass(summary, 1, 0);
+    }
+
+    @Test
+    public void testStartBrowserForCleanUp()
+    {
+        // by default, new browser is started for each @After
+        NeodymiumTestExecutionSummary summary = run(StartBrowserForCleanUp.class);
+        checkPass(summary, 1, 0);
+    }
+
+    @Test
+    public void testNewBrowserIsNotStartedForOneOfCleanUps()
+    {
+        // by default, new browser is started for each @After
+        NeodymiumTestExecutionSummary summary = run(NewBrowserIsNotStartedForOneOfCleanUps.class);
+        checkPass(summary, 1, 0);
+    }
+
+    @Test
+    public void testNewBrowserIsNotStartedForCleanUp()
+    {
+        // if test class is annotated with @@StartNewBrowserForCleanUp(false), no new browser is started for cleanup
+        NeodymiumTestExecutionSummary summary = run(NewBrowserIsNotStartedForCleanUp.class);
+        checkPass(summary, 1, 0);
+    }
+
+    @Test
+    public void testSupressBrowserWithAfter()
+    {
+        // if test class, marked to run without browser but it's not marked that no new browser should be started for
+        // @After method, Runtime Exception should be thrown
+        NeodymiumTestExecutionSummary summary = run(MethodBrowserSuppressedWithAfter.class);
+        checkFail(summary, 1, 0, 1, "java.lang.RuntimeException: No browser setting for @AfterEach method 'after' was found. "
+                                    + "If browser was suppressed for the test and is also not required for the clean up,"
+                                    + " please mark the @AfterEach method with @DontStartNewBrowserForCleanUp annotation."
+                                    + " If you need to start a browser for the clean up,"
+                                    + " please, use @Browser annotaion to mention what browser should be used exactly for this @AfterEach.");
+    }
+
+    @Test
+    public void testDontStartNewBrowserForOneOfTheAfters()
+    {
+        // if test class, marked to run without browser but it's not marked that no new browser should be started for
+        // @After method, Runtime Exception should be thrown
+        NeodymiumTestExecutionSummary summary = run(DontStartNewBrowserForOneOfTheAfters.class);
+        checkPass(summary, 1, 0);
+    }
+
+    @Test
+    public void testClassBrowserSuppressedAfterWithBrowser()
+    {
+        // although test class is marked to be run without browser, if @After method is annotated with @Browser, the
+        // browser should be started for clean up
+        NeodymiumTestExecutionSummary summary = run(ClassBrowserSuppressedAfterWithBrowser.class);
+        checkPass(summary, 1, 0);
+    }
+
+    @Test
+    public void testOverwriteBrowserForCleanUp()
+    {
+        // it should be possible to use different browser profle for clean up (using @Browser annotation)
+        NeodymiumTestExecutionSummary summary = run(OverwriteBrowserForCleanUp.class);
+        checkPass(summary, 1, 0);
     }
 
     @Test
