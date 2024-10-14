@@ -267,4 +267,24 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.logNeoVersion")
     @DefaultValue("true")
     public boolean logNeoVersion();
+
+    @Key("neodymium.waitTime.standard")
+    @DefaultValue("100")
+    public int getStandardWaitTime();
+
+    @Key("neodymium.waitTime.short")
+    @DefaultValue("50")
+    public int getShortWaitTime();
+
+    @Key("neodymium.waitTime.double")
+    @DefaultValue("200")
+    public int getDoubleWaitTime();
+
+    @Key("neodymium.waitTime.long")
+    @DefaultValue("500")
+    public int getLongWaitTime();
+
+    @Key("neodymium.waitTime.customWaitTimes")
+    @DefaultValue("")
+    public String getCustomWaitTimes();
 }
