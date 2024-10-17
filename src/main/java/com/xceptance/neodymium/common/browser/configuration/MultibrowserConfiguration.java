@@ -1,11 +1,8 @@
 package com.xceptance.neodymium.common.browser.configuration;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -14,6 +11,8 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.xceptance.neodymium.util.PropertiesUtil;
 
 public class MultibrowserConfiguration
 {
@@ -53,17 +52,17 @@ public class MultibrowserConfiguration
     {
         // setting up the test environment
         testEnvironmentProperties = new Properties();
-        loadPropertiesFromFile(DEFAULT_TEST_ENVIRONMENT_FILE, testEnvironmentProperties);
-        loadPropertiesFromFile(DEVELOPMENT_TEST_ENVIRONMENT_FILE, testEnvironmentProperties);
+        PropertiesUtil.loadPropertiesFromFile(DEFAULT_TEST_ENVIRONMENT_FILE, testEnvironmentProperties);
+        PropertiesUtil.loadPropertiesFromFile(DEVELOPMENT_TEST_ENVIRONMENT_FILE, testEnvironmentProperties);
         parseTestEnvironments();
 
         // setting up the browser profiles
         browserProfileProperties = new Properties();
-        loadPropertiesFromFile(DEFAULT_BROWSER_PROFILE_FILE, browserProfileProperties);
-        loadPropertiesFromFile(DEVELOPMENT_BROWSER_PROFILE_FILE, browserProfileProperties);
+        PropertiesUtil.loadPropertiesFromFile(DEFAULT_BROWSER_PROFILE_FILE, browserProfileProperties);
+        PropertiesUtil.loadPropertiesFromFile(DEVELOPMENT_BROWSER_PROFILE_FILE, browserProfileProperties);
         if (StringUtils.isNotEmpty(temporaryConfigFile))
         {
-            loadPropertiesFromFile(temporaryConfigFile, browserProfileProperties);
+            PropertiesUtil.loadPropertiesFromFile(temporaryConfigFile, browserProfileProperties);
         }
         parseBrowserProfiles();
     }
@@ -71,7 +70,7 @@ public class MultibrowserConfiguration
     private void parseTestEnvironments()
     {
         testEnvironments = new LinkedHashMap<String, TestEnvironment>();
-        Set<String> testEnvironmentKeys = getSubkeysForPrefix(testEnvironmentProperties, TEST_ENVIRONMENT_PREFIX);
+        Set<String> testEnvironmentKeys = PropertiesUtil.getSubkeysForPrefix(testEnvironmentProperties, TEST_ENVIRONMENT_PREFIX);
 
         for (String testEnvironmentKey : testEnvironmentKeys)
         {
@@ -83,7 +82,7 @@ public class MultibrowserConfiguration
     private void parseBrowserProfiles()
     {
         browserProfiles = new LinkedHashMap<String, BrowserConfiguration>();
-        Set<String> browserProfileKeys = getSubkeysForPrefix(browserProfileProperties, BROWSER_PROFILE_PREFIX);
+        Set<String> browserProfileKeys = PropertiesUtil.getSubkeysForPrefix(browserProfileProperties, BROWSER_PROFILE_PREFIX);
 
         BrowserConfigurationMapper mapper = new BrowserConfigurationMapper();
 
@@ -94,7 +93,7 @@ public class MultibrowserConfiguration
 
         for (String browserProfile : browserProfileKeys)
         {
-            Set<String> subkeysForPrefix = getSubkeysForPrefix(browserProfileProperties, BROWSER_PROFILE_PREFIX + browserProfile + ".");
+            Set<String> subkeysForPrefix = PropertiesUtil.getSubkeysForPrefix(browserProfileProperties, BROWSER_PROFILE_PREFIX + browserProfile + ".");
             Map<String, String> browserProfileConfiguration = new HashMap<>();
             browserProfileConfiguration.put("browserTag", browserProfile);
             for (String subkey : subkeysForPrefix)
@@ -106,35 +105,6 @@ public class MultibrowserConfiguration
                                 mapper.map(browserProfileConfiguration, globalHeadless, globalAcceptInsecureCertificates, globalPageLoadStrategy,
                                            globalBrowserResolution));
         }
-    }
-
-    private Set<String> getSubkeysForPrefix(Properties properties, String prefix)
-    {
-        Set<String> keys = new HashSet<String>();
-
-        for (Object key : properties.keySet())
-        {
-            String keyString = (String) key;
-            if (keyString.toLowerCase().startsWith(prefix.toLowerCase())) // TODO: lower case compare is wrong!
-            {
-                // cut off prefix
-                keyString = keyString.substring(prefix.length());
-
-                // split on the next dots
-                String[] split = keyString.split("\\.");
-                if (split != null && split.length > 0)
-                {
-                    // the first entry in the resulting array will be the key we are searching for
-                    String newKey = split[0];
-                    if (StringUtils.isNotBlank(newKey))
-                    {
-                        keys.add(newKey);
-                    }
-                }
-            }
-        }
-
-        return keys;
     }
 
     public static MultibrowserConfiguration getInstance()
@@ -176,23 +146,5 @@ public class MultibrowserConfiguration
     public Map<String, BrowserConfiguration> getBrowserProfiles()
     {
         return browserProfiles;
-    }
-
-    private static void loadPropertiesFromFile(String path, Properties properties)
-    {
-        try
-        {
-            File source = new File(path);
-            if (source.exists())
-            {
-                FileInputStream fileInputStream = new FileInputStream(source);
-                properties.load(fileInputStream);
-                fileInputStream.close();
-            }
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException(e);
-        }
     }
 }
