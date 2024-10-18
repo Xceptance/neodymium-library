@@ -102,4 +102,36 @@ public class JavaScriptUtils
             return; // leave immediately
         }
     }
+
+    /**
+     * Close a incoming Popup Note: Javascript code will need adjustments specific to your pop ups.
+     * 
+     * @param popupSelector
+     *            selector for the popup
+     * @param closeButton
+     *            selector for the closeButton
+     */
+    public static void injectJavascriptPopupBlocker(String popupSelector, String closeButton)
+    {
+        String popupBlocker = "function popupBlocker()" +
+                              "{" +
+                              "   var mails = document.querySelector(\"" + popupSelector + "\");" +
+                              "   if(mails != null)" +
+                              "   {" +
+                              "       mails.parentElement.click();" +
+                              "       console.log('Newsletter popup closed')" +
+                              "   }" +
+                              "" +
+                              "   var pdp = document.querySelector('" + closeButton + "');" +
+                              "   if(pdp != null)" +
+                              "   {" +
+                              "       pdp.click();" +
+                              "       console.log('Popup closed');" +
+                              "   }" +
+                              "}" +
+                              "" +
+                              "setInterval(popupBlocker," + Neodymium.configuration().getPopupBlockerInterval() + ");";
+
+        Selenide.executeJavaScript(popupBlocker, "");
+    }
 }
