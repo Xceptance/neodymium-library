@@ -275,4 +275,17 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.popup.popupList")
     @DefaultValue("")
     public String getPopupList();
+
+    @Key("neodymium.report.enableStepLinks")
+    @DefaultValue("true")
+    public boolean enableStepLinks();
+
+    @Key("neodymium.url.excludeList")
+    @DefaultValue("")
+    public String getExcludeList();
+
+    @Key("neodymium.url.includeList")
+    @DefaultValue("")
+    public String getIncludeList();
+
 }

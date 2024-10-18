@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
 import com.google.common.collect.ImmutableMap;
+import com.xceptance.neodymium.common.TestStepListener;
 import com.xceptance.neodymium.common.WorkInProgress;
 import com.xceptance.neodymium.common.browser.Browser;
 import com.xceptance.neodymium.junit4.order.DefaultStatementRunOrder;
@@ -87,6 +88,8 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     {
         super(clazz);
         SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
+
+        SelenideLogger.addListener(TestStepListener.LISTENER_NAME, new TestStepListener());
 
         if (!neoVersionLogged && Neodymium.configuration().logNeoVersion())
         {
