@@ -1,21 +1,17 @@
-package com.xceptance.neodymium.junit4.testclasses.popupblocker;
+package com.xceptance.neodymium.junit5.testclasses.popupblocker;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.codeborne.selenide.Selenide;
 import com.xceptance.neodymium.common.browser.Browser;
-import com.xceptance.neodymium.junit4.NeodymiumRunner;
-import com.xceptance.neodymium.junit4.tests.NeodymiumTest;
+import com.xceptance.neodymium.junit5.NeodymiumTest;
+import com.xceptance.neodymium.junit5.tests.AbstractNeodymiumTest;
 
-@RunWith(NeodymiumRunner.class)
 @Browser("Chrome_1024x768")
-public class PopupBlockerTestclass extends NeodymiumTest
+public class PopupBlockerTestclass extends AbstractNeodymiumTest
 {
-    @Test
+    @NeodymiumTest
     public void testPopUpIsBlocked()
     {
         Selenide.open("https://www.xceptance.com/");
@@ -29,7 +25,7 @@ public class PopupBlockerTestclass extends NeodymiumTest
         $("#myWindow").shouldNotBe(visible);
     }
 
-    @Test
+    @NeodymiumTest
     public void testPopUpIsNotBlocked()
     {
         Selenide.open("https://www.xceptance.com/");
@@ -43,7 +39,7 @@ public class PopupBlockerTestclass extends NeodymiumTest
         $("#anotherWindow").shouldBe(visible);
     }
 
-    @Test
+    @NeodymiumTest
     public void testWithNoPopUp()
     {
         Selenide.open("https://www.xceptance.com/");

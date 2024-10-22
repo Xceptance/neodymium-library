@@ -108,10 +108,8 @@ public class JavaScriptUtils
      * 
      * @param popupSelector
      *            selector for the popup
-     * @param closeButton
-     *            selector for the closeButton
      */
-    public static void injectJavascriptPopupBlocker(String popupSelector, String closeButton)
+    public static void injectJavascriptPopupBlocker(String popupSelector)
     {
         String popupBlocker = "function popupBlocker()" +
                               "{" +
@@ -120,13 +118,6 @@ public class JavaScriptUtils
                               "   {" +
                               "       popupElement.click();" +
                               "       console.log('Popup closed')" +
-                              "   }" +
-                              "" +
-                              "   var closeButton = document.querySelector('" + closeButton + "');" +
-                              "   if(closeButton != null)" +
-                              "   {" +
-                              "       closeButton.click();" +
-                              "       console.log('Popup closed');" +
                               "   }" +
                               "}" +
                               "" +

@@ -12,9 +12,9 @@ import org.junit.jupiter.api.Assertions;
 import com.codeborne.selenide.logevents.LogEvent;
 import com.codeborne.selenide.logevents.LogEventListener;
 import com.xceptance.neodymium.util.AllureAddons;
-import com.xceptance.neodymium.util.DataUtils;
 import com.xceptance.neodymium.util.JavaScriptUtils;
 import com.xceptance.neodymium.util.Neodymium;
+import com.xceptance.neodymium.util.PropertiesUtil;
 
 public class TestStepListener implements LogEventListener
 {
@@ -26,6 +26,8 @@ public class TestStepListener implements LogEventListener
 
     private List<String> excludeList = null;
 
+    private Map<String, String> popupMap = null;
+
     public TestStepListener()
     {
         if(!Neodymium.configuration().getExcludeList().isEmpty()) {
@@ -34,6 +36,7 @@ public class TestStepListener implements LogEventListener
         if(!Neodymium.configuration().getIncludeList().isEmpty()) {
             this.includeList = Arrays.asList(Neodymium.configuration().getIncludeList().split("\\s+"));
         }
+        this.popupMap = PropertiesUtil.getPropertiesMapForCustomIdentifier("neodymium.popup");
     }
 
     private static String getLastUrl()
@@ -44,6 +47,11 @@ public class TestStepListener implements LogEventListener
     private static void setLastUrl(String lastUrl)
     {
         LAST_URL.put(Thread.currentThread(), lastUrl);
+    }
+
+    public static void clearLastUrl()
+    {
+        LAST_URL.remove(Thread.currentThread());
     }
 
     @Override
@@ -61,12 +69,11 @@ public class TestStepListener implements LogEventListener
             {
                 AllureAddons.addLinkToReport("URL changed", Neodymium.getDriver().getCurrentUrl());
             }
-            if (!Neodymium.configuration().getPopupList().isBlank())
+            if (!this.popupMap.isEmpty())
             {
-                Map<String, String> popupMap = DataUtils.convertToMap(Neodymium.configuration().getPopupList());
-                for (String popup : popupMap.keySet())
+                for (String popup : popupMap.values())
                 {
-                    JavaScriptUtils.injectJavascriptPopupBlocker(popup, popupMap.get(popup));
+                    JavaScriptUtils.injectJavascriptPopupBlocker(popup);
                 }
             }
 

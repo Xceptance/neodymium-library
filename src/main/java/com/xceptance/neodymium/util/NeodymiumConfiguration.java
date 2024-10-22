@@ -272,10 +272,6 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("1000")
     public int getPopupBlockerInterval();
 
-    @Key("neodymium.popup.popupList")
-    @DefaultValue("")
-    public String getPopupList();
-
     @Key("neodymium.report.enableStepLinks")
     @DefaultValue("true")
     public boolean enableStepLinks();
