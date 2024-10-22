@@ -1,6 +1,5 @@
 package com.xceptance.neodymium.util;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -401,25 +400,5 @@ public class DataUtils
         {
             return defaultValue;
         }
-    }
-
-    /**
-     * Get a test data value as boolean or default value if it couldn't be found
-     * 
-     * @param input
-     *            String to be converted to Map
-     * @return Key value Map
-     */
-    public static Map<String, String> convertToMap(String input)
-    {
-        Map<String, String> resultMap = new HashMap<String, String>();
-        String[] pairs = input.split(",");
-        for (int i = 0; i < pairs.length; i++)
-        {
-            String pair = pairs[i];
-            String[] keyValue = pair.split(":");
-            resultMap.put(keyValue[0], keyValue[1]);
-        }
-        return resultMap;
     }
 }
