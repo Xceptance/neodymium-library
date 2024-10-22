@@ -282,4 +282,17 @@ public class AllureAddons
         return new File(System.getProperty("allure.results.directory", System.getProperty("user.dir")
                                                                        + File.separator + "target" + File.separator + "allure-results"));
     }
+
+    /**
+     * Add a step to the report which contains a clickable url
+     *
+     * @param message
+     *            message to be displayed before link
+     * @param url
+     *            url for the link
+     */
+    @Step("{message}: {url}")
+    public static void addLinkToReport(String message, String url)
+    {
+    }
 }
