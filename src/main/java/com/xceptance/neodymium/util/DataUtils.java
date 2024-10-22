@@ -50,6 +50,14 @@ public class DataUtils
     }
 
     /**
+     * Clears the context instance for the current Thread. <br>
+     */
+    public static void clearThreadContext()
+    {
+        ALLURE_ALL_DATA_USED_FLAG.remove(Thread.currentThread());
+    }
+
+    /**
      * Returns a random email address. <br>
      * The random part contains characters that would match the following regular expression: \[a-z0-9]*\<br>
      * The length of the random part, a prefix and the domain can be configured within neodymium.properties: <br>
@@ -217,7 +225,7 @@ public class DataUtils
      *            as a string
      * @return the string of the to html converted json
      */
-    public static String convertJsonToHtml(String json) 
+    public static String convertJsonToHtml(String json)
     {
         return ""
                + "<div id=\"json-viewer\"></div>"
