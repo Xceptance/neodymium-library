@@ -21,7 +21,7 @@ public class PropertiesUtil
         for (Object key : properties.keySet())
         {
             String keyString = (String) key;
-            if (keyString.toLowerCase().startsWith(prefix.toLowerCase())) // TODO: lower case compare is wrong!
+            if (keyString.toLowerCase().startsWith(prefix.toLowerCase()))
             {
                 // cut off prefix
                 keyString = keyString.substring(prefix.length());
