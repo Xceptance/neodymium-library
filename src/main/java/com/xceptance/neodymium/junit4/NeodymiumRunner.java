@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.internal.runners.statements.RunAfters;
+import org.junit.internal.runners.statements.RunBefores;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runner.notification.RunNotifier;
@@ -30,6 +32,8 @@ import com.xceptance.neodymium.common.EndTestStepListener;
 import com.xceptance.neodymium.common.WorkInProgress;
 import com.xceptance.neodymium.common.browser.Browser;
 import com.xceptance.neodymium.junit4.order.DefaultStatementRunOrder;
+import com.xceptance.neodymium.junit4.statement.browser.BrowserRunAfters;
+import com.xceptance.neodymium.junit4.statement.browser.BrowserRunBefores;
 import com.xceptance.neodymium.util.AllureAddons;
 import com.xceptance.neodymium.util.Neodymium;
 
@@ -431,6 +435,28 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                 }
             }
         }
+    }
+
+    @Override
+    protected Statement withBefores(FrameworkMethod method, Object target,
+                                    Statement statement)
+    {
+        List<FrameworkMethod> befores = getTestClass().getAnnotatedMethods(
+                                                                           Before.class);
+        return befores.isEmpty() ? statement
+                                 : (Neodymium.configuration().startNewBrowserForSetUp() ? new BrowserRunBefores(statement, befores, target)
+                                                                                        : new RunBefores(statement, befores, target));
+    }
+
+    @Override
+    protected Statement withAfters(FrameworkMethod method, Object target,
+                                   Statement statement)
+    {
+        List<FrameworkMethod> afters = getTestClass().getAnnotatedMethods(
+                                                                          After.class);
+        return afters.isEmpty() ? statement
+                                : (Neodymium.configuration().startNewBrowserForCleanUp() ? new BrowserRunAfters(statement, afters, target)
+                                                                                         : new RunAfters(statement, afters, target));
     }
 
     @Override

@@ -1,5 +1,10 @@
 package com.xceptance.neodymium.junit4.testclasses.webDriver;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.aeonbits.owner.ConfigFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -13,6 +18,8 @@ import com.browserup.bup.BrowserUpProxy;
 import com.xceptance.neodymium.common.browser.Browser;
 import com.xceptance.neodymium.common.browser.WebDriverCache;
 import com.xceptance.neodymium.junit4.NeodymiumRunner;
+import com.xceptance.neodymium.junit4.statement.browser.DontStartNewBrowserForSetUp;
+import com.xceptance.neodymium.junit4.tests.NeodymiumTest;
 import com.xceptance.neodymium.junit4.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
@@ -20,6 +27,7 @@ import com.xceptance.neodymium.util.Neodymium;
  * Validate that web driver instances are closed after the test finished.
  * Validate that the web driver is not reused.
  */
+@DontStartNewBrowserForSetUp
 @RunWith(NeodymiumRunner.class)
 public class ValidateWebDriverClosed
 {
@@ -31,9 +39,20 @@ public class ValidateWebDriverClosed
 
     private static BrowserUpProxy proxy2;
 
+    private static File tempConfigFile;
+
     @BeforeClass
     public static void beforeClass()
     {
+        // set up a temporary neodymium.properties
+        final String fileLocation = "config/temp-ValidateWebDriverClosed-neodymium.properties";
+        tempConfigFile = new File("./" + fileLocation);
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.reuseDriver", "false");
+        properties.put("neodymium.localproxy", "true");
+        NeodymiumTest.writeMapToPropertiesFile(properties, tempConfigFile);
+        ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
+
         Assert.assertNull(webDriver1);
         Assert.assertNull(Neodymium.getDriver());
 
@@ -116,5 +135,7 @@ public class ValidateWebDriverClosed
 
         NeodymiumWebDriverTest.assertProxyStopped(proxy1);
         NeodymiumWebDriverTest.assertProxyStopped(proxy2);
+
+        NeodymiumTest.deleteTempFile(tempConfigFile);
     }
 }

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.TestTemplateInvocationContext;
 
 import com.xceptance.neodymium.common.browser.BrowserMethodData;
 import com.xceptance.neodymium.common.testdata.TestdataContainer;
+import com.xceptance.neodymium.junit5.browser.BrowserAfterEachExecutionCallback;
 import com.xceptance.neodymium.junit5.browser.BrowserExecutionCallback;
 import com.xceptance.neodymium.junit5.filtering.FilterTestMethodCallback;
 import com.xceptance.neodymium.junit5.filtering.WipTestMethodCallback;
@@ -53,6 +54,7 @@ public class TemplateInvocationContext implements TestTemplateInvocationContext
         }
         extentions.add(new FilterTestMethodCallback());
         extentions.add(new WipTestMethodCallback());
+        extentions.add(new BrowserAfterEachExecutionCallback());
         return extentions;
     }
 };
