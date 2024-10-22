@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Assertions;
 import com.codeborne.selenide.logevents.LogEvent;
 import com.codeborne.selenide.logevents.LogEventListener;
 import com.xceptance.neodymium.util.AllureAddons;
+import com.xceptance.neodymium.util.DataUtils;
+import com.xceptance.neodymium.util.JavaScriptUtils;
 import com.xceptance.neodymium.util.Neodymium;
 
 public class TestStepListener implements LogEventListener
@@ -48,15 +50,28 @@ public class TestStepListener implements LogEventListener
     public void afterEvent(LogEvent currentLog)
     {
         String currentUrl = Neodymium.getDriver().getCurrentUrl();
-        if (Neodymium.configuration().enableStepLinks())
+        String lastUrl = getLastUrl();
+        if (lastUrl == null)
         {
-            String lastUrl = getLastUrl();
-            if (lastUrl != null && !lastUrl.equals(currentUrl) && !currentUrl.equals("data:,"))
+            lastUrl = "";
+        }
+        if (!lastUrl.equals(currentUrl) && !currentUrl.equals("data:,"))
+        {
+            if (Neodymium.configuration().enableStepLinks())
             {
                 AllureAddons.addLinkToReport("URL changed", Neodymium.getDriver().getCurrentUrl());
             }
-            setLastUrl(currentUrl);
+            if (!Neodymium.configuration().getPopupList().isBlank())
+            {
+                Map<String, String> popupMap = DataUtils.convertToMap(Neodymium.configuration().getPopupList());
+                for (String popup : popupMap.keySet())
+                {
+                    JavaScriptUtils.injectJavascriptPopupBlocker(popup, popupMap.get(popup));
+                }
+            }
+
         }
+        setLastUrl(currentUrl);
         if (this.includeList != null)
         {
             boolean result = false;

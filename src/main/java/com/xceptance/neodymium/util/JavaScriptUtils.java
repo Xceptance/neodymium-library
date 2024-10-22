@@ -115,17 +115,17 @@ public class JavaScriptUtils
     {
         String popupBlocker = "function popupBlocker()" +
                               "{" +
-                              "   var mails = document.querySelector(\"" + popupSelector + "\");" +
-                              "   if(mails != null)" +
+                              "   var popupElement = document.querySelector(\"" + popupSelector + "\");" +
+                              "   if(popupElement != null)" +
                               "   {" +
-                              "       mails.parentElement.click();" +
-                              "       console.log('Newsletter popup closed')" +
+                              "       popupElement.click();" +
+                              "       console.log('Popup closed')" +
                               "   }" +
                               "" +
-                              "   var pdp = document.querySelector('" + closeButton + "');" +
-                              "   if(pdp != null)" +
+                              "   var closeButton = document.querySelector('" + closeButton + "');" +
+                              "   if(closeButton != null)" +
                               "   {" +
-                              "       pdp.click();" +
+                              "       closeButton.click();" +
                               "       console.log('Popup closed');" +
                               "   }" +
                               "}" +
