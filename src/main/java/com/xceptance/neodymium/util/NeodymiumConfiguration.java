@@ -242,14 +242,34 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.webDriver.chrome.pathToDriverServer")
     public String getChromeDriverPath();
 
-    @Key("neodymium.webDriver.edge.pathToDriverServer")
-    public String getEdgeDriverPath();
+    @Key("neodymium.webDriver.chrome.driverArguments")
+    @DefaultValue("")
+    public String getChromeDriverArguments();
 
     @Key("neodymium.webDriver.firefox.pathToDriverServer")
     public String getFirefoxDriverPath();
 
+    @Key("neodymium.webDriver.firefox.driverArguments")
+    @DefaultValue("")
+    public String getFirefoxDriverArguments();
+
     @Key("neodymium.webDriver.ie.pathToDriverServer")
     public String getIeDriverPath();
+
+    @Key("neodymium.webDriver.ie.driverArguments")
+    @DefaultValue("")
+    public String getIeDriverArguments();
+
+    @Key("neodymium.webDriver.edge.pathToDriverServer")
+    public String getEdgeDriverPath();
+
+    @Key("neodymium.webDriver.edge.driverArguments")
+    @DefaultValue("")
+    public String getEdgeDriverArguments();
+
+    @Key("neodymium.webDriver.safari.driverArguments")
+    @DefaultValue("")
+    public String getSafariDriverArguments();
 
     @Key("neodymium.webDriver.chrome.pathToBrowser")
     public String getChromeBrowserPath();

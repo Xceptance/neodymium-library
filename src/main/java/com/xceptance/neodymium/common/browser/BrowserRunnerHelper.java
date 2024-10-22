@@ -23,15 +23,14 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.ie.InternetExplorerDriverService;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.os.ExecutableFinder;
 import org.openqa.selenium.remote.CapabilityType;
@@ -60,6 +59,11 @@ import com.xceptance.neodymium.common.browser.configuration.BrowserConfiguration
 import com.xceptance.neodymium.common.browser.configuration.BrowserConfigurationMapper;
 import com.xceptance.neodymium.common.browser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.common.browser.configuration.TestEnvironment;
+import com.xceptance.neodymium.common.browser.wrappers.ChromeBuilder;
+import com.xceptance.neodymium.common.browser.wrappers.EdgeBuilder;
+import com.xceptance.neodymium.common.browser.wrappers.GeckoBuilder;
+import com.xceptance.neodymium.common.browser.wrappers.IEBuilder;
+import com.xceptance.neodymium.common.browser.wrappers.SafariBuilder;
 import com.xceptance.neodymium.util.Neodymium;
 import com.xceptance.neodymium.util.NeodymiumConfiguration;
 
@@ -82,6 +86,8 @@ public final class BrowserRunnerHelper
 
     private static List<String> internetExplorerBrowsers = new LinkedList<String>();
 
+    private static List<String> edgeBrowsers = new LinkedList<String>();
+
     private static List<String> safariBrowsers = new LinkedList<String>();
 
     private final static Object mutex = new Object();
@@ -93,7 +99,7 @@ public final class BrowserRunnerHelper
         firefoxBrowsers.add(FIREFOX.browserName());
 
         internetExplorerBrowsers.add(IE.browserName());
-        internetExplorerBrowsers.add(EDGE.browserName());
+        edgeBrowsers.add(EDGE.browserName());
 
         safariBrowsers.add(SAFARI.browserName());
     }
@@ -219,7 +225,7 @@ public final class BrowserRunnerHelper
                 final String driverInPathPath = new ExecutableFinder().find("chromedriver");
 
                 // do we have a custom path?
-                final String pathToBrowser = Neodymium.configuration().getChromeBrowserPath();
+                String pathToBrowser = Neodymium.configuration().getChromeBrowserPath();
                 if (StringUtils.isNotBlank(pathToBrowser))
                 {
                     options.setBinary(pathToBrowser);
@@ -257,9 +263,10 @@ public final class BrowserRunnerHelper
 
                     options.setExperimentalOption("prefs", prefs);
                 }
-                wDSC.setWebDriver(new ChromeDriver(new ChromeDriverService.Builder()
-                                                                                    .usingDriverExecutable(new File(driverInPathPath))
-                                                                                    .build(), options.merge(capabilities)));
+                // wDSC.setWebDriver(new ChromeDriver(new ChromeBuilder(config.getDriverArguments()).build(), options));
+                wDSC.setWebDriver(new ChromeDriver(new ChromeBuilder(config.getDriverArguments())
+                                                                                                 .usingDriverExecutable(new File(driverInPathPath))
+                                                                                                 .build(), options.merge(capabilities)));
             }
             else if (firefoxBrowsers.contains(browserName))
             {
@@ -309,10 +316,13 @@ public final class BrowserRunnerHelper
                     }
                     options.setProfile(profile);
                 }
+                // wDSC.setWebDriver(new FirefoxDriver(new GeckoBuilder(config.getDriverArguments())
+                // .withAllowHosts("localhost")
+                // .build(), options));
 
-                wDSC.setWebDriver(new FirefoxDriver(new GeckoDriverService.Builder().withAllowHosts("localhost")
-                                                                                    .usingDriverExecutable(new File(driverInPathPath))
-                                                                                    .build(), options.merge(capabilities)));
+                wDSC.setWebDriver(new FirefoxDriver(new GeckoBuilder(config.getDriverArguments()).withAllowHosts("localhost")
+                                                                                                 .usingDriverExecutable(new File(driverInPathPath))
+                                                                                                 .build(), options.merge(capabilities)));
             }
             else if (internetExplorerBrowsers.contains(browserName))
             {
@@ -325,16 +335,30 @@ public final class BrowserRunnerHelper
                         options.addCommandSwitches(argument);
                     }
                 }
-                wDSC.setWebDriver(new InternetExplorerDriver(new InternetExplorerDriverService.Builder()
-                                                                                                        .usingDriverExecutable(new File(driverInPathPath))
-                                                                                                        .build(), options.merge(capabilities)));
+                // wDSC.setWebDriver(new InternetExplorerDriver(new IEBuilder(config.getDriverArguments())
+                // .build(), options));
+                wDSC.setWebDriver(new InternetExplorerDriver(new IEBuilder(config.getDriverArguments())
+                                                                                                       .usingDriverExecutable(new File(driverInPathPath))
+                                                                                                       .build(), options.merge(capabilities)));
+            }
+            else if (edgeBrowsers.contains(browserName))
+            {
+                final EdgeOptions options = new EdgeOptions().merge(capabilities);
+                if (config.getArguments() != null && config.getArguments().size() > 0)
+                {
+                    options.addArguments(config.getArguments());
+                }
+                wDSC.setWebDriver(new EdgeDriver(options));
+                wDSC.setWebDriver(new EdgeDriver(new EdgeBuilder(config.getDriverArguments())
+                                                                                             .build(), options));
             }
             else if (safariBrowsers.contains(browserName))
             {
                 // safari driver is not expected to be in PATH, it will be looked in
                 // /usr/bin/safaridriver and /Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver
                 final SafariOptions options = new SafariOptions();
-                wDSC.setWebDriver(new SafariDriver(options));
+                wDSC.setWebDriver(new SafariDriver(new SafariBuilder(config.getDriverArguments())
+                                                                                                 .build(), options));
             }
             else
             {
@@ -344,6 +368,7 @@ public final class BrowserRunnerHelper
         }
         else
         {
+
             // establish connection to target website
             final TestEnvironment testEnvironmentProperties = MultibrowserConfiguration.getInstance().getTestEnvironment(testEnvironment);
             if (testEnvironmentProperties == null)
