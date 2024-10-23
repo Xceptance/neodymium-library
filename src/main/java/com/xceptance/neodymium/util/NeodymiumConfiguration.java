@@ -268,7 +268,7 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("true")
     public boolean logNeoVersion();
 
-    @Key("neodymium.popup.interval")
+    @Key("neodymium.popupInterval")
     @DefaultValue("1000")
     public int getPopupBlockerInterval();
 
