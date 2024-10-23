@@ -1,6 +1,5 @@
 package com.xceptance.neodymium.util;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.codeborne.selenide.Selenide;
@@ -19,19 +18,6 @@ public class NeoWaitTime
         this.doubleWait = Neodymium.configuration().getDoubleWaitTime();
         this.longWait = Neodymium.configuration().getLongWaitTime();
         this.customWaitTimeMap = convertToMap(Neodymium.configuration().getCustomWaitTimes());
-    }
-
-    private Map<String, String> convertToMap(String customWaitTimes)
-    {
-        Map<String, String> resultMap = new HashMap<String, String>();
-        String[] pairs = customWaitTimes.split(",");
-        for (int i = 0; i < pairs.length; i++)
-        {
-            String pair = pairs[i];
-            String[] keyValue = pair.split(":");
-            resultMap.put(keyValue[0], keyValue[1]);
-        }
-        return resultMap;
     }
 
     public static void waitStandardWaitTime()

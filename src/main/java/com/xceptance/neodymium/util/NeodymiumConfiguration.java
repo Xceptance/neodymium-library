@@ -283,8 +283,4 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.waitTime.long")
     @DefaultValue("500")
     public int getLongWaitTime();
-
-    @Key("neodymium.waitTime.customWaitTimes")
-    @DefaultValue("")
-    public String getCustomWaitTimes();
 }
