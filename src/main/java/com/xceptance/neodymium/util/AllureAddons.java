@@ -26,8 +26,10 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.codeborne.selenide.Selenide;
 import com.google.common.collect.ImmutableMap;
 
 import io.qameta.allure.Attachment;
@@ -45,6 +47,7 @@ public class AllureAddons
     private static boolean neoVersionLogged = false;
 
     private static boolean customDataAdded = false;
+    private static final int MAX_RETRY_COUNT = 10;
 
     /**
      * Define a step without return value. This can be used to transport data (information) from test into the report.
@@ -129,71 +132,118 @@ public class AllureAddons
      * @param environmentValuesSet
      *            map with environment values
      */
-    public static void addEnvironmentInformation(ImmutableMap<String, String> environmentValuesSet)
+    public static synchronized void addEnvironmentInformation(ImmutableMap<String, String> environmentValuesSet)
     {
         try
         {
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-
-            // check if allure-results folder exists
-            if (!getAllureResultsFolder().exists())
+            FileOutputStream output = new FileOutputStream(getEnvFile());
+            FileChannel channel = output.getChannel();
+            FileLock lock = null;
+            int retries = 0;
+            do
             {
-                // create it if not
-                getAllureResultsFolder().mkdirs();
+                if (retries > 0)
+                {
+                    Selenide.sleep(100);
+                }
+                lock = channel.tryLock();
+                retries++;
             }
-            Document doc;
-
-            // if environment.xml file exists, there probably already was an entry in it
-            // in this case we need to append our values to it
-            if (envFileExists())
+            while (retries < MAX_RETRY_COUNT && lock == null);
+            if (lock != null)
             {
-                doc = docBuilder.parse(getEnvFile());
-                environmentValuesSet.forEach((k, v) -> {
-                    Node environment = doc.getDocumentElement();
-                    Element parameter = doc.createElement("parameter");
-                    Element key = doc.createElement("key");
-                    Element value = doc.createElement("value");
-                    key.appendChild(doc.createTextNode(k));
-                    value.appendChild(doc.createTextNode(v));
-                    parameter.appendChild(key);
-                    parameter.appendChild(value);
-                    environment.appendChild(parameter);
-                });
+                DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+                TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                Transformer transformer = transformerFactory.newTransformer();
+
+                // check if allure-results folder exists
+                if (!getAllureResultsFolder().exists())
+                {
+                    // create it if not
+                    getAllureResultsFolder().mkdirs();
+                }
+                Document doc;
+
+                // if environment.xml file exists, there probably already was an entry in it
+                // in this case we need to append our values to it
+                if (getEnvFile().length() != 0)
+                {
+                    doc = docBuilder.parse(getEnvFile());
+                    environmentValuesSet.forEach((k, v) -> {
+                        Node environment = doc.getDocumentElement();
+                        NodeList childNodes = environment.getChildNodes();
+                        boolean isSameNode = false;
+                        for (int i = 0; i < childNodes.getLength(); i++)
+                        {
+                            Node child = childNodes.item(i);
+                            NodeList subNodes = child.getChildNodes();
+                            String key = "";
+                            String value = "";
+                            for (int j = 0; j < subNodes.getLength(); j++)
+                            {
+                                Node subNode = subNodes.item(j);
+                                if ("key".equals(subNode.getNodeName()))
+                                {
+                                    key = subNode.getTextContent();
+                                }
+                                else if ("value".equals(subNode.getNodeName()))
+                                {
+                                    value = subNode.getTextContent();
+                                }
+                            }
+                            if (key.equals(k) && value.equals(v))
+                            {
+                                isSameNode = true;
+                                break;
+                            }
+                        }
+                        if (!isSameNode)
+                        {
+                            Element parameter = doc.createElement("parameter");
+                            Element key = doc.createElement("key");
+                            Element value = doc.createElement("value");
+                            key.appendChild(doc.createTextNode(k));
+                            value.appendChild(doc.createTextNode(v));
+                            parameter.appendChild(key);
+                            parameter.appendChild(value);
+                            environment.appendChild(parameter);
+                        }
+                    });
+                }
+                else
+                {
+                    doc = docBuilder.newDocument();
+                    Element environment = doc.createElement("environment");
+                    doc.appendChild(environment);
+                    environmentValuesSet.forEach((k, v) -> {
+                        Element parameter = doc.createElement("parameter");
+                        Element key = doc.createElement("key");
+                        Element value = doc.createElement("value");
+                        key.appendChild(doc.createTextNode(k));
+                        value.appendChild(doc.createTextNode(v));
+                        parameter.appendChild(key);
+                        parameter.appendChild(value);
+                        environment.appendChild(parameter);
+                    });
+                }
+                DOMSource source = new DOMSource(doc);
+
+                StreamResult result = new StreamResult(output);
+                transformer.transform(source, result);
+                lock.release();
             }
             else
             {
-                doc = docBuilder.newDocument();
-                Element environment = doc.createElement("environment");
-                doc.appendChild(environment);
-                environmentValuesSet.forEach((k, v) -> {
-                    Element parameter = doc.createElement("parameter");
-                    Element key = doc.createElement("key");
-                    Element value = doc.createElement("value");
-                    key.appendChild(doc.createTextNode(k));
-                    value.appendChild(doc.createTextNode(v));
-                    parameter.appendChild(key);
-                    parameter.appendChild(value);
-                    environment.appendChild(parameter);
-                });
+                LOGGER.warn("Could not acquire Filelock in time. Failed to add information about enviroment to Allure report");
             }
-            DOMSource source = new DOMSource(doc);
-            FileOutputStream output = new FileOutputStream(getEnvFile());
-            FileChannel channel = output.getChannel();
-            FileLock lock = channel.tryLock();
-            if (lock != null)
-            {
-                StreamResult result = new StreamResult(output);
-                transformer.transform(source, result);
-            }
-            lock.release();
+            channel.close();
+            output.close();
         }
         catch (ParserConfigurationException | TransformerException | SAXException | IOException e)
         {
-            LOGGER.warn("Failed to add information about environment to Allure report");
+            LOGGER.warn("Failed to add information about environment to Allure report", e);
         }
     }
 
@@ -211,7 +261,19 @@ public class AllureAddons
     private static File getEnvFile()
     {
         File allureResultsDir = getAllureResultsFolder();
-        File envFile = new File(allureResultsDir.getAbsoluteFile() + "/environment.xml");
+        File envFile = new File(allureResultsDir.getAbsoluteFile() + File.separator + "environment.xml");
+        if (!envFile.exists())
+        {
+            try
+            {
+                envFile.getParentFile().mkdirs();
+                envFile.createNewFile();
+            }
+            catch (IOException e)
+            {
+                LOGGER.error(e.getMessage(), e);
+            }
+        }
         return envFile;
     }
 
@@ -223,7 +285,20 @@ public class AllureAddons
     public static File getAllureResultsFolder()
     {
         return new File(System.getProperty("allure.results.directory", System.getProperty("user.dir")
-                                                                       + "/target/allure-results"));
+                                                                       + File.separator + "target" + File.separator + "allure-results"));
+    }
+
+    /**
+     * Add a step to the report which contains a clickable url
+     *
+     * @param message
+     *            message to be displayed before link
+     * @param url
+     *            url for the link
+     */
+    @Step("{message}: {url}")
+    public static void addLinkToReport(String message, String url)
+    {
     }
 
     public static void initializeEnvironmentInformation()
