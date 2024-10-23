@@ -84,28 +84,14 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
     private static boolean neoVersionLogged = false;
 
+    private static boolean customDataAdded = false;
+
     public NeodymiumRunner(Class<?> clazz) throws InitializationError
     {
         super(clazz);
         SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
 
-        if (Neodymium.configuration().enableStepLinks())
-        {
-            SelenideLogger.addListener(EndTestStepListener.LISTENER_NAME, new EndTestStepListener());
-        }
-
-        if (!neoVersionLogged && Neodymium.configuration().logNeoVersion())
-        {
-            if (!AllureAddons.envFileExists())
-            {
-                LOGGER.info("This test uses Neodymium Library (version: " + Neodymium.getNeodymiumVersion()
-                            + "), MIT License, more details on https://github.com/Xceptance/neodymium-library");
-                neoVersionLogged = true;
-                AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder()
-                                                                   .put("Testing Framework", "Neodymium " + Neodymium.getNeodymiumVersion())
-                                                                   .build());
-            }
-        }
+        AllureAddons.initializeEnvironmentInformation();
     }
 
     public enum DescriptionMode

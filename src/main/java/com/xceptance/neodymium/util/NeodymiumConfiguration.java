@@ -288,7 +288,12 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("true")
     public boolean logNeoVersion();
 
+    @Key("neodymium.report.environment.enableCustomData")
+    @DefaultValue("false")
+    public boolean enableCustomEnvironmentData();
+
     @Key("neodymium.report.enableStepLinks")
     @DefaultValue("true")
     public boolean enableStepLinks();
 }
+
