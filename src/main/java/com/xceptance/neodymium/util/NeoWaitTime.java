@@ -17,7 +17,7 @@ public class NeoWaitTime
         this.shortWait = Neodymium.configuration().getShortWaitTime();
         this.doubleWait = Neodymium.configuration().getDoubleWaitTime();
         this.longWait = Neodymium.configuration().getLongWaitTime();
-        this.customWaitTimeMap = convertToMap(Neodymium.configuration().getCustomWaitTimes());
+        this.customWaitTimeMap = PropertiesUtil.getPropertiesMapForCustomIdentifier("neodymium.waitTime.custom");
     }
 
     public static void waitStandardWaitTime()
