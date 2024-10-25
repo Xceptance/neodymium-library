@@ -29,9 +29,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.codeborne.selenide.Selenide;
 import com.google.common.collect.ImmutableMap;
 
+import io.qameta.allure.Allure;
 import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
 
@@ -300,6 +304,7 @@ public class AllureAddons
     public static void addLinkToReport(String message, String url)
     {
     }
+    
 
     public static void initializeEnvironmentInformation()
     {
@@ -345,5 +350,29 @@ public class AllureAddons
         {
             AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder().putAll(environmentDataMap).build());
         }
+    }
+
+    
+    /**
+     * 
+     * @param name
+     *            of the attachment
+     * @param data
+     *            that needs to be added as an attachment
+     */
+    public static void addDataAsJsonToReport(String name, Object data) 
+    {
+        ObjectMapper mapper = new ObjectMapper();
+        String dataObjectJson;
+        
+        try {
+            // covert Java object to JSON strings
+            dataObjectJson = mapper.setSerializationInclusion(Include.NON_NULL).writeValueAsString(data);
+            
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        
+        Allure.addAttachment(name, "text/html", DataUtils.convertJsonToHtml(dataObjectJson), "html");
     }
 }
