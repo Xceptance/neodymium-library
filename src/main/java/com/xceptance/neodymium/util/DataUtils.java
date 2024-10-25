@@ -41,7 +41,8 @@ public class DataUtils
 
     static Boolean getAllureAllDataUsedFlag()
     {
-        return ALLURE_ALL_DATA_USED_FLAG.get(Thread.currentThread());
+        Boolean isUsed = ALLURE_ALL_DATA_USED_FLAG.get(Thread.currentThread());
+        return isUsed == null ? false : isUsed;
     }
 
     static Boolean setAllureAllDataUsedFlag(Boolean allureAllDataUsedFlag)
