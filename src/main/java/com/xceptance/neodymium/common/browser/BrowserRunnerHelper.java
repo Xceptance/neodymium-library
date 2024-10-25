@@ -30,6 +30,7 @@ import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.GeckoDriverService.Builder;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.os.ExecutableFinder;
@@ -263,10 +264,14 @@ public final class BrowserRunnerHelper
 
                     options.setExperimentalOption("prefs", prefs);
                 }
-                // wDSC.setWebDriver(new ChromeDriver(new ChromeBuilder(config.getDriverArguments()).build(), options));
-                wDSC.setWebDriver(new ChromeDriver(new ChromeBuilder(config.getDriverArguments())
-                                                                                                 .usingDriverExecutable(new File(driverInPathPath))
-                                                                                                 .build(), options.merge(capabilities)));
+
+                ChromeBuilder chromeBuilder = new ChromeBuilder(config.getDriverArguments());
+                if (StringUtils.isNotBlank(driverInPathPath))
+                {
+                    chromeBuilder.usingDriverExecutable(new File(driverInPathPath));
+                }
+
+                wDSC.setWebDriver(new ChromeDriver(chromeBuilder.build(), options.merge(capabilities)));
             }
             else if (firefoxBrowsers.contains(browserName))
             {
@@ -316,13 +321,14 @@ public final class BrowserRunnerHelper
                     }
                     options.setProfile(profile);
                 }
-                // wDSC.setWebDriver(new FirefoxDriver(new GeckoBuilder(config.getDriverArguments())
-                // .withAllowHosts("localhost")
-                // .build(), options));
 
-                wDSC.setWebDriver(new FirefoxDriver(new GeckoBuilder(config.getDriverArguments()).withAllowHosts("localhost")
-                                                                                                 .usingDriverExecutable(new File(driverInPathPath))
-                                                                                                 .build(), options.merge(capabilities)));
+                Builder geckoBuilder = new GeckoBuilder(config.getDriverArguments()).withAllowHosts("localhost");
+                if (StringUtils.isNotBlank(driverInPathPath))
+                {
+                    geckoBuilder.usingDriverExecutable(new File(driverInPathPath));
+                }
+
+                wDSC.setWebDriver(new FirefoxDriver(geckoBuilder.build(), options.merge(capabilities)));
             }
             else if (internetExplorerBrowsers.contains(browserName))
             {
@@ -335,22 +341,32 @@ public final class BrowserRunnerHelper
                         options.addCommandSwitches(argument);
                     }
                 }
-                // wDSC.setWebDriver(new InternetExplorerDriver(new IEBuilder(config.getDriverArguments())
-                // .build(), options));
-                wDSC.setWebDriver(new InternetExplorerDriver(new IEBuilder(config.getDriverArguments())
-                                                                                                       .usingDriverExecutable(new File(driverInPathPath))
-                                                                                                       .build(), options.merge(capabilities)));
+                IEBuilder ieBuilder = new IEBuilder(config.getDriverArguments());
+                if (StringUtils.isNotBlank(driverInPathPath))
+                {
+                    ieBuilder.usingDriverExecutable(new File(driverInPathPath));
+                }
+
+                wDSC.setWebDriver(new InternetExplorerDriver(ieBuilder.build(), options.merge(capabilities)));
             }
             else if (edgeBrowsers.contains(browserName))
             {
+
+                final String driverInPathPath = new ExecutableFinder().find("msedgedriver");
                 final EdgeOptions options = new EdgeOptions().merge(capabilities);
+                
                 if (config.getArguments() != null && config.getArguments().size() > 0)
                 {
                     options.addArguments(config.getArguments());
                 }
-                wDSC.setWebDriver(new EdgeDriver(options));
-                wDSC.setWebDriver(new EdgeDriver(new EdgeBuilder(config.getDriverArguments())
-                                                                                             .build(), options));
+                
+                EdgeBuilder edgeBuilder = new EdgeBuilder(config.getDriverArguments());
+                if (StringUtils.isNotBlank(driverInPathPath))
+                {
+                    edgeBuilder.usingDriverExecutable(new File(driverInPathPath));
+                }
+                
+                wDSC.setWebDriver(new EdgeDriver(edgeBuilder.build(), options));
             }
             else if (safariBrowsers.contains(browserName))
             {
