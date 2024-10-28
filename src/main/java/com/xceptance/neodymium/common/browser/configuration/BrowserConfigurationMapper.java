@@ -1,6 +1,7 @@
 package com.xceptance.neodymium.common.browser.configuration;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -54,6 +55,8 @@ public class BrowserConfigurationMapper
     private static final String HEADLESS = "headless";
 
     private static final String ARGUMENTS = "arguments";
+
+    private static final String DRIVER_ARGS = "driverArgs";
 
     private static final String PREFERENCES = "preferences";
 
@@ -307,6 +310,15 @@ public class BrowserConfigurationMapper
             browserConfiguration.setArguments(args);
         }
 
+        // additional browser arguments
+        String driverArgs = browserProfileConfiguration.get(DRIVER_ARGS);
+        if (!StringUtils.isEmpty(driverArgs))
+        {
+            var argsList = new ArrayList<>(List.of(driverArgs.split(";")));
+            argsList.removeIf(arg -> arg == null || arg.trim().equals(""));
+            argsList.replaceAll(String::trim);
+            browserConfiguration.setDriverArguments(argsList);
+        }
         // additional browser preferences
         String preferences = browserProfileConfiguration.get(PREFERENCES);
         if (!StringUtils.isEmpty(preferences))
