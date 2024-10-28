@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -137,8 +139,6 @@ public class AllureAddons
     {
         try
         {
-            FileOutputStream output = new FileOutputStream(getEnvFile());
-            FileChannel channel = output.getChannel();
             FileLock lock = null;
             int retries = 0;
             do
@@ -147,7 +147,7 @@ public class AllureAddons
                 {
                     Selenide.sleep(100);
                 }
-                lock = channel.tryLock();
+                lock = FileChannel.open(Paths.get(getEnvFile().getAbsolutePath()), StandardOpenOption.APPEND).tryLock();
                 retries++;
             }
             while (retries < MAX_RETRY_COUNT && lock == null);
@@ -178,7 +178,7 @@ public class AllureAddons
                         Node environment = doc.getDocumentElement();
                         NodeList childNodes = environment.getChildNodes();
                         boolean isSameNode = false;
-                        int keyToUpdate = 0;
+                        int keyToUpdate = -1;
                         for (int i = 0; i < childNodes.getLength(); i++)
                         {
                             Node child = childNodes.item(i);
@@ -210,39 +210,28 @@ public class AllureAddons
                         }
                         if (!isSameNode)
                         {
-                            Element parameter = doc.createElement("parameter");
-                            Element key = doc.createElement("key");
-                            Element value = doc.createElement("value");
-                            key.appendChild(doc.createTextNode(entry.getKey()));
-                            value.appendChild(doc.createTextNode(entry.getValue()));
-                            parameter.appendChild(key);
-                            parameter.appendChild(value);
-                            environment.appendChild(parameter);
-                            isFileAccessNeeded = true;
-                        }
-                        else if (shouldUpdate && keyToUpdate != 0)
-                        {
-                            Document updatedDoc = docBuilder.newDocument();
-                            Element updatedEnvironment = updatedDoc.createElement("environment");
-                            for (int i = 0; i < childNodes.getLength(); i++)
+                            if (shouldUpdate && keyToUpdate >= 0)
                             {
-                                if (i != keyToUpdate)
-                                {
-                                    updatedEnvironment.appendChild(childNodes.item(i));
-                                }
-                                else
-                                {
-                                    Element parameter = doc.createElement("parameter");
-                                    Element key = doc.createElement("key");
-                                    Element value = doc.createElement("value");
-                                    key.appendChild(doc.createTextNode(entry.getKey()));
-                                    value.appendChild(doc.createTextNode(entry.getValue()));
-                                    parameter.appendChild(key);
-                                    parameter.appendChild(value);
-                                    updatedEnvironment.appendChild(parameter);
-                                }
+                                Element parameter = doc.createElement("parameter");
+                                Element key = doc.createElement("key");
+                                Element value = doc.createElement("value");
+                                key.appendChild(doc.createTextNode(entry.getKey()));
+                                value.appendChild(doc.createTextNode(entry.getValue()));
+                                parameter.appendChild(key);
+                                parameter.appendChild(value);
+                                environment.replaceChild(parameter, childNodes.item(keyToUpdate));
                             }
-                            doc = updatedDoc;
+                            else
+                            {
+                                Element parameter = doc.createElement("parameter");
+                                Element key = doc.createElement("key");
+                                Element value = doc.createElement("value");
+                                key.appendChild(doc.createTextNode(entry.getKey()));
+                                value.appendChild(doc.createTextNode(entry.getValue()));
+                                parameter.appendChild(key);
+                                parameter.appendChild(value);
+                                environment.appendChild(parameter);
+                            }
                             isFileAccessNeeded = true;
                         }
                     }
@@ -268,9 +257,11 @@ public class AllureAddons
                 if (isFileAccessNeeded)
                 {
                     DOMSource source = new DOMSource(doc);
-
-                    StreamResult result = new StreamResult(output);
-                    transformer.transform(source, result);
+                    try (FileOutputStream output = new FileOutputStream(getEnvFile()))
+                    {
+                        StreamResult result = new StreamResult(output);
+                        transformer.transform(source, result);
+                    }
                 }
                 lock.release();
             }
@@ -278,8 +269,6 @@ public class AllureAddons
             {
                 LOGGER.warn("Could not acquire Filelock in time. Failed to add information about enviroment to Allure report");
             }
-            channel.close();
-            output.close();
         }
         catch (ParserConfigurationException | TransformerException | SAXException | IOException e)
         {
@@ -354,12 +343,12 @@ public class AllureAddons
             Map<String, String> systemEnvMap = new HashMap<String, String>();
             for (Map.Entry<String, String> entry : System.getenv().entrySet())
             {
-                String key = (String) entry.getKey();
+                String key = entry.getKey();
                 if (key.contains(customDataIdentifier))
                 {
                     String cleanedKey = key.replace(customDataIdentifier, "");
                     cleanedKey = cleanedKey.replaceAll("\\.", "");
-                    systemEnvMap.put(cleanedKey, (String) entry.getValue());
+                    systemEnvMap.put(cleanedKey, entry.getValue());
                 }
             }
             environmentDataMap = PropertiesUtil.mapPutAllIfAbsent(environmentDataMap, systemEnvMap);
