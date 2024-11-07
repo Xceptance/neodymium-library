@@ -293,11 +293,15 @@ public interface NeodymiumConfiguration extends Mutable
     public boolean addTestDataToReport();
 
     @Key("neodymium.report.environment.enableCustomData")
-    @DefaultValue("false")
+    @DefaultValue("true")
     public boolean enableCustomEnvironmentData();
 
+    @Key("neodymium.report.environment.enableBrowserData")
+    @DefaultValue("true")
+    public boolean enableBrowserEnvironmentData();
+    
     @Key("neodymium.report.enableStepLinks")
     @DefaultValue("true")
     public boolean enableStepLinks();
-}
 
+}

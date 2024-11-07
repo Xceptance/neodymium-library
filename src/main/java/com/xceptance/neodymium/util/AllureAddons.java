@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -51,6 +53,7 @@ public class AllureAddons
     private static boolean neoVersionLogged = false;
 
     private static boolean customDataAdded = false;
+
     private static final int MAX_RETRY_COUNT = 10;
 
     /**
@@ -136,12 +139,10 @@ public class AllureAddons
      * @param environmentValuesSet
      *            map with environment values
      */
-    public static synchronized void addEnvironmentInformation(ImmutableMap<String, String> environmentValuesSet)
+    public static synchronized void addEnvironmentInformation(ImmutableMap<String, String> environmentValuesSet, boolean shouldUpdate)
     {
         try
         {
-            FileOutputStream output = new FileOutputStream(getEnvFile());
-            FileChannel channel = output.getChannel();
             FileLock lock = null;
             int retries = 0;
             do
@@ -150,7 +151,7 @@ public class AllureAddons
                 {
                     Selenide.sleep(100);
                 }
-                lock = channel.tryLock();
+                lock = FileChannel.open(Paths.get(getEnvFile().getAbsolutePath()), StandardOpenOption.APPEND).tryLock();
                 retries++;
             }
             while (retries < MAX_RETRY_COUNT && lock == null);
@@ -169,16 +170,19 @@ public class AllureAddons
                     getAllureResultsFolder().mkdirs();
                 }
                 Document doc;
+                boolean isFileAccessNeeded = false;
 
                 // if environment.xml file exists, there probably already was an entry in it
                 // in this case we need to append our values to it
                 if (getEnvFile().length() != 0)
                 {
                     doc = docBuilder.parse(getEnvFile());
-                    environmentValuesSet.forEach((k, v) -> {
+                    for (Map.Entry<String, String> entry : environmentValuesSet.entrySet())
+                    {
                         Node environment = doc.getDocumentElement();
                         NodeList childNodes = environment.getChildNodes();
                         boolean isSameNode = false;
+                        int keyToUpdate = -1;
                         for (int i = 0; i < childNodes.getLength(); i++)
                         {
                             Node child = childNodes.item(i);
@@ -197,53 +201,78 @@ public class AllureAddons
                                     value = subNode.getTextContent();
                                 }
                             }
-                            if (key.equals(k) && value.equals(v))
+                            if (key.equals(entry.getKey()) && value.equals(entry.getValue()))
                             {
                                 isSameNode = true;
+                                break;
+                            }
+                            else if (shouldUpdate && key.equals(entry.getKey()))
+                            {
+                                keyToUpdate = i;
                                 break;
                             }
                         }
                         if (!isSameNode)
                         {
-                            Element parameter = doc.createElement("parameter");
-                            Element key = doc.createElement("key");
-                            Element value = doc.createElement("value");
-                            key.appendChild(doc.createTextNode(k));
-                            value.appendChild(doc.createTextNode(v));
-                            parameter.appendChild(key);
-                            parameter.appendChild(value);
-                            environment.appendChild(parameter);
+                            if (shouldUpdate && keyToUpdate >= 0)
+                            {
+                                Element parameter = doc.createElement("parameter");
+                                Element key = doc.createElement("key");
+                                Element value = doc.createElement("value");
+                                key.appendChild(doc.createTextNode(entry.getKey()));
+                                value.appendChild(doc.createTextNode(entry.getValue()));
+                                parameter.appendChild(key);
+                                parameter.appendChild(value);
+                                environment.replaceChild(parameter, childNodes.item(keyToUpdate));
+                            }
+                            else
+                            {
+                                Element parameter = doc.createElement("parameter");
+                                Element key = doc.createElement("key");
+                                Element value = doc.createElement("value");
+                                key.appendChild(doc.createTextNode(entry.getKey()));
+                                value.appendChild(doc.createTextNode(entry.getValue()));
+                                parameter.appendChild(key);
+                                parameter.appendChild(value);
+                                environment.appendChild(parameter);
+                            }
+                            isFileAccessNeeded = true;
                         }
-                    });
+                    }
                 }
                 else
                 {
+                    isFileAccessNeeded = true;
                     doc = docBuilder.newDocument();
                     Element environment = doc.createElement("environment");
                     doc.appendChild(environment);
-                    environmentValuesSet.forEach((k, v) -> {
+                    for (Map.Entry<String, String> entry : environmentValuesSet.entrySet())
+                    {
                         Element parameter = doc.createElement("parameter");
                         Element key = doc.createElement("key");
                         Element value = doc.createElement("value");
-                        key.appendChild(doc.createTextNode(k));
-                        value.appendChild(doc.createTextNode(v));
+                        key.appendChild(doc.createTextNode(entry.getKey()));
+                        value.appendChild(doc.createTextNode(entry.getValue()));
                         parameter.appendChild(key);
                         parameter.appendChild(value);
                         environment.appendChild(parameter);
-                    });
+                    }
                 }
-                DOMSource source = new DOMSource(doc);
-
-                StreamResult result = new StreamResult(output);
-                transformer.transform(source, result);
+                if (isFileAccessNeeded)
+                {
+                    DOMSource source = new DOMSource(doc);
+                    try (FileOutputStream output = new FileOutputStream(getEnvFile()))
+                    {
+                        StreamResult result = new StreamResult(output);
+                        transformer.transform(source, result);
+                    }
+                }
                 lock.release();
             }
             else
             {
                 LOGGER.warn("Could not acquire Filelock in time. Failed to add information about enviroment to Allure report");
             }
-            channel.close();
-            output.close();
         }
         catch (ParserConfigurationException | TransformerException | SAXException | IOException e)
         {
@@ -325,30 +354,33 @@ public class AllureAddons
             LOGGER.info("Custom Environment Data was added.");
             customDataAdded = true;
             String customDataIdentifier = "neodymium.report.environment.custom";
-            environmentDataMap = PropertiesUtil.addMissingPropertiesFromFile("./config/dev-neodymium.properties", customDataIdentifier, environmentDataMap);
+            environmentDataMap = PropertiesUtil.addMissingPropertiesFromFile("." + File.separator + "config" + File.separator + "dev-neodymium.properties",
+                                                                             customDataIdentifier, environmentDataMap);
 
             Map<String, String> systemEnvMap = new HashMap<String, String>();
             for (Map.Entry<String, String> entry : System.getenv().entrySet())
             {
-                String key = (String) entry.getKey();
+                String key = entry.getKey();
                 if (key.contains(customDataIdentifier))
                 {
                     String cleanedKey = key.replace(customDataIdentifier, "");
                     cleanedKey = cleanedKey.replaceAll("\\.", "");
-                    systemEnvMap.put(cleanedKey, (String) entry.getValue());
+                    systemEnvMap.put(cleanedKey, entry.getValue());
                 }
             }
             environmentDataMap = PropertiesUtil.mapPutAllIfAbsent(environmentDataMap, systemEnvMap);
             environmentDataMap = PropertiesUtil.mapPutAllIfAbsent(environmentDataMap,
                                                                   PropertiesUtil.getDataMapForIdentifier(customDataIdentifier,
                                                                                                          System.getProperties()));
-            environmentDataMap = PropertiesUtil.addMissingPropertiesFromFile("./config/credentials.properties", customDataIdentifier, environmentDataMap);
-            environmentDataMap = PropertiesUtil.addMissingPropertiesFromFile("./config/neodymium.properties", customDataIdentifier, environmentDataMap);
+            environmentDataMap = PropertiesUtil.addMissingPropertiesFromFile("." + File.separator + "config" + File.separator + "credentials.properties",
+                                                                             customDataIdentifier, environmentDataMap);
+            environmentDataMap = PropertiesUtil.addMissingPropertiesFromFile("." + File.separator + "config" + File.separator + "neodymium.properties",
+                                                                             customDataIdentifier, environmentDataMap);
         }
 
         if (!environmentDataMap.isEmpty())
         {
-            AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder().putAll(environmentDataMap).build());
+            AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder().putAll(environmentDataMap).build(), false);
         }
     }
 
