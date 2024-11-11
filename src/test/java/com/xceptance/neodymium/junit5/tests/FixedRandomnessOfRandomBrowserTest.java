@@ -7,9 +7,9 @@ import java.util.Map;
 
 import org.aeonbits.owner.ConfigFactory;
 import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.xceptance.neodymium.junit5.testclasses.browser.FixedRandomnessOfRandomBrowser;
 import com.xceptance.neodymium.junit5.tests.utils.NeodymiumTestExecutionSummary;
@@ -18,7 +18,7 @@ import com.xceptance.neodymium.util.NeodymiumRandom;
 
 public class FixedRandomnessOfRandomBrowserTest extends AbstractNeodymiumTest
 {
-    @BeforeClass
+    @BeforeAll
     public static void setUpNeodymiumConfiguration() throws IOException
     {
         // set up a temp-neodymium.properties

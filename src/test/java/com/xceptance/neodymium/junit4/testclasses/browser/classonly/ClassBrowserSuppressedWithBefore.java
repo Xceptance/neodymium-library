@@ -18,7 +18,7 @@ public class ClassBrowserSuppressedWithBefore
     @Before
     public void before()
     {
-        Assert.assertNull("Browser should not be started for cleanup", Neodymium.getDriver());
+        Assert.assertNull("Browser should not be started for setuo", Neodymium.getDriver());
     }
 
     @Test

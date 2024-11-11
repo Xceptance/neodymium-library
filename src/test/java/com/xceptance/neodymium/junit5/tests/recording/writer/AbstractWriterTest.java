@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 
+import com.xceptance.neodymium.common.browser.DontStartNewBrowserForSetUp;
 import com.xceptance.neodymium.common.recording.config.RecordingConfigurations;
 import com.xceptance.neodymium.common.recording.writers.Writer;
 import com.xceptance.neodymium.junit5.NeodymiumTest;
@@ -33,6 +34,7 @@ public abstract class AbstractWriterTest
         this.writerClass = writerClass;
     }
 
+    @DontStartNewBrowserForSetUp
     @BeforeEach
     public void calculatePath() throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException,
         InvocationTargetException, IOException

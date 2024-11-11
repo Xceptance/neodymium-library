@@ -11,7 +11,6 @@ import com.codeborne.selenide.WebDriverRunner;
 import com.xceptance.neodymium.common.Data;
 import com.xceptance.neodymium.common.browser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.common.browser.configuration.MultibrowserConfiguration;
-import com.xceptance.neodymium.junit4.statement.browser.DontStartNewBrowserForSetUp;
 import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserBeforeRunner
@@ -65,12 +64,12 @@ public class BrowserBeforeRunner
         }
         else if (startNewBrowserForSetUp)
         {
-            throw new RuntimeException("No browser setting for " + (junit5 ? "@BeforeEach" : "@Before") + "method '" + before.getName()
+            throw new RuntimeException("No browser setting for " + (junit5 ? "@BeforeEach" : "@Before") + " method '" + before.getName()
                                        + "' was found. "
                                        + "If browser is suppressed for the test and is also not required for the set up,"
                                        + " please mark the " + (junit5 ? "@BeforeEach" : "@Before") + " method with @DontStartNewBrowserForSetUp annotation."
                                        + " If you need to start a browser for the set up,"
-                                       + " please, use " + (junit5 ? "@BeforeEach" : "@Before")
+                                       + " please, use @Browser"
                                        + " annotaion to mention what browser should be used exactly for this " + (junit5 ? "@BeforeEach" : "@Before") + ".");
         }
         boolean beforeFailed = false;

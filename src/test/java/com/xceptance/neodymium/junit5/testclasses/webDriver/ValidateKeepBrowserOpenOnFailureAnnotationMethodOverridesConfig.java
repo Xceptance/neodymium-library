@@ -11,12 +11,14 @@ import org.openqa.selenium.WebDriver;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.xceptance.neodymium.common.browser.Browser;
+import com.xceptance.neodymium.common.browser.DontStartNewBrowserForSetUp;
 import com.xceptance.neodymium.common.browser.KeepBrowserOpen;
 import com.xceptance.neodymium.common.browser.WebDriverCache;
 import com.xceptance.neodymium.junit5.NeodymiumTest;
 import com.xceptance.neodymium.junit5.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
+@DontStartNewBrowserForSetUp
 @TestMethodOrder(MethodOrderer.MethodName.class)
 @Browser("Chrome_1024x768")
 public class ValidateKeepBrowserOpenOnFailureAnnotationMethodOverridesConfig

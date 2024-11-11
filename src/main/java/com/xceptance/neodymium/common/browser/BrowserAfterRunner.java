@@ -11,7 +11,6 @@ import com.codeborne.selenide.WebDriverRunner;
 import com.xceptance.neodymium.common.Data;
 import com.xceptance.neodymium.common.browser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.common.browser.configuration.MultibrowserConfiguration;
-import com.xceptance.neodymium.junit4.statement.browser.DontStartNewBrowserForCleanUp;
 import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserAfterRunner
