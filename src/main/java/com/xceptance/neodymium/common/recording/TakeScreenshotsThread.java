@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
+import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -84,10 +85,18 @@ public class TakeScreenshotsThread extends Thread
                 {
                     long start = new Date().getTime();
 
-                    File file = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-                    writer.compressImageIfNeeded(file, recordingConfigurations.imageScaleFactor(), recordingConfigurations.imageQuality());
-                    writer.write(file);
-
+                    try 
+                    {
+                        File file = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+                        
+                        writer.compressImageIfNeeded(file, recordingConfigurations.imageScaleFactor(), recordingConfigurations.imageQuality());
+                        writer.write(file);
+                    }
+                    catch (NoSuchWindowException e)
+                    {
+                        // catching the exception prevents the video from failing
+                    }
+                    
                     long duration = new Date().getTime() - start;
                     millis += duration;
                     turns++;

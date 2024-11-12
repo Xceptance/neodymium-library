@@ -266,5 +266,21 @@ public interface NeodymiumConfiguration extends Mutable
 
     @Key("neodymium.logNeoVersion")
     @DefaultValue("true")
+    
     public boolean logNeoVersion();
+    @Key("neodymium.lighthouse.performance")
+    @DefaultValue("0.50")
+    public double lighthousePerformance();
+
+    @Key("neodymium.lighthouse.accessibilty")
+    @DefaultValue("0.50")
+    public double lighthouseAccessibility();
+
+    @Key("neodymium.lighthouse.bestPractices")
+    @DefaultValue("0.50")
+    public double lighthouseBestPractices();
+
+    @Key("neodymium.lighthouse.seo")
+    @DefaultValue("0.50")
+    public double lighthouseSeo();
 }
