@@ -27,7 +27,7 @@ public class LighthouseUtils
             {
                 new ProcessBuilder("cmd.exe", "/c", "lighthouse", "--version").start();
             }
-            else if (System.getProperty("os.name").toLowerCase().contains("linux"))
+            else if (System.getProperty("os.name").toLowerCase().contains("linux") || System.getProperty("os.name").toLowerCase().contains("mac"))
             {
                 new ProcessBuilder("lighthouse", "--version");
             }
@@ -93,7 +93,7 @@ public class LighthouseUtils
         {
             builder = new ProcessBuilder("cmd.exe", "/c", "lighthouse", "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=9999", "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
         }
-        else if (System.getProperty("os.name").toLowerCase().contains("linux"))
+        else if (System.getProperty("os.name").toLowerCase().contains("linux") || System.getProperty("os.name").toLowerCase().contains("mac"))
         {
             builder = new ProcessBuilder("lighthouse", "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=9999", "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
         }
