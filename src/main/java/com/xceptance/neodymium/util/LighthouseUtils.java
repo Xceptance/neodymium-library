@@ -23,7 +23,14 @@ public class LighthouseUtils
         // validate that lighthouse is installed
         try 
         {
-            new ProcessBuilder("cmd.exe", "/c", "lighthouse", "--version").start();
+            if (System.getProperty("os.name").toLowerCase().contains("win")) 
+            {
+                new ProcessBuilder("cmd.exe", "/c", "lighthouse", "--version").start();
+            }
+            else if (System.getProperty("os.name").toLowerCase().contains("linux"))
+            {
+                new ProcessBuilder("lighthouse", "--version");
+            }
         }
         catch (Exception e)
         {
@@ -31,7 +38,9 @@ public class LighthouseUtils
         }
         
         // validate chrome browser (lighthouse only works for chrome)
-        Assert.assertTrue("the current browser is " + Neodymium.getBrowserName() + ", but lighthouse only works in combination with chrome", Neodymium.getBrowserName().contains("chrome"));
+        SelenideAddons.wrapAssertionError(() -> {
+            Assert.assertTrue("the current browser is " + Neodymium.getBrowserName() + ", but lighthouse only works in combination with chrome", Neodymium.getBrowserName().contains("chrome"));
+        });
         
         // close window to avoid conflict with lighthouse
         String newWindow = windowOperations(driver);
@@ -86,7 +95,7 @@ public class LighthouseUtils
         }
         else if (System.getProperty("os.name").toLowerCase().contains("linux"))
         {
-            // TODO (with luck linux and macOS are the same, ask Olha for help)
+            builder = new ProcessBuilder("lighthouse", "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=9999", "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
         }
 
         builder.redirectErrorStream(true);
