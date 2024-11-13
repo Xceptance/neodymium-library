@@ -51,9 +51,11 @@ public class VideoWriter implements Writer
     protected VideoWriter(RecordingConfigurations recordingConfigurations, String videoFileName) throws IOException
     {
         // check if ffmpeg binary is found
+        double framerate = 1 / ((double) recordingConfigurations.oneImagePerMilliseconds() / 1000);
         p = new ProcessBuilder(((VideoRecordingConfigurations) recordingConfigurations).ffmpegBinaryPath(), "-h").start();
-
-        pb = new ProcessBuilder(((VideoRecordingConfigurations) recordingConfigurations).ffmpegBinaryPath(), "-y", "-f", "image2pipe", "-r", " 5/1", "-i", "pipe:0", "-c:v", "libx264", videoFileName);
+        pb = new ProcessBuilder(((VideoRecordingConfigurations) recordingConfigurations).ffmpegBinaryPath(), "-y", "-f", "image2pipe", "-r", " "
+                                                                                                                                             + framerate
+                                                                                                                                             + " ", "-i", "pipe:0", "-c:v", "libx264", videoFileName);
         pb.redirectErrorStream(true);
         pb.redirectOutput(Redirect.appendTo(new File(((VideoRecordingConfigurations) recordingConfigurations).ffmpegLogFile())));
     }
@@ -75,7 +77,7 @@ public class VideoWriter implements Writer
      * Writes {@link File} into the FFmpeg {@link Process}
      */
     @Override
-    public void write(File image)
+    public void write(File image, long duration)
     {
         byte[] imageBytes;
         imageBytes = new byte[(int) image.length()];
@@ -85,7 +87,6 @@ public class VideoWriter implements Writer
 
             ImageInputStream iis = ImageIO.createImageInputStream(new ByteArrayInputStream(imageBytes));
             BufferedImage img = ImageIO.read(iis);
-
             ImageIO.write(img, "PNG", ffmpegInput);
         }
         catch (IOException e)

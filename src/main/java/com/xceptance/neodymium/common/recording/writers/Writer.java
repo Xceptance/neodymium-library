@@ -149,7 +149,7 @@ public interface Writer
 
     public void start() throws IOException;
 
-    public void write(File image);
+    public void write(File image, long delay);
 
     public void stop();
 }
