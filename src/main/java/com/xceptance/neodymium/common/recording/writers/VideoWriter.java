@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.ProcessBuilder.Redirect;
@@ -46,16 +47,27 @@ public class VideoWriter implements Writer
      *            {@link VideoRecordingConfigurations} for the writer
      * @param videoFileName
      *            {@link String} video file name ( including the path)
-     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws Exception
      */
-    protected VideoWriter(RecordingConfigurations recordingConfigurations, String videoFileName) throws IOException
+    protected VideoWriter(RecordingConfigurations recordingConfigurations, String videoFileName) throws FileNotFoundException
     {
         // check if ffmpeg binary is found
+        String ffmpegBinary = ((VideoRecordingConfigurations) recordingConfigurations).ffmpegBinaryPath();
+        try
+        {
+            p = new ProcessBuilder(ffmpegBinary, "-h").start();
+        }
+        catch (Exception e)
+        {
+            throw (FileNotFoundException) new FileNotFoundException("FFmpeg binary not found at " + ffmpegBinary
+                                                                    + ", please install FFmpeg and add it to the PATH or enter the correct FFmpeg binary location. ").initCause(e);
+        }
+
         double framerate = 1 / ((double) recordingConfigurations.oneImagePerMilliseconds() / 1000);
-        p = new ProcessBuilder(((VideoRecordingConfigurations) recordingConfigurations).ffmpegBinaryPath(), "-h").start();
-        pb = new ProcessBuilder(((VideoRecordingConfigurations) recordingConfigurations).ffmpegBinaryPath(), "-y", "-f", "image2pipe", "-r", " "
-                                                                                                                                             + framerate
-                                                                                                                                             + " ", "-i", "pipe:0", "-c:v", "libx264", videoFileName);
+        pb = new ProcessBuilder(ffmpegBinary, "-y", "-f", "image2pipe", "-r", " "
+                                                                              + framerate
+                                                                              + " ", "-i", "pipe:0", "-c:v", "libx264", videoFileName);
         pb.redirectErrorStream(true);
         pb.redirectOutput(Redirect.appendTo(new File(((VideoRecordingConfigurations) recordingConfigurations).ffmpegLogFile())));
     }
