@@ -18,29 +18,42 @@ import io.qameta.allure.Allure;
 
 public class LighthouseUtils
 {
-    public static void createLightHouseReport(WebDriver driver, String URL, String reportName) throws Exception 
+    /**
+     * Creates a <a href="https://developer.chrome.com/docs/lighthouse/overview?hl=de">Lighthouse</a> report
+     * (Copyright Google) of the current URL and adds it to the Allure report.
+     * 
+     * @param driver
+     *            The current webdriver
+     * @param reportName
+     *            The name of the Lighthouse report attachment in the Allure report
+     * @throws Exception
+     */
+    public static void createLightHouseReport(WebDriver driver, String reportName) throws Exception 
     {
         // validate that lighthouse is installed
         try 
         {
             if (System.getProperty("os.name").toLowerCase().contains("win")) 
             {
-                new ProcessBuilder("cmd.exe", "/c", "lighthouse", "--version").start();
+                new ProcessBuilder("cmd.exe", "/c", Neodymium.configuration().lighthouseBinaryPath(), "--version").start();
             }
             else if (System.getProperty("os.name").toLowerCase().contains("linux") || System.getProperty("os.name").toLowerCase().contains("mac"))
             {
-                new ProcessBuilder("lighthouse", "--version");
+                new ProcessBuilder(Neodymium.configuration().lighthouseBinaryPath(), "--version");
             }
         }
         catch (Exception e)
         {
-            throw new Exception("lighthouse binary not found, please install lighthouse and add it to the PATH");
+            throw new Exception("lighthouse binary not found at " + Neodymium.configuration().lighthouseBinaryPath() + ", please install lighthouse and add it to the PATH or enter the correct lighthouse binary location. " + e);
         }
         
         // validate chrome browser (lighthouse only works for chrome)
         SelenideAddons.wrapAssertionError(() -> {
             Assert.assertTrue("the current browser is " + Neodymium.getBrowserName() + ", but lighthouse only works in combination with chrome", Neodymium.getBrowserName().contains("chrome"));
         });
+        
+        // get the current URL
+        String URL = driver.getCurrentUrl();
         
         // close window to avoid conflict with lighthouse
         String newWindow = windowOperations(driver);
@@ -75,7 +88,18 @@ public class LighthouseUtils
         driver.get(URL);
     }
     
-    private static String windowOperations(WebDriver driver) throws InterruptedException
+    /**
+     * <p>
+     * Opens a new tab apart from the first tab with the test automation, adds a handle and closes the first tab.
+     * If the first tab with the test automation is not closed, the Lighthouse report will not have proper values,
+     * because it will interfere with the Lighthouse report generation.
+     * </p>
+     * 
+     * @param driver
+     *            The current webdriver
+     * @return A new empty tab with a window handle
+     */
+    private static String windowOperations(WebDriver driver)
     {
         String originalWindow = driver.getWindowHandle();
         driver.switchTo().newWindow(WindowType.TAB);
@@ -85,17 +109,29 @@ public class LighthouseUtils
         return newWindow;
     }
 
+    /**
+     * <p>
+     * Uses <a href="https://developer.chrome.com/docs/lighthouse/overview?hl=de">Lighthouse</a> (Copyright Google) 
+     * to create a Lighthouse report of the current URL.
+     * </p>
+     * 
+     * @param URL
+     *            The current URL the Lighthouse report should be generated on
+     * @param reportName
+     *            The name of the Lighthouse report attachment in the Allure report 
+     * @throws IOException
+     */
     private static void lighthouseAudit(String URL, String reportName) throws IOException
     {
         ProcessBuilder builder = new ProcessBuilder();
         
         if (System.getProperty("os.name").toLowerCase().contains("win")) 
         {
-            builder = new ProcessBuilder("cmd.exe", "/c", "lighthouse", "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=9999", "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
+            builder = new ProcessBuilder("cmd.exe", "/c", Neodymium.configuration().lighthouseBinaryPath(), "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=9999", "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
         }
         else if (System.getProperty("os.name").toLowerCase().contains("linux") || System.getProperty("os.name").toLowerCase().contains("mac"))
         {
-            builder = new ProcessBuilder("lighthouse", "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=9999", "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
+            builder = new ProcessBuilder(Neodymium.configuration().lighthouseBinaryPath(), "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=9999", "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
         }
 
         builder.redirectErrorStream(true);

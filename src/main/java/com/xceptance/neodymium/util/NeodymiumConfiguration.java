@@ -268,6 +268,11 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("true")
     
     public boolean logNeoVersion();
+
+    @Key("neodymium.lighthouse.binaryPath")
+    @DefaultValue("lighthouse")
+    public String lighthouseBinaryPath();
+    
     @Key("neodymium.lighthouse.performance")
     @DefaultValue("0.50")
     public double lighthousePerformance();
