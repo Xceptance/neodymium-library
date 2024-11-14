@@ -33,9 +33,12 @@ public class Neodymium
 
     // keep our current browser profile name
     private String browserProfileName;
-
+    
     // keep our current browser name
     private String browserName;
+    
+    // keep our current remote debugging port
+    private int remoteDebuggingPort;
 
     // our global configuration
     private final NeodymiumConfiguration configuration;
@@ -254,6 +257,28 @@ public class Neodymium
     public static void setBrowserName(String browserName)
     {
         getContext().browserName = browserName;
+    }
+    
+    /**
+     * Remote debugging port of the current bowser
+     * 
+     * @return remote debugging port
+     */
+    public static int getRemoteDebuggingPort()
+    {
+        return getContext().remoteDebuggingPort;
+    }
+    
+    /**
+     * Set the remote debugging port of the current browser.<br>
+     * <b>Attention:</b> This function is mainly used to set information within the context internally.
+     * 
+     * @param remoteDebuggingPort
+     *            the current browser port
+     */
+    public static void setRemoteDebuggingPort(int remoteDebuggingPort)
+    {
+        getContext().remoteDebuggingPort = remoteDebuggingPort;
     }
 
     /**

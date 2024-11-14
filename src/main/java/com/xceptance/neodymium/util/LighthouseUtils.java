@@ -127,13 +127,13 @@ public class LighthouseUtils
         
         if (System.getProperty("os.name").toLowerCase().contains("win")) 
         {
-            builder = new ProcessBuilder("cmd.exe", "/c", Neodymium.configuration().lighthouseBinaryPath(), "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=9999", "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
+            builder = new ProcessBuilder("cmd.exe", "/c", Neodymium.configuration().lighthouseBinaryPath(), "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=" + Neodymium.getRemoteDebuggingPort(), "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
         }
         else if (System.getProperty("os.name").toLowerCase().contains("linux") || System.getProperty("os.name").toLowerCase().contains("mac"))
         {
-            builder = new ProcessBuilder(Neodymium.configuration().lighthouseBinaryPath(), "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=9999", "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
+            builder = new ProcessBuilder(Neodymium.configuration().lighthouseBinaryPath(), "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=" + Neodymium.getRemoteDebuggingPort(), "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
         }
-
+        
         builder.redirectErrorStream(true);
         Process p = builder.start();
         BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));

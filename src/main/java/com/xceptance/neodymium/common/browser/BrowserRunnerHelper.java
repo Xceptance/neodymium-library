@@ -33,6 +33,7 @@ import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerDriverService;
 import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.os.ExecutableFinder;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.HttpCommandExecutor;
@@ -228,6 +229,12 @@ public final class BrowserRunnerHelper
                 {
                     options.addArguments("--headless");
                 }
+
+                // find a free port for each chrome session (important for lighthouse)
+                var remoteDebuggingPort = PortProber.findFreePort();
+                Neodymium.setRemoteDebuggingPort(remoteDebuggingPort);
+                options.addArguments("--remote-debugging-port=" + remoteDebuggingPort);
+                
                 if (config.getArguments() != null && config.getArguments().size() > 0)
                 {
                     options.addArguments(config.getArguments());
