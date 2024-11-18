@@ -16,6 +16,9 @@ import com.google.gson.JsonParser;
 
 import io.qameta.allure.Allure;
 
+/**
+ * Powered by <a href="https://developer.chrome.com/docs/lighthouse/overview?hl=de">Lighthouse</a> (Copyright Google)
+ */
 public class LighthouseUtils
 {
     /**
@@ -35,11 +38,23 @@ public class LighthouseUtils
         {
             if (System.getProperty("os.name").toLowerCase().contains("win")) 
             {
-                new ProcessBuilder("cmd.exe", "/c", Neodymium.configuration().lighthouseBinaryPath(), "--version").start();
+                ProcessBuilder builder = new ProcessBuilder();
+                builder = new ProcessBuilder("cmd.exe", "/c", Neodymium.configuration().lighthouseBinaryPath(), "--version");
+                Process p = builder.start();
+                int errorCode = p.waitFor();
+                
+                if (errorCode != 0) 
+                {
+                    throw new IOException();
+                }
             }
             else if (System.getProperty("os.name").toLowerCase().contains("linux") || System.getProperty("os.name").toLowerCase().contains("mac"))
             {
-                new ProcessBuilder(Neodymium.configuration().lighthouseBinaryPath(), "--version");
+                new ProcessBuilder(Neodymium.configuration().lighthouseBinaryPath(), "--version").start();
+            }
+            else 
+            {
+                throw new Exception("your current operation system is not supported, please use Windows, Linux or MacOS");
             }
         }
         catch (Exception e)
@@ -75,9 +90,9 @@ public class LighthouseUtils
         // validate if values in report json are greater than defined threshold in config
         SelenideAddons.wrapAssertionError(() -> {
             Assert.assertTrue("the performance score " + performanceScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthousePerformance() + ", please improve the score to match expectations", Neodymium.configuration().lighthousePerformance() <= performanceScore);
-            Assert.assertTrue("the accessibility score " + accessibilityScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthousePerformance() + ", please improve the score to match expectations", Neodymium.configuration().lighthouseAccessibility() <= accessibilityScore);
-            Assert.assertTrue("the best practices score " + bestPracticesScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthousePerformance() + ", please improve the score to match expectations", Neodymium.configuration().lighthouseBestPractices() <= bestPracticesScore);
-            Assert.assertTrue("the seo score " + seoScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthousePerformance() + ", please improve the score to match expectations", Neodymium.configuration().lighthouseSeo() <= seoScore);
+            Assert.assertTrue("the accessibility score " + accessibilityScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthouseAccessibility() + ", please improve the score to match expectations", Neodymium.configuration().lighthouseAccessibility() <= accessibilityScore);
+            Assert.assertTrue("the best practices score " + bestPracticesScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthouseBestPractices() + ", please improve the score to match expectations", Neodymium.configuration().lighthouseBestPractices() <= bestPracticesScore);
+            Assert.assertTrue("the seo score " + seoScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthouseSeo() + ", please improve the score to match expectations", Neodymium.configuration().lighthouseSeo() <= seoScore);
         });
         
         // add report html to allure
@@ -119,9 +134,9 @@ public class LighthouseUtils
      *            The current URL the Lighthouse report should be generated on
      * @param reportName
      *            The name of the Lighthouse report attachment in the Allure report 
-     * @throws IOException
+     * @throws Exception 
      */
-    private static void lighthouseAudit(String URL, String reportName) throws IOException
+    private static void lighthouseAudit(String URL, String reportName) throws Exception
     {
         ProcessBuilder builder = new ProcessBuilder();
         
@@ -132,6 +147,10 @@ public class LighthouseUtils
         else if (System.getProperty("os.name").toLowerCase().contains("linux") || System.getProperty("os.name").toLowerCase().contains("mac"))
         {
             builder = new ProcessBuilder(Neodymium.configuration().lighthouseBinaryPath(), "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=" + Neodymium.getRemoteDebuggingPort(), "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
+        }
+        else 
+        {
+            throw new Exception("your current operation system is not supported, please use Windows, Linux or MacOS");
         }
         
         builder.redirectErrorStream(true);

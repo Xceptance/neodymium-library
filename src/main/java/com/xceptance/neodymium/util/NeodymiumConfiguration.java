@@ -274,18 +274,18 @@ public interface NeodymiumConfiguration extends Mutable
     public String lighthouseBinaryPath();
     
     @Key("neodymium.lighthouse.performance")
-    @DefaultValue("0.50")
+    @DefaultValue("0.5")
     public double lighthousePerformance();
 
-    @Key("neodymium.lighthouse.accessibilty")
-    @DefaultValue("0.50")
+    @Key("neodymium.lighthouse.accessibility")
+    @DefaultValue("0.5")
     public double lighthouseAccessibility();
 
     @Key("neodymium.lighthouse.bestPractices")
-    @DefaultValue("0.50")
+    @DefaultValue("0.5")
     public double lighthouseBestPractices();
 
     @Key("neodymium.lighthouse.seo")
-    @DefaultValue("0.50")
+    @DefaultValue("0.5")
     public double lighthouseSeo();
 }
