@@ -12,7 +12,8 @@ import com.xceptance.neodymium.junit4.NeodymiumRunner.DescriptionMode;
 @LoadPolicy(LoadType.MERGE)
 @Sources(
 {
-  "${neodymium.temporaryConfigFile}", "file:config/dev-neodymium.properties", "file:config/credentials.properties", "file:config/neodymium.properties"
+  "${neodymium.temporaryConfigFile}", "file:config/dev-neodymium.properties", "system:properties", "system:env", "file:config/credentials.properties",
+  "file:config/neodymium.properties"
 })
 public interface NeodymiumConfiguration extends Mutable
 {
