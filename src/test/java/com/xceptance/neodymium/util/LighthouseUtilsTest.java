@@ -51,7 +51,7 @@ public class LighthouseUtilsTest
     }
     
     @NeodymiumTest
-    public void testLighthouseUtilsPerfromanceException() throws Exception
+    public void testLighthouseUtilsPerformanceException() throws Exception
     {
         Neodymium.configuration().setProperty("neodymium.lighthouse.performance", "0.51");
         Neodymium.configuration().setProperty("neodymium.lighthouse.accessibility", "0.5");
