@@ -4,11 +4,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.xceptance</groupId>
 	<artifactId>neodymium-library</artifactId>
-	<version>5.0.1</version>
+	<version>5.1.0-SNAPSHOT</version>
 
 	<name>neodymium-library</name>
 	<url>https://github.com/Xceptance/neodymium-library</url>
-	<description>A test automation library based on common other best practice open source libraries. It adds missing functionalities but does not reinvent the wheel. Just glues stuff together nicely and adds some sprinkles.</description>
+	<description>A test automation library based on common other best practice
+		open source libraries. It adds missing functionalities but does not
+		reinvent the wheel. Just glues stuff together nicely and adds some
+		sprinkles.</description>
 
 	<organization>
 		<name>Xceptance Software Technologies GmbH</name>
@@ -16,15 +19,15 @@
 	</organization>
 
 	<developers>
-    <developer>
-        <name>Xceptance Test Automation Team</name>
-        <id>xceptance</id>
-        <email>testautomation@xceptance.com </email>
-        <organization>Xceptance Software Technologies GmbH</organization>
-        <organizationUrl>https://www.xceptance.com/</organizationUrl>
-        <timezone>+1</timezone>
-    </developer>
-  </developers>
+		<developer>
+			<name>Xceptance Test Automation Team</name>
+			<id>xceptance</id>
+			<email>testautomation@xceptance.com </email>
+			<organization>Xceptance Software Technologies GmbH</organization>
+			<organizationUrl>https://www.xceptance.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+	</developers>
 
 	<licenses>
 		<license>
@@ -35,7 +38,8 @@
 
 	<scm>
 		<connection>scm:git:git://github.com/Xceptance/neodymium-library.git</connection>
-		<developerConnection>scm:git:ssh://github.com/Xceptance/neodymium-library.git</developerConnection>
+		<developerConnection>
+			scm:git:ssh://github.com/Xceptance/neodymium-library.git</developerConnection>
 		<url>https://github.com/Xceptance/neodymium-library/tree/master</url>
 	</scm>
 
@@ -44,10 +48,10 @@
 		<maven.compiler.source.version>17</maven.compiler.source.version>
 		<maven.compiler.target.version>17</maven.compiler.target.version>
 		<surefire.version>3.0.0-M5</surefire.version>
-    	<allure.version>2.26.0</allure.version>
-		<selenide.version>7.2.0</selenide.version>
-    	<cucumber.version>6.9.1</cucumber.version>
-		<browserup.version>2.1.2</browserup.version>
+		<allure.version>2.26.0</allure.version>
+		<selenide.version>7.4.0</selenide.version>
+		<cucumber.version>6.9.1</cucumber.version>
+		<browserup.version>2.2.17</browserup.version>
 		<log4j.version>2.23.1</log4j.version>
 		<junit.version>4.13.1</junit.version>
 		<junit.jupiter.version>5.8.0</junit.jupiter.version>
@@ -98,7 +102,8 @@
 					<forkCount>4</forkCount>
 					<reuseForks>false</reuseForks>
 					<includes>
-						<include>com/xceptance/neodymium/junit5/tests/**/*Test.java</include>
+						<include>
+							com/xceptance/neodymium/junit5/tests/**/*Test.java</include>
 						<include>com/xceptance/neodymium/common/**/*Test.java</include>
 					</includes>
 				</configuration>
@@ -199,13 +204,16 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
 							<includes>
-								<include>com/xceptance/neodymium/junit4/tests/**/*Test.java</include>
+								<include>
+									com/xceptance/neodymium/junit4/tests/**/*Test.java</include>
 							</includes>
 							<includes>
-								<include>com/xceptance/neodymium/util/**/*Test.java</include>
+								<include>
+									com/xceptance/neodymium/util/**/*Test.java</include>
 							</includes>
 							<excludes>
-								<exclude>com/xceptance/neodymium/junit4/tests/visual/**/*Test.java</exclude>
+								<exclude>
+									com/xceptance/neodymium/junit4/tests/visual/**/*Test.java</exclude>
 							</excludes>
 						</configuration>
 						<dependencies>
@@ -228,8 +236,10 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
 							<includes>
-								<include>com/xceptance/neodymium/junit5/tests/**/*Test.java</include>
-								<include>com/xceptance/neodymium/util/**/*Test.java</include>
+								<include>
+									com/xceptance/neodymium/junit5/tests/**/*Test.java</include>
+								<include>
+									com/xceptance/neodymium/util/**/*Test.java</include>
 							</includes>
 						</configuration>
 					</plugin>
@@ -250,7 +260,13 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.browserup</groupId>
+			<groupId>xyz.rogfam</groupId>
+			<artifactId>littleproxy</artifactId>
+			<version>2.0.22</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.valfirst.browserup-proxy</groupId>
 			<artifactId>browserup-proxy-mitm</artifactId>
 			<version>${browserup.version}</version>
 			<exclusions>
@@ -314,11 +330,11 @@
 			<artifactId>allure-junit5</artifactId>
 			<version>${allure.version}</version>
 		</dependency>
-			<dependency>
-					<groupId>io.qameta.allure</groupId>
-					<artifactId>allure-cucumber6-jvm</artifactId>
-					<version>2.13.6</version>
-			</dependency>
+		<dependency>
+			<groupId>io.qameta.allure</groupId>
+			<artifactId>allure-cucumber6-jvm</artifactId>
+			<version>2.13.6</version>
+		</dependency>
 		<dependency>
 			<groupId>io.qameta.allure</groupId>
 			<artifactId>allure-selenide</artifactId>
@@ -380,7 +396,7 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
 			<version>${log4j.version}</version>
-      <scope>test</scope>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -397,5 +413,5 @@
 			<artifactId>okhttp</artifactId>
 			<version>4.12.0</version>
 		</dependency>
-		</dependencies>
+	</dependencies>
 </project>

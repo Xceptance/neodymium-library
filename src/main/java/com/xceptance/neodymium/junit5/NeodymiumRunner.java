@@ -26,8 +26,6 @@ public class NeodymiumRunner implements TestTemplateInvocationContextProvider
 
     private NeodymiumData neoData;
 
-    private static boolean neoVersionLogged = false;
-
     public NeodymiumRunner()
     {
         SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
@@ -46,6 +44,8 @@ public class NeodymiumRunner implements TestTemplateInvocationContextProvider
                                                                    .build());
             }
         }
+        AllureAddons.initializeEnvironmentInformation();
+
     }
 
     public enum DescriptionMode

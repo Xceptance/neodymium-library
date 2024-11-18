@@ -82,8 +82,6 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
     public static final String LISTENER_NAME = "allure-selenide-java";
 
-    private static boolean neoVersionLogged = false;
-
     public NeodymiumRunner(Class<?> clazz) throws InitializationError
     {
         super(clazz);
@@ -103,6 +101,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                                                                    .build());
             }
         }
+        AllureAddons.initializeEnvironmentInformation();
     }
 
     public enum DescriptionMode
