@@ -31,10 +31,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.codeborne.selenide.Selenide;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.codeborne.selenide.Selenide;
 import com.google.common.collect.ImmutableMap;
 
 import io.qameta.allure.Allure;
@@ -138,6 +138,9 @@ public class AllureAddons
      * 
      * @param environmentValuesSet
      *            map with environment values
+     * @param shouldUpdate
+     *            toggle to determine: if a key is already present in the map, should we replace the it with the new
+     *            value, or should we add another line with the same key but different values
      */
     public static synchronized void addEnvironmentInformation(ImmutableMap<String, String> environmentValuesSet, boolean shouldUpdate)
     {
