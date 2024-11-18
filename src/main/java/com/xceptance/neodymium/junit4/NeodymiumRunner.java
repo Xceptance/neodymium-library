@@ -82,6 +82,8 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
     public static final String LISTENER_NAME = "allure-selenide-java";
 
+    private static boolean neoVersionLogged = false;
+
     public NeodymiumRunner(Class<?> clazz) throws InitializationError
     {
         super(clazz);
@@ -98,7 +100,8 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                 neoVersionLogged = true;
                 AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder()
                                                                    .put("Testing Framework", "Neodymium " + Neodymium.getNeodymiumVersion())
-                                                                   .build());
+                                                                   .build(),
+                                                       true);
             }
         }
         AllureAddons.initializeEnvironmentInformation();

@@ -24,6 +24,8 @@ public class NeodymiumRunner implements TestTemplateInvocationContextProvider
 
     public static final String LISTENER_NAME = "allure-selenide-java";
 
+    private static boolean neoVersionLogged = false;
+
     private NeodymiumData neoData;
 
     public NeodymiumRunner()
@@ -41,7 +43,8 @@ public class NeodymiumRunner implements TestTemplateInvocationContextProvider
                 neoVersionLogged = true;
                 AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder()
                                                                    .put("Testing Framework", "Neodymium " + Neodymium.getNeodymiumVersion())
-                                                                   .build());
+                                                                   .build(),
+                                                       true);
             }
         }
         AllureAddons.initializeEnvironmentInformation();
