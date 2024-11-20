@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.common.browser.Browser;
+import com.xceptance.neodymium.common.browser.StartNewBrowserForCleanUp;
 import com.xceptance.neodymium.junit4.NeodymiumRunner;
 import com.xceptance.neodymium.util.Neodymium;
 
@@ -20,6 +21,7 @@ public class OverwriteBrowserForCleanUp
     }
 
     @After
+    @StartNewBrowserForCleanUp
     @Browser("Chrome_headless")
     public void after()
     {

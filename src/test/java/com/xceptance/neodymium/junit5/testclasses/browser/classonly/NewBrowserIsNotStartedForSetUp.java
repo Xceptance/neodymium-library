@@ -7,12 +7,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 
 import com.xceptance.neodymium.common.browser.Browser;
-import com.xceptance.neodymium.common.browser.DontStartNewBrowserForSetUp;
+import com.xceptance.neodymium.common.browser.StartNewBrowserForCleanUp;
 import com.xceptance.neodymium.junit4.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.junit5.NeodymiumTest;
 import com.xceptance.neodymium.util.Neodymium;
 
-@DontStartNewBrowserForSetUp
+@StartNewBrowserForCleanUp
 @Browser("chrome")
 public class NewBrowserIsNotStartedForSetUp
 {

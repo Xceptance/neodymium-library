@@ -122,25 +122,25 @@ public class BrowserBeforeRunner
 
     private boolean shouldStartNewBrowser(Method each)
     {
-        List<DontStartNewBrowserForSetUp> methodStartNewBrowserForSetUp = Data.getAnnotations(each,
-                                                                                              DontStartNewBrowserForSetUp.class);
-        List<DontStartNewBrowserForSetUp> classStartNewBrowserForSetUp = Data.getAnnotations(each.getDeclaringClass(),
-                                                                                             DontStartNewBrowserForSetUp.class);
+        List<StartNewBrowserForSetUp> methodStartNewBrowserForSetUp = Data.getAnnotations(each,
+                                                                                          StartNewBrowserForSetUp.class);
+        List<StartNewBrowserForSetUp> classStartNewBrowserForSetUp = Data.getAnnotations(each.getDeclaringClass(),
+                                                                                         StartNewBrowserForSetUp.class);
 
         // if global config for dontStartNewBrowserForSetUp is set to false, we should not reach this point
-        boolean dontStartNewBrowserForSetUp = true;
+        boolean startNewBrowserForSetUp = false;
         if (!classStartNewBrowserForSetUp.isEmpty())
         {
-            dontStartNewBrowserForSetUp = false;
+            startNewBrowserForSetUp = true;
         }
 
         if (!methodStartNewBrowserForSetUp.isEmpty())
         {
-            dontStartNewBrowserForSetUp = false;
+            startNewBrowserForSetUp = true;
         }
 
         // if @Before method is annotated with @SuppressBrowser annotation, no new browser should be started
-        return dontStartNewBrowserForSetUp;
+        return startNewBrowserForSetUp;
     }
 
     private boolean isSuppressed(Method each)

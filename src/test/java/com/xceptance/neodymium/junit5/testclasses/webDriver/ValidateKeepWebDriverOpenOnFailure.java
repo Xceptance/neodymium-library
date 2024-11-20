@@ -11,8 +11,6 @@ import com.browserup.bup.BrowserUpProxy;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.xceptance.neodymium.common.browser.Browser;
-import com.xceptance.neodymium.common.browser.DontStartNewBrowserForCleanUp;
-import com.xceptance.neodymium.common.browser.DontStartNewBrowserForSetUp;
 import com.xceptance.neodymium.common.browser.WebDriverCache;
 import com.xceptance.neodymium.junit5.NeodymiumTest;
 import com.xceptance.neodymium.junit5.tests.NeodymiumWebDriverTest;
@@ -23,8 +21,6 @@ import com.xceptance.neodymium.util.Neodymium;
  * Validate that the web driver is not reused.
  * Attention: this test needs to use browsers that are not headless.
  */
-@DontStartNewBrowserForSetUp
-@DontStartNewBrowserForCleanUp
 @Browser("Chrome_1024x768")
 public class ValidateKeepWebDriverOpenOnFailure
 {

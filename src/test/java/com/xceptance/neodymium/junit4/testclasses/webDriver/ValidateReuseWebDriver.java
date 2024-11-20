@@ -16,7 +16,6 @@ import org.openqa.selenium.WebDriver;
 
 import com.browserup.bup.BrowserUpProxy;
 import com.xceptance.neodymium.common.browser.Browser;
-import com.xceptance.neodymium.common.browser.DontStartNewBrowserForSetUp;
 import com.xceptance.neodymium.common.browser.WebDriverCache;
 import com.xceptance.neodymium.common.browser.WebDriverStateContainer;
 import com.xceptance.neodymium.junit4.NeodymiumRunner;
@@ -28,7 +27,6 @@ import com.xceptance.neodymium.util.Neodymium;
  * Validate that a web driver can be reused.
  * This is the minimal test setup for this feature. 
  */
-@DontStartNewBrowserForSetUp
 @RunWith(NeodymiumRunner.class)
 public class ValidateReuseWebDriver
 {

@@ -16,8 +16,6 @@ import org.openqa.selenium.WebDriver;
 
 import com.browserup.bup.BrowserUpProxy;
 import com.xceptance.neodymium.common.browser.Browser;
-import com.xceptance.neodymium.common.browser.DontStartNewBrowserForCleanUp;
-import com.xceptance.neodymium.common.browser.DontStartNewBrowserForSetUp;
 import com.xceptance.neodymium.common.browser.WebDriverCache;
 import com.xceptance.neodymium.junit4.NeodymiumRunner;
 import com.xceptance.neodymium.junit4.tests.NeodymiumTest;
@@ -29,8 +27,6 @@ import com.xceptance.neodymium.util.WebDriverUtils;
  * Validate that the reuse of a web driver could be prevented programmatically.
  * Validate that the other web driver is not reused.
  */
-@DontStartNewBrowserForSetUp
-@DontStartNewBrowserForCleanUp
 @RunWith(NeodymiumRunner.class)
 public class ValidatePreventReuseWebDriver
 {

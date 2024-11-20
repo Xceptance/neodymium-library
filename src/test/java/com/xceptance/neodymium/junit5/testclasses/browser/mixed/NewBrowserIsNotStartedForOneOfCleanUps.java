@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.openqa.selenium.WebDriver;
 
 import com.xceptance.neodymium.common.browser.Browser;
-import com.xceptance.neodymium.common.browser.DontStartNewBrowserForCleanUp;
+import com.xceptance.neodymium.common.browser.StartNewBrowserForCleanUp;
 import com.xceptance.neodymium.junit4.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.junit5.NeodymiumTest;
 import com.xceptance.neodymium.util.Neodymium;
@@ -36,6 +36,7 @@ public class NewBrowserIsNotStartedForOneOfCleanUps
     }
 
     @AfterEach
+    @StartNewBrowserForCleanUp
     public void after()
     {
         Assert.assertNotEquals(webDriver1, Neodymium.getDriver());
@@ -43,7 +44,6 @@ public class NewBrowserIsNotStartedForOneOfCleanUps
     }
 
     @AfterEach
-    @DontStartNewBrowserForCleanUp
     public void after1()
     {
         Assert.assertEquals(webDriver1, Neodymium.getDriver());

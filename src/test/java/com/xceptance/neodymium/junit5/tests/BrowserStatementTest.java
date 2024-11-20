@@ -34,8 +34,8 @@ import com.xceptance.neodymium.junit5.testclasses.browser.classonly.TwoSameClass
 import com.xceptance.neodymium.junit5.testclasses.browser.inheritance.BrowserOverwrittingChild;
 import com.xceptance.neodymium.junit5.testclasses.browser.inheritance.RandomBrowsersChild;
 import com.xceptance.neodymium.junit5.testclasses.browser.inheritance.RandomBrowsersOverwritingChild;
-import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.DontStartNewBrowserForOneOfTheAfters;
-import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.DontStartNewBrowserForOneOfTheBefores;
+import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.StartNewBrowserForOneOfTheAfters;
+import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.StartNewBrowserForOneOfTheBefores;
 import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.MethodBrowserSuppressNoBrowserAnnotation;
 import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.OneBrowserOneMethodBrowserSuppressed;
 import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.RandomBrowserMethodLevel;
@@ -244,7 +244,7 @@ public class BrowserStatementTest extends AbstractNeodymiumTest
     {
         // if test class, marked to run without browser but it's not marked that no new browser should be started for
         // @After method, Runtime Exception should be thrown
-        NeodymiumTestExecutionSummary summary = run(DontStartNewBrowserForOneOfTheBefores.class);
+        NeodymiumTestExecutionSummary summary = run(StartNewBrowserForOneOfTheBefores.class);
         checkPass(summary, 1, 0);
     }
 
@@ -307,7 +307,7 @@ public class BrowserStatementTest extends AbstractNeodymiumTest
     {
         // if test class, marked to run without browser but it's not marked that no new browser should be started for
         // @After method, Runtime Exception should be thrown
-        NeodymiumTestExecutionSummary summary = run(DontStartNewBrowserForOneOfTheAfters.class);
+        NeodymiumTestExecutionSummary summary = run(StartNewBrowserForOneOfTheAfters.class);
         checkPass(summary, 1, 0);
     }
 

@@ -98,7 +98,13 @@ public class BrowserAfterRunner
                     {
                         proxy.stop();
                     }
-                    Neodymium.setWebDriverStateContainer(null);
+                    if (oldDriver != null)
+                    {
+                        WebDriverRunner.setWebDriver(oldDriver.getWebDriver());
+                        Neodymium.setWebDriverStateContainer(oldDriver);
+                        Neodymium.setBrowserProfileName(oldBrowserConfiguration.getConfigTag());
+                        Neodymium.setBrowserName(oldBrowserConfiguration.getCapabilities().getBrowserName());
+                    }
                 }
             }
         }
@@ -106,25 +112,25 @@ public class BrowserAfterRunner
 
     private boolean shouldStartNewBrowser(Method each)
     {
-        List<DontStartNewBrowserForCleanUp> methodStartNewBrowserForCleanUp = Data.getAnnotations(each,
-                                                                                                  DontStartNewBrowserForCleanUp.class);
-        List<DontStartNewBrowserForCleanUp> classStartNewBrowserForCleanUp = Data.getAnnotations(each.getDeclaringClass(),
-                                                                                                 DontStartNewBrowserForCleanUp.class);
+        List<StartNewBrowserForCleanUp> methodStartNewBrowserForCleanUp = Data.getAnnotations(each,
+                                                                                              StartNewBrowserForCleanUp.class);
+        List<StartNewBrowserForCleanUp> classStartNewBrowserForCleanUp = Data.getAnnotations(each.getDeclaringClass(),
+                                                                                             StartNewBrowserForCleanUp.class);
 
         // if global config for dontStartNewBrowserForCleanUp is set to false, we should not reach this point
-        boolean dontStartNewBrowserForCleanUp = true;
+        boolean startNewBrowserForCleanUp = false;
         if (!classStartNewBrowserForCleanUp.isEmpty())
         {
-            dontStartNewBrowserForCleanUp = false;
+            startNewBrowserForCleanUp = true;
         }
 
         if (!methodStartNewBrowserForCleanUp.isEmpty())
         {
-            dontStartNewBrowserForCleanUp = false;
+            startNewBrowserForCleanUp = true;
         }
 
         // if @After method is annotated with @SuppressBrowser annotation, no new browser should be started
-        return dontStartNewBrowserForCleanUp;
+        return startNewBrowserForCleanUp;
     }
 
     private boolean isSuppressed(Method each)

@@ -19,6 +19,6 @@ import java.lang.annotation.Target;
 {
   TYPE, METHOD
 })
-public @interface DontStartNewBrowserForCleanUp
+public @interface StartNewBrowserForCleanUp
 {
 }

@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.xceptance.neodymium.common.browser.Browser;
+import com.xceptance.neodymium.common.browser.StartNewBrowserForSetUp;
 import com.xceptance.neodymium.common.browser.SuppressBrowsers;
 import com.xceptance.neodymium.junit4.NeodymiumRunner;
 import com.xceptance.neodymium.util.Neodymium;
@@ -17,6 +18,7 @@ public class ClassBrowserSuppressedBeforeWithBrowser
 {
 
     @Before
+    @StartNewBrowserForSetUp
     @Browser("chrome")
     public void before()
     {

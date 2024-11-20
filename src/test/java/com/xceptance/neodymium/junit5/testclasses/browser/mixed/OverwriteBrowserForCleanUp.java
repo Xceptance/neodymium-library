@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 
 import com.xceptance.neodymium.common.browser.Browser;
+import com.xceptance.neodymium.common.browser.StartNewBrowserForCleanUp;
 import com.xceptance.neodymium.junit5.NeodymiumTest;
 import com.xceptance.neodymium.util.Neodymium;
 
@@ -17,6 +18,7 @@ public class OverwriteBrowserForCleanUp
     }
 
     @AfterEach
+    @StartNewBrowserForCleanUp
     @Browser("Chrome_headless")
     public void after()
     {

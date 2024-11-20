@@ -9,14 +9,14 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 
 import com.xceptance.neodymium.common.browser.Browser;
-import com.xceptance.neodymium.common.browser.DontStartNewBrowserForCleanUp;
+import com.xceptance.neodymium.common.browser.StartNewBrowserForCleanUp;
 import com.xceptance.neodymium.junit4.NeodymiumRunner;
 import com.xceptance.neodymium.junit4.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
 @RunWith(NeodymiumRunner.class)
 @Browser("chrome")
-public class DontStartNewBrowserForOneOfTheAfters
+public class StartNewBrowserForOneOfTheAfters
 {
     private static WebDriver webDriver1;
 
@@ -39,15 +39,15 @@ public class DontStartNewBrowserForOneOfTheAfters
     @After
     public void after()
     {
-        Assert.assertNotEquals(webDriver1, Neodymium.getDriver());
-        webDriver2 = Neodymium.getDriver();
+        Assert.assertEquals(webDriver1, Neodymium.getDriver());
     }
 
     @After
-    @DontStartNewBrowserForCleanUp
+    @StartNewBrowserForCleanUp
     public void after1()
     {
-        Assert.assertEquals(webDriver1, Neodymium.getDriver());
+        Assert.assertNotEquals(webDriver1, Neodymium.getDriver());
+        webDriver2 = Neodymium.getDriver();
     }
 
     @AfterClass

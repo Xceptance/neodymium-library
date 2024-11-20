@@ -16,7 +16,6 @@ import org.openqa.selenium.WebDriver;
 
 import com.browserup.bup.BrowserUpProxy;
 import com.xceptance.neodymium.common.browser.Browser;
-import com.xceptance.neodymium.common.browser.DontStartNewBrowserForSetUp;
 import com.xceptance.neodymium.common.browser.WebDriverCache;
 import com.xceptance.neodymium.junit4.NeodymiumRunner;
 import com.xceptance.neodymium.junit4.tests.NeodymiumTest;
@@ -27,7 +26,6 @@ import com.xceptance.neodymium.util.Neodymium;
  * Validate that web driver instances are closed after the test finished.
  * Validate that the web driver is not reused.
  */
-@DontStartNewBrowserForSetUp
 @RunWith(NeodymiumRunner.class)
 public class ValidateWebDriverClosed
 {

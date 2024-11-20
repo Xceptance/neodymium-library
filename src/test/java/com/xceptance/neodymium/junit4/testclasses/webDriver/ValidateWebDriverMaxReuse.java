@@ -14,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 
 import com.xceptance.neodymium.common.browser.Browser;
-import com.xceptance.neodymium.common.browser.DontStartNewBrowserForSetUp;
 import com.xceptance.neodymium.common.browser.WebDriverCache;
 import com.xceptance.neodymium.common.browser.WebDriverStateContainer;
 import com.xceptance.neodymium.junit4.NeodymiumRunner;
@@ -25,7 +24,6 @@ import com.xceptance.neodymium.util.Neodymium;
 /*
  * Validate that web driver instances are reused once and closed after their second use within a test function is finished.
  */
-@DontStartNewBrowserForSetUp
 @RunWith(NeodymiumRunner.class)
 public class ValidateWebDriverMaxReuse
 {

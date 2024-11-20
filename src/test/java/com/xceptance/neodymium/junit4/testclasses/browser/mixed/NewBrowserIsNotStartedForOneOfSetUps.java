@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 
 import com.xceptance.neodymium.common.browser.Browser;
-import com.xceptance.neodymium.common.browser.DontStartNewBrowserForSetUp;
+import com.xceptance.neodymium.common.browser.StartNewBrowserForSetUp;
 import com.xceptance.neodymium.junit4.NeodymiumRunner;
 import com.xceptance.neodymium.junit4.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
@@ -23,6 +23,7 @@ public class NewBrowserIsNotStartedForOneOfSetUps
 
     private static WebDriver webDriverBefore1;
 
+    @StartNewBrowserForSetUp
     @Before
     public void before()
     {
@@ -31,7 +32,6 @@ public class NewBrowserIsNotStartedForOneOfSetUps
     }
 
     @Before
-    @DontStartNewBrowserForSetUp
     public void before1()
     {
         webDriverBefore1 = Neodymium.getDriver();

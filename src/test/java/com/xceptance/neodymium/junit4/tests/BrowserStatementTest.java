@@ -37,8 +37,8 @@ import com.xceptance.neodymium.junit4.testclasses.browser.classonly.TwoSameClass
 import com.xceptance.neodymium.junit4.testclasses.browser.inheritance.BrowserOverwrittingChild;
 import com.xceptance.neodymium.junit4.testclasses.browser.inheritance.RandomBrowsersChild;
 import com.xceptance.neodymium.junit4.testclasses.browser.inheritance.RandomBrowsersOverwritingChild;
-import com.xceptance.neodymium.junit4.testclasses.browser.methodonly.DontStartNewBrowserForOneOfTheAfters;
-import com.xceptance.neodymium.junit4.testclasses.browser.methodonly.DontStartNewBrowserForOneOfTheBefores;
+import com.xceptance.neodymium.junit4.testclasses.browser.methodonly.StartNewBrowserForOneOfTheAfters;
+import com.xceptance.neodymium.junit4.testclasses.browser.methodonly.StartNewBrowserForOneOfTheBefores;
 import com.xceptance.neodymium.junit4.testclasses.browser.methodonly.MethodBrowserSuppressNoBrowserAnnotation;
 import com.xceptance.neodymium.junit4.testclasses.browser.methodonly.OneBrowserOneMethodBrowserSuppressed;
 import com.xceptance.neodymium.junit4.testclasses.browser.methodonly.RandomBrowserMethodLevel;
@@ -246,7 +246,7 @@ public class BrowserStatementTest extends NeodymiumTest
     {
         // if test class, marked to run without browser but it's not marked that no new browser should be started for
         // @After method, Runtime Exception should be thrown
-        Result result = JUnitCore.runClasses(DontStartNewBrowserForOneOfTheBefores.class);
+        Result result = JUnitCore.runClasses(StartNewBrowserForOneOfTheBefores.class);
         checkPass(result, 1, 0);
     }
 
@@ -309,7 +309,7 @@ public class BrowserStatementTest extends NeodymiumTest
     {
         // if test class, marked to run without browser but it's not marked that no new browser should be started for
         // @After method, Runtime Exception should be thrown
-        Result result = JUnitCore.runClasses(DontStartNewBrowserForOneOfTheAfters.class);
+        Result result = JUnitCore.runClasses(StartNewBrowserForOneOfTheAfters.class);
         checkPass(result, 1, 0);
     }
 

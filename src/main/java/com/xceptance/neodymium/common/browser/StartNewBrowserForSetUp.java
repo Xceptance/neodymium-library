@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
 {
   TYPE, METHOD
 })
-public @interface DontStartNewBrowserForSetUp
+public @interface StartNewBrowserForSetUp
 {
 
 }
