@@ -170,8 +170,18 @@ public class LighthouseUtils
         }
     }
     
-    // javadoc
-    // test for jsonobject as well
+    /**
+     * <p>
+     * Validates <a href="https://developer.chrome.com/docs/lighthouse/overview?hl=de">Lighthouse</a> (Copyright Google) 
+     * Audits specified in the Neodymium configuration.
+     * </p>
+     * 
+     * @param json 
+     *            The json file of the <a href="https://developer.chrome.com/docs/lighthouse/overview?hl=de">Lighthouse</a> 
+     *            (Copyright Google) report
+     *            
+     * @throws Exception
+     */
     private static void validateAudits(File json) throws Exception 
     {
         String assertAuditsString = Neodymium.configuration().lighthouseAssertAudits();
