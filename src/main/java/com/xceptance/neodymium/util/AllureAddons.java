@@ -1,13 +1,21 @@
 package com.xceptance.neodymium.util;
 
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.function.Supplier;
 
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 
+import io.qameta.allure.Allure;
+import io.qameta.allure.AllureLifecycle;
 import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
+import io.qameta.allure.model.StepResult;
 
 /**
  * Convenience methods for step definitions
@@ -16,6 +24,8 @@ import io.qameta.allure.Step;
  */
 public class AllureAddons
 {
+    private static final Properties ALLURE_PROPERTIES = io.qameta.allure.util.PropertiesUtils.loadAllureProperties();
+
     /**
      * Define a step without return value. This can be used to transport data (information) from test into the report.
      *
@@ -92,4 +102,67 @@ public class AllureAddons
     {
         return ((TakesScreenshot) Neodymium.getDriver()).getScreenshotAs(OutputType.BYTES);
     }
+    
+    
+    public static void removeAttachmentFromStepByName(final String name)
+    {
+
+        AllureLifecycle lifecycle = Allure.getLifecycle();
+        // suppress errors if we are running without allure
+        if (lifecycle.getCurrentTestCase().isPresent())
+        {
+            lifecycle.updateTestCase((result) -> {
+                var stepResult = findCurrentStep(result.getSteps());
+                var attachments = stepResult.getAttachments();
+                for (int i = 0; i < attachments.size(); i++)
+                {
+                    io.qameta.allure.model.Attachment attachment = attachments.get(i);
+                    if (attachment.getName().equals(name))
+                    {
+                        String path = ALLURE_PROPERTIES.getProperty("allure.results.directory", "allure-results");
+                        // clean up from hard disk
+                        File file = Paths.get(path).resolve(attachment.getSource()).toFile();
+                        if (file.exists())
+                        {
+                            file.delete();
+                        }
+                        attachments.remove(i);
+                        i--;
+                    }
+                }
+            });
+        }
+    }
+
+    public static boolean addAttachmentToStep(final String name, final String type,
+                                        final String fileExtension, final InputStream stream)
+    {
+        AllureLifecycle lifecycle = Allure.getLifecycle();
+        // suppress errors if we are running without allure
+        if (lifecycle.getCurrentTestCase().isPresent())
+        {
+            lifecycle.addAttachment(name, type, fileExtension, stream);
+
+            lifecycle.updateTestCase((result) -> {
+                var stepResult = findCurrentStep(result.getSteps());
+                var attachment = result.getAttachments().get(result.getAttachments().size() - 1);
+                result.getAttachments().remove(result.getAttachments().size() - 1);
+                stepResult.getAttachments().add(attachment);
+            });
+            return true;
+        }
+        return false;
+    }
+
+    private static StepResult findCurrentStep(List<StepResult> steps)
+    {
+        var lastStep = steps.get(steps.size() - 1);
+        List<StepResult> childStepts = lastStep.getSteps();
+        if (childStepts != null && childStepts.isEmpty() == false)
+        {
+            return findCurrentStep(childStepts);
+        }
+        return lastStep;
+    }
+
 }

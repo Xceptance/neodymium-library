@@ -29,9 +29,8 @@ import com.assertthat.selenium_shutterbug.utils.image.ImageProcessor;
 import com.assertthat.selenium_shutterbug.utils.web.Coordinates;
 import com.codeborne.selenide.ex.UIAssertionError;
 import com.xceptance.neodymium.common.testdata.DataSet;
+import com.xceptance.neodymium.util.AllureAddons;
 import com.xceptance.neodymium.util.Neodymium;
-
-import io.qameta.allure.Allure;
 
 public class ScreenshotWriter
 {
@@ -125,7 +124,7 @@ public class ScreenshotWriter
         File outputfile = new File(imagePath);
         if (this.highlightViewport)
         {
-            double devicePixelRatio = (double) ((JavascriptExecutor) driver).executeScript("return window.devicePixelRatio");
+            double devicePixelRatio = Double.parseDouble(((JavascriptExecutor) driver).executeScript("return window.devicePixelRatio") + "");
             int offsetY = (int) (Double.parseDouble(((JavascriptExecutor) driver)
                                                                                  .executeScript("return Math.round(Math.max(document.documentElement.scrollTop, document.body.scrollTop))")
                                                                                  .toString()));
@@ -145,7 +144,7 @@ public class ScreenshotWriter
         }
         if (this.highlightLastElement)
         {
-            double devicePixelRatio = (double) ((JavascriptExecutor) driver).executeScript("return window.devicePixelRatio");
+            double devicePixelRatio = Double.parseDouble("" + ((JavascriptExecutor) driver).executeScript("return window.devicePixelRatio"));
             image = ImageProcessor.highlight(image, new Coordinates(Neodymium.getLastUsedElement(), devicePixelRatio), Color.decode(this.highlightColor),
                                              this.linethickness);
         }
@@ -153,8 +152,16 @@ public class ScreenshotWriter
         boolean result = ImageIO.write(image, "png", outputfile);
         if (result)
         {
-            Allure.addAttachment("Screenshot", new FileInputStream(imagePath));
+            AllureAddons.removeAttachmentFromStepByName("Screenshot");
+            boolean screenshotAdded = AllureAddons.addAttachmentToStep("Screenshot", "image/png", ".png", new FileInputStream(imagePath));
+
+            // to spare disk space, remove the file if we already used it inside the report
+            if (screenshotAdded)
+            {
+                outputfile.delete();
+            }
         }
         return result;
     }
+
 }
