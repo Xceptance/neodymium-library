@@ -273,19 +273,22 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("lighthouse")
     public String lighthouseBinaryPath();
     
-    @Key("neodymium.lighthouse.performance")
+    @Key("neodymium.lighthouse.assert.thresholdScore.performance")
     @DefaultValue("0.5")
-    public double lighthousePerformance();
+    public double lighthouseAssertPerformance();
 
-    @Key("neodymium.lighthouse.accessibility")
+    @Key("neodymium.lighthouse.assert.thresholdScore.accessibility")
     @DefaultValue("0.5")
-    public double lighthouseAccessibility();
+    public double lighthouseAssertAccessibility();
 
-    @Key("neodymium.lighthouse.bestPractices")
+    @Key("neodymium.lighthouse.assert.thresholdScore.bestPractices")
     @DefaultValue("0.5")
-    public double lighthouseBestPractices();
+    public double lighthouseAssertBestPractices();
 
-    @Key("neodymium.lighthouse.seo")
+    @Key("neodymium.lighthouse.assert.thresholdScore.seo")
     @DefaultValue("0.5")
-    public double lighthouseSeo();
+    public double lighthouseAssertSeo();
+    
+    @Key("neodymium.lighthouse.assert.audits")
+    public String lighthouseAssertAudits();
 }

@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
@@ -13,6 +15,8 @@ import org.openqa.selenium.WindowType;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
 
 import io.qameta.allure.Allure;
 
@@ -77,6 +81,7 @@ public class LighthouseUtils
         lighthouseAudit(URL, reportName);
         
         // get report json
+        File jsonFile = new File("target/" + reportName + ".report.json");
         FileReader reader = new FileReader("target/" + reportName + ".report.json");
         JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
         
@@ -89,11 +94,14 @@ public class LighthouseUtils
         
         // validate if values in report json are greater than defined threshold in config
         SelenideAddons.wrapAssertionError(() -> {
-            Assert.assertTrue("the performance score " + performanceScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthousePerformance() + ", please improve the score to match expectations", Neodymium.configuration().lighthousePerformance() <= performanceScore);
-            Assert.assertTrue("the accessibility score " + accessibilityScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthouseAccessibility() + ", please improve the score to match expectations", Neodymium.configuration().lighthouseAccessibility() <= accessibilityScore);
-            Assert.assertTrue("the best practices score " + bestPracticesScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthouseBestPractices() + ", please improve the score to match expectations", Neodymium.configuration().lighthouseBestPractices() <= bestPracticesScore);
-            Assert.assertTrue("the seo score " + seoScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthouseSeo() + ", please improve the score to match expectations", Neodymium.configuration().lighthouseSeo() <= seoScore);
+            Assert.assertTrue("the performance score " + performanceScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthouseAssertPerformance() + ", please improve the score to match expectations", Neodymium.configuration().lighthouseAssertPerformance() <= performanceScore);
+            Assert.assertTrue("the accessibility score " + accessibilityScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthouseAssertAccessibility() + ", please improve the score to match expectations", Neodymium.configuration().lighthouseAssertAccessibility() <= accessibilityScore);
+            Assert.assertTrue("the best practices score " + bestPracticesScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthouseAssertBestPractices() + ", please improve the score to match expectations", Neodymium.configuration().lighthouseAssertBestPractices() <= bestPracticesScore);
+            Assert.assertTrue("the seo score " + seoScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthouseAssertSeo() + ", please improve the score to match expectations", Neodymium.configuration().lighthouseAssertSeo() <= seoScore);
         });
+        
+        // validate jsonpaths in neodymium properties
+        validateAudits(jsonFile);
         
         // add report html to allure
         Allure.addAttachment(reportName, "text/html", FileUtils.openInputStream(new File("target/" + reportName + ".report.html")), "html");
@@ -159,6 +167,41 @@ public class LighthouseUtils
         while (r.readLine() != null)
         {
             continue;
+        }
+    }
+    
+    // javadoc
+    // test for jsonobject as well
+    private static void validateAudits(File json) throws Exception 
+    {
+        String assertAuditsString = Neodymium.configuration().lighthouseAssertAudits();
+        List<String> errorAudits = new ArrayList<>();
+        
+        if (!assertAuditsString.isEmpty()) 
+        {
+            for (String audit : assertAuditsString.split(" ")) 
+            {
+                String jsonPath = ("$.audits." + audit.trim() + ".details.items.length()");
+                
+                try 
+                {
+                    int value = JsonPath.read(json, jsonPath);
+                    
+                    if (value > 0) 
+                    {
+                        errorAudits.add(audit.trim());
+                    }
+                }
+                catch (PathNotFoundException e)
+                {
+                    continue;
+                }
+                
+            }
+            if (errorAudits.size() > 0) 
+            {
+                throw new Exception("the following audits " + errorAudits + " contain errors that need to be fixed, please look into the corresponding html for further information");
+            }
         }
     }
 }
