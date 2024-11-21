@@ -84,6 +84,7 @@ public class Neodymium
     public static void clearThreadContext()
     {
         CONTEXTS.remove(Thread.currentThread());
+        DataUtils.clearThreadContext();
     }
 
     /**

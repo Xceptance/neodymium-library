@@ -242,14 +242,34 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.webDriver.chrome.pathToDriverServer")
     public String getChromeDriverPath();
 
-    @Key("neodymium.webDriver.edge.pathToDriverServer")
-    public String getEdgeDriverPath();
+    @Key("neodymium.webDriver.chrome.driverArguments")
+    @DefaultValue("")
+    public String getChromeDriverArguments();
 
     @Key("neodymium.webDriver.firefox.pathToDriverServer")
     public String getFirefoxDriverPath();
 
+    @Key("neodymium.webDriver.firefox.driverArguments")
+    @DefaultValue("")
+    public String getFirefoxDriverArguments();
+
     @Key("neodymium.webDriver.ie.pathToDriverServer")
     public String getIeDriverPath();
+
+    @Key("neodymium.webDriver.ie.driverArguments")
+    @DefaultValue("")
+    public String getIeDriverArguments();
+
+    @Key("neodymium.webDriver.edge.pathToDriverServer")
+    public String getEdgeDriverPath();
+
+    @Key("neodymium.webDriver.edge.driverArguments")
+    @DefaultValue("")
+    public String getEdgeDriverArguments();
+
+    @Key("neodymium.webDriver.safari.driverArguments")
+    @DefaultValue("")
+    public String getSafariDriverArguments();
 
     @Key("neodymium.webDriver.chrome.pathToBrowser")
     public String getChromeBrowserPath();
@@ -266,7 +286,6 @@ public interface NeodymiumConfiguration extends Mutable
 
     @Key("neodymium.logNeoVersion")
     @DefaultValue("true")
-    
     public boolean logNeoVersion();
 
     @Key("neodymium.lighthouse.binaryPath")
@@ -291,4 +310,28 @@ public interface NeodymiumConfiguration extends Mutable
     
     @Key("neodymium.lighthouse.assert.audits")
     public String lighthouseAssertAudits();
+    
+    @Key("neodymium.report.enableTestDataInReport")
+    @DefaultValue("true")
+    public boolean addTestDataToReport();
+
+    @Key("neodymium.report.environment.enableCustomData")
+    @DefaultValue("true")
+    public boolean enableCustomEnvironmentData();
+
+    @Key("neodymium.report.environment.enableBrowserData")
+    @DefaultValue("true")
+    public boolean enableBrowserEnvironmentData();
+    
+    @Key("neodymium.report.enableStepLinks")
+    @DefaultValue("true")
+    public boolean enableStepLinks();
+
+    @Key("neodymium.url.excludeList")
+    @DefaultValue("")
+    public String getExcludeList();
+
+    @Key("neodymium.url.includeList")
+    @DefaultValue("")
+    public String getIncludeList();
 }
