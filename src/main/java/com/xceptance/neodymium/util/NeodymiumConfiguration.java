@@ -287,16 +287,20 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.screenshots.fullpagecapture.highlightColor")
     @DefaultValue("#FF0000")
     public String fullScreenHighlightColor();
-
+    
     @Key("neodymium.screenshots.highlightLastElement")
     @DefaultValue("false")
     public boolean enableHighlightLastElement();
 
     @Key("neodymium.screenshots.enableAdvancedScreenshots")
     @DefaultValue("false")
-    public boolean enableAcvancedScreenShots();
+    public boolean enableAdvancedScreenShots();
 
-    @Key("neodymium.screenshots.highlightColor")
-    @DefaultValue("#FF0000")
-    public String highlightColor();
+    @Key("neodymium.screenshots.element.highlightColor")
+    @DefaultValue("#FF00FF")
+    public String screenshotElementHighlightColor();
+
+    @Key("neodymium.screenshots.highlightLineThickness")
+    @DefaultValue("4")
+    public int screenshotHighlightLineThickness();
 }

@@ -563,17 +563,21 @@ public class Neodymium
     /**
      * Returns the last used Element
      * 
-     * @return last used Element
+     * @return last used Element or null if nothing was set
      */
     public static WebElement getLastUsedElement()
     {
-        if (getContext().lastUsedElement != null)
+        if (getContext().lastUsedElement != null && getContext().lastLocator != null)
         {
             return getContext().lastUsedElement.findElement(getContext().lastLocator);
         }
-        else
+        else if (getContext().lastLocator != null)
         {
             return getDriver().findElement(getContext().lastLocator);
+        }
+        else
+        {
+            return null;
         }
     }
 }

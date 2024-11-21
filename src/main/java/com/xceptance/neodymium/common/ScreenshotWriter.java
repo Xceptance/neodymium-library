@@ -1,6 +1,8 @@
 package com.xceptance.neodymium.common;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,38 +38,17 @@ public class ScreenshotWriter
 {
     private static final Logger log = LoggerFactory.getLogger(ScreenshotWriter.class);
 
-    private final boolean captureSuccessfulTests, enableTreeStructure, highlightViewport, highlightLastElement;
-
-    private final Capture captureMode;
-
-    private final String fullScreenHighlightColor, highlightColor;
-
-    private int linethickness = 9;
-
-    public ScreenshotWriter()
+    private static boolean highlightViewPort()
     {
-        this.captureSuccessfulTests = Neodymium.configuration().enableOnSuccess();
-        this.enableTreeStructure = Neodymium.configuration().enableTreeDirectoryStructure();
-        this.fullScreenHighlightColor = Neodymium.configuration().fullScreenHighlightColor();
-        this.highlightLastElement = Neodymium.configuration().enableHighlightLastElement();
-        this.highlightColor = Neodymium.configuration().highlightColor();
-        if (Neodymium.configuration().enableFullPageCapture())
-        {
-            this.captureMode = Capture.FULL;
-            this.highlightViewport = Neodymium.configuration().enableHighlightViewport();
-        }
-        else
-        {
-            this.captureMode = Capture.VIEWPORT;
-            this.highlightViewport = false;
-        }
+        return Neodymium.configuration().enableFullPageCapture()?Neodymium.configuration().enableHighlightViewport():false;
     }
 
-    public void doScreenshot(String displayName, String testClassName, Optional<Throwable> executionException, Annotation[] annotationList) throws IOException
+
+    public static void doScreenshot(String displayName, String testClassName, Optional<Throwable> executionException, Annotation[] annotationList)
+        throws IOException
     {
-        if (Neodymium.configuration().enableAcvancedScreenShots())
+        if (Neodymium.configuration().enableAdvancedScreenShots())
         {
-            WebDriver driver = Neodymium.getDriver();
             String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
             String dataSetName = "";
             for (Annotation a : annotationList)
@@ -87,13 +68,15 @@ public class ScreenshotWriter
                 }
             }
             String imageName = displayName + '_' + Neodymium.getBrowserProfileName() + dataSetName + '_' + timeStamp;
-            if (this.enableTreeStructure)
+            if (Neodymium.configuration().enableTreeDirectoryStructure())
             {
                 testClassName = testClassName.replace('.', File.separatorChar);
             }
-            if (this.captureSuccessfulTests)
+
+            String pathName = getFormatedReportsPath() + File.separator + testClassName;
+            if (Neodymium.configuration().enableOnSuccess())
             {
-                this.doScreenshotForDriver(driver, this.captureMode, imageName, testClassName);
+                doScreenshot(imageName, pathName);
             }
             else
             {
@@ -102,27 +85,40 @@ public class ScreenshotWriter
                     Throwable error = executionException.get();
                     if (error instanceof UIAssertionError)
                     {
-                        this.doScreenshotForDriver(driver, this.captureMode, imageName, testClassName);
+                        doScreenshot(imageName, pathName);
                     }
                 }
             }
         }
     }
 
-    public String getFormatedReportsPath()
+    private static Capture getCaptureMode()
     {
-        return Path.of(System.getProperty("user.dir") + Neodymium.configuration().reportsPath()).normalize().toString();
+        return Neodymium.configuration().enableFullPageCapture() ? Capture.FULL : Capture.VIEWPORT;
     }
 
-    public boolean doScreenshotForDriver(WebDriver driver, Capture captureMode, String filename, String testclassName) throws IOException
+    public static String getFormatedReportsPath()
     {
+        return Path.of(System.getProperty("java.io.tmpdir") + Neodymium.configuration().reportsPath()).normalize().toString();
+    }
+
+    public static boolean doScreenshot(String filename) throws IOException
+    {
+        return doScreenshot(filename, getFormatedReportsPath());
+    }
+
+    public static boolean doScreenshot(String filename, String pathname) throws IOException
+    {
+        WebDriver driver = Neodymium.getDriver();
+
+        Capture captureMode = getCaptureMode();
+        
         PageSnapshot snapshot = Shutterbug.shootPage(driver, captureMode);
         BufferedImage image = snapshot.getImage();
-        String pathname = this.getFormatedReportsPath() + File.separator + testclassName;
         Files.createDirectories(Paths.get(pathname));
         String imagePath = pathname + File.separator + filename + ".png";
         File outputfile = new File(imagePath);
-        if (this.highlightViewport)
+        if (highlightViewPort())
         {
             double devicePixelRatio = Double.parseDouble(((JavascriptExecutor) driver).executeScript("return window.devicePixelRatio") + "");
             int offsetY = (int) (Double.parseDouble(((JavascriptExecutor) driver)
@@ -140,13 +136,13 @@ public class ScreenshotWriter
             Point currentLocation = new Point(offsetX, offsetY);
             Coordinates coords = new Coordinates(currentLocation, currentLocation, size, new Dimension(0, 0), devicePixelRatio);
             image = ImageProcessor.blurExceptArea(image, coords);
-            image = ImageProcessor.highlight(image, coords, Color.decode(this.fullScreenHighlightColor), this.linethickness);
+            image = highlightScreenShot(image, coords, Color.decode(Neodymium.configuration().fullScreenHighlightColor()));
         }
-        if (this.highlightLastElement)
+        if (Neodymium.configuration().enableHighlightLastElement() && Neodymium.getLastUsedElement() != null)
         {
             double devicePixelRatio = Double.parseDouble("" + ((JavascriptExecutor) driver).executeScript("return window.devicePixelRatio"));
-            image = ImageProcessor.highlight(image, new Coordinates(Neodymium.getLastUsedElement(), devicePixelRatio), Color.decode(this.highlightColor),
-                                             this.linethickness);
+            image = highlightScreenShot(image, new Coordinates(Neodymium.getLastUsedElement(), devicePixelRatio),
+                                             Color.decode(Neodymium.configuration().screenshotElementHighlightColor()));
         }
         log.info("captured Screenshot to: " + imagePath);
         boolean result = ImageIO.write(image, "png", outputfile);
@@ -162,6 +158,26 @@ public class ScreenshotWriter
             }
         }
         return result;
+    }
+
+    public static BufferedImage highlightScreenShot(BufferedImage sourceImage, Coordinates coords, Color color)
+    {
+        int lineWith = Neodymium.configuration().screenshotHighlightLineThickness();
+        Graphics2D g = sourceImage.createGraphics();
+
+        int maxHeigt = sourceImage.getHeight();
+        int maxWidth = sourceImage.getWidth();
+
+        g.setPaint(color);
+        g.setStroke(new BasicStroke(lineWith));
+        g.drawRoundRect(
+                        Math.max(coords.getX() + lineWith / 2, 0),
+                        Math.max(coords.getY() + lineWith / 2, 0),
+                        Math.min(coords.getWidth() - lineWith / 2, maxWidth),
+                        Math.min(coords.getHeight() - lineWith / 2, maxHeigt),
+                        5, 5);
+        g.dispose();
+        return sourceImage;
     }
 
 }

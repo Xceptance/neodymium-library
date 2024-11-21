@@ -10,12 +10,11 @@ import com.xceptance.neodymium.common.ScreenshotWriter;
 @ParametersAreNonnullByDefault
 public class NeodymiumAfterTestExecutionCallback implements AfterTestExecutionCallback
 {
-    private ScreenshotWriter screenshotWriter = new ScreenshotWriter();
 
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception
     {
-        screenshotWriter.doScreenshot(context.getRequiredTestMethod().getName(), context.getRequiredTestClass().getName(), context.getExecutionException(),
+        ScreenshotWriter.doScreenshot(context.getRequiredTestMethod().getName(), context.getRequiredTestClass().getName(), context.getExecutionException(),
                                       context.getRequiredTestMethod().getAnnotations());
     }
 }

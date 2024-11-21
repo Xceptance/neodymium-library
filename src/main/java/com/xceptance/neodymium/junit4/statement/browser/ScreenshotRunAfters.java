@@ -42,12 +42,12 @@ public class ScreenshotRunAfters extends RunAfters
         try
         {
             next.evaluate();
-            new ScreenshotWriter().doScreenshot(displayName, className, Optional.empty(), annotationList);
+            ScreenshotWriter.doScreenshot(displayName, className, Optional.empty(), annotationList);
         }
         catch (Throwable e)
         {
             errors.add(e);
-            new ScreenshotWriter().doScreenshot(displayName, className, Optional.of(e), annotationList);
+            ScreenshotWriter.doScreenshot(displayName, className, Optional.of(e), annotationList);
         }
         finally
         {
