@@ -1,6 +1,7 @@
 package com.xceptance.neodymium.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.function.Supplier;
 
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+
+import com.xceptance.neodymium.common.ScreenshotWriter;
 
 import io.qameta.allure.Allure;
 import io.qameta.allure.AllureLifecycle;
@@ -47,9 +50,10 @@ public class AllureAddons
      *            the proper description of this step
      * @param actions
      *            what to do as Lambda
+     * @throws IOException
      */
     @Step("{description}")
-    public static void step(final String description, final Runnable actions)
+    public static void step(final String description, final Runnable actions) throws IOException
     {
         try
         {
@@ -74,9 +78,10 @@ public class AllureAddons
      * @param actions
      *            what to do as Lambda
      * @return T
+     * @throws IOException
      */
     @Step("{description}")
-    public static <T> T step(final String description, final Supplier<T> actions)
+    public static <T> T step(final String description, final Supplier<T> actions) throws IOException
     {
         try
         {
@@ -96,14 +101,26 @@ public class AllureAddons
      * 
      * @param filename
      * @return
+     * @throws IOException
      */
     @Attachment(type = "image/png", value = "{filename}", fileExtension = ".png")
-    public static byte[] attachPNG(final String filename)
+    public static void attachPNG(final String filename) throws IOException
     {
-        return ((TakesScreenshot) Neodymium.getDriver()).getScreenshotAs(OutputType.BYTES);
+        if (Neodymium.configuration().enableAdvancedScreenShots() == false)
+        {
+            ((TakesScreenshot) Neodymium.getDriver()).getScreenshotAs(OutputType.BYTES);
+        }
+        else
+        {
+            ScreenshotWriter.doScreenshot(filename);
+        }
     }
-    
-    
+
+    /**
+     * Removes an already attached attachment from the allure report.
+     * 
+     * @param name
+     */
     public static void removeAttachmentFromStepByName(final String name)
     {
 
@@ -134,8 +151,21 @@ public class AllureAddons
         }
     }
 
+    /***
+     * Add an Allure attachment to the current step instead of to the overall test case.
+     * 
+     * @param name
+     *            the name of attachment
+     * @param type
+     *            the content type of attachment
+     * @param fileExtension
+     *            the attachment file extension
+     * @param stream
+     *            attachment content
+     * @return
+     */
     public static boolean addAttachmentToStep(final String name, final String type,
-                                        final String fileExtension, final InputStream stream)
+                                              final String fileExtension, final InputStream stream)
     {
         AllureLifecycle lifecycle = Allure.getLifecycle();
         // suppress errors if we are running without allure
@@ -154,6 +184,12 @@ public class AllureAddons
         return false;
     }
 
+    /**
+     * Finds the last active step of a list of steps.
+     * 
+     * @param steps
+     * @return
+     */
     private static StepResult findCurrentStep(List<StepResult> steps)
     {
         var lastStep = steps.get(steps.size() - 1);
