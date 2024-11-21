@@ -30,6 +30,7 @@ import com.xceptance.neodymium.junit4.testclasses.browser.classonly.OneClassBrow
 import com.xceptance.neodymium.junit4.testclasses.browser.classonly.RandomBrowserClassLevel;
 import com.xceptance.neodymium.junit4.testclasses.browser.classonly.TwoClassBrowserOneMethod;
 import com.xceptance.neodymium.junit4.testclasses.browser.classonly.TwoSameClassBrowserOneMethod;
+import com.xceptance.neodymium.junit4.testclasses.browser.inheritance.BrowserOverwrittingChild;
 import com.xceptance.neodymium.junit4.testclasses.browser.inheritance.RandomBrowsersChild;
 import com.xceptance.neodymium.junit4.testclasses.browser.inheritance.RandomBrowsersOverwritingChild;
 import com.xceptance.neodymium.junit4.testclasses.browser.methodonly.MethodBrowserSuppressNoBrowserAnnotation;
@@ -319,6 +320,18 @@ public class BrowserStatementTest extends NeodymiumTest
         checkMultiFirefox(browserProfiles.get("multiFirefox"));
         checkTestEnvironment(browserProfiles.get("testEnvironmentFlags"));
         checkTestEnvironment2(browserProfiles.get("testEnvironmentFlags2"));
+    }
+
+    @Test
+    public void testBrowserOverwrittingInheritance() throws Throwable
+    {
+        String[] expected = new String[]
+        {
+          "test :: Browser Chrome_1024x768"
+        };
+        checkDescription(BrowserOverwrittingChild.class, expected);
+        Result result = JUnitCore.runClasses(BrowserOverwrittingChild.class);
+        checkPass(result, 1, 0);
     }
 
     private void checkChrome(BrowserConfiguration config)

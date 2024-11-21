@@ -10,6 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
+import com.google.common.collect.ImmutableMap;
+import com.xceptance.neodymium.common.TestStepListener;
+import com.xceptance.neodymium.util.AllureAddons;
 import com.xceptance.neodymium.util.Neodymium;
 
 import io.qameta.allure.selenide.AllureSelenide;
@@ -21,13 +24,31 @@ public class NeodymiumRunner implements TestTemplateInvocationContextProvider
 
     public static final String LISTENER_NAME = "allure-selenide-java";
 
+    private static boolean neoVersionLogged = false;
+
     private NeodymiumData neoData;
 
     public NeodymiumRunner()
     {
         SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
-        LOGGER.info("This test uses Neodymium Library (version: " + Neodymium.getNeodymiumVersion()
-                    + "), MIT License, more details on https://github.com/Xceptance/neodymium-library");
+
+        SelenideLogger.addListener(TestStepListener.LISTENER_NAME, new TestStepListener());
+
+        if (!neoVersionLogged && Neodymium.configuration().logNeoVersion())
+        {
+            if (!AllureAddons.envFileExists())
+            {
+                LOGGER.info("This test uses Neodymium Library (version: " + Neodymium.getNeodymiumVersion()
+                            + "), MIT License, more details on https://github.com/Xceptance/neodymium-library");
+                neoVersionLogged = true;
+                AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder()
+                                                                   .put("Testing Framework", "Neodymium " + Neodymium.getNeodymiumVersion())
+                                                                   .build(),
+                                                       true);
+            }
+        }
+        AllureAddons.initializeEnvironmentInformation();
+
     }
 
     public enum DescriptionMode
@@ -47,7 +68,7 @@ public class NeodymiumRunner implements TestTemplateInvocationContextProvider
     {
         // clear the context before next child run
         Neodymium.clearThreadContext();
-        
+
         Class<?> testClass = context.getRequiredTestClass();
         Method templateMethod = context.getRequiredTestMethod();
         if (neoData == null)
