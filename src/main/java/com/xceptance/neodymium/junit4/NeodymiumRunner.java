@@ -30,7 +30,10 @@ import com.xceptance.neodymium.common.TestStepListener;
 import com.xceptance.neodymium.common.WorkInProgress;
 import com.xceptance.neodymium.common.browser.Browser;
 import com.xceptance.neodymium.junit4.order.DefaultStatementRunOrder;
+import com.xceptance.neodymium.junit4.statement.browser.ScreenshotRunAfters;
+
 import com.xceptance.neodymium.util.AllureAddons;
+
 import com.xceptance.neodymium.util.Neodymium;
 
 import io.qameta.allure.selenide.AllureSelenide;
@@ -430,6 +433,14 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                 }
             }
         }
+    }
+
+    @Override
+    protected Statement withAfters(FrameworkMethod method, Object target,
+                                   Statement statement)
+    {
+        List<FrameworkMethod> afters = getTestClass().getAnnotatedMethods(After.class);
+        return new ScreenshotRunAfters(method, statement, afters, target);
     }
 
     @Override

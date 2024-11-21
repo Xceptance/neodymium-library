@@ -108,6 +108,10 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("false")
     public boolean screenshotPerStep();
 
+    @Key("neodymium.allureAddons.reports.path")
+    @DefaultValue("/build/reports/tests/")
+    public String reportsPath();
+
     @Key("neodymium.context.device.breakpoint.small")
     @DefaultValue("576")
     public int smallDeviceBreakpoint();
@@ -283,6 +287,42 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.workInProgress")
     @DefaultValue("false")
     public boolean workInProgress();
+
+    @Key("neodymium.screenshots.enableOnSuccess")
+    @DefaultValue("false")
+    public boolean enableOnSuccess();
+
+    @Key("neodymium.screenshots.fullpagecapture.enable")
+    @DefaultValue("false")
+    public boolean enableFullPageCapture();
+
+    @Key("neodymium.screenshots.fullpagecapture.highlightViewport")
+    @DefaultValue("false")
+    public boolean enableHighlightViewport();
+
+    @Key("neodymium.screenshots.enableTreeDirectoryStructure")
+    @DefaultValue("false")
+    public boolean enableTreeDirectoryStructure();
+
+    @Key("neodymium.screenshots.fullpagecapture.highlightColor")
+    @DefaultValue("#FF0000")
+    public String fullScreenHighlightColor();
+    
+    @Key("neodymium.screenshots.highlightLastElement")
+    @DefaultValue("false")
+    public boolean enableHighlightLastElement();
+
+    @Key("neodymium.screenshots.enableAdvancedScreenshots")
+    @DefaultValue("false")
+    public boolean enableAdvancedScreenShots();
+
+    @Key("neodymium.screenshots.element.highlightColor")
+    @DefaultValue("#FF00FF")
+    public String screenshotElementHighlightColor();
+
+    @Key("neodymium.screenshots.highlightLineThickness")
+    @DefaultValue("4")
+    public int screenshotHighlightLineThickness();
 
     @Key("neodymium.logNeoVersion")
     @DefaultValue("true")
