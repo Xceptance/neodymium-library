@@ -187,7 +187,7 @@ public class LighthouseUtils
         String assertAuditsString = Neodymium.configuration().lighthouseAssertAudits();
         List<String> errorAudits = new ArrayList<>();
         
-        if (!assertAuditsString.isEmpty()) 
+        if (!(assertAuditsString == null)) 
         {
             for (String audit : assertAuditsString.split(" ")) 
             {
