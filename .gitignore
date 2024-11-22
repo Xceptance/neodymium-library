@@ -30,3 +30,4 @@ dev-*.properties
 temp-*.properties
 embeddedLocalProxySelfSignedRootCertificate.p12
 /bin/
+/allure-results/
