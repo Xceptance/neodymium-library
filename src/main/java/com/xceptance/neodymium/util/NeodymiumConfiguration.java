@@ -327,6 +327,10 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.logNeoVersion")
     @DefaultValue("true")
     public boolean logNeoVersion();
+
+    @Key("neodymium.report.showSelenideErrorDetails")
+    @DefaultValue("false")
+    public boolean showSelenideErrorDetails();
     
     @Key("neodymium.report.enableTestDataInReport")
     @DefaultValue("true")
@@ -355,5 +359,4 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.popupInterval")
     @DefaultValue("1000")
     public int getPopupBlockerInterval();
-
 }
