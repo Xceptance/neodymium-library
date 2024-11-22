@@ -195,7 +195,10 @@ public abstract class AbstractNeodymiumTest
     public void check(final NeodymiumTestExecutionSummary result, final boolean expectSuccessful, final int expectedRunCount, final int expectedIgnoreCount,
                       final int expectedFailCount, final Map<String, String> expectedFailureMessages)
     {
-        final Optional<String> accumulatedTrace = result.getFailures().stream().map(failure -> List.of(failure.getException().getStackTrace()).toString())
+        final Optional<String> accumulatedTrace = result.getFailures().stream()
+                                                        .map(failure -> failure.getException().getClass().getSimpleName() + ":"
+                                                                        + failure.getException().getMessage()
+                                                                        + "=>" + List.of(failure.getException().getStackTrace()).toString())
                                                         .reduce(String::concat);
         final String stackTrace = accumulatedTrace.orElse("n/a");
         try

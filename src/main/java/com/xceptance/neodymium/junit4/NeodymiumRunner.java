@@ -26,10 +26,14 @@ import org.slf4j.LoggerFactory;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
 import com.google.common.collect.ImmutableMap;
+import com.xceptance.neodymium.common.TestStepListener;
 import com.xceptance.neodymium.common.WorkInProgress;
 import com.xceptance.neodymium.common.browser.Browser;
 import com.xceptance.neodymium.junit4.order.DefaultStatementRunOrder;
+import com.xceptance.neodymium.junit4.statement.browser.ScreenshotRunAfters;
+
 import com.xceptance.neodymium.util.AllureAddons;
+
 import com.xceptance.neodymium.util.Neodymium;
 
 import io.qameta.allure.selenide.AllureSelenide;
@@ -88,6 +92,8 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         super(clazz);
         SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
 
+        SelenideLogger.addListener(TestStepListener.LISTENER_NAME, new TestStepListener());
+
         if (!neoVersionLogged && Neodymium.configuration().logNeoVersion())
         {
             if (!AllureAddons.envFileExists())
@@ -97,9 +103,11 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                 neoVersionLogged = true;
                 AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder()
                                                                    .put("Testing Framework", "Neodymium " + Neodymium.getNeodymiumVersion())
-                                                                   .build());
+                                                                   .build(),
+                                                       true);
             }
         }
+        AllureAddons.initializeEnvironmentInformation();
     }
 
     public enum DescriptionMode
@@ -425,6 +433,14 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                 }
             }
         }
+    }
+
+    @Override
+    protected Statement withAfters(FrameworkMethod method, Object target,
+                                   Statement statement)
+    {
+        List<FrameworkMethod> afters = getTestClass().getAnnotatedMethods(After.class);
+        return new ScreenshotRunAfters(method, statement, afters, target);
     }
 
     @Override

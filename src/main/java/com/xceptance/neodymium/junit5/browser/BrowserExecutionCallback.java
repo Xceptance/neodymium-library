@@ -16,10 +16,6 @@ public class BrowserExecutionCallback implements BeforeEachCallback, TestWatcher
         browserRunner = new BrowserRunner(browserTag, testName);
     }
 
-    public BrowserExecutionCallback()
-    {
-    }
-
     @Override
     public void beforeEach(ExtensionContext context) throws Exception
     {
@@ -37,5 +33,4 @@ public class BrowserExecutionCallback implements BeforeEachCallback, TestWatcher
     {
         browserRunner.teardown(false);
     }
-
 }

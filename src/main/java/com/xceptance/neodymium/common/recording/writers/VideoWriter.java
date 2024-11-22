@@ -53,7 +53,7 @@ public class VideoWriter implements Writer
         // check if ffmpeg binary is found
         p = new ProcessBuilder(((VideoRecordingConfigurations) recordingConfigurations).ffmpegBinaryPath(), "-h").start();
 
-        pb = new ProcessBuilder(((VideoRecordingConfigurations) recordingConfigurations).ffmpegBinaryPath(), "-y", "-f", "image2pipe", "-r", " 5/1", "-i", "pipe:0", "-c:v", "libx264", videoFileName);
+        pb = new ProcessBuilder(((VideoRecordingConfigurations) recordingConfigurations).ffmpegBinaryPath(), "-y", "-f", "image2pipe", "-i", "pipe:0", "-c:v", "libx264", "-strict", "-2", "-preset", "slow", "-pix_fmt", "yuv420p", "-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2", "-f", "mp4", videoFileName);
         pb.redirectErrorStream(true);
         pb.redirectOutput(Redirect.appendTo(new File(((VideoRecordingConfigurations) recordingConfigurations).ffmpegLogFile())));
     }

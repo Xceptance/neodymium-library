@@ -7,14 +7,17 @@ import java.util.Random;
 import java.util.WeakHashMap;
 
 import org.aeonbits.owner.ConfigFactory;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.browserup.bup.BrowserUpProxy;
 import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
+import com.xceptance.neodymium.common.TestStepListener;
 import com.xceptance.neodymium.common.browser.WebDriverStateContainer;
 
 /**
@@ -36,6 +39,11 @@ public class Neodymium
 
     // keep our current browser name
     private String browserName;
+
+    // keep last used locator
+    private By lastLocator;
+
+    private WebElement lastUsedElement;
 
     // our global configuration
     private final NeodymiumConfiguration configuration;
@@ -81,6 +89,8 @@ public class Neodymium
     public static void clearThreadContext()
     {
         CONTEXTS.remove(Thread.currentThread());
+        TestStepListener.clearLastUrl();
+        DataUtils.clearThreadContext();
     }
 
     /**
@@ -458,6 +468,17 @@ public class Neodymium
     }
 
     /**
+     * Shortcut to enable/disable Selenides inbuild Screenshots
+     * 
+     * @param enable
+     *            enable/disable Screenshots
+     */
+    public static void enableSelenideScreenshots(boolean enable)
+    {
+        Configuration.screenshots = enable;
+    }
+
+    /**
      * Validates if the currently configured site is equal to one or more Strings.
      * 
      * @param sites
@@ -514,5 +535,52 @@ public class Neodymium
     {
         final String buildVersion = getContext().getClass().getPackage().getImplementationVersion();
         return buildVersion == null ? "?.?.?" : buildVersion;
+    }
+
+    /**
+     * Saves the last used locator
+     * 
+     * @param by
+     *            CSS Selector
+     */
+    public static void setLastUsedLocator(By by)
+    {
+        getContext().lastLocator = by;
+        getContext().lastUsedElement = null;
+    }
+
+    /**
+     * Saves the last used locator and the element under which to search for
+     * 
+     * @param element
+     *            Webelement
+     * @param by
+     *            CSS Selector
+     */
+    public static void setLastUsedLocator(WebElement element, By by)
+    {
+        getContext().lastLocator = by;
+        getContext().lastUsedElement = element;
+    }
+
+    /**
+     * Returns the last used Element
+     * 
+     * @return last used Element or null if nothing was set
+     */
+    public static WebElement getLastUsedElement()
+    {
+        if (getContext().lastUsedElement != null && getContext().lastLocator != null)
+        {
+            return getContext().lastUsedElement.findElement(getContext().lastLocator);
+        }
+        else if (getContext().lastLocator != null)
+        {
+            return getDriver().findElement(getContext().lastLocator);
+        }
+        else
+        {
+            return null;
+        }
     }
 }
