@@ -9,13 +9,13 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 
 import com.xceptance.neodymium.common.browser.Browser;
-import com.xceptance.neodymium.common.browser.StartNewBrowserForCleanUp;
+import com.xceptance.neodymium.common.browser.StartNewBrowserForSetUp;
 import com.xceptance.neodymium.junit4.NeodymiumRunner;
 import com.xceptance.neodymium.junit4.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
 @RunWith(NeodymiumRunner.class)
-@StartNewBrowserForCleanUp
+@StartNewBrowserForSetUp
 @Browser("chrome")
 public class NewBrowserIsNotStartedForSetUp
 {

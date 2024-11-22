@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.aeonbits.owner.ConfigFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,11 +35,11 @@ import com.xceptance.neodymium.junit5.testclasses.browser.classonly.TwoSameClass
 import com.xceptance.neodymium.junit5.testclasses.browser.inheritance.BrowserOverwrittingChild;
 import com.xceptance.neodymium.junit5.testclasses.browser.inheritance.RandomBrowsersChild;
 import com.xceptance.neodymium.junit5.testclasses.browser.inheritance.RandomBrowsersOverwritingChild;
-import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.StartNewBrowserForOneOfTheAfters;
-import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.StartNewBrowserForOneOfTheBefores;
 import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.MethodBrowserSuppressNoBrowserAnnotation;
 import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.OneBrowserOneMethodBrowserSuppressed;
 import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.RandomBrowserMethodLevel;
+import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.StartNewBrowserForOneOfTheAfters;
+import com.xceptance.neodymium.junit5.testclasses.browser.methodonly.StartNewBrowserForOneOfTheBefores;
 import com.xceptance.neodymium.junit5.testclasses.browser.mixed.ClassAndMethodSameBrowserOneMethod;
 import com.xceptance.neodymium.junit5.testclasses.browser.mixed.ClassBrowserSuppressedAfterWithBrowser;
 import com.xceptance.neodymium.junit5.testclasses.browser.mixed.ClassBrowserSuppressedBeforeWithBrowser;
@@ -220,9 +221,14 @@ public class BrowserStatementTest extends AbstractNeodymiumTest
     @Test
     public void testNewBrowserIsNotStartedForSetUp()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.startNewBrowserForSetUp", "false");
+
+        addPropertiesForTest("temp-testNewBrowserIsNotStartedForSetUp-neodymium.properties", properties);
         // if test class is annotated with @@StartNewBrowserForCleanUp(false), no new browser is started for cleanup
         NeodymiumTestExecutionSummary summary = run(NewBrowserIsNotStartedForSetUp.class);
         checkPass(summary, 1, 0);
+        ConfigFactory.clearProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME);
     }
 
     @Test
@@ -284,9 +290,14 @@ public class BrowserStatementTest extends AbstractNeodymiumTest
     @Test
     public void testNewBrowserIsNotStartedForCleanUp()
     {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.startNewBrowserForCleanUp", "false");
+
+        addPropertiesForTest("temp-NewBrowserIsNotStartedForCleanUp-neodymium.properties", properties);
         // if test class is annotated with @@StartNewBrowserForCleanUp(false), no new browser is started for cleanup
         NeodymiumTestExecutionSummary summary = run(NewBrowserIsNotStartedForCleanUp.class);
         checkPass(summary, 1, 0);
+        ConfigFactory.clearProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME);
     }
 
     @Test
