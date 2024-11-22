@@ -21,8 +21,7 @@ public class BrowserBeforeRunner
         BrowserConfiguration oldBrowserConfiguration = MultibrowserConfiguration.getInstance().getBrowserProfiles()
                                                                                 .get(Neodymium.getBrowserProfileName());
 
-        boolean isSuppressed = isSuppressed(before);
-        boolean startNewBrowserForSetUp = shouldStartNewBrowser(before) && !isSuppressed;
+        boolean startNewBrowserForSetUp = shouldStartNewBrowser(before);
 
         BrowserConfiguration browserConfiguration = oldBrowserConfiguration;
 
@@ -40,7 +39,7 @@ public class BrowserBeforeRunner
         // it means that we should use the same browser for setup
         // as the might have been other @Before methods with new browser running previously, let's explicitly set
         // the driver to original
-        if (!startNewBrowserForSetUp && !isSuppressed && (Neodymium.getDriver() == null || !Neodymium.getDriver().equals(oldWDsCont.getWebDriver()))
+        if (!startNewBrowserForSetUp && (Neodymium.getDriver() == null || !Neodymium.getDriver().equals(oldWDsCont.getWebDriver()))
             && oldWDsCont != null)
         {
             WebDriverRunner.setWebDriver(oldWDsCont.getWebDriver());
@@ -120,7 +119,7 @@ public class BrowserBeforeRunner
         }
     }
 
-    private boolean shouldStartNewBrowser(Method each)
+    public static boolean shouldStartNewBrowser(Method each)
     {
         List<StartNewBrowserForSetUp> methodStartNewBrowserForSetUp = Data.getAnnotations(each,
                                                                                           StartNewBrowserForSetUp.class);
@@ -141,12 +140,5 @@ public class BrowserBeforeRunner
 
         // if @Before method is annotated with @SuppressBrowser annotation, no new browser should be started
         return startNewBrowserForSetUp;
-    }
-
-    private boolean isSuppressed(Method each)
-    {
-        List<SuppressBrowsers> methodSuppressBrowserAnnotations = Data.getAnnotations(each, SuppressBrowsers.class);
-
-        return !methodSuppressBrowserAnnotations.isEmpty();
     }
 }

@@ -113,5 +113,6 @@ public class ValidateReuseWebDriver
         Assert.assertEquals(2, wDSContainer.getUsedCount());
 
         NeodymiumTest.deleteTempFile(tempConfigFile);
+        WebDriverCache.quitCachedBrowsers();
     }
 }
