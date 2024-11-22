@@ -135,7 +135,6 @@ public class AllureAddons
      * Takes screenshot and converts it to byte stream
      * 
      * @param filename
-     * @return
      * @throws IOException
      */
     @Attachment(type = "image/png", value = "{filename}", fileExtension = ".png")
