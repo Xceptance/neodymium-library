@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 
 import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.ex.SelenideErrorFormatter;
-import com.codeborne.selenide.ex.Strings;
 import com.codeborne.selenide.impl.Screenshot;
 
 public class SelenideErrorDetailsFormatter extends SelenideErrorFormatter
@@ -16,7 +15,7 @@ public class SelenideErrorDetailsFormatter extends SelenideErrorFormatter
 
         if (Neodymium.configuration().showSelenideErrorDetails())
         {
-            return Strings.join(super.generateErrorDetails(error, driver, screenshot, timeoutMs));
+            return super.generateErrorDetails(error, driver, screenshot, timeoutMs);
         }
 
         // The screenshot path is always unique. Also the caused by message is dependent on the browser, so just ignore
