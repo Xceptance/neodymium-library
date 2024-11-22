@@ -17,6 +17,7 @@ import com.browserup.bup.BrowserUpProxy;
 import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
+import com.xceptance.neodymium.common.TestStepListener;
 import com.xceptance.neodymium.common.browser.WebDriverStateContainer;
 
 /**
@@ -88,6 +89,7 @@ public class Neodymium
     public static void clearThreadContext()
     {
         CONTEXTS.remove(Thread.currentThread());
+        TestStepListener.clearLastUrl();
         DataUtils.clearThreadContext();
     }
 

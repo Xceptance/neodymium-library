@@ -351,4 +351,9 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.url.includeList")
     @DefaultValue("")
     public String getIncludeList();
+    
+    @Key("neodymium.popupInterval")
+    @DefaultValue("1000")
+    public int getPopupBlockerInterval();
+
 }
