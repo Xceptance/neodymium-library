@@ -25,12 +25,12 @@ public class LighthouseUtilsTest
         if (System.getProperty("os.name").toLowerCase().contains("win")) 
         {
             Neodymium.configuration().setProperty("neodymium.lighthouse.binaryPath", "echo {\"categories\": {\"performance\": {\"score\": 0.5}, \"accessibility\": {\"score\": 0.5}, \"best-practices\": {\"score\": 0.5}, \"seo\": {\"score\": 0.5}}} > target/lighthouseUtilsReport.report.json | echo makeCommentWork #");
-            builder = new ProcessBuilder("cmd.exe", "/c", "fabricatedHtml > target/lighthouseUtilsReport.report.html");
+            builder = new ProcessBuilder("cmd.exe", "/c", "echo fabricatedHtml > target/lighthouseUtilsReport.report.html");
         }
         else if (System.getProperty("os.name").toLowerCase().contains("linux") || System.getProperty("os.name").toLowerCase().contains("mac"))
         {
             Neodymium.configuration().setProperty("neodymium.lighthouse.binaryPath", "echo {\"categories\": {\"performance\": {\"score\": 0.5}, \"accessibility\": {\"score\": 0.5}, \"best-practices\": {\"score\": 0.5}, \"seo\": {\"score\": 0.5}}} > target/lighthouseUtilsReport.report.json");
-            builder = new ProcessBuilder("fabricatedHtml > target/lighthouseUtilsReport.report.html");
+            builder = new ProcessBuilder("sh", "-c", "echo fabricatedHtml > target/lighthouseUtilsReport.report.html");
         }
         else 
         {
@@ -47,7 +47,7 @@ public class LighthouseUtilsTest
         
         Selenide.open("https://blog.xceptance.com/");
         
-        LighthouseUtils.createLightHouseReport(Neodymium.getDriver(), "lighthouseUtilsReport");
+        LighthouseUtils.createLightHouseReport("lighthouseUtilsReport");
     }
     
     @NeodymiumTest
@@ -75,7 +75,7 @@ public class LighthouseUtilsTest
         
         try 
         {
-            LighthouseUtils.createLightHouseReport(Neodymium.getDriver(), "lighthouseUtilsReport");
+            LighthouseUtils.createLightHouseReport("lighthouseUtilsReport");
         }
         catch (AssertionError e) 
         {
@@ -108,7 +108,7 @@ public class LighthouseUtilsTest
         
         try 
         {
-            LighthouseUtils.createLightHouseReport(Neodymium.getDriver(), "lighthouseUtilsReport");
+            LighthouseUtils.createLightHouseReport("lighthouseUtilsReport");
         }
         catch (AssertionError e) 
         {
@@ -141,7 +141,7 @@ public class LighthouseUtilsTest
         
         try 
         {
-            LighthouseUtils.createLightHouseReport(Neodymium.getDriver(), "lighthouseUtilsReport");
+            LighthouseUtils.createLightHouseReport("lighthouseUtilsReport");
         }
         catch (AssertionError e) 
         {
@@ -174,7 +174,7 @@ public class LighthouseUtilsTest
         
         try 
         {
-            LighthouseUtils.createLightHouseReport(Neodymium.getDriver(), "lighthouseUtilsReport");
+            LighthouseUtils.createLightHouseReport("lighthouseUtilsReport");
         }
         catch (AssertionError e) 
         {
@@ -202,7 +202,7 @@ public class LighthouseUtilsTest
         
         try 
         {
-            LighthouseUtils.createLightHouseReport(Neodymium.getDriver(), "lighthouseUtilsReport");
+            LighthouseUtils.createLightHouseReport("lighthouseUtilsReport");
         }
         catch (Exception e) 
         {

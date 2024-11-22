@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
@@ -22,6 +23,10 @@ import io.qameta.allure.Allure;
 
 /**
  * Powered by <a href="https://developer.chrome.com/docs/lighthouse/overview?hl=de">Lighthouse</a> (Copyright Google)
+ * <p>
+ * This class is used to create <a href="https://developer.chrome.com/docs/lighthouse/overview?hl=de">Lighthouse</a> (Copyright Google) 
+ * reports and validate them using defined values ​​in the Neodymium configuration
+ * </p>
  */
 public class LighthouseUtils
 {
@@ -29,13 +34,11 @@ public class LighthouseUtils
      * Creates a <a href="https://developer.chrome.com/docs/lighthouse/overview?hl=de">Lighthouse</a> report
      * (Copyright Google) of the current URL and adds it to the Allure report.
      * 
-     * @param driver
-     *            The current webdriver
      * @param reportName
      *            The name of the Lighthouse report attachment in the Allure report
      * @throws Exception
      */
-    public static void createLightHouseReport(WebDriver driver, String reportName) throws Exception 
+    public static void createLightHouseReport(String reportName) throws Exception 
     {
         // validate that lighthouse is installed
         try 
@@ -54,7 +57,7 @@ public class LighthouseUtils
             }
             else if (System.getProperty("os.name").toLowerCase().contains("linux") || System.getProperty("os.name").toLowerCase().contains("mac"))
             {
-                new ProcessBuilder(Neodymium.configuration().lighthouseBinaryPath(), "--version").start();
+                new ProcessBuilder("sh", "-c", Neodymium.configuration().lighthouseBinaryPath(), "--version").start();
             }
             else 
             {
@@ -71,6 +74,9 @@ public class LighthouseUtils
             Assert.assertTrue("the current browser is " + Neodymium.getBrowserName() + ", but lighthouse only works in combination with chrome", Neodymium.getBrowserName().contains("chrome"));
         });
         
+        // get the current webdriver
+        WebDriver driver = Neodymium.getDriver();
+        
         // get the current URL
         String URL = driver.getCurrentUrl();
         
@@ -79,6 +85,9 @@ public class LighthouseUtils
 
         // start lighthouse report
         lighthouseAudit(URL, reportName);
+        
+        // add report html to allure
+        Allure.addAttachment(reportName, "text/html", FileUtils.openInputStream(new File("target/" + reportName + ".report.html")), "html");
         
         // get report json
         File jsonFile = new File("target/" + reportName + ".report.json");
@@ -94,17 +103,15 @@ public class LighthouseUtils
         
         // validate if values in report json are greater than defined threshold in config
         SelenideAddons.wrapAssertionError(() -> {
-            Assert.assertTrue("the performance score " + performanceScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthouseAssertPerformance() + ", please improve the score to match expectations", Neodymium.configuration().lighthouseAssertPerformance() <= performanceScore);
-            Assert.assertTrue("the accessibility score " + accessibilityScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthouseAssertAccessibility() + ", please improve the score to match expectations", Neodymium.configuration().lighthouseAssertAccessibility() <= accessibilityScore);
-            Assert.assertTrue("the best practices score " + bestPracticesScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthouseAssertBestPractices() + ", please improve the score to match expectations", Neodymium.configuration().lighthouseAssertBestPractices() <= bestPracticesScore);
-            Assert.assertTrue("the seo score " + seoScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthouseAssertSeo() + ", please improve the score to match expectations", Neodymium.configuration().lighthouseAssertSeo() <= seoScore);
+            Assert.assertTrue("The Lighthouse performance score " + performanceScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthouseAssertPerformance() + ", please improve the score to match expectations and look into the corresponding Lighthouse report named \"" + reportName + "\"", Neodymium.configuration().lighthouseAssertPerformance() <= performanceScore);
+            Assert.assertTrue("The Lighthouse accessibility score " + accessibilityScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthouseAssertAccessibility() + ", please improve the score to match expectations and look into the corresponding Lighthouse report named \"" + reportName + "\"", Neodymium.configuration().lighthouseAssertAccessibility() <= accessibilityScore);
+            Assert.assertTrue("The Lighthouse best practices score " + bestPracticesScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthouseAssertBestPractices() + ", please improve the score to match expectations and look into the corresponding Lighthouse report named \"" + reportName + "\"", Neodymium.configuration().lighthouseAssertBestPractices() <= bestPracticesScore);
+            Assert.assertTrue("The Lighthouse seo score " + seoScore + " doesn't exceed nor match the required threshold of " + Neodymium.configuration().lighthouseAssertSeo() + ", please improve the score to match expectations and look into the corresponding Lighthouse report named \"" + reportName + "\"", Neodymium.configuration().lighthouseAssertSeo() <= seoScore);
         });
         
         // validate jsonpaths in neodymium properties
-        validateAudits(jsonFile);
+        validateAudits(jsonFile, reportName);
         
-        // add report html to allure
-        Allure.addAttachment(reportName, "text/html", FileUtils.openInputStream(new File("target/" + reportName + ".report.html")), "html");
         
         // switch back to saved URL
         driver.switchTo().window(newWindow);
@@ -154,7 +161,7 @@ public class LighthouseUtils
         }
         else if (System.getProperty("os.name").toLowerCase().contains("linux") || System.getProperty("os.name").toLowerCase().contains("mac"))
         {
-            builder = new ProcessBuilder(Neodymium.configuration().lighthouseBinaryPath(), "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=" + Neodymium.getRemoteDebuggingPort(), "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
+            builder = new ProcessBuilder("sh", "-c", Neodymium.configuration().lighthouseBinaryPath(), "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=" + Neodymium.getRemoteDebuggingPort(), "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
         }
         else 
         {
@@ -182,12 +189,12 @@ public class LighthouseUtils
      *            
      * @throws Exception
      */
-    private static void validateAudits(File json) throws Exception 
+    private static void validateAudits(File json, String reportName) throws Exception 
     {
         String assertAuditsString = Neodymium.configuration().lighthouseAssertAudits();
         List<String> errorAudits = new ArrayList<>();
         
-        if (!(assertAuditsString == null)) 
+        if (StringUtils.isNotBlank(assertAuditsString)) 
         {
             for (String audit : assertAuditsString.split(" ")) 
             {
@@ -208,10 +215,10 @@ public class LighthouseUtils
                 }
                 
             }
-            if (errorAudits.size() > 0) 
-            {
-                throw new Exception("the following audits " + errorAudits + " contain errors that need to be fixed, please look into the corresponding html for further information");
-            }
+            
+            SelenideAddons.wrapAssertionError(() -> {
+                Assert.assertTrue("the following Lighthouse audits " + errorAudits + " contain errors that need to be fixed, please look into the Lighthouse report named \"" + reportName + "\" for further information. ", errorAudits.size() > 0);
+            });
         }
     }
 }
