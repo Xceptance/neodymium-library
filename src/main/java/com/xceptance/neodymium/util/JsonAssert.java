@@ -6,8 +6,22 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import io.qameta.allure.Allure;
 
+/**
+ * Utility class for JSON comparison and assertion operations, that provides methods to compare two JSON strings.
+ */
 public class JsonAssert
 {
+    /**
+     * Generates an HTML script that creates a visual comparison of two JSON strings.
+     *
+     * @param expectedJson
+     *            The expected JSON string
+     * @param actualJson
+     *            The actual JSON string
+     * @param jsonCompareMode
+     *            The comparison mode that determines how strict the comparison should be
+     * @return A string containing the HTML document with the visual comparison of both JSON strings
+     */
     private static String htmlScript(String expectedJson, String actualJson, JSONCompareMode jsonCompareMode) 
     {
         boolean arrayOrderDoesntMatters = false;
@@ -54,7 +68,7 @@ public class JsonAssert
                   
                   + "function sortArraysInJson(json) {"
                     + "for (const key in json) {"
-                      + "if (Array.isArray(json[key])) {"
+                      + "if (Array.isArray(json[key]) && json[key].length > 0) {"
                         + "if (json[key].every(item => typeof item === \"object\" && !Array.isArray(item))) {"
                           + "const firstKey = Object.keys(json[key][0])[0];"
                           + "json[key].sort((a, b) => a[firstKey].localeCompare(b[firstKey]));"
@@ -110,9 +124,24 @@ public class JsonAssert
         return html;
     }
 
+    /**
+     * Asserts that two JSON strings are equal according to the specified comparison mode.
+     * If the assertion fails, an HTML containing the differences between both JSON files
+     * is generated and attached to the Allure report.
+     * 
+     * @param expectedJson
+     *            The expected JSON string
+     * @param actualJson
+     *            The actual JSON string
+     * @param jsonCompareMode
+     *            The comparison mode that determines how strict the JSON comparison should be
+     * @throws AssertionError
+     *            if the JSONs are not equal according to the specified comparison mode
+     * @throws JSONException
+     *            if either JSON string is invalid
+     */
     public static void assertEquals(String expectedJson, String actualJson, JSONCompareMode jsonCompareMode)
     {
-        System.out.println(jsonCompareMode.name());
         try
         {
             SelenideAddons.wrapAssertionError(() -> {
@@ -127,6 +156,23 @@ public class JsonAssert
         }
     }
 
+    /**
+     * Asserts that two JSON strings are not equal according to the specified comparison mode.
+     * If the assertion fails, an HTML containing the JSON content of both files once
+     * (because the content of both files is the same) is generated and attached to the
+     * Allure report.
+     *
+     * @param expectedJson
+     *            The expected JSON string
+     * @param actualJson
+     *            The actual JSON string
+     * @param jsonCompareMode
+     *            The comparison mode that determines how strict the comparison should be
+     * @throws AssertionError
+     *            if the JSONs are equal according to the specified comparison mode
+     * @throws JSONException
+     *            if either JSON string is invalid
+     */
     public static void assertNotEquals(String expectedJson, String actualJson, JSONCompareMode jsonCompareMode)
     {
         try
