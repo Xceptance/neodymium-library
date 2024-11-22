@@ -186,6 +186,8 @@ public class LighthouseUtils
      * @param json 
      *            The json file of the <a href="https://developer.chrome.com/docs/lighthouse/overview?hl=de">Lighthouse</a> 
      *            (Copyright Google) report
+     * @param reportName
+     *             The name of the Lighthouse report attachment in the Allure report
      *            
      * @throws Exception
      */
