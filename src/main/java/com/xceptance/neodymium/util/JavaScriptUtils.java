@@ -104,7 +104,7 @@ public class JavaScriptUtils
     }
 
     /**
-     * Close a incoming Popup Note: Javascript code will need adjustments specific to your pop ups.
+     * Closes a on popup container by clicking the element identified by the selector
      * 
      * @param popupSelector
      *            selector for the popup
@@ -117,7 +117,7 @@ public class JavaScriptUtils
                               "   if(popupElement != null)" +
                               "   {" +
                               "       popupElement.click();" +
-                              "       console.log('Popup closed')" +
+                              "       console.log('Popup " + popupSelector + "closed')" +
                               "   }" +
                               "}" +
                               "" +
