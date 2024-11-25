@@ -4,9 +4,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.openqa.selenium.WebDriver;
-
-import com.browserup.bup.BrowserUpProxy;
 import com.codeborne.selenide.WebDriverRunner;
 import com.xceptance.neodymium.common.Data;
 import com.xceptance.neodymium.common.browser.configuration.BrowserConfiguration;
@@ -34,6 +31,12 @@ public class BrowserAfterRunner
                                                             .get(methodBrowserAnnotations.get(0).value());
         }
 
+        // if browserConfiguration is null, the browser should not be started for this method and browserTag and
+        // browserRunner are therefore not required
+        BrowserMethodData browserTag = browserConfiguration != null ? BrowserData.addKeepBrowserOpenInformation(browserConfiguration.getBrowserTag(), after)
+                                                                    : null;
+        BrowserRunner browserRunner = browserTag != null ? new BrowserRunner(browserTag, after.getName()) : null;
+
         // if we don't need to start new browser for the cleanup and the browser for the test was not suppressed
         // it means that we should use the same browser for cleanup
         // as the might have been other @After methods with new browser running previously, let's explicitly set
@@ -50,13 +53,7 @@ public class BrowserAfterRunner
         // was found, create a new driver
         else if (startNewBrowserForCleanUp && browserConfiguration != null)
         {
-            WebDriverStateContainer wDSCont = BrowserRunnerHelper.createWebDriverStateContainer(browserConfiguration, after.getDeclaringClass());
-
-            BrowserRunnerHelper.setBrowserWindowSize(browserConfiguration, wDSCont.getWebDriver());
-            WebDriverRunner.setWebDriver(wDSCont.getWebDriver());
-            Neodymium.setWebDriverStateContainer(wDSCont);
-            Neodymium.setBrowserProfileName(browserConfiguration.getConfigTag());
-            Neodymium.setBrowserName(browserConfiguration.getCapabilities().getBrowserName());
+            browserRunner.setUpTest();
         }
         else if (!isSuppressed && browserConfiguration == null)
         {
@@ -83,28 +80,16 @@ public class BrowserAfterRunner
             // if we did a set up of new driver before the @After method, we need to close it
             if (startNewBrowserForCleanUp && browserConfiguration != null)
             {
-                // avoid closing driver in case it's selected to keep browser open
-                if (!(!browserConfiguration.isHeadless()
-                      && ((Neodymium.configuration().keepBrowserOpenOnFailure() && beforeFailed) || Neodymium.configuration().keepBrowserOpen())))
+                browserRunner.teardown(beforeFailed);
+                if (oldDriver != null)
                 {
-                    WebDriverStateContainer wdst = Neodymium.getWebDriverStateContainer();
-                    WebDriver driver = wdst != null ? wdst.getWebDriver() : null;
-                    if (driver != null)
-                    {
-                        driver.quit();
-                    }
-                    BrowserUpProxy proxy = wdst != null ? wdst.getProxy() : null;
-                    if (proxy != null)
-                    {
-                        proxy.stop();
-                    }
-                    if (oldDriver != null)
-                    {
-                        WebDriverRunner.setWebDriver(oldDriver.getWebDriver());
-                        Neodymium.setWebDriverStateContainer(oldDriver);
-                        Neodymium.setBrowserProfileName(oldBrowserConfiguration.getConfigTag());
-                        Neodymium.setBrowserName(oldBrowserConfiguration.getCapabilities().getBrowserName());
-                    }
+                    WebDriverRunner.setWebDriver(oldDriver.getWebDriver());
+                    Neodymium.setWebDriverStateContainer(oldDriver);
+                }
+                if (oldBrowserConfiguration != null)
+                {
+                    Neodymium.setBrowserProfileName(oldBrowserConfiguration.getConfigTag());
+                    Neodymium.setBrowserName(oldBrowserConfiguration.getCapabilities().getBrowserName());
                 }
             }
         }

@@ -4,9 +4,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.openqa.selenium.WebDriver;
-
-import com.browserup.bup.BrowserUpProxy;
 import com.codeborne.selenide.WebDriverRunner;
 import com.xceptance.neodymium.common.Data;
 import com.xceptance.neodymium.common.browser.configuration.BrowserConfiguration;
@@ -35,6 +32,12 @@ public class BrowserBeforeRunner
                                                             .get(methodBrowserAnnotations.get(0).value());
         }
 
+        // if browserConfiguration is null, the browser should not be started for this method and browserTag and
+        // browserRunner are therefore not required
+        BrowserMethodData browserTag = browserConfiguration != null ? BrowserData.addKeepBrowserOpenInformation(browserConfiguration.getBrowserTag(), before)
+                                                                    : null;
+        BrowserRunner browserRunner = browserTag != null ? new BrowserRunner(browserTag, before.getName()) : null;
+
         // if we don't need to start new browser for the setup and the browser for the test was not suppressed
         // it means that we should use the same browser for setup
         // as the might have been other @Before methods with new browser running previously, let's explicitly set
@@ -52,13 +55,7 @@ public class BrowserBeforeRunner
         // was found, create a new driver
         else if (startNewBrowserForSetUp && browserConfiguration != null)
         {
-            WebDriverStateContainer wDSCont = BrowserRunnerHelper.createWebDriverStateContainer(browserConfiguration, before.getDeclaringClass());
-
-            BrowserRunnerHelper.setBrowserWindowSize(browserConfiguration, wDSCont.getWebDriver());
-            WebDriverRunner.setWebDriver(wDSCont.getWebDriver());
-            Neodymium.setWebDriverStateContainer(wDSCont);
-            Neodymium.setBrowserProfileName(browserConfiguration.getConfigTag());
-            Neodymium.setBrowserName(browserConfiguration.getCapabilities().getBrowserName());
+            browserRunner.setUpTest();
 
         }
         else if (startNewBrowserForSetUp)
@@ -86,35 +83,20 @@ public class BrowserBeforeRunner
             // if we did a set up of new driver before the @Before method, we need to close it
             if (startNewBrowserForSetUp && browserConfiguration != null)
             {
-                // avoid closing driver in case it's selected to keep browser open
-                if (!(!browserConfiguration.isHeadless()
-                      && ((Neodymium.configuration().keepBrowserOpenOnFailure() && beforeFailed) || Neodymium.configuration().keepBrowserOpen())))
-                {
-                    WebDriverStateContainer wdst = Neodymium.getWebDriverStateContainer();
-                    WebDriver driver = wdst != null ? wdst.getWebDriver() : null;
-                    if (driver != null)
-                    {
-                        driver.quit();
-                    }
-                    BrowserUpProxy proxy = wdst != null ? wdst.getProxy() : null;
-                    if (proxy != null)
-                    {
-                        proxy.stop();
-                    }
-                    Neodymium.setWebDriverStateContainer(null);
-                }
+                browserRunner.teardown(beforeFailed);
             }
 
             // set driver back to the original to execute the test or clean up (in case of failure)
-            Neodymium.setWebDriverStateContainer(oldWDsCont);
+            // Neodymium.setWebDriverStateContainer(oldWDsCont);
+            if (oldWDsCont != null)
+            {
+                WebDriverRunner.setWebDriver(oldWDsCont.getWebDriver());
+                Neodymium.setWebDriverStateContainer(oldWDsCont);
+            }
             if (oldBrowserConfiguration != null)
             {
                 Neodymium.setBrowserProfileName(oldBrowserConfiguration.getConfigTag());
                 Neodymium.setBrowserName(oldBrowserConfiguration.getCapabilities().getBrowserName());
-            }
-            if (oldWDsCont != null && oldWDsCont.getWebDriver() != null)
-            {
-                WebDriverRunner.setWebDriver(oldWDsCont.getWebDriver());
             }
         }
     }
@@ -140,5 +122,12 @@ public class BrowserBeforeRunner
 
         // if @Before method is annotated with @SuppressBrowser annotation, no new browser should be started
         return startNewBrowserForSetUp;
+    }
+
+    public static boolean isSuppressed(Method each)
+    {
+        List<SuppressBrowsers> methodSuppressBrowserAnnotations = Data.getAnnotations(each, SuppressBrowsers.class);
+
+        return !methodSuppressBrowserAnnotations.isEmpty();
     }
 }

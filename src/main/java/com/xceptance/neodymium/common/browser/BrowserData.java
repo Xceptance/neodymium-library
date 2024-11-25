@@ -195,7 +195,7 @@ public class BrowserData extends Data
                        .collect(Collectors.toList());
     }
 
-    private BrowserMethodData addKeepBrowserOpenInformation(String browserTag, Method method)
+    public static BrowserMethodData addKeepBrowserOpenInformation(String browserTag, Method method)
     {
         List<KeepBrowserOpen> methodKeepBrowserOpenAnnotations = getAnnotations(method, KeepBrowserOpen.class);
         List<KeepBrowserOpen> classKeepBrowserOpenAnnotations = getAnnotations(method.getDeclaringClass(), KeepBrowserOpen.class);

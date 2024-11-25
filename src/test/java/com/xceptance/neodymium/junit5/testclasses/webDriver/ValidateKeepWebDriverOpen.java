@@ -12,6 +12,8 @@ import com.browserup.bup.BrowserUpProxy;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.xceptance.neodymium.common.browser.Browser;
+import com.xceptance.neodymium.common.browser.StartNewBrowserForCleanUp;
+import com.xceptance.neodymium.common.browser.StartNewBrowserForSetUp;
 import com.xceptance.neodymium.common.browser.WebDriverCache;
 import com.xceptance.neodymium.junit5.NeodymiumTest;
 import com.xceptance.neodymium.junit5.tests.NeodymiumWebDriverTest;
@@ -22,6 +24,8 @@ import com.xceptance.neodymium.util.Neodymium;
  * Validate that the web driver is not reused.
  * Attention: this test needs to use browsers that are not headless.
  */
+@StartNewBrowserForSetUp
+@StartNewBrowserForCleanUp
 public class ValidateKeepWebDriverOpen
 {
     private static WebDriver webDriverBeforeForTest1;
@@ -127,6 +131,7 @@ public class ValidateKeepWebDriverOpen
         Assert.assertNotEquals(webDriverBeforeForTest1, webDriverTest2);
         Assert.assertNotEquals(webDriverBeforeForTest2, webDriverTest1);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriverBeforeForTest2);
+        NeodymiumWebDriverTest.assertWebDriverAlive(webDriverTest1);
         NeodymiumWebDriverTest.assertWebDriverAlive(webDriverTest2);
         if (webDriverAfterForTest2 != null)
         {

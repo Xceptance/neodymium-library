@@ -1,18 +1,39 @@
 package com.xceptance.neodymium.junit5.browser;
 
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.InvocationInterceptor;
+import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
 import org.junit.jupiter.api.extension.TestWatcher;
 
+import com.xceptance.neodymium.common.browser.BrowserAfterRunner;
+import com.xceptance.neodymium.common.browser.BrowserBeforeRunner;
 import com.xceptance.neodymium.common.browser.BrowserMethodData;
 import com.xceptance.neodymium.common.browser.BrowserRunner;
+import com.xceptance.neodymium.common.browser.StartNewBrowserForCleanUp;
+import com.xceptance.neodymium.common.browser.SuppressBrowsers;
+import com.xceptance.neodymium.util.Neodymium;
 
-public class BrowserExecutionCallback implements BeforeEachCallback, TestWatcher
+public class BrowserExecutionCallback implements InvocationInterceptor, BeforeEachCallback, TestWatcher
 {
     private BrowserRunner browserRunner;
 
+    private BrowserMethodData browserTag;
+
+    private List<Method> afterMethodsWithTestBrowser;
+
+    private boolean tearDownDone;
+
+    private boolean testFailed;
+
     public BrowserExecutionCallback(BrowserMethodData browserTag, String testName)
     {
+        this.browserTag = browserTag;
         browserRunner = new BrowserRunner(browserTag, testName);
     }
 
@@ -23,19 +44,136 @@ public class BrowserExecutionCallback implements BeforeEachCallback, TestWatcher
     @Override
     public void beforeEach(ExtensionContext context) throws Exception
     {
-        browserRunner.setUpTest();
+        if (browserTag != null)
+        {
+            Neodymium.setBrowserProfileName(browserTag.getBrowserTag());
+        }
+    }
+
+    @Override
+    public void interceptBeforeEachMethod(Invocation<Void> invocation,
+                                          ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext)
+        throws Throwable
+    {
+        boolean browserSuppressedForThisBefore = BrowserBeforeRunner.isSuppressed(invocationContext.getExecutable());
+        if (!browserSuppressedForThisBefore && Neodymium.configuration().startNewBrowserForSetUp()
+            && BrowserBeforeRunner.shouldStartNewBrowser(invocationContext.getExecutable()))
+        {
+            new BrowserBeforeRunner().run(() -> {
+                try
+                {
+                    invocation.proceed();
+                }
+                catch (Throwable e)
+                {
+                    return e;
+                }
+                return null;
+
+            }, invocationContext.getExecutable(), true);
+        }
+        else
+        {
+            if (!browserSuppressedForThisBefore && browserTag != null
+                && (Neodymium.getWebDriverStateContainer() == null || Neodymium.getWebDriverStateContainer().getWebDriver() == null))
+            {
+                browserRunner.setUpTest();
+            }
+            invocation.proceed();
+        }
+    }
+
+    @Override
+    public void interceptTestTemplateMethod(Invocation<Void> invocation,
+                                            ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext)
+        throws Throwable
+    {
+        if (browserTag != null && (Neodymium.getWebDriverStateContainer() == null || Neodymium.getWebDriverStateContainer().getWebDriver() == null))
+        {
+            browserRunner.setUpTest();
+        }
+        try
+        {
+            invocation.proceed();
+        }
+        catch (Throwable e)
+        {
+            testFailed = true;
+            throw e;
+        }
+    }
+
+    @Override
+    public void interceptAfterEachMethod(Invocation<Void> invocation,
+                                         ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext)
+        throws Throwable
+    {
+        if (Neodymium.configuration().startNewBrowserForCleanUp())
+        {
+            if (afterMethodsWithTestBrowser == null)
+            {
+                if (extensionContext.getRequiredTestClass().getAnnotation(StartNewBrowserForCleanUp.class) == null)
+                {
+                    afterMethodsWithTestBrowser = List.of(extensionContext.getRequiredTestClass().getMethods()).stream()
+                                                      .filter(method -> method.getAnnotation(AfterEach.class) != null
+                                                                        && method.getAnnotation(StartNewBrowserForCleanUp.class) == null)
+                                                      .collect(Collectors.toList());
+                }
+                else
+                {
+                    afterMethodsWithTestBrowser = List.of(extensionContext.getRequiredTestClass().getMethods()).stream()
+                                                      .filter(method -> method.getAnnotation(AfterEach.class) != null
+                                                                        && method.getAnnotation(SuppressBrowsers.class) != null)
+                                                      .collect(Collectors.toList());
+                }
+            }
+            boolean reuseTestBrowserForThisAfter = afterMethodsWithTestBrowser.remove(invocationContext.getExecutable());
+            if (!tearDownDone && !reuseTestBrowserForThisAfter && afterMethodsWithTestBrowser.isEmpty() && browserTag != null)
+            {
+                browserRunner.teardown(testFailed);
+                tearDownDone = true;
+                if (browserTag != null)
+                {
+                    Neodymium.setBrowserProfileName(browserTag.getBrowserTag());
+                }
+            }
+            new BrowserAfterRunner().run(() -> {
+                try
+                {
+                    invocation.proceed();
+                }
+                catch (Throwable e)
+                {
+                    return e;
+                }
+                return null;
+
+            }, invocationContext.getExecutable(), true);
+        }
+        else
+        {
+            invocation.proceed();
+        }
     }
 
     @Override
     public void testFailed(ExtensionContext context, Throwable cause)
     {
-        browserRunner.teardown(true);
+        // commented out because sometimes Neodymium.getDriver() is not set back to null -> breaks
+        // testDontStartNewBrowserForOneOfTheBefores running after testNewBrowserIsNotStartedForOneOfCleanUps
+        if (!tearDownDone)
+        {
+            browserRunner.teardown(true);
+        }
     }
 
     @Override
     public void testSuccessful(ExtensionContext context)
     {
-        browserRunner.teardown(false);
+        if (!tearDownDone)
+        {
+            browserRunner.teardown(false);
+        }
     }
 
 }
