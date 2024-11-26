@@ -36,6 +36,8 @@ public class VideoWriter implements Writer
 
     private Process p;
 
+    private boolean logVideoProcessingTime;
+
     /**
      * Required to instantiate the object in the {@link Writer#instantiate(Class, RecordingConfigurations, String)}
      * method.
@@ -56,6 +58,7 @@ public class VideoWriter implements Writer
         pb = new ProcessBuilder(((VideoRecordingConfigurations) recordingConfigurations).ffmpegBinaryPath(), "-y", "-f", "image2pipe", "-i", "pipe:0", "-c:v", "libx264", "-strict", "-2", "-preset", "slow", "-pix_fmt", "yuv420p", "-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2", "-f", "mp4", videoFileName);
         pb.redirectErrorStream(true);
         pb.redirectOutput(Redirect.appendTo(new File(((VideoRecordingConfigurations) recordingConfigurations).ffmpegLogFile())));
+        logVideoProcessingTime = recordingConfigurations.logInformationAboutRecording();
     }
 
     /**
@@ -123,6 +126,9 @@ public class VideoWriter implements Writer
             Selenide.sleep(200);
         }
 
-        AllureAddons.addToReport("video processing took " + (new Date().getTime() - videoProcessingStart + " ms"), "");
+        if (logVideoProcessingTime)
+        {
+            AllureAddons.addToReport("video processing took " + (new Date().getTime() - videoProcessingStart + " ms"), "");
+        }
     }
 }
