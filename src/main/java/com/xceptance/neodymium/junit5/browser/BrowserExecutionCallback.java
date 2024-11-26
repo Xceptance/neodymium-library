@@ -182,8 +182,6 @@ public class BrowserExecutionCallback implements InvocationInterceptor, BeforeEa
     @Override
     public void testFailed(ExtensionContext context, Throwable cause)
     {
-        // commented out because sometimes Neodymium.getDriver() is not set back to null -> breaks
-        // testDontStartNewBrowserForOneOfTheBefores running after testNewBrowserIsNotStartedForOneOfCleanUps
         if (!tearDownDone)
         {
             browserRunner.teardown(true);
