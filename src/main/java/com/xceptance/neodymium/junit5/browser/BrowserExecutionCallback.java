@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.InvocationInterceptor;
@@ -16,6 +17,7 @@ import com.xceptance.neodymium.common.browser.BrowserBeforeRunner;
 import com.xceptance.neodymium.common.browser.BrowserMethodData;
 import com.xceptance.neodymium.common.browser.BrowserRunner;
 import com.xceptance.neodymium.common.browser.StartNewBrowserForCleanUp;
+import com.xceptance.neodymium.common.browser.StartNewBrowserForSetUp;
 import com.xceptance.neodymium.common.browser.SuppressBrowsers;
 import com.xceptance.neodymium.util.Neodymium;
 
@@ -25,7 +27,11 @@ public class BrowserExecutionCallback implements InvocationInterceptor, BeforeEa
 
     private BrowserMethodData browserTag;
 
+    private boolean separateBrowserForSetupRequired;
+
     private List<Method> afterMethodsWithTestBrowser;
+
+    private boolean setupDone;
 
     private boolean tearDownDone;
 
@@ -37,16 +43,26 @@ public class BrowserExecutionCallback implements InvocationInterceptor, BeforeEa
         browserRunner = new BrowserRunner(browserTag, testName);
     }
 
-    public BrowserExecutionCallback()
-    {
-    }
-
     @Override
     public void beforeEach(ExtensionContext context) throws Exception
     {
+        separateBrowserForSetupRequired = Neodymium.configuration().startNewBrowserForSetUp()
+                                          && (context.getRequiredTestClass().getAnnotation(StartNewBrowserForSetUp.class) != null
+                                              || List.of(context.getRequiredTestClass().getMethods()).stream()
+                                                     .filter(method -> method.getAnnotation(BeforeEach.class) != null
+                                                                       && method.getAnnotation(StartNewBrowserForSetUp.class) != null)
+                                                     .findAny().isPresent());
         if (browserTag != null)
         {
-            Neodymium.setBrowserProfileName(browserTag.getBrowserTag());
+            if (!separateBrowserForSetupRequired)
+            {
+                browserRunner.setUpTest();
+                setupDone = true;
+            }
+            else
+            {
+                Neodymium.setBrowserProfileName(browserTag.getBrowserTag());
+            }
         }
     }
 
@@ -55,30 +71,37 @@ public class BrowserExecutionCallback implements InvocationInterceptor, BeforeEa
                                           ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext)
         throws Throwable
     {
-        boolean browserSuppressedForThisBefore = BrowserBeforeRunner.isSuppressed(invocationContext.getExecutable());
-        if (!browserSuppressedForThisBefore && Neodymium.configuration().startNewBrowserForSetUp()
-            && BrowserBeforeRunner.shouldStartNewBrowser(invocationContext.getExecutable()))
+        if (separateBrowserForSetupRequired)
         {
-            new BrowserBeforeRunner().run(() -> {
-                try
-                {
-                    invocation.proceed();
-                }
-                catch (Throwable e)
-                {
-                    return e;
-                }
-                return null;
+            boolean browserSuppressedForThisBefore = BrowserBeforeRunner.isSuppressed(invocationContext.getExecutable());
+            if (!browserSuppressedForThisBefore && Neodymium.configuration().startNewBrowserForSetUp()
+                && BrowserBeforeRunner.shouldStartNewBrowser(invocationContext.getExecutable()))
+            {
+                new BrowserBeforeRunner().run(() -> {
+                    try
+                    {
+                        invocation.proceed();
+                    }
+                    catch (Throwable e)
+                    {
+                        return e;
+                    }
+                    return null;
 
-            }, invocationContext.getExecutable(), true);
+                }, invocationContext.getExecutable(), true);
+            }
+            else
+            {
+                if (!setupDone)
+                {
+                    browserRunner.setUpTest();
+                    setupDone = true;
+                }
+                invocation.proceed();
+            }
         }
         else
         {
-            if (!browserSuppressedForThisBefore && browserTag != null
-                && (Neodymium.getWebDriverStateContainer() == null || Neodymium.getWebDriverStateContainer().getWebDriver() == null))
-            {
-                browserRunner.setUpTest();
-            }
             invocation.proceed();
         }
     }
@@ -88,7 +111,7 @@ public class BrowserExecutionCallback implements InvocationInterceptor, BeforeEa
                                             ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext)
         throws Throwable
     {
-        if (browserTag != null && (Neodymium.getWebDriverStateContainer() == null || Neodymium.getWebDriverStateContainer().getWebDriver() == null))
+        if (!setupDone && browserTag != null)
         {
             browserRunner.setUpTest();
         }
@@ -175,5 +198,4 @@ public class BrowserExecutionCallback implements InvocationInterceptor, BeforeEa
             browserRunner.teardown(false);
         }
     }
-
 }
