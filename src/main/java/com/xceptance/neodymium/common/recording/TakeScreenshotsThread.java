@@ -103,8 +103,11 @@ public class TakeScreenshotsThread extends Thread
 
                 }
                 boolean isGif = recordingConfigurations.format().equals("gif");
-                AllureAddons.addToReport("avarage " + (isGif ? "gif" : "video") + " sequence recording creation duration = " + millis + " / " + turns + "="
-                                         + millis / turns, "");
+                if (recordingConfigurations.logInformationAboutRecording())
+                {
+                    AllureAddons.addToReport("average " + (isGif ? "gif" : "video") + " sequence recording creation duration = " + millis + " / " + turns + "="
+                                             + millis / turns, "");
+                }
                 writer.stop();
                 try
                 {
