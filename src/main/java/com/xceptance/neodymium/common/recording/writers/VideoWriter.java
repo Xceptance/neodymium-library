@@ -48,7 +48,6 @@ public class VideoWriter implements Writer
      * @param videoFileName
      *            {@link String} video file name ( including the path)
      * @throws FileNotFoundException
-     * @throws Exception
      */
     protected VideoWriter(RecordingConfigurations recordingConfigurations, String videoFileName) throws FileNotFoundException
     {
