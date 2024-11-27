@@ -1,7 +1,5 @@
 package com.xceptance.neodymium.util;
 
-import static org.aeonbits.owner.Config.DisableableFeature.VARIABLE_EXPANSION;
-
 import org.aeonbits.owner.Config.LoadPolicy;
 import org.aeonbits.owner.Config.LoadType;
 import org.aeonbits.owner.Config.Sources;
@@ -12,7 +10,12 @@ import com.xceptance.neodymium.junit4.NeodymiumRunner.DescriptionMode;
 @LoadPolicy(LoadType.MERGE)
 @Sources(
 {
-  "${neodymium.temporaryConfigFile}", "file:config/dev-neodymium.properties", "file:config/credentials.properties", "file:config/neodymium.properties"
+  "${neodymium.temporaryConfigFile}",
+  "file:config/dev-neodymium.properties",
+  "system:properties",
+  "system:env",
+  "file:config/credentials.properties",
+  "file:config/neodymium.properties"
 })
 public interface NeodymiumConfiguration extends Mutable
 {
@@ -83,7 +86,7 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.url.path")
     @DisableFeature(
     {
-      VARIABLE_EXPANSION
+      DisableableFeature.VARIABLE_EXPANSION
     })
     public String rawPath();
 
