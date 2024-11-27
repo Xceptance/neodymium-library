@@ -15,6 +15,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.google.common.collect.ImmutableMap;
+import com.xceptance.neodymium.util.AllureAddons.EnvironmentInfoMode;
 
 public class AllureAddonsTest
 {
@@ -34,7 +35,7 @@ public class AllureAddonsTest
                                                        .put("a",
                                                             "a")
                                                        .build();
-        AllureAddons.addEnvironmentInformation(map, false);
+        AllureAddons.addEnvironmentInformation(map);
 
         expectedFileContentList.addAll(map.entrySet());
         this.validateEnvironmentFile(expectedFileContentList);
@@ -47,14 +48,14 @@ public class AllureAddonsTest
         expectedFileContentList = new ArrayList<>();
         expectedFileContentList.addAll(map2.entrySet());
 
-        AllureAddons.addEnvironmentInformation(map2, true);
+        AllureAddons.addEnvironmentInformation(map2, EnvironmentInfoMode.REPLACE);
         this.validateEnvironmentFile(expectedFileContentList);
 
         // single value is not added twice
-        AllureAddons.addEnvironmentInformation(map2, true);
+        AllureAddons.addEnvironmentInformation(map2, EnvironmentInfoMode.REPLACE);
         this.validateEnvironmentFile(expectedFileContentList);
         // in any mode
-        AllureAddons.addEnvironmentInformation(map2, false);
+        AllureAddons.addEnvironmentInformation(map2);
         this.validateEnvironmentFile(expectedFileContentList);
 
         // Add second single value
@@ -64,7 +65,7 @@ public class AllureAddonsTest
                                                         .build();
         expectedFileContentList.addAll(map3.entrySet());
 
-        AllureAddons.addEnvironmentInformation(map3, true);
+        AllureAddons.addEnvironmentInformation(map3, EnvironmentInfoMode.REPLACE);
         this.validateEnvironmentFile(expectedFileContentList);
 
         // combined add and update
@@ -78,7 +79,7 @@ public class AllureAddonsTest
         expectedFileContentList.addAll(map2.entrySet());
         expectedFileContentList.addAll(map4.entrySet());
 
-        AllureAddons.addEnvironmentInformation(map4, true);
+        AllureAddons.addEnvironmentInformation(map4, EnvironmentInfoMode.REPLACE);
         this.validateEnvironmentFile(expectedFileContentList);
 
         // add with same value
@@ -88,7 +89,7 @@ public class AllureAddonsTest
                                                         .build();
         expectedFileContentList.addAll(map5.entrySet());
 
-        AllureAddons.addEnvironmentInformation(map5, false);
+        AllureAddons.addEnvironmentInformation(map5, EnvironmentInfoMode.ADD);
         this.validateEnvironmentFile(expectedFileContentList);
 
         // add multiple new values
@@ -100,7 +101,7 @@ public class AllureAddonsTest
                                                         .build();
         expectedFileContentList.addAll(map6.entrySet());
 
-        AllureAddons.addEnvironmentInformation(map6, false);
+        AllureAddons.addEnvironmentInformation(map6, EnvironmentInfoMode.ADD);
         this.validateEnvironmentFile(expectedFileContentList);
     }
 

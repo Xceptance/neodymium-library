@@ -31,9 +31,8 @@ import com.xceptance.neodymium.common.WorkInProgress;
 import com.xceptance.neodymium.common.browser.Browser;
 import com.xceptance.neodymium.junit4.order.DefaultStatementRunOrder;
 import com.xceptance.neodymium.junit4.statement.browser.ScreenshotRunAfters;
-
 import com.xceptance.neodymium.util.AllureAddons;
-
+import com.xceptance.neodymium.util.AllureAddons.EnvironmentInfoMode;
 import com.xceptance.neodymium.util.Neodymium;
 
 import io.qameta.allure.selenide.AllureSelenide;
@@ -104,7 +103,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                 AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder()
                                                                    .put("Testing Framework", "Neodymium " + Neodymium.getNeodymiumVersion())
                                                                    .build(),
-                                                       true);
+                                                       EnvironmentInfoMode.REPLACE);
             }
         }
         AllureAddons.initializeEnvironmentInformation();

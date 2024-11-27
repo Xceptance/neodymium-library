@@ -1,17 +1,17 @@
 package com.xceptance.neodymium.util;
 
 import java.io.File;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Properties;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -39,7 +39,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
-
 import com.xceptance.neodymium.common.ScreenshotWriter;
 
 import io.qameta.allure.Allure;
@@ -235,16 +234,33 @@ public class AllureAddons
         return lastStep;
     }
 
-     /**
+    public static enum EnvironmentInfoMode
+    {
+        REPLACE, APPEND_VALUE, ADD;
+    }
+
+    /**
+     * Adds information about environment to the report, if a key is already present in the map the current value will
+     * be kept
+     * 
+     * @param environmentValuesSet
+     *            map with environment values
+     */
+    public static synchronized void addEnvironmentInformation(ImmutableMap<String, String> environmentValuesSet)
+    {
+        addEnvironmentInformation(environmentValuesSet, EnvironmentInfoMode.ADD);
+    }
+
+    /**
      * Adds information about environment to the report
      * 
      * @param environmentValuesSet
      *            map with environment values
-     * @param shouldUpdate
-     *            toggle to determine: if a key is already present in the map, should we replace the it with the new
-     *            value, or should we add another line with the same key but different values
+     * @param mode
+     *            if a key is already present in the map, should we replace the it with the new value, or should we add
+     *            another line with the same key but different values or append the new value to the old value
      */
-    public static synchronized void addEnvironmentInformation(ImmutableMap<String, String> environmentValuesSet, boolean shouldUpdate)
+    public static synchronized void addEnvironmentInformation(ImmutableMap<String, String> environmentValuesSet, EnvironmentInfoMode mode)
     {
         try
         {
@@ -288,12 +304,12 @@ public class AllureAddons
                         NodeList childNodes = environment.getChildNodes();
                         boolean isSameNode = false;
                         int keyToUpdate = -1;
+                        String value = "";
                         for (int i = 0; i < childNodes.getLength(); i++)
                         {
                             Node child = childNodes.item(i);
                             NodeList subNodes = child.getChildNodes();
                             String key = "";
-                            String value = "";
                             for (int j = 0; j < subNodes.getLength(); j++)
                             {
                                 Node subNode = subNodes.item(j);
@@ -311,7 +327,7 @@ public class AllureAddons
                                 isSameNode = true;
                                 break;
                             }
-                            else if (shouldUpdate && key.equals(entry.getKey()))
+                            else if (key.equals(entry.getKey()))
                             {
                                 keyToUpdate = i;
                                 break;
@@ -319,26 +335,47 @@ public class AllureAddons
                         }
                         if (!isSameNode)
                         {
-                            if (shouldUpdate && keyToUpdate >= 0)
+                            if (mode != EnvironmentInfoMode.ADD && keyToUpdate >= 0)
                             {
-                                Element parameter = doc.createElement("parameter");
-                                Element key = doc.createElement("key");
-                                Element value = doc.createElement("value");
-                                key.appendChild(doc.createTextNode(entry.getKey()));
-                                value.appendChild(doc.createTextNode(entry.getValue()));
-                                parameter.appendChild(key);
-                                parameter.appendChild(value);
-                                environment.replaceChild(parameter, childNodes.item(keyToUpdate));
+                                switch (mode)
+                                {
+                                    case REPLACE:
+                                    {
+                                        Element parameter = doc.createElement("parameter");
+                                        Element keyNode = doc.createElement("key");
+                                        Element valueNode = doc.createElement("value");
+                                        keyNode.appendChild(doc.createTextNode(entry.getKey()));
+                                        valueNode.appendChild(doc.createTextNode(value + ", " + entry.getValue()));
+                                        parameter.appendChild(keyNode);
+                                        parameter.appendChild(valueNode);
+                                        environment.replaceChild(parameter, childNodes.item(keyToUpdate));
+                                        break;
+                                    }
+                                    case APPEND_VALUE:
+                                    {
+                                        Element parameter = doc.createElement("parameter");
+                                        Element keyNode = doc.createElement("key");
+                                        Element valueNode = doc.createElement("value");
+                                        keyNode.appendChild(doc.createTextNode(entry.getKey()));
+                                        valueNode.appendChild(doc.createTextNode(entry.getValue()));
+                                        parameter.appendChild(keyNode);
+                                        parameter.appendChild(valueNode);
+                                        environment.replaceChild(parameter, childNodes.item(keyToUpdate));
+                                        break;
+                                    }
+                                    default:
+                                        break;
+                                }
                             }
                             else
                             {
                                 Element parameter = doc.createElement("parameter");
-                                Element key = doc.createElement("key");
-                                Element value = doc.createElement("value");
-                                key.appendChild(doc.createTextNode(entry.getKey()));
-                                value.appendChild(doc.createTextNode(entry.getValue()));
-                                parameter.appendChild(key);
-                                parameter.appendChild(value);
+                                Element keyNode = doc.createElement("key");
+                                Element valueNode = doc.createElement("value");
+                                keyNode.appendChild(doc.createTextNode(entry.getKey()));
+                                valueNode.appendChild(doc.createTextNode(entry.getValue()));
+                                parameter.appendChild(keyNode);
+                                parameter.appendChild(valueNode);
                                 environment.appendChild(parameter);
                             }
                             isFileAccessNeeded = true;
@@ -485,7 +522,7 @@ public class AllureAddons
 
         if (!environmentDataMap.isEmpty())
         {
-            AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder().putAll(environmentDataMap).build(), false);
+            AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder().putAll(environmentDataMap).build());
         }
     }
 

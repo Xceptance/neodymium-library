@@ -13,6 +13,7 @@ import com.codeborne.selenide.logevents.SelenideLogger;
 import com.google.common.collect.ImmutableMap;
 import com.xceptance.neodymium.common.TestStepListener;
 import com.xceptance.neodymium.util.AllureAddons;
+import com.xceptance.neodymium.util.AllureAddons.EnvironmentInfoMode;
 import com.xceptance.neodymium.util.Neodymium;
 
 import io.qameta.allure.selenide.AllureSelenide;
@@ -44,7 +45,7 @@ public class NeodymiumRunner implements TestTemplateInvocationContextProvider
                 AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder()
                                                                    .put("Testing Framework", "Neodymium " + Neodymium.getNeodymiumVersion())
                                                                    .build(),
-                                                       true);
+                                                       EnvironmentInfoMode.REPLACE);
             }
         }
         AllureAddons.initializeEnvironmentInformation();
