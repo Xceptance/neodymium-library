@@ -10,9 +10,9 @@ import com.xceptance.neodymium.junit4.NeodymiumRunner.DescriptionMode;
 @LoadPolicy(LoadType.MERGE)
 @Sources(
 {
+  "system:properties",
   "${neodymium.temporaryConfigFile}",
   "file:config/dev-neodymium.properties",
-  "system:properties",
   "system:env",
   "file:config/credentials.properties",
   "file:config/neodymium.properties"
