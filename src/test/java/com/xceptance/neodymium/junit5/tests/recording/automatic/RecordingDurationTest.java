@@ -55,18 +55,28 @@ public class RecordingDurationTest extends AbstractNeodymiumTest
     @Test
     public void testVideoRecording() throws IOException
     {
+        double run100 = runTest(false, "100");
         double run1000 = runTest(false, "1000");
-        double run1500 = runTest(false, "1500");
-        Assert.assertEquals("Videos with different oneImagePerMilliseconds value should have approximaty the same length (1/1000 = " + run1000 + ", 1/1500 = "
-                            + run1500 + ")", run1000, run1500, 5.0);
+
+        Assert.assertEquals("Videos with different oneImagePerMilliseconds value should have approximaty the same length (1/100 = " + run1000
+                            + ", 1/1000 = " + run100 + ")", run1000, run1000, 5.0);
     }
 
     @Test
     public void testGifRecording() throws IOException
     {
-        double run1000 = runTest(true, "1000");
-        double run1500 = runTest(true, "1500");
-        Assert.assertEquals("Gifs with different oneImagePerMilliseconds value should have approximaty the same length (1/1000 = " + run1000 + ", 1/1500 = "
-                            + run1500 + ")", run1000, run1500, 5.0);
+        double run100 = runTest(true, "100");
+        double run1500 = runTest(true, "1000");
+        Assert.assertEquals("Gifs with different oneImagePerMilliseconds value should have approximaty the same length (1/100 = " + run100 + ", 1/1500 = "
+                            + run1500 + ")", run100, run1500, 5.0);
+    }
+
+    @Test
+    public void testMixedRecording() throws IOException
+    {
+        double runVideo1000 = runTest(false, "1000");
+        double runGif1000 = runTest(true, "1000");
+        Assert.assertEquals("Gifs with different oneImagePerMilliseconds value should have approximaty the same length (video = " + runVideo1000 + ", gif = "
+                            + runGif1000 + ")", runVideo1000, runGif1000, 5.0);
     }
 }
