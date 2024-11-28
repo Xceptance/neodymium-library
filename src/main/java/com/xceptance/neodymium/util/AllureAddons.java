@@ -303,6 +303,7 @@ public class AllureAddons
                     {
                         Node environment = doc.getDocumentElement();
                         NodeList childNodes = environment.getChildNodes();
+
                         boolean isSameNode = false;
                         int keyToUpdate = -1;
                         String value = "";
@@ -358,18 +359,20 @@ public class AllureAddons
                                     }
                                     case APPEND_VALUE:
                                     {
-                                        Element parameter = doc.createElement("parameter");
-                                        Element keyNode = doc.createElement("key");
-                                        Element valueNode = doc.createElement("value");
-                                        keyNode.appendChild(doc.createTextNode(entry.getKey()));
-                                        // append string as comma seperated list
-                                        valueNode.appendChild(doc.createTextNode(value + ", " + entry.getValue()));
+                                        if (value.contains(entry.getValue()) == false)
+                                        {
+                                            Element parameter = doc.createElement("parameter");
+                                            Element keyNode = doc.createElement("key");
+                                            Element valueNode = doc.createElement("value");
+                                            keyNode.appendChild(doc.createTextNode(entry.getKey()));
+                                            // append string as comma seperated list
+                                            valueNode.appendChild(doc.createTextNode(value + ", " + entry.getValue()));
 
-                                        parameter.appendChild(keyNode);
-                                        parameter.appendChild(valueNode);
-                                        environment.replaceChild(parameter, childNodes.item(keyToUpdate));
-                                        isFileAccessNeeded = true;
-
+                                            parameter.appendChild(keyNode);
+                                            parameter.appendChild(valueNode);
+                                            environment.replaceChild(parameter, childNodes.item(keyToUpdate));
+                                            isFileAccessNeeded = true;
+                                        }
                                         break;
                                     }
                                     case ADD:
