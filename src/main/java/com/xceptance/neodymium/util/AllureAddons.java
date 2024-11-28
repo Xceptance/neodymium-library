@@ -55,6 +55,7 @@ import io.qameta.allure.model.StepResult;
 public class AllureAddons
 {
     private static final Properties ALLURE_PROPERTIES = io.qameta.allure.util.PropertiesUtils.loadAllureProperties();
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AllureAddons.class);
 
     private static boolean neoVersionLogged = false;
@@ -236,7 +237,7 @@ public class AllureAddons
 
     public static enum EnvironmentInfoMode
     {
-        REPLACE, APPEND_VALUE, ADD;
+        REPLACE, APPEND_VALUE, ADD, IGNORE;
     }
 
     /**
@@ -248,7 +249,7 @@ public class AllureAddons
      */
     public static synchronized void addEnvironmentInformation(ImmutableMap<String, String> environmentValuesSet)
     {
-        addEnvironmentInformation(environmentValuesSet, EnvironmentInfoMode.ADD);
+        addEnvironmentInformation(environmentValuesSet, EnvironmentInfoMode.REPLACE);
     }
 
     /**
@@ -335,7 +336,8 @@ public class AllureAddons
                         }
                         if (!isSameNode)
                         {
-                            if (mode != EnvironmentInfoMode.ADD && keyToUpdate >= 0)
+                            // if we have the same key, we need to process it according to the chosen mode
+                            if (keyToUpdate >= 0)
                             {
                                 switch (mode)
                                 {
@@ -345,10 +347,13 @@ public class AllureAddons
                                         Element keyNode = doc.createElement("key");
                                         Element valueNode = doc.createElement("value");
                                         keyNode.appendChild(doc.createTextNode(entry.getKey()));
-                                        valueNode.appendChild(doc.createTextNode(value + ", " + entry.getValue()));
+                                        valueNode.appendChild(doc.createTextNode(entry.getValue()));
+
                                         parameter.appendChild(keyNode);
                                         parameter.appendChild(valueNode);
                                         environment.replaceChild(parameter, childNodes.item(keyToUpdate));
+                                        isFileAccessNeeded = true;
+
                                         break;
                                     }
                                     case APPEND_VALUE:
@@ -357,18 +362,38 @@ public class AllureAddons
                                         Element keyNode = doc.createElement("key");
                                         Element valueNode = doc.createElement("value");
                                         keyNode.appendChild(doc.createTextNode(entry.getKey()));
-                                        valueNode.appendChild(doc.createTextNode(entry.getValue()));
+                                        // append string as comma seperated list
+                                        valueNode.appendChild(doc.createTextNode(value + ", " + entry.getValue()));
+
                                         parameter.appendChild(keyNode);
                                         parameter.appendChild(valueNode);
                                         environment.replaceChild(parameter, childNodes.item(keyToUpdate));
+                                        isFileAccessNeeded = true;
+
                                         break;
                                     }
-                                    default:
+                                    case ADD:
+                                    {
+                                        Element parameter = doc.createElement("parameter");
+                                        Element keyNode = doc.createElement("key");
+                                        Element valueNode = doc.createElement("value");
+                                        keyNode.appendChild(doc.createTextNode(entry.getKey()));
+                                        valueNode.appendChild(doc.createTextNode(entry.getValue()));
+                                        parameter.appendChild(keyNode);
+                                        parameter.appendChild(valueNode);
+                                        environment.appendChild(parameter);
+                                        isFileAccessNeeded = true;
+
+                                        break;
+                                    }
+                                    case IGNORE:
+                                        // IGNORE is... well ignore
                                         break;
                                 }
                             }
                             else
                             {
+                                // if there's no key duplication we will just add the new node
                                 Element parameter = doc.createElement("parameter");
                                 Element keyNode = doc.createElement("key");
                                 Element valueNode = doc.createElement("value");
@@ -377,8 +402,9 @@ public class AllureAddons
                                 parameter.appendChild(keyNode);
                                 parameter.appendChild(valueNode);
                                 environment.appendChild(parameter);
+                                isFileAccessNeeded = true;
+
                             }
-                            isFileAccessNeeded = true;
                         }
                     }
                 }
@@ -415,11 +441,12 @@ public class AllureAddons
             {
                 LOGGER.warn("Could not acquire Filelock in time. Failed to add information about enviroment to Allure report");
             }
-        }
-        catch (ParserConfigurationException | TransformerException | SAXException | IOException e)
-        {
-            LOGGER.warn("Failed to add information about environment to Allure report", e);
-        }
+        }catch(ParserConfigurationException|TransformerException|SAXException|
+
+    IOException e)
+    {
+        LOGGER.warn("Failed to add information about environment to Allure report", e);
+    }
     }
 
     /**
@@ -475,7 +502,6 @@ public class AllureAddons
     public static void addLinkToReport(String message, String url)
     {
     }
-    
 
     public static void initializeEnvironmentInformation()
     {
@@ -526,27 +552,28 @@ public class AllureAddons
         }
     }
 
-    
     /**
-     * 
      * @param name
      *            of the attachment
      * @param data
      *            that needs to be added as an attachment
      */
-    public static void addDataAsJsonToReport(String name, Object data) 
+    public static void addDataAsJsonToReport(String name, Object data)
     {
         ObjectMapper mapper = new ObjectMapper();
         String dataObjectJson;
-        
-        try {
+
+        try
+        {
             // covert Java object to JSON strings
             dataObjectJson = mapper.setSerializationInclusion(Include.NON_NULL).writeValueAsString(data);
-            
-        } catch (JsonProcessingException e) {
+
+        }
+        catch (JsonProcessingException e)
+        {
             throw new RuntimeException(e);
         }
-        
+
         Allure.addAttachment(name, "text/html", DataUtils.convertJsonToHtml(dataObjectJson), "html");
     }
 }
