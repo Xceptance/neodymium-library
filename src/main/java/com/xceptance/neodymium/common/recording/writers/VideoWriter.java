@@ -77,6 +77,9 @@ public class VideoWriter implements Writer
         double framerate = 1 / ((double) recordingConfigurations.oneImagePerMilliseconds() / 1000);
 
         this.videoFileName = videoFileName;
+        pb = new ProcessBuilder(((VideoRecordingConfigurations) recordingConfigurations).ffmpegBinaryPath(), "-y", "-f", "image2pipe", "-r", Fraction.getFraction(framerate)
+                                                                                                                                                     .toString(), "-i", "pipe:0", "-c:v", "libx264", "-strict", "-2", "-preset", "slow", "-pix_fmt", "yuv420p", "-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2", "-f", "mp4", videoFileName);
+
         pb = new ProcessBuilder(ffmpegBinary, "-y", "-f", "image2pipe", "-r", Fraction.getFraction(framerate)
                                                                                       .toString(), "-i", "pipe:0", "-c:v", "libx264", videoFileName);
         pb.redirectErrorStream(true);
@@ -173,7 +176,10 @@ public class VideoWriter implements Writer
             LOGGER.info("video frame rate adjustment is processing");
             Selenide.sleep(200);
         }
-        AllureAddons.addToReport("video processing took " + (new Date().getTime() - videoProcessingStart + " ms"), "");
         tempFile.delete();
+        if (recordingConfigurations.logInformationAboutRecording())
+        {
+            AllureAddons.addToReport("video processing took " + (new Date().getTime() - videoProcessingStart + " ms"), "");
+        }
     }
 }

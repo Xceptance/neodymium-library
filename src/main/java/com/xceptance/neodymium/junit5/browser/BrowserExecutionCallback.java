@@ -33,5 +33,4 @@ public class BrowserExecutionCallback implements BeforeEachCallback, TestWatcher
     {
         browserRunner.teardown(false);
     }
-
 }

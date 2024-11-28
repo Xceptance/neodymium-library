@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import org.aeonbits.owner.ConfigFactory;
 import org.apache.commons.lang3.StringUtils;
 
 public class PropertiesUtil
@@ -20,7 +21,7 @@ public class PropertiesUtil
         for (Object key : properties.keySet())
         {
             String keyString = (String) key;
-            if (keyString.toLowerCase().startsWith(prefix.toLowerCase())) // TODO: lower case compare is wrong!
+            if (keyString.toLowerCase().startsWith(prefix.toLowerCase()))
             {
                 // cut off prefix
                 keyString = keyString.substring(prefix.length());
@@ -95,5 +96,34 @@ public class PropertiesUtil
         return PropertiesUtil.mapPutAllIfAbsent(dataMap,
                                                 PropertiesUtil.getDataMapForIdentifier(identifier,
                                                                                        properties));
+    }
+
+    public static Map<String, String> getPropertiesMapForCustomIdentifier(String customIdentifier)
+    {
+        Map<String, String> dataMap = new HashMap<String, String>();
+        dataMap = PropertiesUtil.addMissingPropertiesFromFile("./config/dev-neodymium.properties", customIdentifier, dataMap);
+
+        Map<String, String> systemEnvMap = new HashMap<String, String>();
+        for (Map.Entry<String, String> entry : System.getenv().entrySet())
+        {
+            String key = (String) entry.getKey();
+            if (key.contains(customIdentifier))
+            {
+                String cleanedKey = key.replace(customIdentifier, "");
+                cleanedKey = cleanedKey.replaceAll("\\.", "");
+                systemEnvMap.put(cleanedKey, (String) entry.getValue());
+            }
+        }
+        dataMap = PropertiesUtil.mapPutAllIfAbsent(dataMap, systemEnvMap);
+        dataMap = PropertiesUtil.mapPutAllIfAbsent(dataMap,
+                                                   PropertiesUtil.getDataMapForIdentifier(customIdentifier,
+                                                                                          System.getProperties()));
+        dataMap = PropertiesUtil.addMissingPropertiesFromFile("./config/credentials.properties", customIdentifier, dataMap);
+        dataMap = PropertiesUtil.addMissingPropertiesFromFile("./config/neodymium.properties", customIdentifier, dataMap);
+        dataMap = PropertiesUtil.addMissingPropertiesFromFile(ConfigFactory.getProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME)
+                                                                           .replaceAll("file:", "./"),
+                                                              customIdentifier,
+                                                              dataMap);
+        return dataMap;
     }
 }

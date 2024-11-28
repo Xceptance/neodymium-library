@@ -18,6 +18,7 @@ public class NeodymiumWebDriverListener implements WebDriverListener
     @Override
     public void beforeFindElement(WebDriver driver, By by)
     {
+        Neodymium.setLastUsedLocator(by);
         try
         {
             if (Neodymium.configuration().debuggingHighlightSelectedElements())
@@ -35,6 +36,7 @@ public class NeodymiumWebDriverListener implements WebDriverListener
     @Override
     public void beforeFindElements(WebDriver driver, By by)
     {
+        Neodymium.setLastUsedLocator(by);
         try
         {
             if (Neodymium.configuration().debuggingHighlightSelectedElements())
@@ -52,6 +54,7 @@ public class NeodymiumWebDriverListener implements WebDriverListener
     @Override
     public void beforeFindElement(WebElement element, By locator)
     {
+        Neodymium.setLastUsedLocator(element, locator);
         try
         {
             if (Neodymium.configuration().debuggingHighlightSelectedElements())
@@ -69,6 +72,7 @@ public class NeodymiumWebDriverListener implements WebDriverListener
     @Override
     public void beforeFindElements(WebElement element, By locator)
     {
+        Neodymium.setLastUsedLocator(element, locator);
         try
         {
             if (Neodymium.configuration().debuggingHighlightSelectedElements())
