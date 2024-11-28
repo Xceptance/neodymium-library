@@ -116,6 +116,7 @@ public class BrowserData extends Data
     private void populateBrowserDataWithGlobalInformation()
     {
         final String ieDriverPath = Neodymium.configuration().getIeDriverPath();
+        final String edgeDriverPath = Neodymium.configuration().getEdgeDriverPath();
         final String chromeDriverPath = Neodymium.configuration().getChromeDriverPath();
         final String geckoDriverPath = Neodymium.configuration().getFirefoxDriverPath();
 
@@ -130,6 +131,10 @@ public class BrowserData extends Data
         if (!StringUtils.isEmpty(geckoDriverPath))
         {
             System.setProperty("webdriver.gecko.driver", geckoDriverPath);
+        }
+        if (!StringUtils.isEmpty(edgeDriverPath))
+        {
+            System.setProperty("webdriver.edge.driver", edgeDriverPath);
         }
 
         // TODO: do we need a possibility to define browser tags globaly via system var? Is this opportunity documented?
