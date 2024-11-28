@@ -79,9 +79,6 @@ public class VideoWriter implements Writer
         this.videoFileName = videoFileName;
         pb = new ProcessBuilder(((VideoRecordingConfigurations) recordingConfigurations).ffmpegBinaryPath(), "-y", "-f", "image2pipe", "-r", Fraction.getFraction(framerate)
                                                                                                                                                      .toString(), "-i", "pipe:0", "-c:v", "libx264", "-strict", "-2", "-preset", "slow", "-pix_fmt", "yuv420p", "-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2", "-f", "mp4", videoFileName);
-
-        pb = new ProcessBuilder(ffmpegBinary, "-y", "-f", "image2pipe", "-r", Fraction.getFraction(framerate)
-                                                                                      .toString(), "-i", "pipe:0", "-c:v", "libx264", videoFileName);
         pb.redirectErrorStream(true);
         pb.redirectOutput(Redirect.appendTo(new File((this.recordingConfigurations).ffmpegLogFile())));
     }
