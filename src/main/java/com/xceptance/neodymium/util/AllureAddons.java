@@ -548,7 +548,9 @@ public class AllureAddons
 
         if (!environmentDataMap.isEmpty())
         {
-            AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder().putAll(environmentDataMap).build());
+            // These values should be the same for all running JVMs. If there are differences in the values, it would we
+            // good to see it in the report
+            AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder().putAll(environmentDataMap).build(), EnvironmentInfoMode.ADD);
         }
     }
 

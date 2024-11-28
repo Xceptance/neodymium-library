@@ -103,7 +103,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                 AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder()
                                                                    .put("Testing Framework", "Neodymium " + Neodymium.getNeodymiumVersion())
                                                                    .build(),
-                                                       EnvironmentInfoMode.REPLACE);
+                                                       EnvironmentInfoMode.IGNORE);
             }
         }
         AllureAddons.initializeEnvironmentInformation();
