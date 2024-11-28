@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -48,8 +49,18 @@ public interface Writer
         Writer writerObject = null;
 
         Constructor<? extends Writer> constructor = writer.getDeclaredConstructor(RecordingConfigurations.class, String.class);
-        writerObject = constructor.newInstance(recordingConfigurations, fileName);
-
+        try
+        {
+            writerObject = constructor.newInstance(recordingConfigurations, fileName);
+        }
+        catch (InvocationTargetException e)
+        {
+            if (e.getCause() instanceof FileNotFoundException)
+            {
+                throw (FileNotFoundException) e.getCause();
+            }
+            throw e;
+        }
         return writerObject;
     }
 
@@ -149,7 +160,7 @@ public interface Writer
 
     public void start() throws IOException;
 
-    public void write(File image);
+    public void write(File image, long delay);
 
     public void stop();
 }

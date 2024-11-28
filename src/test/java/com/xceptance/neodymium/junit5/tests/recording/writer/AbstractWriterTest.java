@@ -51,9 +51,9 @@ public abstract class AbstractWriterTest
         File filePath = new File(pathToFile);
 
         writer.start();
-        writer.write(TestImageGenerator.generateImage());
-        writer.write(TestImageGenerator.generateImage());
-        writer.write(TestImageGenerator.generateImage());
+        writer.write(TestImageGenerator.generateImage(), 100);
+        writer.write(TestImageGenerator.generateImage(), 100);
+        writer.write(TestImageGenerator.generateImage(), 100);
         writer.stop();
 
         Assert.assertTrue("writer haven't created a file", filePath.exists());

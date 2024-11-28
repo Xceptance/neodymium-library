@@ -438,7 +438,6 @@ public class AllureAddons
     public static void addLinkToReport(String message, String url)
     {
     }
-    
 
     public static void initializeEnvironmentInformation()
     {
@@ -446,13 +445,10 @@ public class AllureAddons
 
         if (!neoVersionLogged && Neodymium.configuration().logNeoVersion())
         {
-            if (!AllureAddons.envFileExists())
-            {
-                LOGGER.info("This test uses Neodymium Library (version: " + Neodymium.getNeodymiumVersion()
-                            + "), MIT License, more details on https://github.com/Xceptance/neodymium-library");
-                neoVersionLogged = true;
-                environmentDataMap.putIfAbsent("Testing Framework", "Neodymium " + Neodymium.getNeodymiumVersion());
-            }
+            LOGGER.info("This test uses Neodymium Library (version: " + Neodymium.getNeodymiumVersion()
+                        + "), MIT License, more details on https://github.com/Xceptance/neodymium-library");
+            neoVersionLogged = true;
+            environmentDataMap.putIfAbsent("Testing Framework", "Neodymium " + Neodymium.getNeodymiumVersion());
         }
         if (!customDataAdded && Neodymium.configuration().enableCustomEnvironmentData())
         {
@@ -489,27 +485,28 @@ public class AllureAddons
         }
     }
 
-    
     /**
-     * 
      * @param name
      *            of the attachment
      * @param data
      *            that needs to be added as an attachment
      */
-    public static void addDataAsJsonToReport(String name, Object data) 
+    public static void addDataAsJsonToReport(String name, Object data)
     {
         ObjectMapper mapper = new ObjectMapper();
         String dataObjectJson;
-        
-        try {
+
+        try
+        {
             // covert Java object to JSON strings
             dataObjectJson = mapper.setSerializationInclusion(Include.NON_NULL).writeValueAsString(data);
-            
-        } catch (JsonProcessingException e) {
+
+        }
+        catch (JsonProcessingException e)
+        {
             throw new RuntimeException(e);
         }
-        
+
         Allure.addAttachment(name, "text/html", DataUtils.convertJsonToHtml(dataObjectJson), "html");
     }
 }

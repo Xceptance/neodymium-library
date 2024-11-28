@@ -2,6 +2,7 @@ package com.xceptance.neodymium.common.recording;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -138,6 +139,10 @@ public class FilmTestExecution
             catch (IOException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
                 | SecurityException e)
             {
+                if (e instanceof FileNotFoundException)
+                {
+                    throw new RuntimeException(e.getMessage(), e);
+                }
                 throw new RuntimeException("thread couldn't be created", e);
             }
         }
