@@ -1,11 +1,9 @@
 package com.xceptance.neodymium.junit5.browser;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.InvocationInterceptor;
@@ -16,9 +14,6 @@ import com.xceptance.neodymium.common.browser.BrowserAfterRunner;
 import com.xceptance.neodymium.common.browser.BrowserBeforeRunner;
 import com.xceptance.neodymium.common.browser.BrowserMethodData;
 import com.xceptance.neodymium.common.browser.BrowserRunner;
-import com.xceptance.neodymium.common.browser.StartNewBrowserForCleanUp;
-import com.xceptance.neodymium.common.browser.StartNewBrowserForSetUp;
-import com.xceptance.neodymium.common.browser.SuppressBrowsers;
 import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserExecutionCallback implements InvocationInterceptor, BeforeEachCallback, TestWatcher
@@ -47,11 +42,7 @@ public class BrowserExecutionCallback implements InvocationInterceptor, BeforeEa
     public void beforeEach(ExtensionContext context) throws Exception
     {
         separateBrowserForSetupRequired = Neodymium.configuration().startNewBrowserForSetUp()
-                                          && (context.getRequiredTestClass().getAnnotation(StartNewBrowserForSetUp.class) != null
-                                              || List.of(context.getRequiredTestClass().getMethods()).stream()
-                                                     .filter(method -> method.getAnnotation(BeforeEach.class) != null
-                                                                       && method.getAnnotation(StartNewBrowserForSetUp.class) != null)
-                                                     .findAny().isPresent());
+                                          && (browserTag != null ? browserTag.isStartBrowserOnSetUp() : true);
         if (browserTag != null)
         {
             if (!separateBrowserForSetupRequired)
@@ -134,23 +125,8 @@ public class BrowserExecutionCallback implements InvocationInterceptor, BeforeEa
     {
         if (Neodymium.configuration().startNewBrowserForCleanUp())
         {
-            if (afterMethodsWithTestBrowser == null)
-            {
-                if (extensionContext.getRequiredTestClass().getAnnotation(StartNewBrowserForCleanUp.class) == null)
-                {
-                    afterMethodsWithTestBrowser = List.of(extensionContext.getRequiredTestClass().getMethods()).stream()
-                                                      .filter(method -> method.getAnnotation(AfterEach.class) != null
-                                                                        && method.getAnnotation(StartNewBrowserForCleanUp.class) == null)
-                                                      .collect(Collectors.toList());
-                }
-                else
-                {
-                    afterMethodsWithTestBrowser = List.of(extensionContext.getRequiredTestClass().getMethods()).stream()
-                                                      .filter(method -> method.getAnnotation(AfterEach.class) != null
-                                                                        && method.getAnnotation(SuppressBrowsers.class) != null)
-                                                      .collect(Collectors.toList());
-                }
-            }
+            afterMethodsWithTestBrowser = browserTag == null ? new ArrayList<Method>()
+                                                             : browserTag.getAfterMethodsWithTestBrowser();
             boolean reuseTestBrowserForThisAfter = afterMethodsWithTestBrowser.remove(invocationContext.getExecutable());
             if (!tearDownDone && !reuseTestBrowserForThisAfter && afterMethodsWithTestBrowser.isEmpty() && browserTag != null)
             {
