@@ -13,6 +13,7 @@ import com.xceptance.neodymium.common.browser.BrowserData;
 import com.xceptance.neodymium.common.browser.BrowserMethodData;
 import com.xceptance.neodymium.common.browser.BrowserRunner;
 import com.xceptance.neodymium.junit4.StatementBuilder;
+import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserStatement extends StatementBuilder<BrowserMethodData>
 {
@@ -24,6 +25,8 @@ public class BrowserStatement extends StatementBuilder<BrowserMethodData>
 
     private BrowserRunner browserRunner;
 
+    private BrowserMethodData param;
+
     public BrowserStatement()
     {
         // that is like a dirty hack to provide testing ability
@@ -33,6 +36,7 @@ public class BrowserStatement extends StatementBuilder<BrowserMethodData>
     public BrowserStatement(Statement next, BrowserMethodData parameter, Object testClassInstance)
     {
         this.next = next;
+        this.param = parameter;
         browserRunner = new BrowserRunner(parameter, testClassInstance.toString());
     }
 
@@ -40,8 +44,14 @@ public class BrowserStatement extends StatementBuilder<BrowserMethodData>
     public void evaluate() throws Throwable
     {
         boolean testFailed = false;
-
-        browserRunner.setUpTest();
+        if (!param.isStartBrowserOnSetUp())
+        {
+            browserRunner.setUpTest();
+        }
+        else
+        {
+            Neodymium.setBrowserProfileName(param.getBrowserTag());
+        }
         try
         {
             next.evaluate();
@@ -53,7 +63,12 @@ public class BrowserStatement extends StatementBuilder<BrowserMethodData>
         }
         finally
         {
-            browserRunner.teardown(testFailed);
+            // new BrowserRunner().teardown(testFailed, param, Neodymium.getWebDriverStateContainer());
+            if (!param.isStartBrowserOnCleanUp() && Neodymium.getWebDriverStateContainer() != null)
+            {
+                new BrowserRunner().teardown(testFailed, param, Neodymium.getWebDriverStateContainer());
+                // browserRunner.teardown(testFailed);
+            }
         }
     }
 

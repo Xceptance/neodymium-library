@@ -15,7 +15,7 @@ import com.xceptance.neodymium.junit4.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 
 @RunWith(NeodymiumRunner.class)
-@Browser("chrome")
+@Browser("Chrome_headless")
 public class StartNewBrowserForOneOfTheAfters
 {
     private static WebDriver webDriver1;

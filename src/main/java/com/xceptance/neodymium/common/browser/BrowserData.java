@@ -5,6 +5,7 @@ import java.lang.annotation.Repeatable;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -12,8 +13,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import com.xceptance.neodymium.common.Data;
+import com.xceptance.neodymium.junit5.NeodymiumTest;
 import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserData extends Data
@@ -237,7 +243,48 @@ public class BrowserData extends Data
                 keepOpenOnFailure = false;
             }
         }
-        return new BrowserMethodData(browserTag, keepOpen, keepOpenOnFailure);
+        boolean junit5 = method.getAnnotation(NeodymiumTest.class) != null;
+        Class<?> testClass = method.getDeclaringClass();
+        List<Method> afterMethodsWithTestBrowser = List.of(testClass.getMethods()).stream()
+                                                       .filter(classMethod -> (junit5 ? classMethod.getAnnotation(AfterEach.class)
+                                                                                      : classMethod.getAnnotation(After.class)) != null)
+                                                       .collect(Collectors.toList());
+        if (!(Neodymium.configuration().startNewBrowserForSetUp() && Neodymium.configuration().startNewBrowserForCleanUp()))
+        {
+            return new BrowserMethodData(browserTag, keepOpen, keepOpenOnFailure, false, false, afterMethodsWithTestBrowser);
+
+        }
+        boolean separateBrowserForSetupRequired = false;
+        boolean separateBrowserForCleanupRequired = false;
+
+        if (Neodymium.configuration().startNewBrowserForSetUp())
+        {
+            separateBrowserForSetupRequired = Neodymium.configuration().startNewBrowserForSetUp()
+                                              && (testClass.getAnnotation(StartNewBrowserForSetUp.class) != null
+                                                  || List.of(testClass.getMethods()).stream()
+                                                         .filter(classMethod -> (junit5 ? classMethod.getAnnotation(BeforeEach.class)
+                                                                                        : classMethod.getAnnotation(Before.class)) != null
+                                                                                && classMethod.getAnnotation(StartNewBrowserForSetUp.class) != null)
+                                                         .findAny().isPresent());
+        }
+        if (Neodymium.configuration().startNewBrowserForCleanUp())
+        {
+            List<Method> afterMethods = new ArrayList<Method>(afterMethodsWithTestBrowser);
+            afterMethodsWithTestBrowser = new ArrayList<Method>();
+            if (testClass.getAnnotation(StartNewBrowserForCleanUp.class) == null)
+            {
+                afterMethodsWithTestBrowser = afterMethods.stream().filter(classMethod -> classMethod.getAnnotation(StartNewBrowserForCleanUp.class) == null)
+                                                          .collect(Collectors.toList());
+            }
+            else
+            {
+                afterMethodsWithTestBrowser = afterMethods.stream().filter(classMethod -> classMethod.getAnnotation(SuppressBrowsers.class) != null)
+                                                          .collect(Collectors.toList());
+            }
+            separateBrowserForCleanupRequired = afterMethodsWithTestBrowser.isEmpty() && !afterMethods.isEmpty();
+        }
+
+        return new BrowserMethodData(browserTag, keepOpen, keepOpenOnFailure, separateBrowserForSetupRequired, separateBrowserForCleanupRequired, afterMethodsWithTestBrowser);
     }
 
     private List<String> computeRandomBrowsers(final Method method, final List<RandomBrowsers> randomBrowsersAnnotation,

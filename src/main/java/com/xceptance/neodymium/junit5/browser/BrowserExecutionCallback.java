@@ -73,9 +73,19 @@ public class BrowserExecutionCallback implements InvocationInterceptor, BeforeEa
     {
         if (separateBrowserForSetupRequired)
         {
-            boolean browserSuppressedForThisBefore = BrowserBeforeRunner.isSuppressed(invocationContext.getExecutable());
-            if (!browserSuppressedForThisBefore && Neodymium.configuration().startNewBrowserForSetUp()
-                && BrowserBeforeRunner.shouldStartNewBrowser(invocationContext.getExecutable()))
+            boolean startForThisBefore = BrowserBeforeRunner.shouldStartNewBrowser(invocationContext.getExecutable());
+            boolean isSuppressed = BrowserBeforeRunner.isSuppressed(invocationContext.getExecutable());
+            if (!startForThisBefore && !isSuppressed)
+            {
+                browserRunner.setUpTest();
+                setupDone = true;
+                invocation.proceed();
+            }
+            else if (isSuppressed)
+            {
+                invocation.proceed();
+            }
+            else if (startForThisBefore)
             {
                 new BrowserBeforeRunner().run(() -> {
                     try
@@ -89,15 +99,6 @@ public class BrowserExecutionCallback implements InvocationInterceptor, BeforeEa
                     return null;
 
                 }, invocationContext.getExecutable(), true);
-            }
-            else
-            {
-                if (!setupDone)
-                {
-                    browserRunner.setUpTest();
-                    setupDone = true;
-                }
-                invocation.proceed();
             }
         }
         else

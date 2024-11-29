@@ -15,7 +15,7 @@ import com.xceptance.neodymium.util.Neodymium;
 
 @StartNewBrowserForCleanUp
 @RunWith(NeodymiumRunner.class)
-@Browser("chrome")
+@Browser("Chrome_headless")
 public class StartBrowserForCleanUp
 {
     private static WebDriver webdriverTest;

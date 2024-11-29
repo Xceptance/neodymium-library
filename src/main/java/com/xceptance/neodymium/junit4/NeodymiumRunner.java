@@ -30,10 +30,10 @@ import com.google.common.collect.ImmutableMap;
 import com.xceptance.neodymium.common.TestStepListener;
 import com.xceptance.neodymium.common.WorkInProgress;
 import com.xceptance.neodymium.common.browser.Browser;
+import com.xceptance.neodymium.common.browser.StartNewBrowserForSetUp;
 import com.xceptance.neodymium.junit4.order.DefaultStatementRunOrder;
 import com.xceptance.neodymium.junit4.statement.browser.BrowserRunAfters;
 import com.xceptance.neodymium.junit4.statement.browser.BrowserRunBefores;
-import com.xceptance.neodymium.junit4.statement.browser.ScreenshotRunAfters;
 import com.xceptance.neodymium.util.AllureAddons;
 import com.xceptance.neodymium.util.AllureAddons.EnvironmentInfoMode;
 import com.xceptance.neodymium.util.Neodymium;
@@ -122,6 +122,10 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
 
     private Map<FrameworkMethod, Description> childDescriptions;
 
+    private boolean startNewBrowserForSetUp;
+
+    private boolean startNewBrowserForCleanUp;
+
     private Description globalTestDescription;
 
     private Object testClassInstance;
@@ -145,6 +149,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
             {
                 StatementBuilder<?> statementBuilder = m.getBuilder().get(i);
                 Object data = m.getData().get(i);
+
                 methodStatement = statementBuilder.createStatement(testClassInstance, methodStatement, data);
             }
         }
@@ -443,9 +448,17 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     {
         List<FrameworkMethod> befores = getTestClass().getAnnotatedMethods(
                                                                            Before.class);
+
+        startNewBrowserForSetUp = Neodymium.configuration().startNewBrowserForSetUp() && !befores.isEmpty()
+                                  && (method.getDeclaringClass().getAnnotation(StartNewBrowserForSetUp.class) != null
+                                      || befores.stream().filter(after -> after.getAnnotation(StartNewBrowserForSetUp.class) != null).findAny()
+                                                .isPresent());
+        // return befores.isEmpty() ? statement
+        // : (startNewBrowserForSetUp ? new BrowserRunBefores(method, statement, befores, target)
+        // : new RunBefores(statement, befores, target));
         return befores.isEmpty() ? statement
-                                 : (Neodymium.configuration().startNewBrowserForSetUp() ? new BrowserRunBefores(statement, befores, target)
-                                                                                        : new RunBefores(statement, befores, target));
+                                 : Neodymium.configuration().startNewBrowserForSetUp() ? new BrowserRunBefores(method, statement, befores, target)
+                                                                                       : new RunBefores(statement, befores, target);
     }
 
     @Override
@@ -454,10 +467,35 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
     {
         List<FrameworkMethod> afters = getTestClass().getAnnotatedMethods(
                                                                           After.class);
-        ScreenshotRunAfters screenshotRunAfters = new ScreenshotRunAfters(method, statement, afters, target);
+        // startNewBrowserForCleanUp = Neodymium.configuration().startNewBrowserForCleanUp() && !afters.isEmpty()
+        // && (afters.get(0).getDeclaringClass().getAnnotation(StartNewBrowserForCleanUp.class) != null
+        // || afters.stream().filter(after -> after.getAnnotation(StartNewBrowserForCleanUp.class) != null).findAny()
+        // .isPresent());
+        // List<Method> afterMethodsWithTestBrowser = new ArrayList<Method>();
+        // if (Neodymium.configuration().startNewBrowserForCleanUp())
+        // {
+        // if (method.getDeclaringClass().getAnnotation(StartNewBrowserForCleanUp.class) == null)
+        // {
+        // afterMethodsWithTestBrowser = List.of(method.getDeclaringClass().getMethods()).stream()
+        // .filter(testMethod -> testMethod.getAnnotation(After.class) != null
+        // && testMethod.getAnnotation(StartNewBrowserForCleanUp.class) == null)
+        // .collect(Collectors.toList());
+        // }
+        // else
+        // {
+        // afterMethodsWithTestBrowser = List.of(method.getDeclaringClass().getMethods()).stream()
+        // .filter(testMethod -> testMethod.getAnnotation(After.class) != null
+        // && testMethod.getAnnotation(SuppressBrowsers.class) != null)
+        // .collect(Collectors.toList());
+        // }
+        // }
+        // else
+        // {
+        // afterMethodsWithTestBrowser = List.of(method.getDeclaringClass().getMethods()).stream()
+        // .filter(testMethod -> testMethod.getAnnotation(After.class) != null).collect(Collectors.toList());
+        // }
         return afters.isEmpty() ? statement
-                                : (Neodymium.configuration().startNewBrowserForCleanUp() ? new BrowserRunAfters(screenshotRunAfters, afters, target)
-                                                                                         : screenshotRunAfters);
+                                : new BrowserRunAfters(method, statement, afters, target);
     }
 
     @Override

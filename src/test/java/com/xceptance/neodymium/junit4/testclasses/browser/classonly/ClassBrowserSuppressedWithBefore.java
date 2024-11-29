@@ -20,7 +20,7 @@ public class ClassBrowserSuppressedWithBefore
     @StartNewBrowserForSetUp
     public void before()
     {
-        Assert.assertNull("Browser should not be started for setuo", Neodymium.getDriver());
+        Assert.assertNull("Browser should not be started for setup", Neodymium.getDriver());
     }
 
     @Test

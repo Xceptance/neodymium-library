@@ -92,7 +92,34 @@ public class BrowserRunner
         }
         finally
         {
-            teardown(testFailed, false, wDSCont);
+            teardown(testFailed, false, browserMethodData, wDSCont);
+        }
+    }
+
+    public void teardown(boolean testFailed, BrowserMethodData browserMethodData, WebDriverStateContainer wDSCont)
+    {
+        try
+        {
+            if (FilmTestExecution.getContextGif().filmAutomatically())
+            {
+                FilmTestExecution.finishGifFilming(recordingID, testFailed);
+            }
+            if (FilmTestExecution.getContextVideo().filmAutomatically())
+            {
+                FilmTestExecution.finishVideoFilming(recordingID, testFailed);
+            }
+            if (shouldLogBrowsers)
+            {
+                AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder()
+                                                                   .put("Used Browserconfigurations",
+                                                                        Neodymium.getBrowserProfileName())
+                                                                   .build(),
+                                                       EnvironmentInfoMode.APPEND_VALUE);
+            }
+        }
+        finally
+        {
+            teardown(testFailed, false, browserMethodData, wDSCont);
         }
     }
 
@@ -163,11 +190,11 @@ public class BrowserRunner
         Neodymium.clickViaJs(Neodymium.configuration().selenideClickViaJs());
     }
 
-    public void teardown(boolean testFailed, boolean preventReuse, WebDriverStateContainer webDriverStateContainer)
+    public void teardown(boolean testFailed, boolean preventReuse, BrowserMethodData browserMethodData, WebDriverStateContainer webDriverStateContainer)
     {
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(Neodymium.getBrowserProfileName());
         // keep browser open
-        if (keepOpen(testFailed, browserConfiguration))
+        if (keepOpen(testFailed, browserMethodData, browserConfiguration))
         {
             LOGGER.debug("Keep browser open");
             // nothing to do
@@ -208,7 +235,7 @@ public class BrowserRunner
         Neodymium.setBrowserName(null);
     }
 
-    private boolean keepOpen(boolean testFailed, BrowserConfiguration browserConfiguration)
+    private boolean keepOpen(boolean testFailed, BrowserMethodData browserMethodData, BrowserConfiguration browserConfiguration)
     {
         return (browserConfiguration != null && !browserConfiguration.isHeadless())
                && (((browserMethodData.isKeepBrowserOpenOnFailure()) && testFailed) ||
