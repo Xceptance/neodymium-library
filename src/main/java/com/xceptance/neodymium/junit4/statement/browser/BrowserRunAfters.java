@@ -102,12 +102,6 @@ public class BrowserRunAfters extends RunAfters
                     invokeMethod(each);
                 }
             }
-            // if (!tearDownDone)
-            // {
-            // new BrowserRunner().teardown(!errors.isEmpty(), (BrowserMethodData) ((EnhancedMethod)
-            // method).getData().get(0),
-            // Neodymium.getWebDriverStateContainer());
-            // }
         }
         MultipleFailureException.assertEmpty(errors);
     }

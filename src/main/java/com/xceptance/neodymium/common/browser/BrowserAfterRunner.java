@@ -57,13 +57,9 @@ public class BrowserAfterRunner
         }
         else if (!isSuppressed && browserConfiguration == null)
         {
-            throw new RuntimeException("No browser setting for " + (junit5 ? "@AfterEach" : "@After") + " method '" + after.getName()
-                                       + "' was found. "
-                                       + "If browser was suppressed for the test and is also not required for the clean up,"
-                                       + " please mark the " + (junit5 ? "@AfterEach" : "@After") + " method with @DontStartNewBrowserForCleanUp annotation."
-                                       + " If you need to start a browser for the clean up,"
-                                       + " please, use @Browser annotaion to mention what browser should be used exactly for this "
-                                       + (junit5 ? "@AfterEach" : "@After") + ".");
+            throw new RuntimeException("No browser setting for " + (junit5 ? "@AfterEach" : "@After") + " method '" + (after.getName()) + "' was found. "
+                                       + "If browser was suppressed for the test but is annotated with @StartNewBrowserForCleanUp because browser isrequired for the clean up,"
+                                       + " please, use @Browser annotation to specify what browser is required for this clean up.");
         }
         boolean beforeFailed = false;
         try

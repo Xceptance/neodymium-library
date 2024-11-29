@@ -241,10 +241,10 @@ public class BrowserStatementTest extends NeodymiumTest
         Result result = JUnitCore.runClasses(ClassBrowserSuppressedWithBefore.class);
         checkFail(result, 1, 0, 1,
                   "No browser setting for @Before method 'before' was found."
-                                   + " If browser is suppressed for the test and is also not required for the set up,"
-                                   + " please mark the @Before method with @DontStartNewBrowserForSetUp annotation."
-                                   + " If you need to start a browser for the set up, please,"
-                                   + " use @Browser annotaion to mention what browser should be used exactly for this @Before.");
+                                   + " If browser is suppressed for the test"
+                                   + " but the before method is annotated with @StartNewBrowserForSetUp"
+                                   + " because it requires a browser, please,"
+                                   + " use @Browser annotation to specify what browser is required for this method.");
     }
 
     @Test
@@ -308,10 +308,8 @@ public class BrowserStatementTest extends NeodymiumTest
         // @After method, Runtime Exception should be thrown
         Result result = JUnitCore.runClasses(MethodBrowserSuppressedWithAfter.class);
         checkFail(result, 1, 0, 1, "No browser setting for @After method 'after' was found. "
-                                   + "If browser was suppressed for the test and is also not required for the clean up,"
-                                   + " please mark the @After method with @DontStartNewBrowserForCleanUp annotation."
-                                   + " If you need to start a browser for the clean up,"
-                                   + " please, use @Browser annotaion to mention what browser should be used exactly for this @After.");
+                                   + "If browser was suppressed for the test but is annotated with @StartNewBrowserForCleanUp because browser isrequired for the clean up,"
+                                   + " please, use @Browser annotation to specify what browser is required for this clean up.");
     }
 
     @Test

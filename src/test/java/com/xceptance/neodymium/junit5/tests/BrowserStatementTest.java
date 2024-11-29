@@ -239,10 +239,10 @@ public class BrowserStatementTest extends AbstractNeodymiumTest
         NeodymiumTestExecutionSummary summary = run(ClassBrowserSuppressedWithBefore.class);
         checkFail(summary, 1, 0, 1,
                   "java.lang.RuntimeException: No browser setting for @BeforeEach method 'before' was found."
-                                    + " If browser is suppressed for the test and is also not required for the set up,"
-                                    + " please mark the @BeforeEach method with @DontStartNewBrowserForSetUp annotation."
-                                    + " If you need to start a browser for the set up, please,"
-                                    + " use @Browser annotaion to mention what browser should be used exactly for this @BeforeEach.");
+                                    + " If browser is suppressed for the test"
+                                    + " but the before method is annotated with @StartNewBrowserForSetUp"
+                                    + " because it requires a browser, please,"
+                                    + " use @Browser annotation to specify what browser is required for this method.");
     }
 
     @Test
@@ -307,10 +307,8 @@ public class BrowserStatementTest extends AbstractNeodymiumTest
         // @After method, Runtime Exception should be thrown
         NeodymiumTestExecutionSummary summary = run(MethodBrowserSuppressedWithAfter.class);
         checkFail(summary, 1, 0, 1, "java.lang.RuntimeException: No browser setting for @AfterEach method 'after' was found. "
-                                    + "If browser was suppressed for the test and is also not required for the clean up,"
-                                    + " please mark the @AfterEach method with @DontStartNewBrowserForCleanUp annotation."
-                                    + " If you need to start a browser for the clean up,"
-                                    + " please, use @Browser annotaion to mention what browser should be used exactly for this @AfterEach.");
+                                    + "If browser was suppressed for the test but is annotated with @StartNewBrowserForCleanUp because browser isrequired for the clean up,"
+                                    + " please, use @Browser annotation to specify what browser is required for this clean up.");
     }
 
     @Test

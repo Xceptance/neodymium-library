@@ -60,13 +60,11 @@ public class BrowserBeforeRunner
         }
         else if (startNewBrowserForSetUp)
         {
-            throw new RuntimeException("No browser setting for " + (junit5 ? "@BeforeEach" : "@Before") + " method '" + before.getName()
-                                       + "' was found. "
-                                       + "If browser is suppressed for the test and is also not required for the set up,"
-                                       + " please mark the " + (junit5 ? "@BeforeEach" : "@Before") + " method with @DontStartNewBrowserForSetUp annotation."
-                                       + " If you need to start a browser for the set up,"
-                                       + " please, use @Browser"
-                                       + " annotaion to mention what browser should be used exactly for this " + (junit5 ? "@BeforeEach" : "@Before") + ".");
+            throw new RuntimeException("No browser setting for " + (junit5 ? "@BeforeEach" : "@Before") + " method '" + (before.getName()) + "' was found."
+                                       + " If browser is suppressed for the test"
+                                       + " but the before method is annotated with @StartNewBrowserForSetUp"
+                                       + " because it requires a browser, please,"
+                                       + " use @Browser annotation to specify what browser is required for this method.");
         }
         boolean beforeFailed = false;
         try
