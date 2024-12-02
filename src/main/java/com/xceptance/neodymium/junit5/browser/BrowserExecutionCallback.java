@@ -65,15 +65,10 @@ public class BrowserExecutionCallback implements InvocationInterceptor, BeforeEa
         if (separateBrowserForSetupRequired)
         {
             boolean startForThisBefore = BrowserBeforeRunner.shouldStartNewBrowser(invocationContext.getExecutable());
-            boolean isSuppressed = BrowserBeforeRunner.isSuppressed(invocationContext.getExecutable());
-            if (!startForThisBefore && !isSuppressed)
+            if (!startForThisBefore && browserTag != null)
             {
                 browserRunner.setUpTest();
                 setupDone = true;
-                invocation.proceed();
-            }
-            else if (isSuppressed)
-            {
                 invocation.proceed();
             }
             else if (startForThisBefore)
@@ -90,6 +85,10 @@ public class BrowserExecutionCallback implements InvocationInterceptor, BeforeEa
                     return null;
 
                 }, invocationContext.getExecutable(), true);
+            }
+            else
+            {
+                invocation.proceed();
             }
         }
         else

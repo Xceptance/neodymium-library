@@ -34,6 +34,7 @@ public class BrowserRunBefores extends RunBefores
     {
         BrowserMethodData browserMethodData = method instanceof EnhancedMethod ? (BrowserMethodData) ((EnhancedMethod) method).getData().get(0) : null;
         boolean startNewBrowserForSetup = browserMethodData != null ? browserMethodData.isStartBrowserOnSetUp() : true;
+        setupDone = !startNewBrowserForSetup;
         for (FrameworkMethod before : befores)
         {
             if (startNewBrowserForSetup)

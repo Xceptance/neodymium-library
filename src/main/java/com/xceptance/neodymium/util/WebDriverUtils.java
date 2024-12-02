@@ -86,9 +86,10 @@ public class WebDriverUtils
      **/
     public static void preventReuseAndTearDown()
     {
-        browserHelper.get().teardown(false, new BrowserMethodData(Neodymium.getBrowserProfileName(), //
-                                                                  Neodymium.configuration().keepBrowserOpen(), //
-                                                                  Neodymium.configuration().keepBrowserOpenOnFailure(), false, false, new ArrayList<Method>()),
+        browserHelper.get().teardown(false, true, new BrowserMethodData(Neodymium.getBrowserProfileName(), //
+                                                                        Neodymium.configuration().keepBrowserOpen(), //
+                                                                        Neodymium.configuration()
+                                                                                 .keepBrowserOpenOnFailure(), false, false, new ArrayList<Method>()),
                                      Neodymium.getWebDriverStateContainer());
     }
 
