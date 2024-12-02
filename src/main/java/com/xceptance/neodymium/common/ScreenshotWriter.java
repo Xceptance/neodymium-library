@@ -18,6 +18,7 @@ import javax.imageio.ImageIO;
 
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -138,13 +139,22 @@ public class ScreenshotWriter
             image = ImageProcessor.blurExceptArea(image, coords);
             image = highlightScreenShot(image, coords, Color.decode(Neodymium.configuration().fullScreenHighlightColor()));
         }
-        if (Neodymium.configuration().enableHighlightLastElement() && Neodymium.getLastUsedElement() != null)
+        if (Neodymium.configuration().enableHighlightLastElement() && Neodymium.hasLastUsedElement())
         {
-            double devicePixelRatio = Double.parseDouble("" + ((JavascriptExecutor) driver).executeScript("return window.devicePixelRatio"));
-            image = highlightScreenShot(image, new Coordinates(Neodymium.getLastUsedElement(), devicePixelRatio),
-                                             Color.decode(Neodymium.configuration().screenshotElementHighlightColor()));
+            try
+            {
+                double devicePixelRatio = Double.parseDouble("" + ((JavascriptExecutor) driver).executeScript("return window.devicePixelRatio"));
+                image = highlightScreenShot(image, new Coordinates(Neodymium.getLastUsedElement(), devicePixelRatio),
+                                            Color.decode(Neodymium.configuration().screenshotElementHighlightColor()));
+            }
+            catch (NoSuchElementException e)
+            {
+                // If the test is breaking because we can't find an element, we also can't highlight this element... so
+                // a NoSuchElementException is expected and can be ignored.
+            }
         }
         log.info("captured Screenshot to: " + imagePath);
+
         boolean result = ImageIO.write(image, "png", outputfile);
         if (result)
         {

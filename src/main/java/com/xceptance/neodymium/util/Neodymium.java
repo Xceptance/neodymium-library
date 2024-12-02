@@ -583,4 +583,26 @@ public class Neodymium
             return null;
         }
     }
+
+    /**
+     * Checks if the test already looked up any element. 
+     *
+     * return whether there is a last element stored
+     *
+     */
+    public static boolean hasLastUsedElement()
+    {
+        if (getContext().lastUsedElement != null && getContext().lastLocator != null)
+        {
+            return true;
+        }
+        else if (getContext().lastLocator != null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
