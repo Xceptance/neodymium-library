@@ -45,19 +45,21 @@ public class LighthouseUtils
         {
             if (System.getProperty("os.name").toLowerCase().contains("win")) 
             {
-                ProcessBuilder builder = new ProcessBuilder();
-                builder = new ProcessBuilder("cmd.exe", "/c", Neodymium.configuration().lighthouseBinaryPath(), "--version");
-                Process p = builder.start();
-                int errorCode = p.waitFor();
-                
-                if (errorCode != 0) 
-                {
-                    throw new IOException();
-                }
+                Process p = runProcess("cmd.exe", "/c", Neodymium.configuration().lighthouseBinaryPath(), "--version");
+                checkErrorCodeProcess(p);
             }
             else if (System.getProperty("os.name").toLowerCase().contains("linux") || System.getProperty("os.name").toLowerCase().contains("mac"))
             {
-                new ProcessBuilder("sh", "-c", Neodymium.configuration().lighthouseBinaryPath(), "--version").start();
+                try 
+                {
+                    Process p = runProcess("sh", "-c", Neodymium.configuration().lighthouseBinaryPath(), "--version");
+                    checkErrorCodeProcess(p);
+                }
+                catch (Exception e) 
+                {
+                    Process p = runProcess(Neodymium.configuration().lighthouseBinaryPath(), "--version");
+                    checkErrorCodeProcess(p);
+                }
             }
             else 
             {
@@ -66,7 +68,7 @@ public class LighthouseUtils
         }
         catch (Exception e)
         {
-            throw new Exception("lighthouse binary not found at " + Neodymium.configuration().lighthouseBinaryPath() + ", please install lighthouse and add it to the PATH or enter the correct lighthouse binary location. " + e);
+            throw new Exception("lighthouse binary not found at " + Neodymium.configuration().lighthouseBinaryPath() + ", please install lighthouse and add it to the PATH or enter the correct lighthouse binary location.", e);
         }
         
         // validate chrome browser (lighthouse only works for chrome)
@@ -153,28 +155,64 @@ public class LighthouseUtils
      */
     private static void lighthouseAudit(String URL, String reportName) throws Exception
     {
-        ProcessBuilder builder = new ProcessBuilder();
+        Process p = null;
+        String readerOutput = "";
+        String readerLine= "";
         
-        if (System.getProperty("os.name").toLowerCase().contains("win")) 
+        try 
         {
-            builder = new ProcessBuilder("cmd.exe", "/c", Neodymium.configuration().lighthouseBinaryPath(), "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=" + Neodymium.getRemoteDebuggingPort(), "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
+            if (System.getProperty("os.name").toLowerCase().contains("win")) 
+            {
+                p = runProcess("cmd.exe", "/c", Neodymium.configuration().lighthouseBinaryPath(), "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=" + Neodymium.getRemoteDebuggingPort(), "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
+                
+                BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                while ((readerLine = r.readLine()) != null)
+                {
+                    readerOutput = readerOutput + readerLine;
+                    continue;
+                }
+                
+                checkErrorCodeProcess(p);
+            }
+            else if (System.getProperty("os.name").toLowerCase().contains("linux") || System.getProperty("os.name").toLowerCase().contains("mac"))
+            {
+                try 
+                {
+                    p = runProcess("sh", "-c", Neodymium.configuration().lighthouseBinaryPath(), "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=" + Neodymium.getRemoteDebuggingPort(), "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
+                    
+                    BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                    while (r.readLine() != null)
+                    {
+                        readerOutput = readerOutput + readerLine;
+                        continue;
+                    }
+                    
+                    checkErrorCodeProcess(p);
+                }
+                catch (Exception e) 
+                {
+                    p = runProcess(Neodymium.configuration().lighthouseBinaryPath(), "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=" + Neodymium.getRemoteDebuggingPort(), "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
+                    
+                    BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                    while (r.readLine() != null)
+                    {
+                        readerOutput = readerOutput + readerLine;
+                        continue;
+                    }
+                    
+                    checkErrorCodeProcess(p);
+                }
+            }
+            else 
+            {
+                throw new Exception("your current operation system is not supported, please use Windows, Linux or MacOS");
+            }
         }
-        else if (System.getProperty("os.name").toLowerCase().contains("linux") || System.getProperty("os.name").toLowerCase().contains("mac"))
+        catch (IOException e) 
         {
-            builder = new ProcessBuilder("sh", "-c", Neodymium.configuration().lighthouseBinaryPath(), "--chrome-flags=\"--ignore-certificate-errors\"", URL, "--port=" + Neodymium.getRemoteDebuggingPort(), "--preset=desktop", "--output=json", "--output=html", "--output-path=target/" + reportName + ".json");
-        }
-        else 
-        {
-            throw new Exception("your current operation system is not supported, please use Windows, Linux or MacOS");
+            throw new Exception("failed to run the process\n\nProcess Log: " + readerOutput, e);
         }
         
-        builder.redirectErrorStream(true);
-        Process p = builder.start();
-        BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        while (r.readLine() != null)
-        {
-            continue;
-        }
     }
     
     /**
@@ -221,6 +259,42 @@ public class LighthouseUtils
             SelenideAddons.wrapAssertionError(() -> {
                 Assert.assertTrue("the following Lighthouse audits " + errorAudits + " contain errors that need to be fixed, please look into the Lighthouse report named \"" + reportName + "\" for further information. ", errorAudits.size() > 0);
             });
+        }
+    }
+    
+    /**
+     * Runs a process with the in params specified command
+     * 
+     * @param
+     *            params the command with all required parameters
+     * @return
+     *            the process 
+     * @throws IOException
+     */
+    private static Process runProcess(String... params) throws IOException
+    {
+        ProcessBuilder builder = new ProcessBuilder();
+        builder = new ProcessBuilder(params);
+        builder.redirectErrorStream(true);
+        
+        return builder.start();
+    }
+    
+    /**
+     * Checks the error code for the specified process
+     * 
+     * @param p 
+     *            the process of which the error code needs to be checked
+     * @throws InterruptedException
+     * @throws IOException
+     */
+    private static void checkErrorCodeProcess(Process p) throws InterruptedException, IOException 
+    {
+        int errorCode = p.waitFor();
+        
+        if (errorCode != 0) 
+        {
+            throw new IOException("process error code differs from 0");
         }
     }
 }
