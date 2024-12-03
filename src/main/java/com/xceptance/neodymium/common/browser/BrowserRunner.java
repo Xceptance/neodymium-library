@@ -16,7 +16,7 @@ import com.xceptance.neodymium.common.browser.configuration.BrowserConfiguration
 import com.xceptance.neodymium.common.browser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.common.recording.FilmTestExecution;
 import com.xceptance.neodymium.util.AllureAddons;
-import com.xceptance.neodymium.util.BrowserDataUtil;
+import com.xceptance.neodymium.util.AllureAddons.EnvironmentInfoMode;
 import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserRunner
@@ -85,9 +85,9 @@ public class BrowserRunner
             {
                 AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder()
                                                                    .put("Used Browserconfigurations",
-                                                                        BrowserDataUtil.convertBrowserListToString(this.getBrowserTags()))
+                                                                        Neodymium.getBrowserProfileName())
                                                                    .build(),
-                                                       true);
+                                                       EnvironmentInfoMode.APPEND_VALUE);
             }
         }
         finally
@@ -156,6 +156,8 @@ public class BrowserRunner
     {
         // set our default timeout
         Neodymium.timeout(Neodymium.configuration().selenideTimeout());
+
+        Neodymium.enableSelenideScreenshots(!Neodymium.configuration().enableAdvancedScreenShots());
 
         Neodymium.fastSetValue(Neodymium.configuration().selenideFastSetValue());
         Neodymium.clickViaJs(Neodymium.configuration().selenideClickViaJs());
@@ -244,7 +246,6 @@ public class BrowserRunner
         // make a copy of all available browser tags
         List<String> tags = new LinkedList<>();
         tags.addAll(multibrowserConfiguration.getBrowserProfiles().keySet());
-
         return tags;
     }
 

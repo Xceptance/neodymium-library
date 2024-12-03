@@ -1,7 +1,5 @@
 package com.xceptance.neodymium.util;
 
-import static org.aeonbits.owner.Config.DisableableFeature.VARIABLE_EXPANSION;
-
 import org.aeonbits.owner.Config.LoadPolicy;
 import org.aeonbits.owner.Config.LoadType;
 import org.aeonbits.owner.Config.Sources;
@@ -12,7 +10,12 @@ import com.xceptance.neodymium.junit4.NeodymiumRunner.DescriptionMode;
 @LoadPolicy(LoadType.MERGE)
 @Sources(
 {
-  "${neodymium.temporaryConfigFile}", "file:config/dev-neodymium.properties", "file:config/credentials.properties", "file:config/neodymium.properties"
+  "system:properties",
+  "${neodymium.temporaryConfigFile}",
+  "file:config/dev-neodymium.properties",
+  "system:env",
+  "file:config/credentials.properties",
+  "file:config/neodymium.properties"
 })
 public interface NeodymiumConfiguration extends Mutable
 {
@@ -83,7 +86,7 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.url.path")
     @DisableFeature(
     {
-      VARIABLE_EXPANSION
+      DisableableFeature.VARIABLE_EXPANSION
     })
     public String rawPath();
 
@@ -107,6 +110,10 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.allureAddons.screenshots.perstep.always")
     @DefaultValue("false")
     public boolean screenshotPerStep();
+
+    @Key("neodymium.allureAddons.reports.path")
+    @DefaultValue("/build/reports/tests/")
+    public String reportsPath();
 
     @Key("neodymium.context.device.breakpoint.small")
     @DefaultValue("576")
@@ -284,6 +291,42 @@ public interface NeodymiumConfiguration extends Mutable
     @DefaultValue("false")
     public boolean workInProgress();
 
+    @Key("neodymium.screenshots.enableOnSuccess")
+    @DefaultValue("false")
+    public boolean enableOnSuccess();
+
+    @Key("neodymium.screenshots.fullpagecapture.enable")
+    @DefaultValue("false")
+    public boolean enableFullPageCapture();
+
+    @Key("neodymium.screenshots.fullpagecapture.highlightViewport")
+    @DefaultValue("false")
+    public boolean enableHighlightViewport();
+
+    @Key("neodymium.screenshots.enableTreeDirectoryStructure")
+    @DefaultValue("false")
+    public boolean enableTreeDirectoryStructure();
+
+    @Key("neodymium.screenshots.fullpagecapture.highlightColor")
+    @DefaultValue("#FF0000")
+    public String fullScreenHighlightColor();
+    
+    @Key("neodymium.screenshots.highlightLastElement")
+    @DefaultValue("false")
+    public boolean enableHighlightLastElement();
+
+    @Key("neodymium.screenshots.enableAdvancedScreenshots")
+    @DefaultValue("false")
+    public boolean enableAdvancedScreenShots();
+
+    @Key("neodymium.screenshots.element.highlightColor")
+    @DefaultValue("#FF00FF")
+    public String screenshotElementHighlightColor();
+
+    @Key("neodymium.screenshots.highlightLineThickness")
+    @DefaultValue("4")
+    public int screenshotHighlightLineThickness();
+
     @Key("neodymium.logNeoVersion")
     @DefaultValue("true")
     public boolean logNeoVersion();
@@ -311,6 +354,10 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.lighthouse.assert.audits")
     public String lighthouseAssertAudits();
     
+    @Key("neodymium.report.showSelenideErrorDetails")
+    @DefaultValue("false")
+    public boolean showSelenideErrorDetails();
+    
     @Key("neodymium.report.enableTestDataInReport")
     @DefaultValue("true")
     public boolean addTestDataToReport();
@@ -334,4 +381,8 @@ public interface NeodymiumConfiguration extends Mutable
     @Key("neodymium.url.includeList")
     @DefaultValue("")
     public String getIncludeList();
+    
+    @Key("neodymium.popupInterval")
+    @DefaultValue("1000")
+    public int getPopupBlockerInterval();
 }

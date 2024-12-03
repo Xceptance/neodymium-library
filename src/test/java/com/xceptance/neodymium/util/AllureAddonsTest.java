@@ -15,6 +15,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.google.common.collect.ImmutableMap;
+import com.xceptance.neodymium.util.AllureAddons.EnvironmentInfoMode;
 
 public class AllureAddonsTest
 {
@@ -27,14 +28,14 @@ public class AllureAddonsTest
             envFile.delete();
         }
 
-        List<Entry<String, String>> expectedFileContentList = new ArrayList<>();
+        final List<Entry<String, String>> expectedFileContentList = new ArrayList<>();
 
         // add single value
         ImmutableMap<String, String> map = ImmutableMap.<String, String> builder()
                                                        .put("a",
                                                             "a")
                                                        .build();
-        AllureAddons.addEnvironmentInformation(map, false);
+        AllureAddons.addEnvironmentInformation(map);
 
         expectedFileContentList.addAll(map.entrySet());
         this.validateEnvironmentFile(expectedFileContentList);
@@ -44,17 +45,22 @@ public class AllureAddonsTest
                                                         .put("a",
                                                              "b")
                                                         .build();
-        expectedFileContentList = new ArrayList<>();
+        expectedFileContentList.clear();
         expectedFileContentList.addAll(map2.entrySet());
 
-        AllureAddons.addEnvironmentInformation(map2, true);
+        // Replace the old value
+        AllureAddons.addEnvironmentInformation(map2, EnvironmentInfoMode.REPLACE);
         this.validateEnvironmentFile(expectedFileContentList);
 
         // single value is not added twice
-        AllureAddons.addEnvironmentInformation(map2, true);
+        AllureAddons.addEnvironmentInformation(map2, EnvironmentInfoMode.ADD);
         this.validateEnvironmentFile(expectedFileContentList);
         // in any mode
-        AllureAddons.addEnvironmentInformation(map2, false);
+        AllureAddons.addEnvironmentInformation(map2, EnvironmentInfoMode.REPLACE);
+        this.validateEnvironmentFile(expectedFileContentList);
+        AllureAddons.addEnvironmentInformation(map2, EnvironmentInfoMode.APPEND_VALUE);
+        this.validateEnvironmentFile(expectedFileContentList);
+        AllureAddons.addEnvironmentInformation(map2, EnvironmentInfoMode.IGNORE);
         this.validateEnvironmentFile(expectedFileContentList);
 
         // Add second single value
@@ -64,7 +70,7 @@ public class AllureAddonsTest
                                                         .build();
         expectedFileContentList.addAll(map3.entrySet());
 
-        AllureAddons.addEnvironmentInformation(map3, true);
+        AllureAddons.addEnvironmentInformation(map3, EnvironmentInfoMode.REPLACE);
         this.validateEnvironmentFile(expectedFileContentList);
 
         // combined add and update
@@ -74,11 +80,11 @@ public class AllureAddonsTest
                                                         .put("b",
                                                              "c")
                                                         .build();
-        expectedFileContentList = new ArrayList<>();
+        expectedFileContentList.clear();
         expectedFileContentList.addAll(map2.entrySet());
         expectedFileContentList.addAll(map4.entrySet());
 
-        AllureAddons.addEnvironmentInformation(map4, true);
+        AllureAddons.addEnvironmentInformation(map4, EnvironmentInfoMode.REPLACE);
         this.validateEnvironmentFile(expectedFileContentList);
 
         // add with same value
@@ -88,7 +94,7 @@ public class AllureAddonsTest
                                                         .build();
         expectedFileContentList.addAll(map5.entrySet());
 
-        AllureAddons.addEnvironmentInformation(map5, false);
+        AllureAddons.addEnvironmentInformation(map5, EnvironmentInfoMode.ADD);
         this.validateEnvironmentFile(expectedFileContentList);
 
         // add multiple new values
@@ -100,8 +106,36 @@ public class AllureAddonsTest
                                                         .build();
         expectedFileContentList.addAll(map6.entrySet());
 
-        AllureAddons.addEnvironmentInformation(map6, false);
+        AllureAddons.addEnvironmentInformation(map6, EnvironmentInfoMode.ADD);
         this.validateEnvironmentFile(expectedFileContentList);
+        
+        // ignore value
+        ImmutableMap<String, String> map7 = ImmutableMap.<String, String> builder()
+                                                        .put("d",
+                                                             "12")
+                                                        .put("e",
+                                                             "12")
+                                                        .build();
+
+        AllureAddons.addEnvironmentInformation(map7, EnvironmentInfoMode.IGNORE);
+        this.validateEnvironmentFile(expectedFileContentList);
+
+        // append values
+        ImmutableMap<String, String> map8 = ImmutableMap.<String, String> builder()
+                                                        .put("a",
+                                                             "x")
+                                                        .build();
+        ImmutableMap<String, String> map8_result = ImmutableMap.<String, String> builder()
+                                                               .put("a",
+                                                                    "b, x")
+                                                               .build();
+        // remove a,b
+        map2.entrySet().forEach((entry) -> expectedFileContentList.remove(entry));
+        expectedFileContentList.addAll(map8_result.entrySet());
+
+        AllureAddons.addEnvironmentInformation(map8, EnvironmentInfoMode.APPEND_VALUE);
+        this.validateEnvironmentFile(expectedFileContentList);
+
     }
 
     private File getEnvFile()

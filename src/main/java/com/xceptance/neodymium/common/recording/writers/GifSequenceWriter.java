@@ -59,13 +59,13 @@ public class GifSequenceWriter implements Writer
     /**
      * Configures metadata, which will be used for every gif sequence
      * 
-     * @param delay
+     * @param duration
      *            {@link Integer} value of milliseconds between the neighbor gif sequences
      * @param loop
      *            {@link Boolean} value if the gif should be looped
      * @throws IIOInvalidTreeException
      */
-    private void configureRootMetadata(int delay, boolean loop) throws IIOInvalidTreeException
+    private void configureRootMetadata(long duration, boolean loop) throws IIOInvalidTreeException
     {
         String metaFormatName = metadata.getNativeMetadataFormatName();
         IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree(metaFormatName);
@@ -74,7 +74,7 @@ public class GifSequenceWriter implements Writer
         graphicsControlExtensionNode.setAttribute("disposalMethod", "none");
         graphicsControlExtensionNode.setAttribute("userInputFlag", "FALSE");
         graphicsControlExtensionNode.setAttribute("transparentColorFlag", "FALSE");
-        graphicsControlExtensionNode.setAttribute("delayTime", Integer.toString(delay / 10));
+        graphicsControlExtensionNode.setAttribute("delayTime", duration / 10 + "");
         graphicsControlExtensionNode.setAttribute("transparentColorIndex", "0");
 
         IIOMetadataNode commentsNode = getNode(root, "CommentExtensions");
@@ -145,11 +145,12 @@ public class GifSequenceWriter implements Writer
      * Writes a gif sequence into gif file
      */
     @Override
-    public void write(File image)
+    public void write(File image, long duration)
     {
         try
         {
             BufferedImage img = ImageIO.read(image);
+            configureRootMetadata(duration, false);
             writer.writeToSequence(new IIOImage(img, null, metadata), params);
         }
         catch (IOException e)

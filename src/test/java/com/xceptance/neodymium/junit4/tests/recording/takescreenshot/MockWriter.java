@@ -25,7 +25,7 @@ public class MockWriter implements Writer
     }
 
     @Override
-    public void write(File image)
+    public void write(File image, long delay)
     {
         screenshots.add(image);
     }
