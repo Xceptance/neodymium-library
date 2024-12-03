@@ -100,7 +100,8 @@ public class LighthouseUtils
         lighthouseAudit(URL, reportName);
         
         // add report html to allure
-        Allure.addAttachment(reportName, "text/html", FileUtils.openInputStream(new File("target/" + reportName + ".report.html")), "html");
+        Allure.addAttachment(reportName + " - Lighthouse Report", "text/html", FileUtils.openInputStream(new File("target/" + reportName + ".report.html")),
+                             "html");
         
         // get report json
         File jsonFile = new File("target/" + reportName + ".report.json");
