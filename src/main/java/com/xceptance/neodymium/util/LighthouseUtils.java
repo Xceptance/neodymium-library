@@ -41,6 +41,7 @@ public class LighthouseUtils
     public static void createLightHouseReport(String reportName) throws Exception 
     {
         // validate that lighthouse is installed
+        String readerOutput = "";
         try 
         {
             if (System.getProperty("os.name").toLowerCase().contains("win")) 
@@ -53,6 +54,14 @@ public class LighthouseUtils
                 try 
                 {
                     Process p = runProcess("sh", "-c", Neodymium.configuration().lighthouseBinaryPath(), "--version");
+                    BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                    String readerLine;
+                    while ((readerLine = r.readLine()) != null)
+                    {
+                        readerOutput = readerOutput + readerLine;
+                        continue;
+                    }
+
                     checkErrorCodeProcess(p);
                 }
                 catch (Exception e) 
@@ -68,7 +77,9 @@ public class LighthouseUtils
         }
         catch (Exception e)
         {
-            throw new Exception("lighthouse binary not found at " + Neodymium.configuration().lighthouseBinaryPath() + ", please install lighthouse and add it to the PATH or enter the correct lighthouse binary location.", e);
+            throw new Exception("lighthouse binary can't be run (" + Neodymium.configuration().lighthouseBinaryPath()
+                                + "), please install lighthouse and add it to the PATH or enter the correct lighthouse binary location.\n\nProcess Log: "
+                                + readerOutput, e);
         }
         
         // validate chrome browser (lighthouse only works for chrome)
@@ -210,7 +221,7 @@ public class LighthouseUtils
         }
         catch (IOException e) 
         {
-            throw new Exception("failed to run the process\n\nProcess Log: " + readerOutput, e);
+            throw new Exception("failed to run the lighthouse process. \n\nProcess Log: " + readerOutput, e);
         }
         
     }
