@@ -110,7 +110,6 @@ public class BrowserAfterRunner
             startNewBrowserForCleanUp = true;
         }
 
-        // if @After method is annotated with @SuppressBrowser annotation, no new browser should be started
         return startNewBrowserForCleanUp;
     }
 

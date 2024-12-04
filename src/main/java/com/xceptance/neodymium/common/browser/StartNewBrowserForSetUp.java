@@ -9,11 +9,10 @@ import java.lang.annotation.Target;
 
 /**
  * By default the methods annotated with @{@code Before} in JUnit4 and with @{@code BeforeEach} in Junit5 are executed
- * in different browser to keep setup isolated from the actual test. It might also be useful to execute set up in
- * different type of browser (for this just annotate @Before / @BeforeEach method with @{@code Browser} tag. This
- * annotation allows to suppress this behavior. The annotation can be used on class level to make all before methods to
- * be executed in the same browser the test will be. It's also possible to annotate a single @Before / @BeforeEach
- * method with annotation to suppress staring different browser exactly for this method
+ * in the same browser. If it'required to start new browser for one of before methods, please, annotate it
+ * with @StartNewBrowserForSetUp. In case all before methods need to be executed in separate browser each, annotate the
+ * whole class with @StartNewBrowserForSetUp. If all before methods, except for one require a new browser, annotate the
+ * class with @StartNewBrowserForSetUp and the one method that doesn't need new browser with @SuppressBrowsers
  */
 @Retention(RUNTIME)
 @Target(

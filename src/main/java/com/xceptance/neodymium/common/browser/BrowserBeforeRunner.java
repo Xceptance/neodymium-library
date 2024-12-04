@@ -118,7 +118,6 @@ public class BrowserBeforeRunner
             startNewBrowserForSetUp = true;
         }
 
-        // if @Before method is annotated with @SuppressBrowser annotation, no new browser should be started
         return startNewBrowserForSetUp;
     }
 

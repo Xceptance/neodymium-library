@@ -28,8 +28,5 @@ build
 dev-*.properties 
 temp-*.properties
 embeddedLocalProxySelfSignedRootCertificate.p12
-<<<<<<< HEAD
-=======
 /bin/
 /allure-results/
->>>>>>> develop

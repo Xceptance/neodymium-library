@@ -9,10 +9,10 @@ import java.lang.annotation.Target;
 
 /**
  * By default the methods annotated with @{@code After} in JUnit4 and with @{@code AfterEach} in Junit5 are executed in
- * different browser to ensure cleanup if browser where the test was executed crashed. This annotation allows to
- * suppress this behavior. The annotation can be used on class level to make all after methods to be executed in the
- * same browser the test was. It's also possible to annotate a single @After / @AfterEach method with annotation to
- * suppress staring different browser exactly for this method
+ * the same browser. If it'required to start new browser for one of after methods, please, annotate it
+ * with @StartNewBrowserForCleanUp. In case all after methods need to be executed in separate browser each, annotate the
+ * whole class with @StartNewBrowserForCleanUp. If all after methods, except for one require a new browser, annotate the
+ * class with @StartNewBrowserForCleanUp and the one method that doesn't need new browser with @SuppressBrowsers
  */
 @Retention(RUNTIME)
 @Target(
