@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.xceptance.neodymium.common.browser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.junit5.testclasses.multiplication.browser.OneBrowserOneMethod;
@@ -34,7 +34,7 @@ public class BrowserMultiplicationTest extends AbstractNeodymiumTest
         MultibrowserConfiguration.getInstance(tempConfigFile.getPath());
     }
 
-    @Before
+    @BeforeEach
     public void setJUnitViewModeFlat()
     {
         Neodymium.configuration().setProperty("neodymium.junit.viewmode", "flat");

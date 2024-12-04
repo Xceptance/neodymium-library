@@ -24,7 +24,6 @@ hs_err_pid*
 /.classpath
 /.project
 /.settings/
-/bin/
 build
 dev-*.properties 
 temp-*.properties

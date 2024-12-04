@@ -1,5 +1,7 @@
 package com.xceptance.neodymium.util;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
@@ -63,7 +65,7 @@ public class WebDriverUtils
         browserHelper.get()
                      .setUpTest(new BrowserMethodData(browserProfileName, //
                                                       Neodymium.configuration().keepBrowserOpen(), //
-                                                      Neodymium.configuration().keepBrowserOpenOnFailure()), //
+                                                      Neodymium.configuration().keepBrowserOpenOnFailure(), false, false, new ArrayList<Method>()), //
                                 scenario.getName());
     }
 
@@ -84,7 +86,11 @@ public class WebDriverUtils
      **/
     public static void preventReuseAndTearDown()
     {
-        browserHelper.get().teardown(false, true, Neodymium.getWebDriverStateContainer());
+        browserHelper.get().teardown(false, true, new BrowserMethodData(Neodymium.getBrowserProfileName(), //
+                                                                        Neodymium.configuration().keepBrowserOpen(), //
+                                                                        Neodymium.configuration()
+                                                                                 .keepBrowserOpenOnFailure(), false, false, new ArrayList<Method>()),
+                                     Neodymium.getWebDriverStateContainer());
     }
 
     /**

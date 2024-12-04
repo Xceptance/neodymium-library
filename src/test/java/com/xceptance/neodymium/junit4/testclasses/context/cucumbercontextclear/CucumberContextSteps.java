@@ -1,5 +1,8 @@
 package com.xceptance.neodymium.junit4.testclasses.context.cucumbercontextclear;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+
 import org.junit.Assert;
 
 import com.xceptance.neodymium.common.browser.BrowserMethodData;
@@ -18,8 +21,9 @@ public class CucumberContextSteps
     public void beforeTest()
     {
         // setup browser since we set our selenide defaults only if a browser is involved
-        WebDriverUtils.setUp(new BrowserMethodData("Chrome_headless", Neodymium.configuration().keepBrowserOpen(), //
-                                                   Neodymium.configuration().keepBrowserOpenOnFailure()), //
+        WebDriverUtils.setUp(new BrowserMethodData("Chrome_headless", //
+                                                   Neodymium.configuration().keepBrowserOpen(), //
+                                                   Neodymium.configuration().keepBrowserOpenOnFailure(), false, false, new ArrayList<Method>()), //
                              "CucumberContextSteps");
     }
 

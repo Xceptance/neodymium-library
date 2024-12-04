@@ -44,10 +44,7 @@ public class TemplateInvocationContext implements TestTemplateInvocationContext
     {
         Neodymium.clearThreadContext();
         List<Extension> extentions = new LinkedList<>();
-        if (browser != null)
-        {
-            extentions.add(new BrowserExecutionCallback(browser, methodName));
-        }
+        extentions.add(new BrowserExecutionCallback(browser, methodName));
         if (dataSet != null)
         {
             extentions.add(new TestdataCallback(dataSet, testClassInstance));

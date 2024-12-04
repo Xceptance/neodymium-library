@@ -1,5 +1,10 @@
 package com.xceptance.neodymium.junit4.testclasses.webDriver;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.aeonbits.owner.ConfigFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -13,6 +18,7 @@ import com.browserup.bup.BrowserUpProxy;
 import com.xceptance.neodymium.common.browser.Browser;
 import com.xceptance.neodymium.common.browser.WebDriverCache;
 import com.xceptance.neodymium.junit4.NeodymiumRunner;
+import com.xceptance.neodymium.junit4.tests.NeodymiumTest;
 import com.xceptance.neodymium.junit4.tests.NeodymiumWebDriverTest;
 import com.xceptance.neodymium.util.Neodymium;
 import com.xceptance.neodymium.util.WebDriverUtils;
@@ -36,9 +42,20 @@ public class ValidatePreventReuseWebDriver
 
     private static BrowserUpProxy proxy3;
 
+    private static File tempConfigFile;
+
     @BeforeClass
     public static void beforeClass()
     {
+        // set up a temporary neodymium.properties
+        final String fileLocation = "config/temp-ValidateReuseWebDriver-neodymium.properties";
+        tempConfigFile = new File("./" + fileLocation);
+        Map<String, String> properties = new HashMap<>();
+        properties.put("neodymium.webDriver.reuseDriver", "true");
+        properties.put("neodymium.localproxy", "true");
+        NeodymiumTest.writeMapToPropertiesFile(properties, tempConfigFile);
+        ConfigFactory.setProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME, "file:" + fileLocation);
+
         Assert.assertNull(webDriver1);
         Assert.assertNull(Neodymium.getDriver());
     }
@@ -160,5 +177,6 @@ public class ValidatePreventReuseWebDriver
         Assert.assertEquals(1, WebDriverCache.instance.getWebDriverStateContainerCacheSize());
 
         WebDriverCache.quitCachedBrowsers();
+        NeodymiumTest.deleteTempFile(tempConfigFile);
     }
 }

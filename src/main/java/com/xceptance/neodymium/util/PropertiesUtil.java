@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 
@@ -106,12 +107,12 @@ public class PropertiesUtil
         Map<String, String> systemEnvMap = new HashMap<String, String>();
         for (Map.Entry<String, String> entry : System.getenv().entrySet())
         {
-            String key = (String) entry.getKey();
+            String key = entry.getKey();
             if (key.contains(customIdentifier))
             {
                 String cleanedKey = key.replace(customIdentifier, "");
                 cleanedKey = cleanedKey.replaceAll("\\.", "");
-                systemEnvMap.put(cleanedKey, (String) entry.getValue());
+                systemEnvMap.put(cleanedKey, entry.getValue());
             }
         }
         dataMap = PropertiesUtil.mapPutAllIfAbsent(dataMap, systemEnvMap);
@@ -120,8 +121,9 @@ public class PropertiesUtil
                                                                                           System.getProperties()));
         dataMap = PropertiesUtil.addMissingPropertiesFromFile("./config/credentials.properties", customIdentifier, dataMap);
         dataMap = PropertiesUtil.addMissingPropertiesFromFile("./config/neodymium.properties", customIdentifier, dataMap);
-        dataMap = PropertiesUtil.addMissingPropertiesFromFile(ConfigFactory.getProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME)
-                                                                           .replaceAll("file:", "./"),
+        dataMap = PropertiesUtil.addMissingPropertiesFromFile(Optional.ofNullable(ConfigFactory.getProperty(Neodymium.TEMPORARY_CONFIG_FILE_PROPERTY_NAME))
+                                                                      .orElse("")
+                                                                      .replaceAll("file:", "./"),
                                                               customIdentifier,
                                                               dataMap);
         return dataMap;
