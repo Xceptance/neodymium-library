@@ -1,8 +1,8 @@
 package com.xceptance.neodymium.common.recording.config;
 
-import org.aeonbits.owner.Mutable;
 import org.aeonbits.owner.Config.LoadPolicy;
 import org.aeonbits.owner.Config.LoadType;
+import org.aeonbits.owner.Mutable;
 
 /**
  * Configuration interface, which contains the variables needed for both gif and video recording.
@@ -29,4 +29,6 @@ public abstract interface RecordingConfigurations extends Mutable
     public double imageScaleFactor();
 
     public String format();
+
+    public boolean logInformationAboutRecording();
 }

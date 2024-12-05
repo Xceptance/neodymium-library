@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.internal.runners.statements.RunBefores;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runner.notification.RunNotifier;
@@ -26,10 +27,14 @@ import org.slf4j.LoggerFactory;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
 import com.google.common.collect.ImmutableMap;
+import com.xceptance.neodymium.common.TestStepListener;
 import com.xceptance.neodymium.common.WorkInProgress;
 import com.xceptance.neodymium.common.browser.Browser;
 import com.xceptance.neodymium.junit4.order.DefaultStatementRunOrder;
+import com.xceptance.neodymium.junit4.statement.browser.BrowserRunAfters;
+import com.xceptance.neodymium.junit4.statement.browser.BrowserRunBefores;
 import com.xceptance.neodymium.util.AllureAddons;
+import com.xceptance.neodymium.util.AllureAddons.EnvironmentInfoMode;
 import com.xceptance.neodymium.util.Neodymium;
 
 import io.qameta.allure.selenide.AllureSelenide;
@@ -88,6 +93,8 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
         super(clazz);
         SelenideLogger.addListener(LISTENER_NAME, new AllureSelenide());
 
+        SelenideLogger.addListener(TestStepListener.LISTENER_NAME, new TestStepListener());
+
         if (!neoVersionLogged && Neodymium.configuration().logNeoVersion())
         {
             if (!AllureAddons.envFileExists())
@@ -97,9 +104,11 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                 neoVersionLogged = true;
                 AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder()
                                                                    .put("Testing Framework", "Neodymium " + Neodymium.getNeodymiumVersion())
-                                                                   .build());
+                                                                   .build(),
+                                                       EnvironmentInfoMode.IGNORE);
             }
         }
+        AllureAddons.initializeEnvironmentInformation();
     }
 
     public enum DescriptionMode
@@ -135,6 +144,7 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
             {
                 StatementBuilder<?> statementBuilder = m.getBuilder().get(i);
                 Object data = m.getData().get(i);
+
                 methodStatement = statementBuilder.createStatement(testClassInstance, methodStatement, data);
             }
         }
@@ -425,6 +435,27 @@ public class NeodymiumRunner extends BlockJUnit4ClassRunner
                 }
             }
         }
+    }
+
+    @Override
+    protected Statement withBefores(FrameworkMethod method, Object target,
+                                    Statement statement)
+    {
+        List<FrameworkMethod> befores = getTestClass().getAnnotatedMethods(
+                                                                           Before.class);
+        return befores.isEmpty() ? statement
+                                 : Neodymium.configuration().startNewBrowserForSetUp() ? new BrowserRunBefores(method, statement, befores, target)
+                                                                                       : new RunBefores(statement, befores, target);
+    }
+
+    @Override
+    protected Statement withAfters(FrameworkMethod method, Object target,
+                                   Statement statement)
+    {
+        List<FrameworkMethod> afters = getTestClass().getAnnotatedMethods(
+                                                                          After.class);
+        return afters.isEmpty() ? statement
+                                : new BrowserRunAfters(method, statement, afters, target);
     }
 
     @Override

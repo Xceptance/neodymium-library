@@ -1,5 +1,8 @@
 package com.xceptance.neodymium.junit4.testclasses.cucumber;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+
 import org.junit.Assert;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
@@ -22,7 +25,7 @@ public class CucumberSupport
     {
         WebDriverUtils.setUp(new BrowserMethodData(browserProfileName, //
                                                    Neodymium.configuration().keepBrowserOpen(), //
-                                                   Neodymium.configuration().keepBrowserOpenOnFailure()), //
+                                                   Neodymium.configuration().keepBrowserOpenOnFailure(), false, false, new ArrayList<Method>()), //
                              "CucumberSupport");
     }
 

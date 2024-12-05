@@ -11,14 +11,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.browserup.bup.BrowserUpProxy;
+import com.google.common.collect.ImmutableMap;
 import com.xceptance.neodymium.common.browser.configuration.BrowserConfiguration;
 import com.xceptance.neodymium.common.browser.configuration.MultibrowserConfiguration;
 import com.xceptance.neodymium.common.recording.FilmTestExecution;
+import com.xceptance.neodymium.util.AllureAddons;
+import com.xceptance.neodymium.util.AllureAddons.EnvironmentInfoMode;
 import com.xceptance.neodymium.util.Neodymium;
 
 public class BrowserRunner
 {
     public static Logger LOGGER = LoggerFactory.getLogger(BrowserRunner.class);
+
+    private final boolean shouldLogBrowsers;
 
     private BrowserMethodData browserMethodData;
 
@@ -42,10 +47,12 @@ public class BrowserRunner
     {
         this.browserMethodData = browserTag;
         this.testName = testName;
+        shouldLogBrowsers = Neodymium.configuration().enableBrowserEnvironmentData();
     }
 
     public BrowserRunner()
     {
+        shouldLogBrowsers = Neodymium.configuration().enableBrowserEnvironmentData();
     }
 
     public void setUpTest()
@@ -74,10 +81,45 @@ public class BrowserRunner
             {
                 FilmTestExecution.finishVideoFilming(recordingID, testFailed);
             }
+            if (shouldLogBrowsers)
+            {
+                AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder()
+                                                                   .put("Used Browserconfigurations",
+                                                                        Neodymium.getBrowserProfileName())
+                                                                   .build(),
+                                                       EnvironmentInfoMode.APPEND_VALUE);
+            }
         }
         finally
         {
-            teardown(testFailed, false, wDSCont);
+            teardown(testFailed, false, browserMethodData, wDSCont);
+        }
+    }
+
+    public void teardown(boolean testFailed, BrowserMethodData browserMethodData, WebDriverStateContainer wDSCont)
+    {
+        try
+        {
+            if (FilmTestExecution.getContextGif().filmAutomatically())
+            {
+                FilmTestExecution.finishGifFilming(recordingID, testFailed);
+            }
+            if (FilmTestExecution.getContextVideo().filmAutomatically())
+            {
+                FilmTestExecution.finishVideoFilming(recordingID, testFailed);
+            }
+            if (shouldLogBrowsers)
+            {
+                AllureAddons.addEnvironmentInformation(ImmutableMap.<String, String> builder()
+                                                                   .put("Used Browserconfigurations",
+                                                                        Neodymium.getBrowserProfileName())
+                                                                   .build(),
+                                                       EnvironmentInfoMode.APPEND_VALUE);
+            }
+        }
+        finally
+        {
+            teardown(testFailed, false, browserMethodData, wDSCont);
         }
     }
 
@@ -142,15 +184,17 @@ public class BrowserRunner
         // set our default timeout
         Neodymium.timeout(Neodymium.configuration().selenideTimeout());
 
+        Neodymium.enableSelenideScreenshots(!Neodymium.configuration().enableAdvancedScreenShots());
+
         Neodymium.fastSetValue(Neodymium.configuration().selenideFastSetValue());
         Neodymium.clickViaJs(Neodymium.configuration().selenideClickViaJs());
     }
 
-    public void teardown(boolean testFailed, boolean preventReuse, WebDriverStateContainer webDriverStateContainer)
+    public void teardown(boolean testFailed, boolean preventReuse, BrowserMethodData browserMethodData, WebDriverStateContainer webDriverStateContainer)
     {
         BrowserConfiguration browserConfiguration = multibrowserConfiguration.getBrowserProfiles().get(Neodymium.getBrowserProfileName());
         // keep browser open
-        if (keepOpen(testFailed, browserConfiguration))
+        if (keepOpen(testFailed, browserMethodData, browserConfiguration))
         {
             LOGGER.debug("Keep browser open");
             // nothing to do
@@ -191,7 +235,7 @@ public class BrowserRunner
         Neodymium.setBrowserName(null);
     }
 
-    private boolean keepOpen(boolean testFailed, BrowserConfiguration browserConfiguration)
+    private boolean keepOpen(boolean testFailed, BrowserMethodData browserMethodData, BrowserConfiguration browserConfiguration)
     {
         return (browserConfiguration != null && !browserConfiguration.isHeadless())
                && (((browserMethodData.isKeepBrowserOpenOnFailure()) && testFailed) ||
@@ -229,7 +273,6 @@ public class BrowserRunner
         // make a copy of all available browser tags
         List<String> tags = new LinkedList<>();
         tags.addAll(multibrowserConfiguration.getBrowserProfiles().keySet());
-
         return tags;
     }
 
