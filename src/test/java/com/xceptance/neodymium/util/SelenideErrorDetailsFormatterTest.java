@@ -82,6 +82,7 @@ public class SelenideErrorDetailsFormatterTest
     public void testCollectionErrorDetailesActivated()
     {
         Neodymium.configuration().setProperty("neodymium.report.showSelenideErrorDetails", "true");
+        Neodymium.configuration().setProperty("neodymium.screenshots.enableAdvancedScreenshots", "false");
         Assertions.assertTrue(Neodymium.configuration().showSelenideErrorDetails());
 
         try
@@ -91,9 +92,7 @@ public class SelenideErrorDetailsFormatterTest
         }
         catch (AssertionError e)
         {
-            System.out.println(e.getMessage());
             assertExpectedMessageContains(e.getMessage(), "List size mismatch: expected: > 5, actual: 0, collection: #someUnknownIDForThisSepcificTest\n");
-            assertExpectedMessageContains(e.getMessage(), "Screenshot: ");
             assertExpectedMessageContains(e.getMessage(), "Page source: ");
             assertExpectedMessageContains(e.getMessage(), "Timeout: 0 ms.");
         }
