@@ -43,6 +43,11 @@ public class BrowserExecutionCallback implements InvocationInterceptor, BeforeEa
     {
         separateBrowserForSetupRequired = Neodymium.configuration().startNewBrowserForSetUp()
                                           && (browserTag != null ? browserTag.isStartBrowserOnSetUp() : true);
+        afterMethodsWithTestBrowser = browserTag == null ? new ArrayList<Method>()
+                                                         : new ArrayList<Method>(browserTag.getAfterMethodsWithTestBrowser());
+        setupDone = false;
+        tearDownDone = false;
+        testFailed = false;
         if (browserTag != null)
         {
             if (!separateBrowserForSetupRequired)
@@ -124,8 +129,6 @@ public class BrowserExecutionCallback implements InvocationInterceptor, BeforeEa
     {
         if (Neodymium.configuration().startNewBrowserForCleanUp())
         {
-            afterMethodsWithTestBrowser = browserTag == null ? new ArrayList<Method>()
-                                                             : browserTag.getAfterMethodsWithTestBrowser();
             boolean reuseTestBrowserForThisAfter = afterMethodsWithTestBrowser.remove(invocationContext.getExecutable());
             if (!tearDownDone && !reuseTestBrowserForThisAfter && afterMethodsWithTestBrowser.isEmpty() && browserTag != null)
             {
