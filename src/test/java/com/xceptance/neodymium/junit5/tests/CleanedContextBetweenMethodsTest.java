@@ -1,11 +1,15 @@
-package com.xceptance.neodymium.junit5.testclasses.data;
+package com.xceptance.neodymium.junit5.tests;
 
 import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
 
+import com.xceptance.neodymium.common.browser.Browser;
 import com.xceptance.neodymium.junit5.NeodymiumTest;
 import com.xceptance.neodymium.util.DataUtils;
+import com.xceptance.neodymium.util.Neodymium;
 
-public class CleanedContextBetweenMethods
+@Browser("Chrome_headless")
+public class CleanedContextBetweenMethodsTest
 {
     @NeodymiumTest
     public void test()
@@ -22,4 +26,9 @@ public class CleanedContextBetweenMethods
         }
     }
 
+    @AfterEach
+    public void after()
+    {
+        Assert.assertNotNull("Browser closed too early", Neodymium.getDriver());
+    }
 }
