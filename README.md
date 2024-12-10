@@ -25,10 +25,9 @@ If you already know what you want to do, you can pick one of the demo test suite
 * [Neodymium Showcase](https://github.com/Xceptance/neodymium-showcase): This repository contains different showcases. Each of them demonstrates and comments on the usage of a single feature of Neodymium. Feel free to request more examples by creating an issue.
 
 ## Neodymium in the media
-We have a talk (in German) about the features and some best practices for Neodymium available on [YouTube](https://www.youtube.com/watch?v=hn-juzcXrZg).
-
-[Here](https://blog.xceptance.com/2019/02/26/neodymium-an-open-source-framework-for-web-testing/) is an article on describing the main features of Neodymium and our motivation why we saw the need to create it.
-
+* [Neodymium – An Open Source Framework for Web Testing](https://blog.xceptance.com/2019/02/26/neodymium-an-open-source-framework-for-web-testing/): An article about our motivation to start Neodymium and its most important features
+* [Neodymium 5.0.0](https://blog.xceptance.com/2024/06/26/a-new-magnetic-force-neodymium-5-0-0-release/): An article about new things in version 5.0
+* [Web Testing mit Neodymium](https://www.youtube.com/watch?v=hn-juzcXrZg): A recorded talk (in German) about testing with Neodymium. It also gives recommendations and shows best practises. Recorded during a J́UG Thüringen Meetup in 2019.
 
 ## Additional Features
 These are our **additions** to make test automation nicer, quicker, and less painful. 
