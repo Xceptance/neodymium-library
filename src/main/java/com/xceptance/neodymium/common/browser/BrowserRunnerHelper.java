@@ -241,7 +241,7 @@ public final class BrowserRunnerHelper
                 var remoteDebuggingPort = PortProber.findFreePort();
                 Neodymium.setRemoteDebuggingPort(remoteDebuggingPort);
                 options.addArguments("--remote-debugging-port=" + remoteDebuggingPort);
-                
+
                 if (config.getArguments() != null && config.getArguments().size() > 0)
                 {
                     options.addArguments(config.getArguments());
@@ -361,18 +361,18 @@ public final class BrowserRunnerHelper
 
                 final String driverInPathPath = new ExecutableFinder().find("msedgedriver");
                 final EdgeOptions options = new EdgeOptions().merge(capabilities);
-                
+
                 if (config.getArguments() != null && config.getArguments().size() > 0)
                 {
                     options.addArguments(config.getArguments());
                 }
-                
+
                 EdgeBuilder edgeBuilder = new EdgeBuilder(config.getDriverArguments());
                 if (StringUtils.isNotBlank(driverInPathPath))
                 {
                     edgeBuilder.usingDriverExecutable(new File(driverInPathPath));
                 }
-                
+
                 wDSC.setWebDriver(new EdgeDriver(edgeBuilder.build(), options));
             }
             else if (safariBrowsers.contains(browserName))
@@ -404,7 +404,7 @@ public final class BrowserRunnerHelper
             config.getGridProperties().put("userName", testEnvironmentProperties.getUsername());
             config.getGridProperties().put("accessKey", testEnvironmentProperties.getPassword());
             final String buildId = StringUtils.isBlank(System.getenv("BUILD_NUMBER")) ? "local run" : System.getenv("BUILD_NUMBER");
-            config.getGridProperties().put("sessionName", testClassInstance.getClass().toString());
+            config.getGridProperties().put("sessionName", testClassInstance instanceof String ? testClassInstance : testClassInstance.getClass().toString());
             config.getGridProperties().put("buildName", "Test Automation");
             config.getGridProperties().put("buildIdentifier", buildId);
             if (testEnvironmentUrl.contains("browserstack"))
