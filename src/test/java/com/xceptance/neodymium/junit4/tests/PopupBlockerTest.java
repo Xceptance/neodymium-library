@@ -17,6 +17,7 @@ public class PopupBlockerTest extends NeodymiumTest
         Map<String, String> properties = new HashMap<>();
 
         properties.put("neodymium.popup.custom", "#myWindow");
+        properties.put("neodymium.popup.customWithQuotes", "[data-testid='closeIcon']");
 
         addPropertiesForTest("temp-PopupBlockerTest-neodymium.properties", properties);
 
