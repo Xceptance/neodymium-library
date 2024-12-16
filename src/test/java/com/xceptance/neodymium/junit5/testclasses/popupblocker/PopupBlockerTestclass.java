@@ -25,7 +25,7 @@ public class PopupBlockerTestclass extends AbstractNeodymiumTest
         $("#myWindow").shouldNotBe(visible);
     }
 
-    // @NeodymiumTest
+    @NeodymiumTest
     public void testPopUpWithQuotesSelectorIsBlocked()
     {
         Selenide.open("https://www.xceptance.com/");

@@ -21,6 +21,6 @@ public class PopupBlockerTest extends NeodymiumTest
         addPropertiesForTest("temp-PopupBlockerTest-neodymium.properties", properties);
 
         Result result = JUnitCore.runClasses(PopupBlockerTestclass.class);
-        checkPass(result, 3, 0);
+        checkPass(result, 4, 0);
     }
 }
