@@ -108,7 +108,7 @@ public class AllureAddonsTest
 
         AllureAddons.addEnvironmentInformation(map6, EnvironmentInfoMode.ADD);
         this.validateEnvironmentFile(expectedFileContentList);
-        
+
         // ignore value
         ImmutableMap<String, String> map7 = ImmutableMap.<String, String> builder()
                                                         .put("d",
@@ -141,7 +141,7 @@ public class AllureAddonsTest
     private File getEnvFile()
     {
         File allureResultsDir = AllureAddons.getAllureResultsFolder();
-        return new File(allureResultsDir.getAbsoluteFile() + File.separator + "environment.xml");
+        return new File(allureResultsDir.getAbsoluteFile() + File.separator + "environment-test.xml");
     }
 
     private void validateEnvironmentFile(List<Entry<String, String>> list) throws Exception
@@ -151,10 +151,10 @@ public class AllureAddonsTest
         Document doc = docBuilder.parse(getEnvFile());
 
         Node environment = doc.getDocumentElement();
-        Assert.assertEquals("Wrong root node name in environments.xml", "environment", environment.getNodeName());
+        Assert.assertEquals("Wrong root node name in environments-test.xml", "environment-test", environment.getNodeName());
 
         NodeList childNodes = environment.getChildNodes();
-        Assert.assertEquals("Wrong number of params in environments.xml", list.size(), childNodes.getLength());
+        Assert.assertEquals("Wrong number of params in environments-test.xml", list.size(), childNodes.getLength());
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         for (int i = 0; i < childNodes.getLength(); i++)
