@@ -45,6 +45,7 @@ public class BrowserData extends Data
 
     public void initClassAnnotationsFor(Class<?> testClass)
     {
+        this.testClass = testClass;
         classRandomBrowsersAnnotation = getAnnotations(testClass, RandomBrowsers.class);
 
         if (getAnnotations(testClass, SuppressBrowsers.class).isEmpty())
