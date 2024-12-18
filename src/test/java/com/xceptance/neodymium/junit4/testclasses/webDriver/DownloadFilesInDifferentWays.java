@@ -3,6 +3,7 @@ package com.xceptance.neodymium.junit4.testclasses.webDriver;
 import static com.codeborne.selenide.Condition.attribute;
 import static com.codeborne.selenide.Condition.enabled;
 import static com.codeborne.selenide.Condition.exactText;
+import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
@@ -41,7 +42,7 @@ public class DownloadFilesInDifferentWays extends NeodymiumTest
     {
         fileName = new File("target/02_2020-Java_aktuell-Autor-Rene_Schwietzke-High-Performance-Java-Hinter-den-Kulissen-von-Java.pdf");
         Selenide.open("https://blog.xceptance.com/2020/02/28/ijug-magazin-java-aktuell-high-performance-java/");
-        $(".alignright.is-resized").scrollIntoView(true).click();
+        $(".alignright.is-resized").scrollIntoView("{block: 'center'}").click();
         waitForFileDownloading();
         validateFilePresentInDownloadHistory();
     }
@@ -92,7 +93,8 @@ public class DownloadFilesInDifferentWays extends NeodymiumTest
         if (Neodymium.getBrowserName().contains("chrome"))
         {
             Selenide.open("chrome://downloads/");
-            $$(Selectors.shadowCss("#title-area", "downloads-manager", "#downloadsList downloads-item")).findBy(exactText(fileName.getName())).parent()
+            $$(Selectors.shadowCss("#title-area", "downloads-manager", "#downloadsList downloads-item")).findBy(exactText(fileName.getName()))
+                                                                                                        .should(exist, Duration.ofMillis(9000)).parent()
                                                                                                         .find(".description[role='gridcell']")
                                                                                                         .shouldHave(attribute("hidden"));
         }
