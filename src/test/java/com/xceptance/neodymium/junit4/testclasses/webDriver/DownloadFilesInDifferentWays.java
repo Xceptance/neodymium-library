@@ -93,6 +93,10 @@ public class DownloadFilesInDifferentWays extends NeodymiumTest
         if (Neodymium.getBrowserName().contains("chrome"))
         {
             Selenide.open("chrome://downloads/");
+            System.out.println($$(Selectors.shadowCss("#title-area", "downloads-manager",
+                                                      "#downloadsList downloads-item")).size());
+            $$(Selectors.shadowCss("#title-area", "downloads-manager",
+                                   "#downloadsList downloads-item")).asDynamicIterable().forEach(element -> System.out.println(element.getText()));
             $$(Selectors.shadowCss("#title-area", "downloads-manager", "#downloadsList downloads-item")).findBy(exactText(fileName.getName()))
                                                                                                         .should(exist, Duration.ofMillis(9000)).parent()
                                                                                                         .find(".description[role='gridcell']")
