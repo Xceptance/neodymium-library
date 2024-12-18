@@ -27,7 +27,7 @@ public class DownloadFilesExecutorTest extends NeodymiumTest
         properties.put("browserprofile.chrome_download.browser", "chrome");
 
         // needed to enable validation of chrome://downloads/ page
-        properties.put("browserprofile.chrome_download.headless", "true");
+        properties.put("browserprofile.chrome_download.headless", "false");
         properties.put("browserprofile.chrome_download.downloadDirectory", "target");
 
         properties.put("browserprofile.firefox_download.name", "firefox_download");
