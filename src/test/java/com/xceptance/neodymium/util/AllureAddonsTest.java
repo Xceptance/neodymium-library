@@ -10,13 +10,18 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.google.common.collect.ImmutableMap;
+import com.xceptance.neodymium.common.browser.SuppressBrowsers;
+import com.xceptance.neodymium.junit4.NeodymiumRunner;
 import com.xceptance.neodymium.util.AllureAddons.EnvironmentInfoMode;
 
+@RunWith(NeodymiumRunner.class)
+@SuppressBrowsers
 public class AllureAddonsTest
 {
     @Test
@@ -141,7 +146,7 @@ public class AllureAddonsTest
     private File getEnvFile()
     {
         File allureResultsDir = AllureAddons.getAllureResultsFolder();
-        return new File(allureResultsDir.getAbsoluteFile() + File.separator + "environment-test.xml");
+        return new File(allureResultsDir.getAbsoluteFile() + File.separator + "environment.xml");
     }
 
     private void validateEnvironmentFile(List<Entry<String, String>> list) throws Exception
@@ -151,10 +156,10 @@ public class AllureAddonsTest
         Document doc = docBuilder.parse(getEnvFile());
 
         Node environment = doc.getDocumentElement();
-        Assert.assertEquals("Wrong root node name in environments-test.xml", "environment-test", environment.getNodeName());
+        Assert.assertEquals("Wrong root node name in environments-test.xml", "environment", environment.getNodeName());
 
         NodeList childNodes = environment.getChildNodes();
-        Assert.assertEquals("Wrong number of params in environments-test.xml", list.size(), childNodes.getLength());
+        Assert.assertEquals("Wrong number of params in environments.xml", list.size(), childNodes.getLength());
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         for (int i = 0; i < childNodes.getLength(); i++)
